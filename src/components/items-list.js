@@ -3,12 +3,9 @@ import React from 'react';
 class ItemsList extends React.Component {
 
 
-
-
-
     render() {
         return (
-            <table class="tableStyle">
+            <table className="tableStyle">
                 <thead>
                     <tr>
                         <th>תאריך</th>
@@ -19,19 +16,19 @@ class ItemsList extends React.Component {
                 <tbody>
                     {this.props.list.map(({ id, date, description, status }) => (
                         <tr key={id}>
-                            <td data-th="תאריך" class="">
-                                <div class="td-inner">
+                            <td data-th="תאריך" >
+                                <div className="td-inner">
                                     {date}
                                 </div>
                             </td>
-                            <td data-th="תיאור" class="">
-                                <div class="td-inner">
+                            <td data-th="תיאור" >
+                                <div className="td-inner">
                                     {description}
                                 </div>
                             </td>
 
                             <td data-th="סטטוס">
-                                <div class="td-inner td-inner-btn">
+                                <div className="td-inner td-inner-btn">
                                     <button className={'btn-status ' + (status === 'נשלחה' ? 'btn-sent' : ' btn-rejected')} type="button"
                                         title={status}>
                                         {status}

@@ -1,9 +1,12 @@
 import React from 'react';
+import { Dialog } from 'primereact/dialog';
+import { Button } from 'primereact/button';
+import ModalForm from './modal-form';
+import '../assets/css/local/components/modal-item.min.css';
 
 class Action extends React.Component {
 
     state = {
-        actionList: []
     }
 
     componentDidMount() {
@@ -19,23 +22,61 @@ class Action extends React.Component {
         })
     }
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            displayResponsive: false,
+            position: 'center',
+            actionList: []
+        };
 
+        this.onClick = this.onClick.bind(this);
+        this.onHide = this.onHide.bind(this);
+
+    }
+
+    onClick(name, position) {
+        let state = {
+            [`${name}`]: true
+        };
+
+        if (position) {
+            state = {
+                ...state,
+                position
+            }
+        }
+
+        this.setState(state);
+    }
+
+    onHide(name) {
+        this.setState({
+            [`${name}`]: false
+        });
+    }
+
+    renderFooter(name) {
+        return (
+            <div className="display-flex display-flex-end">
+                <Button label="ביטול" onClick={() => this.onHide(name)} className="btn-underline" />
+                <Button label="שמירה" onClick={() => this.onHide(name)} className="btn-orange-gradient" />
+            </div>
+        );
+    }
 
     render() {
 
         const { actionList } = this.state
         return (
-            <ul class="display-flex units-wrap">
+            <ul className="display-flex units-wrap">
+
                 {actionList.map(({ id, className, actionName }) => (
                     <li key={id}>
-
-                        <button className={className} title={actionName} type="button">
-                            <div class="decoration">
-                                <div class="img"></div>
-                            </div>
-                            <p>{actionName}</p>
-                        </button>
-
+                        <Button className={className} title={actionName} label={actionName} onClick={() => this.onClick('displayResponsive')} />
+                        <Dialog header="תפקיד חדש" visible={this.state.displayResponsive} onHide={() => this.onHide('displayResponsive')} footer={this.renderFooter('displayResponsive')}>
+                            <ModalForm />
+                        </Dialog>
                     </li>
                 ))}
             </ul>

@@ -5,12 +5,9 @@ $textColor1: #ffffff;
 
 $linkColor0: #2979f4;
 
-@import "local/general/menu.scss";
-@import "local/general/aside.scss";
 @import "local/general/buttons.scss";
 @import "local/general/form.scss";
-@import "local/general/popup.scss";
-@import "local/general/table.scss";
+@import "local/components/search-row.scss";
 
 @mixin cleanList {
     padding: 0;
@@ -20,6 +17,7 @@ $linkColor0: #2979f4;
 
 * {
     box-sizing: border-box;
+    font-family: "Heebo", sans-serif;
 }
 
 html {
@@ -95,6 +93,13 @@ h2 {
     font-weight: 700;
 }
 
+h3 {
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 700;
+    color: #a7abbd;
+}
+
 strong,
 b {
     font-weight: 500;
@@ -111,7 +116,7 @@ hr {
 
 img {
     vertical-align: middle;
-    width: 100%;
+    width: auto;
 }
 
 .display-flex {
@@ -143,118 +148,6 @@ img {
     position: absolute !important;
     width: 1px;
     word-wrap: normal !important;
-}
-
-/* Preloader */
-
-#preloader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: $bgcolor0;
-    z-index: 101;
-}
-
-#status {
-    width: 128px;
-    height: 98px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background-image: url(../images/logo.png);
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: 128px;
-    margin: auto;
-}
-
-/* start backTo top Styles */
-
-.backToTop {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 50px;
-    width: 50px;
-    border: 2px solid #00746a;
-    border-radius: 50px;
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    color: #00746a;
-    font-size: 30px;
-    z-index: 100;
-    overflow: hidden;
-    background-color: $bgcolor0;
-    background-image: url("../images/backToTop1.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 20px;
-    visibility: hidden;
-    opacity: 0;
-    -webkit-transition: opacity 0.3s 0s, visibility 0s 0.3s;
-    -moz-transition: opacity 0.3s 0s, visibility 0s 0.3s;
-    transition: opacity 0.3s 0s, visibility 0s 0.3s;
-
-    span {
-        font-size: 0px;
-        position: absolute;
-    }
-
-    &:hover,
-    &:focus {
-        background-color: #00746a;
-        border: 2px solid $bgcolor0;
-        color: #00746a;
-        background-image: url("../images/backToTop2.png");
-    }
-
-    &.backToTop-fade-out {
-        opacity: 0.5;
-        transition: all 0.3s ease-in;
-    }
-
-    &.backToTop-is-visible {
-        visibility: visible;
-        opacity: 1;
-        transition: all 0.3s ease-in;
-    }
-}
-
-.content-wrap {
-    max-width: 1280px;
-    margin: 0 auto;
-    position: relative;
-
-    @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-        max-width: inherit;
-        width: 1280px;
-    }
-
-    @media (max-width: 1300px) {
-        padding: 0px 15px;
-    }
-}
-
-h1 {
-    font-size: 20px;
-    line-height: 25px;
-    font-weight: 400;
-
-    span {
-        color: $textColor1;
-        font-weight: 700;
-
-        &.no-mob {
-            // @media (max-width: 1300px) {
-            //     display: none;
-            // }
-        }
-    }
 }
 
 main {
@@ -289,230 +182,6 @@ main {
                 flex-direction: column;
                 align-items: center;
             }
-            .main-inner-item {
-                &.main-inner-item2 {
-                    flex: 1;
-                    border-radius: 57px;
-                    background-color: $bgcolor0;
-                    margin: 0px 32px 0px 0px;
-
-                    @media (max-width: 1630px) {
-                        margin: 0px 15px 0px 0px;
-                    }
-
-                    @media (max-width: 1279px) {
-                        width: 100%;
-                        margin: 15px 0px 0px 0px;
-                    }
-                    .main-inner-item2-content {
-                        padding: 27px 24px;
-                        @media (max-width: 1630px) {
-                            padding: 15px 15px;
-                        }
-
-                        @media (max-width: 599px) {
-                            padding: 15px 10px;
-                        }
-                        .title-wrap {
-                            align-items: flex-end;
-                            padding-bottom: 20px;
-
-                            @media (max-width: 1630px) {
-                                padding-top: 10px;
-                            }
-                            h1 {
-                                img {
-                                    width: 64px;
-                                }
-                            }
-                        }
-
-                        .personal-information-wrap {
-                            .personal-information-inner {
-                                background-color: rgba(227, 222, 247, 0.3);
-                                border-radius: 30px;
-                                padding: 30px 38px 20px 38px;
-                                position: relative;
-                                @media (max-width: 1630px) {
-                                    padding: 20px 15px 20px 15px;
-                                }
-
-                                @media (max-width: 1440px) {
-                                    padding: 40px 15px 20px 15px;
-                                }
-
-                                @media (max-width: 1366px) {
-                                    align-items: flex-start;
-                                }
-
-                                @media (max-width: 750px) {
-                                    flex-direction: column;
-                                }
-                                .personal-information-item {
-                                    .userpic-wrap {
-                                        padding-left: 10px;
-                                        img {
-                                            width: 118px;
-                                            @media (max-width: 1366px) {
-                                                width: 90px;
-                                            }
-                                        }
-                                    }
-                                    dl {
-                                        margin: 0;
-                                        padding: 0;
-                                        padding-left: 10px;
-                                        dt {
-                                            margin: 0;
-                                            padding: 0;
-                                            font-weight: normal;
-                                            font-size: 16px;
-                                            line-height: 20px;
-                                            font-weight: 700;
-                                            padding-bottom: 15px;
-                                            @media (max-width: 1560px) {
-                                                font-size: 14px;
-                                                line-height: 18px;
-                                                padding-bottom: 10px;
-                                            }
-
-                                            @media (max-width: 750px) {
-                                                padding-bottom: 5px;
-                                            }
-                                        }
-
-                                        dd {
-                                            margin: 0;
-                                            padding: 0;
-                                            font-size: 16px;
-                                            line-height: 20px;
-                                            font-weight: 400;
-                                            padding-bottom: 15px;
-                                            &.no-wrap {
-                                                white-space: nowrap;
-                                            }
-
-                                            @media (max-width: 1560px) {
-                                                font-size: 14px;
-                                                line-height: 18px;
-                                                padding-bottom: 10px;
-                                            }
-
-                                            @media (max-width: 750px) {
-                                                padding-bottom: 5px;
-                                            }
-
-                                            a {
-                                                text-decoration: underline;
-                                                &:hover,
-                                                &:focus {
-                                                    text-decoration: none;
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    .btn-full-details {
-                                        @media (max-width: 1440px) {
-                                            position: absolute;
-                                            top: 15px;
-                                            left: 15px;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        .search-unit-wrap {
-                            padding-top: 20px;
-                            .search-unit-inner {
-                                background-color: #f7f7f7;
-                                border-radius: 30px;
-                                padding: 15px 32px 20px 32px;
-                                @media (max-width: 1630px) {
-                                    padding: 15px 15px 20px 15px;
-                                }
-
-                                @media (max-width: 599px) {
-                                    padding: 15px 0px 20px 0px;
-                                    background-color: transparent;
-                                }
-                                position: relative;
-
-                                &::before {
-                                    content: "";
-                                    background-image: url("../images/decoration1.png");
-                                    background-repeat: no-repeat;
-                                    background-position: center;
-                                    background-size: 250px;
-                                    background-color: transparent;
-                                    width: 250px;
-                                    height: 226px;
-                                    position: absolute;
-                                    bottom: -3px;
-                                    left: -30px;
-                                    z-index: 1;
-
-                                    @media (max-width: 1130px) {
-                                        display: none;
-                                    }
-                                }
-                            }
-
-                            .search-row {
-                                background: transparent linear-gradient(180deg, #c2e6e7 0%, #67c8c9 100%) 0% 0%
-                                    no-repeat padding-box;
-                                box-shadow: 0px 10px 10px rgba(116, 89, 212, 0.1);
-                                padding: 17px 20px;
-                                border-radius: 26px;
-
-                                @media (max-width: 599px) {
-                                    padding: 17px 10px 0px 10px;
-                                }
-
-                                .text-field-form {
-                                    .input-unit-wrap {
-                                    }
-                                }
-                            }
-
-                            .graf {
-                                padding-top: 20px;
-                                img {
-                                    max-width: 880px;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
-}
-
-@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-    /* IE10+ CSS */
-}
-
-@supports (-ms-accelerator: true) {
-    /* IE Edge 12+ CSS */
-}
-
-@supports (-ms-ime-align: auto) {
-    /* IE Edge 16+ CSS */
-}
-
-@media (max-width: 1280px) {
-}
-
-@media (max-width: 1024px) {
-}
-
-@media (max-width: 800px) {
-}
-
-@media (max-width: 600px) {
-}
-
-@media (max-width: 320px) {
 }

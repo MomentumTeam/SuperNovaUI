@@ -1,73 +1,76 @@
 import React from 'react';
+import { AutoComplete } from 'primereact/autocomplete';
+import { CountryService } from '../service/CountryService';
+
+
 
 class Serch extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            countries: [],
+            selectedCountry1: null,
+            selectedCountry2: null,
+            selectedCountries: null,
+            filteredCountries: null,
 
+        };
 
+        this.searchCountry = this.searchCountry.bind(this);
+        this.countryservice = new CountryService();
+        this.items = Array.from({ length: 100000 }).map((_, i) => ({ label: `Item #${i}`, value: i }));
+    }
 
+    componentDidMount() {
+        this.countryservice.getCountries().then(data => this.setState({ countries: data }));
+    }
+
+    searchCountry(event) {
+        setTimeout(() => {
+            let filteredCountries;
+            if (!event.query.trim().length) {
+                filteredCountries = [...this.state.countries];
+            }
+            else {
+                filteredCountries = this.state.countries.filter((country) => {
+                    return country.name.toLowerCase().startsWith(event.query.toLowerCase());
+                });
+            }
+
+            this.setState({ filteredCountries });
+        }, 250);
+    }
 
     render() {
         return (
-            <div class="search-row">
-                <div class="text-field-form">
-                    <form>
-                        <fieldset>
-                            <div class="form-wrap" spellcheck="false">
-                                <div>
-                                    <legend><span class="for-screnReader">פרטים כלליים</span>
-                                    </legend>
-                                </div>
-                                <div class="display-flex input-unit-wrap">
-                                    <div class="input-unit-regular">
-                                        <label class="display-non" class="display-non"
-                                            for="5000">שם/מ"א/ת"ז</label>
-                                        <input id="5000" class="w-xl" type="text"
-                                            required="required" placeholder="שם/מ''א/ת''ז " />
-                                        <span class="filling-error">שגיאה
-                                            במילוי השדה</span>
-                                    </div>
-                                    <div class="input-unit-regular">
-                                        <label class="display-non" for="5011">יחידה</label>
-                                        <input id="5011" type="text" required="required"
-                                            placeholder="יחידה" />
-                                        <span class="filling-error">שגיאה
-                                            במילוי השדה</span>
-                                    </div>
-                                    <div class="input-unit-regular">
-                                        <label class="display-non" for="5012">צוות</label>
-                                        <input id="5012" class="w-xs" type="text"
-                                            required="required" placeholder="צוות" />
-                                        <span class="filling-error">שגיאה
-                                            במילוי השדה</span>
-                                    </div>
-                                    <div class="input-unit-regular">
-                                        <label class="display-non" class="display-non"
-                                            for="5013">כותרת תפקיד</label>
-                                        <input id="5013" class="w-l" type="text" required="required"
-                                            placeholder="כותרת תפקיד " />
-                                        <span class="filling-error">שגיאה
-                                            במילוי השדה</span>
-                                    </div>
-                                    <div class="input-unit-regular">
-                                        <label class="display-non" for="5014">ריגול</label>
-                                        <input id="5014" type="text" required="required"
-                                            placeholder="ריגול" />
-                                        <span class="filling-error">שגיאה
-                                            במילוי השדה</span>
-                                    </div>
-                                    <div
-                                        class="input-unit-regular input-unit-search">
-                                        <label class="display-non" for="5015">חיפוש</label>
-                                        <input id="5015" class="w-xxl" type="search"
-                                            required="required" placeholder="חיפוש" />
-                                        <span class="filling-error">שגיאה
-                                            במילוי השדה</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </form>
+            <div className="search-item">
+                <div className="autocomplete-wrap">
+
+                    <div className="p-fluid">
+                        <span className="p-float-label">
+                            <AutoComplete value={this.state.selectedCountry1} suggestions={this.state.filteredCountries} completeMethod={this.searchCountry} field="name" onChange={(e) => this.setState({ selectedCountry1: e.value })} />
+                            <label htmlFor="autocomplete">שם/מ"א/ת"ז </label>
+                        </span>
+                    </div>
                 </div>
+                <div className="autocomplete-wrap">
+                    <div className="p-fluid">
+                        <span className="p-float-label">
+                            <AutoComplete value={this.state.selectedCountries} suggestions={this.state.filteredCountries} completeMethod={this.searchCountry} field="name" multiple onChange={(e) => this.setState({ selectedCountries: e.value })} />
+                            <label htmlFor="autocomplete2">היררכיה</label>
+                        </span>
+                    </div>
+                </div>
+                <div className="autocomplete-wrap">
+                    <div className="p-fluid">
+                        <span className="p-float-label">
+                            <AutoComplete value={this.state.selectedCountry2} suggestions={this.state.filteredCountries} completeMethod={this.searchCountry} field="name" onChange={(e) => this.setState({ selectedCountry2: e.value })} />
+                            <label htmlFor="autocomplete3">חיפוש לפי תפקיד</label>
+                        </span>
+                    </div>
+                </div>
+                <button className="btn btn-search-wite" title="Print" type="button"><span className="for-screnReader">Print</span></button>
             </div>
         )
     }
@@ -76,3 +79,4 @@ class Serch extends React.Component {
 
 
 export default Serch
+

@@ -32,16 +32,9 @@ legend {
 .input-unit-wrap {
     padding-top: 0px;
     flex-wrap: wrap;
-    @media (max-width: 1024px) {
-        flex-direction: column;
-        width: 100%;
-    }
+
     .input-unit-regular {
         position: relative;
-        @media (max-width: 1024px) {
-            width: 100%;
-            padding-bottom: 15px;
-        }
 
         label {
             display: inline-block;
@@ -63,84 +56,30 @@ legend {
             box-sizing: border-box;
             padding: 0px 10px;
             text-align: right;
-            width: 136px;
+            width: 154px;
             height: 35px;
             border: 1px solid #e7e8ea;
             border-radius: 8px;
-            background-color: #f7f7f7;
-            font-family: "Assistant", "Arial", sans-serif;
+            background-color: $bgcolor0;
+            font-family: "Heebo", sans-serif;
             margin: 0px;
             display: flex;
             align-items: center;
 
-            @media (max-width: 1500px) {
-                width: 112px;
-            }
-
-            @media (max-width: 1024px) {
-                width: 100%;
-            }
-            &.w-xs {
-                width: 112px;
-
-                @media (max-width: 1024px) {
-                    width: 100%;
-                }
-            }
-
-            &.w-l {
-                width: 153px;
-                @media (max-width: 1760px) {
-                    width: 136px;
-                }
-
-                @media (max-width: 1500px) {
-                    width: 112px;
-                }
-
-                @media (max-width: 1024px) {
-                    width: 100%;
-                }
-            }
-            &.w-xl {
-                width: 175px;
-                @media (max-width: 1760px) {
-                    width: 136px;
-                }
-
-                @media (max-width: 1500px) {
-                    width: 112px;
-                }
-
-                @media (max-width: 1024px) {
-                    width: 100%;
-                }
-            }
-
-            &.w-xxl {
-                width: 200px;
-
-                @media (max-width: 1760px) {
-                    width: 136px;
-                }
-                @media (max-width: 1500px) {
-                    width: 112px;
-                }
-
-                @media (max-width: 1024px) {
-                    width: 100%;
-                }
-            }
-
             &:hover,
             &:focus {
                 border: 1px solid #5b7184;
+                box-shadow: 0 0 0 0.2rem #a6d5fa;
+            }
+
+            &:focus {
+                box-shadow: 0 0 0 0.2rem #a6d5fa;
             }
 
             &::placeholder {
                 color: $textColor0;
                 opacity: 1; /* Firefox */
-                font-family: "Assistant", "Arial", sans-serif;
+                font-family: "Heebo", sans-serif;
             }
         }
 
@@ -212,6 +151,125 @@ legend {
 
         input {
             padding: 0px 10px 0px 28px;
+        }
+    }
+}
+
+.p-fluid {
+    .p-field {
+        padding-bottom: 20px;
+
+        &.display-flex {
+            padding-bottom: 10px;
+
+            label {
+                padding-left: 10px;
+            }
+        }
+
+        &.pad0 {
+            padding-bottom: 0px;
+        }
+        label {
+            font-size: 14px;
+            line-height: 18px;
+            color: rgba(32, 25, 97, 0.5);
+            display: block;
+            font-weight: 400;
+            padding-top: 2px;
+            .required-field {
+                color: #f68340;
+            }
+        }
+
+        textarea,
+        select,
+        .p-dropdown,
+        input {
+            font-size: 14px;
+            font-weight: 300;
+            color: $textColor0;
+            box-sizing: border-box;
+            padding: 0px 10px;
+            text-align: right;
+            min-width: 154px;
+            height: 35px;
+            border: 1px solid #e7e8ea;
+            border-radius: 8px;
+            background-color: $bgcolor0;
+            font-family: "Heebo", sans-serif;
+            margin: 0px;
+            display: flex;
+            align-items: center;
+
+            &:hover,
+            &:focus {
+                border: 1px solid #5b7184;
+                box-shadow: 0 0 0 0.2rem #a6d5fa;
+            }
+
+            &:focus {
+                box-shadow: 0 0 0 0.2rem #a6d5fa;
+            }
+
+            &::placeholder {
+                color: $textColor0;
+                opacity: 1; /* Firefox */
+                font-family: "Heebo", sans-serif;
+            }
+            .p-dropdown-label {
+                border-radius: 0px 8px 8px 0px;
+                font-size: 14px;
+                font-weight: 300;
+                color: $textColor0;
+                box-sizing: border-box;
+                text-align: right;
+                background-color: $bgcolor0;
+                font-family: "Heebo", sans-serif;
+                margin: 0px;
+                padding: 0;
+            }
+
+            .p-dropdown-trigger {
+                width: 11px;
+                .p-dropdown-trigger-icon {
+                    font-size: 14px;
+                    color: $textColor0;
+                }
+            }
+        }
+
+        .p-inputtextarea {
+            font-size: 14px;
+            font-weight: 300;
+            color: $textColor0;
+            box-sizing: border-box;
+            padding: 10px 10px;
+            text-align: right;
+            height: 108px;
+            border: 1px solid #e7e8ea;
+            border-radius: 10px;
+            background-color: $bgcolor0;
+            font-family: "Heebo", sans-serif;
+            margin: 0px;
+            display: flex;
+            align-items: center;
+
+            &:hover,
+            &:focus {
+                border: 1px solid #5b7184;
+                box-shadow: 0 0 0 0.2rem #a6d5fa;
+            }
+
+            &:focus {
+                box-shadow: 0 0 0 0.2rem #a6d5fa;
+            }
+
+            &::placeholder {
+                color: $textColor0;
+                opacity: 1; /* Firefox */
+                font-family: "Heebo", sans-serif;
+            }
         }
     }
 }

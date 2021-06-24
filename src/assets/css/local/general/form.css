@@ -34,22 +34,8 @@ legend {
   flex-wrap: wrap;
 }
 
-@media (max-width: 1024px) {
-  .input-unit-wrap {
-    flex-direction: column;
-    width: 100%;
-  }
-}
-
 .input-unit-wrap .input-unit-regular {
   position: relative;
-}
-
-@media (max-width: 1024px) {
-  .input-unit-wrap .input-unit-regular {
-    width: 100%;
-    padding-bottom: 15px;
-  }
 }
 
 .input-unit-wrap .input-unit-regular label {
@@ -73,135 +59,15 @@ legend {
   box-sizing: border-box;
   padding: 0px 10px;
   text-align: right;
-  width: 136px;
+  width: 154px;
   height: 35px;
   border: 1px solid #e7e8ea;
   border-radius: 8px;
-  background-color: #f7f7f7;
-  font-family: "Assistant", "Arial", sans-serif;
+  background-color: #ffffff;
+  font-family: "Heebo", sans-serif;
   margin: 0px;
   display: flex;
   align-items: center;
-}
-
-@media (max-width: 1500px) {
-  .input-unit-wrap .input-unit-regular input,
-  .input-unit-wrap .input-unit-regular textarea,
-  .input-unit-wrap .input-unit-regular select {
-    width: 112px;
-  }
-}
-
-@media (max-width: 1024px) {
-  .input-unit-wrap .input-unit-regular input,
-  .input-unit-wrap .input-unit-regular textarea,
-  .input-unit-wrap .input-unit-regular select {
-    width: 100%;
-  }
-}
-
-.input-unit-wrap .input-unit-regular input.w-xs,
-.input-unit-wrap .input-unit-regular textarea.w-xs,
-.input-unit-wrap .input-unit-regular select.w-xs {
-  width: 112px;
-}
-
-@media (max-width: 1024px) {
-  .input-unit-wrap .input-unit-regular input.w-xs,
-  .input-unit-wrap .input-unit-regular textarea.w-xs,
-  .input-unit-wrap .input-unit-regular select.w-xs {
-    width: 100%;
-  }
-}
-
-.input-unit-wrap .input-unit-regular input.w-l,
-.input-unit-wrap .input-unit-regular textarea.w-l,
-.input-unit-wrap .input-unit-regular select.w-l {
-  width: 153px;
-}
-
-@media (max-width: 1760px) {
-  .input-unit-wrap .input-unit-regular input.w-l,
-  .input-unit-wrap .input-unit-regular textarea.w-l,
-  .input-unit-wrap .input-unit-regular select.w-l {
-    width: 136px;
-  }
-}
-
-@media (max-width: 1500px) {
-  .input-unit-wrap .input-unit-regular input.w-l,
-  .input-unit-wrap .input-unit-regular textarea.w-l,
-  .input-unit-wrap .input-unit-regular select.w-l {
-    width: 112px;
-  }
-}
-
-@media (max-width: 1024px) {
-  .input-unit-wrap .input-unit-regular input.w-l,
-  .input-unit-wrap .input-unit-regular textarea.w-l,
-  .input-unit-wrap .input-unit-regular select.w-l {
-    width: 100%;
-  }
-}
-
-.input-unit-wrap .input-unit-regular input.w-xl,
-.input-unit-wrap .input-unit-regular textarea.w-xl,
-.input-unit-wrap .input-unit-regular select.w-xl {
-  width: 175px;
-}
-
-@media (max-width: 1760px) {
-  .input-unit-wrap .input-unit-regular input.w-xl,
-  .input-unit-wrap .input-unit-regular textarea.w-xl,
-  .input-unit-wrap .input-unit-regular select.w-xl {
-    width: 136px;
-  }
-}
-
-@media (max-width: 1500px) {
-  .input-unit-wrap .input-unit-regular input.w-xl,
-  .input-unit-wrap .input-unit-regular textarea.w-xl,
-  .input-unit-wrap .input-unit-regular select.w-xl {
-    width: 112px;
-  }
-}
-
-@media (max-width: 1024px) {
-  .input-unit-wrap .input-unit-regular input.w-xl,
-  .input-unit-wrap .input-unit-regular textarea.w-xl,
-  .input-unit-wrap .input-unit-regular select.w-xl {
-    width: 100%;
-  }
-}
-
-.input-unit-wrap .input-unit-regular input.w-xxl,
-.input-unit-wrap .input-unit-regular textarea.w-xxl,
-.input-unit-wrap .input-unit-regular select.w-xxl {
-  width: 200px;
-}
-
-@media (max-width: 1760px) {
-  .input-unit-wrap .input-unit-regular input.w-xxl,
-  .input-unit-wrap .input-unit-regular textarea.w-xxl,
-  .input-unit-wrap .input-unit-regular select.w-xxl {
-    width: 136px;
-  }
-}
-
-@media (max-width: 1500px) {
-  .input-unit-wrap .input-unit-regular input.w-xxl,
-  .input-unit-wrap .input-unit-regular textarea.w-xxl,
-  .input-unit-wrap .input-unit-regular select.w-xxl {
-    width: 112px;
-  }
-}
-
-@media (max-width: 1024px) {
-  .input-unit-wrap .input-unit-regular input.w-xxl,
-  .input-unit-wrap .input-unit-regular textarea.w-xxl,
-  .input-unit-wrap .input-unit-regular select.w-xxl {
-    width: 100%;
-  }
 }
 
 .input-unit-wrap .input-unit-regular input:hover, .input-unit-wrap .input-unit-regular input:focus,
@@ -210,6 +76,13 @@ legend {
 .input-unit-wrap .input-unit-regular select:hover,
 .input-unit-wrap .input-unit-regular select:focus {
   border: 1px solid #5b7184;
+  box-shadow: 0 0 0 0.2rem #a6d5fa;
+}
+
+.input-unit-wrap .input-unit-regular input:focus,
+.input-unit-wrap .input-unit-regular textarea:focus,
+.input-unit-wrap .input-unit-regular select:focus {
+  box-shadow: 0 0 0 0.2rem #a6d5fa;
 }
 
 .input-unit-wrap .input-unit-regular input::placeholder,
@@ -218,7 +91,7 @@ legend {
   color: #201961;
   opacity: 1;
   /* Firefox */
-  font-family: "Assistant", "Arial", sans-serif;
+  font-family: "Heebo", sans-serif;
 }
 
 .input-unit-wrap .input-unit-regular select,
@@ -294,4 +167,146 @@ legend {
 
 .input-unit-wrap .input-unit-search input {
   padding: 0px 10px 0px 28px;
+}
+
+.p-fluid .p-field {
+  padding-bottom: 20px;
+}
+
+.p-fluid .p-field.display-flex {
+  padding-bottom: 10px;
+}
+
+.p-fluid .p-field.display-flex label {
+  padding-left: 10px;
+}
+
+.p-fluid .p-field.pad0 {
+  padding-bottom: 0px;
+}
+
+.p-fluid .p-field label {
+  font-size: 14px;
+  line-height: 18px;
+  color: rgba(32, 25, 97, 0.5);
+  display: block;
+  font-weight: 400;
+  padding-top: 2px;
+}
+
+.p-fluid .p-field label .required-field {
+  color: #f68340;
+}
+
+.p-fluid .p-field textarea,
+.p-fluid .p-field select,
+.p-fluid .p-field .p-dropdown,
+.p-fluid .p-field input {
+  font-size: 14px;
+  font-weight: 300;
+  color: #201961;
+  box-sizing: border-box;
+  padding: 0px 10px;
+  text-align: right;
+  min-width: 154px;
+  height: 35px;
+  border: 1px solid #e7e8ea;
+  border-radius: 8px;
+  background-color: #ffffff;
+  font-family: "Heebo", sans-serif;
+  margin: 0px;
+  display: flex;
+  align-items: center;
+}
+
+.p-fluid .p-field textarea:hover, .p-fluid .p-field textarea:focus,
+.p-fluid .p-field select:hover,
+.p-fluid .p-field select:focus,
+.p-fluid .p-field .p-dropdown:hover,
+.p-fluid .p-field .p-dropdown:focus,
+.p-fluid .p-field input:hover,
+.p-fluid .p-field input:focus {
+  border: 1px solid #5b7184;
+  box-shadow: 0 0 0 0.2rem #a6d5fa;
+}
+
+.p-fluid .p-field textarea:focus,
+.p-fluid .p-field select:focus,
+.p-fluid .p-field .p-dropdown:focus,
+.p-fluid .p-field input:focus {
+  box-shadow: 0 0 0 0.2rem #a6d5fa;
+}
+
+.p-fluid .p-field textarea::placeholder,
+.p-fluid .p-field select::placeholder,
+.p-fluid .p-field .p-dropdown::placeholder,
+.p-fluid .p-field input::placeholder {
+  color: #201961;
+  opacity: 1;
+  /* Firefox */
+  font-family: "Heebo", sans-serif;
+}
+
+.p-fluid .p-field textarea .p-dropdown-label,
+.p-fluid .p-field select .p-dropdown-label,
+.p-fluid .p-field .p-dropdown .p-dropdown-label,
+.p-fluid .p-field input .p-dropdown-label {
+  border-radius: 0px 8px 8px 0px;
+  font-size: 14px;
+  font-weight: 300;
+  color: #201961;
+  box-sizing: border-box;
+  text-align: right;
+  background-color: #ffffff;
+  font-family: "Heebo", sans-serif;
+  margin: 0px;
+  padding: 0;
+}
+
+.p-fluid .p-field textarea .p-dropdown-trigger,
+.p-fluid .p-field select .p-dropdown-trigger,
+.p-fluid .p-field .p-dropdown .p-dropdown-trigger,
+.p-fluid .p-field input .p-dropdown-trigger {
+  width: 11px;
+}
+
+.p-fluid .p-field textarea .p-dropdown-trigger .p-dropdown-trigger-icon,
+.p-fluid .p-field select .p-dropdown-trigger .p-dropdown-trigger-icon,
+.p-fluid .p-field .p-dropdown .p-dropdown-trigger .p-dropdown-trigger-icon,
+.p-fluid .p-field input .p-dropdown-trigger .p-dropdown-trigger-icon {
+  font-size: 14px;
+  color: #201961;
+}
+
+.p-fluid .p-field .p-inputtextarea {
+  font-size: 14px;
+  font-weight: 300;
+  color: #201961;
+  box-sizing: border-box;
+  padding: 10px 10px;
+  text-align: right;
+  height: 108px;
+  border: 1px solid #e7e8ea;
+  border-radius: 10px;
+  background-color: #ffffff;
+  font-family: "Heebo", sans-serif;
+  margin: 0px;
+  display: flex;
+  align-items: center;
+}
+
+.p-fluid .p-field .p-inputtextarea:hover, .p-fluid .p-field .p-inputtextarea:focus {
+  border: 1px solid #5b7184;
+  box-shadow: 0 0 0 0.2rem #a6d5fa;
+}
+
+.p-fluid .p-field .p-inputtextarea:focus {
+  box-shadow: 0 0 0 0.2rem #a6d5fa;
+}
+
+.p-fluid .p-field .p-inputtextarea::placeholder {
+  color: #201961;
+  opacity: 1;
+  /* Firefox */
+  font-family: "Heebo", sans-serif;
 }

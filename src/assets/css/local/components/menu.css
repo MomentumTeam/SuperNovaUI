@@ -7,13 +7,13 @@
   align-items: center;
   justify-content: space-between;
   width: 101px;
-  padding: 139px 0px 27px 0px;
+  padding: 139px 0px 0px 0px;
 }
 
 @media (max-width: 1560px) {
   .main-inner-item-nav {
     width: 58px;
-    padding: 40px 0px 27px 0px;
+    padding: 40px 0px 0px 0px;
   }
 }
 
@@ -50,7 +50,7 @@
     overflow-x: scroll;
     scrollbar-color: #275c63 #60c8d6;
     scrollbar-width: thin;
-    padding: 0px 10px;
+    padding: 0px 10px 10px 10px;
     margin: 0 auto;
   }
   .main-inner-item-nav nav ul::-webkit-scrollbar-track {
@@ -112,20 +112,25 @@
   }
 }
 
-.main-inner-item-nav nav ul li a.active {
+.main-inner-item-nav nav ul li a:hover, .main-inner-item-nav nav ul li a:focus {
+  border: 1px solid #ffffff;
+}
+
+.main-inner-item-nav nav ul li a.active, .main-inner-item-nav nav ul li a:active {
   background-color: #ffffff;
-  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 599px) {
-  .main-inner-item-nav nav ul li a.active {
+  .main-inner-item-nav nav ul li a.active, .main-inner-item-nav nav ul li a:active {
     box-shadow: 0px 10px 10px transparent;
   }
 }
 
 .main-inner-item-nav nav ul li .aside-item-btn1 {
-  background-image: url(../images/aside-btn1.svg);
+  background-image: url(../../../images/aside-btn1.svg);
   background-size: 35px;
+  border: 1px solid transparent;
 }
 
 @media (max-width: 1560px) {
@@ -135,26 +140,38 @@
 }
 
 .main-inner-item-nav nav ul li .aside-item-btn1.active {
-  background-image: url(../images/aside-btn1-active.svg);
+  background-image: url(../../../images/aside-btn1-active.svg);
 }
 
 .main-inner-item-nav nav ul li .aside-item-btn2 {
-  background-image: url(../images/aside-btn2.svg);
+  background-image: url(../../../images/aside-btn2.svg);
   background-size: 33px;
+}
+
+.main-inner-item-nav nav ul li .aside-item-btn2.active {
+  background-image: url(../../../images/aside-btn2-active.svg);
 }
 
 .main-inner-item-nav nav ul li .aside-item-btn3 {
-  background-image: url(../images/aside-btn3.svg);
+  background-image: url(../../../images/aside-btn3.svg);
   background-size: 33px;
+}
+
+.main-inner-item-nav nav ul li .aside-item-btn3.active {
+  background-image: url(../../../images/aside-btn3-active.svg);
 }
 
 .main-inner-item-nav nav ul li .aside-item-btn4 {
-  background-image: url(../images/aside-btn4.svg);
+  background-image: url(../../../images/aside-btn4.svg);
   background-size: 33px;
 }
 
+.main-inner-item-nav nav ul li .aside-item-btn4.active {
+  background-image: url(../../../images/aside-btn4-active.svg);
+}
+
 .main-inner-item-nav nav ul li .aside-item-btn5 {
-  background-image: url(../images/aside-btn5.svg);
+  background-image: url(../../../images/aside-btn5.svg);
   background-size: 46px;
 }
 
@@ -165,36 +182,47 @@
 }
 
 .main-inner-item-nav nav ul li .aside-item-btn5.active {
-  background-image: url(../images/aside-btn5-active.svg);
-}
-
-.main-inner-item-nav .logout-btn-wrap {
-  background: transparent linear-gradient(180deg, #feb557 0%, #f68340 100%) 0% 0% no-repeat padding-box;
-  width: 50px;
-  height: 49px;
-  border-radius: 50%;
-  transition: all 0.3s ease-in;
+  background-image: url(../../../images/aside-btn5-active.svg);
 }
 
 @media (max-width: 599px) {
-  .main-inner-item-nav .logout-btn-wrap {
+  .main-inner-item-nav .logo-wrap {
     position: absolute;
     top: 0;
-    right: 0;
+    left: 0;
   }
 }
 
-.main-inner-item-nav .logout-btn-wrap .logout-btn {
-  background-image: url(../images/logout.svg);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 23px;
-  background-color: transparent;
-  width: 50px;
-  height: 49px;
-  border: 0;
+.main-inner-item-nav .logo-wrap h1 {
+  background-color: #ffffff;
+  border-radius: 57px;
+  padding: 29px 0px;
+  width: 101px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.main-inner-item-nav .logout-btn-wrap:hover, .main-inner-item-nav .logout-btn-wrap:focus {
-  background: transparent linear-gradient(180deg, #f68340 0%, #feb557 100%) 0% 0% no-repeat padding-box;
+@media (max-width: 1560px) {
+  .main-inner-item-nav .logo-wrap h1 {
+    width: 58px;
+    padding: 15px 0px;
+  }
+}
+
+@media (max-width: 1279px) {
+  .main-inner-item-nav .logo-wrap h1 {
+    width: 70px;
+  }
+}
+
+.main-inner-item-nav .logo-wrap h1 img {
+  width: 64px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1560px) {
+  .main-inner-item-nav .logo-wrap h1 img {
+    width: 46px;
+  }
 }
