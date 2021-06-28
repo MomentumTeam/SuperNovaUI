@@ -3,9 +3,7 @@ import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import ModalForm from './modal-form';
 import '../assets/css/local/components/modal-item.min.css';
-
 class Action extends React.Component {
-
     state = {
     }
 
