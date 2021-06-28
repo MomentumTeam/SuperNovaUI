@@ -1,10 +1,8 @@
 import React from 'react';
 import { AutoComplete } from 'primereact/autocomplete';
-import { CountryService } from '../service/CountryService';
+import { getCountries } from '../service/CountryService';
 
-
-
-class Serch extends React.Component {
+class Search extends React.Component {
 
     constructor(props) {
         super(props);
@@ -14,16 +12,14 @@ class Serch extends React.Component {
             selectedCountry2: null,
             selectedCountries: null,
             filteredCountries: null,
-
         };
 
         this.searchCountry = this.searchCountry.bind(this);
-        this.countryservice = new CountryService();
         this.items = Array.from({ length: 100000 }).map((_, i) => ({ label: `Item #${i}`, value: i }));
     }
 
     componentDidMount() {
-        this.countryservice.getCountries().then(data => this.setState({ countries: data }));
+        getCountries().then(data => this.setState({ countries: data }));
     }
 
     searchCountry(event) {
@@ -78,5 +74,5 @@ class Serch extends React.Component {
 
 
 
-export default Serch
+export default Search
 

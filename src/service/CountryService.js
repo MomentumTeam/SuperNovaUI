@@ -1,10 +1,14 @@
 
 import axios from 'axios'
 
-export class CountryService {
+export const getCountries = async () => {
+    const response = await axios({
+      method: 'get',
+      url: `data/countries.json`,
+      headers: {
+        'content-type': 'application/json',
+      },
+    })
 
-    getCountries() {
-        return axios.get('data/countries.json')
-            .then(res => res.data.data);
-    }
+    return response.data;
 }
