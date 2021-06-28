@@ -1,0 +1,211 @@
+$bgcolor0: #ffffff;
+$textColor0: #201961;
+
+$textColor1: #ffffff;
+
+$linkColor0: #2979f4;
+
+@mixin cleanList {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.main-inner-item-nav {
+  background: transparent linear-gradient(168deg, #00aac0 0%, #3fbc9d 100%) 0% 0% no-repeat padding-box;
+  box-shadow: 0px 30px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 57px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 101px;
+  padding: 139px 0px 0px 0px;
+
+  @media (max-width: 1560px) {
+    width: 58px;
+    padding: 40px 0px 0px 0px;
+  }
+
+  @media (max-width: 1279px) {
+    width: 100%;
+    flex-direction: row;
+
+    padding: 10px;
+  }
+  @media (max-width: 599px) {
+    padding-bottom: 20px;
+    justify-content: center;
+  }
+
+  nav {
+    ul {
+      @include cleanList;
+      @media (max-width: 1279px) {
+        display: flex;
+      }
+
+      @media (max-width: 599px) {
+        max-width: 320px;
+        overflow-x: scroll;
+        scrollbar-color: #275c63 #60c8d6;
+        scrollbar-width: thin;
+        padding: 0px 10px 10px 10px;
+        margin: 0 auto;
+
+        &::-webkit-scrollbar-track {
+          background-color: #275c63;
+          border-radius: 30px;
+        }
+
+        &::-webkit-scrollbar {
+          height: 5px;
+          background-color: #275c63;
+          border-radius: 30px;
+          background-clip: padding-box;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: #60c8d6;
+          border-radius: 30px;
+        }
+      }
+
+      @media (max-width: 410px) {
+        max-width: 290px;
+      }
+
+      @media (max-width: 375px) {
+        max-width: 290px;
+      }
+
+      @media (max-width: 359px) {
+        max-width: 250px;
+      }
+      li {
+        a {
+          display: block;
+          background-repeat: no-repeat;
+          background-position: center;
+          background-color: transparent;
+          width: 72px;
+          height: 72px;
+          border: 0;
+          border-radius: 50%;
+          margin: 30px 0px;
+
+          @media (max-width: 1560px) {
+            width: 45px;
+            height: 45px;
+          }
+
+          @media (max-width: 1279px) {
+            margin: 0px 10px;
+          }
+
+          &:hover,
+          &:focus {
+            border: 1px solid $bgcolor0;
+          }
+
+          &.active,
+          &:active {
+            background-color: $bgcolor0;
+            box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.2);
+
+            @media (max-width: 599px) {
+              box-shadow: 0px 10px 10px rgba(0, 0, 0, 0);
+            }
+          }
+        }
+
+        .aside-item-btn1 {
+          background-image: url(../../../images/aside-btn1.svg);
+          background-size: 35px;
+          border: 1px solid transparent;
+
+          @media (max-width: 1560px) {
+            background-size: 25px;
+          }
+        }
+
+        .aside-item-btn1.active {
+          background-image: url(../../../images/aside-btn1-active.svg);
+        }
+
+        .aside-item-btn2 {
+          background-image: url(../../../images/aside-btn2.svg);
+          background-size: 33px;
+        }
+
+        .aside-item-btn2.active {
+          background-image: url(../../../images/aside-btn2-active.svg);
+        }
+
+        .aside-item-btn3 {
+          background-image: url(../../../images/aside-btn3.svg);
+          background-size: 33px;
+        }
+
+        .aside-item-btn3.active {
+          background-image: url(../../../images/aside-btn3-active.svg);
+        }
+
+        .aside-item-btn4 {
+          background-image: url(../../../images/aside-btn4.svg);
+          background-size: 33px;
+        }
+
+        .aside-item-btn4.active {
+          background-image: url(../../../images/aside-btn4-active.svg);
+        }
+
+        .aside-item-btn5 {
+          background-image: url(../../../images/aside-btn5.svg);
+          background-size: 46px;
+          @media (max-width: 1560px) {
+            background-size: 33px;
+          }
+        }
+
+        .aside-item-btn5.active {
+          background-image: url(../../../images/aside-btn5-active.svg);
+        }
+      }
+    }
+  }
+
+  .logo-wrap {
+    @media (max-width: 599px) {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    h1 {
+      background-color: $bgcolor0;
+      border-radius: 57px;
+      padding: 29px 0px;
+      width: 101px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      @media (max-width: 1560px) {
+        width: 58px;
+        padding: 15px 0px;
+      }
+
+      @media (max-width: 1279px) {
+        width: 70px;
+      }
+      img {
+        width: 64px;
+        margin: 0 auto;
+
+        @media (max-width: 1560px) {
+          width: 46px;
+        }
+      }
+    }
+  }
+}

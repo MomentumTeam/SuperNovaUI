@@ -1,0 +1,187 @@
+$bgcolor0: #ffffff;
+$textColor0: #201961;
+
+$textColor1: #ffffff;
+
+$linkColor0: #2979f4;
+
+@import "local/general/buttons.scss";
+@import "local/general/form.scss";
+@import "local/components/search-row.scss";
+
+@mixin cleanList {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: "Heebo", sans-serif;
+}
+
+html {
+    font-family: "Heebo", sans-serif;
+    line-height: 1.15;
+    direction: rtl;
+}
+
+body {
+    font-family: "Heebo", sans-serif;
+    margin: 0;
+    padding: 0;
+    color: $textColor0;
+    font-weight: 300;
+    height: auto;
+    text-align: right;
+    background-color: $bgcolor0;
+    padding: 0px 15px;
+
+    @media (max-width: 599px) {
+        padding: 0px 10px;
+    }
+    &.hm-bg {
+        background-image: url("../images/hp-bg.png");
+        background-repeat: no-repeat;
+        background-position: top;
+        background-size: cover;
+        background-color: transparent;
+        width: 100%;
+    }
+}
+
+:focus {
+    outline: 0px solid #ffffff;
+}
+
+a {
+    text-decoration: none;
+    color: $linkColor0;
+}
+
+a,
+button,
+input,
+select,
+textarea {
+    transition: all 0.3s ease;
+}
+
+button {
+    cursor: pointer;
+    font-family: "Heebo", sans-serif;
+    &:focus {
+        outline: 0px solid #000;
+    }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin: 0;
+    padding: 0;
+    color: $textColor0;
+}
+
+h2 {
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 700;
+}
+
+h3 {
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 700;
+    color: #a7abbd;
+}
+
+strong,
+b {
+    font-weight: 500;
+}
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+img {
+    vertical-align: middle;
+    width: auto;
+}
+
+.display-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &.display-flex-center {
+        justify-content: center;
+    }
+
+    &.display-flex-end {
+        justify-content: flex-end;
+    }
+
+    &.display-flex-start {
+        justify-content: flex-start;
+    }
+}
+
+.for-screnReader {
+    border: 0;
+    clip: rect(1px, 1px, 1px, 1px);
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute !important;
+    width: 1px;
+    word-wrap: normal !important;
+}
+
+main {
+    .main-wrap {
+        max-width: 1750px;
+        margin: 60px auto;
+        box-shadow: 0px 30px 20px rgba(0, 0, 0, 0.1);
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 74px;
+        padding: 36px 20px 36px 0px;
+        @media (max-width: 1630px) {
+            padding: 36px 15px 36px 0px;
+        }
+
+        @media (max-width: 1440px) {
+            padding: 25px 15px 25px 0px;
+            margin: 20px auto;
+        }
+
+        @media (max-width: 1279px) {
+            padding: 25px 15px 65px 15px;
+        }
+
+        @media (max-width: 599px) {
+            padding: 25px 10px 65px 10px;
+        }
+
+        .main-inner-wrap {
+            align-items: stretch;
+
+            @media (max-width: 1279px) {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    }
+}

@@ -1,0 +1,75 @@
+.chart-wrap {
+  padding-top: 80px;
+  direction: ltr;
+}
+
+@media (max-width: 700px) {
+  .chart-wrap {
+    padding-top: 60px;
+    max-width: 650px;
+    overflow-x: scroll;
+    scrollbar-color: #cee8e8 #67c8c9;
+    scrollbar-width: thin;
+    margin: 0 auto;
+  }
+  .chart-wrap::-webkit-scrollbar-track {
+    background-color: #cee8e8;
+    border-radius: 30px;
+  }
+  .chart-wrap::-webkit-scrollbar {
+    height: 5px;
+    background-color: #cee8e8;
+    border-radius: 30px;
+    background-clip: padding-box;
+  }
+  .chart-wrap::-webkit-scrollbar-thumb {
+    background: #67c8c9;
+    border-radius: 30px;
+  }
+}
+
+.chart-wrap .p-organizationchart .p-organizationchart-node-content {
+  direction: rtl;
+  padding: 15px 15px;
+  border-radius: 20px;
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.15);
+  min-width: 102px;
+  max-width: 130px;
+  color: #201961;
+  border: 1px solid #ffffff;
+}
+
+.chart-wrap .p-organizationchart .p-organizationchart-node-content.style2 {
+  background-color: #f5ded1;
+  border: 1px solid #f6d5c2;
+}
+
+.chart-wrap .p-organizationchart .p-organizationchart-node-content .p-node-toggler {
+  background: transparent linear-gradient(180deg, #feb557 0%, #f68340 100%) 0% 0% no-repeat padding-box;
+}
+
+.chart-wrap .p-organizationchart .p-organizationchart-node-content .p-node-toggler .p-node-toggler-icon {
+  color: #ffffff;
+}
+
+.chart-wrap .p-organizationchart .p-organizationchart-node-content .p-node-toggler .pi-chevron-down:before {
+  content: "\e902";
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.chart-wrap .p-organizationchart .p-organizationchart-node-content .p-node-toggler:hover, .chart-wrap .p-organizationchart .p-organizationchart-node-content .p-node-toggler:focus {
+  background: transparent linear-gradient(180deg, #f68340 0%, #feb557 100%) 0% 0% no-repeat padding-box;
+}
+
+.chart-wrap .p-organizationchart .p-organizationchart-line-top {
+  border-top: 1px dashed #929495;
+}
+
+.chart-wrap .p-organizationchart .p-organizationchart-line-left {
+  border-right: 1px dashed #929495;
+}
+
+.chart-wrap .p-organizationchart .p-organizationchart-line-down {
+  border-right: 1px dashed #929495;
+}

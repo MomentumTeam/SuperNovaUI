@@ -1,0 +1,198 @@
+$bgcolor0: #ffffff;
+$textColor0: #201961;
+
+$textColor1: #ffffff;
+
+$linkColor0: #2979f4;
+
+.btn-underline {
+    border: 0;
+    font-size: 14px;
+    line-height: 18px;
+    text-decoration: underline;
+    background-color: transparent;
+    color: $textColor0;
+    &:hover,
+    &:focus {
+        text-decoration: none;
+    }
+}
+
+.btn-green-gradient {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent linear-gradient(180deg, #3bbb9e 0%, #00aabf 100%) 0% 0% no-repeat padding-box;
+    box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 34px;
+    border: 0;
+    font-size: 14px;
+    line-height: 18px;
+    color: $textColor1;
+    min-width: 112px;
+    min-height: 40px;
+    &:hover,
+    &:focus {
+        background: transparent linear-gradient(180deg, #00aabf 0%, #3bbb9e 100%) 0% 0% no-repeat padding-box;
+    }
+}
+
+.btn-orange-gradient {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent linear-gradient(180deg, #feb557 0%, #f68340 100%) 0% 0% no-repeat padding-box;
+    box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 34px;
+    border: 0;
+    font-size: 14px;
+    line-height: 18px;
+    color: $textColor1;
+    min-width: 112px;
+    min-height: 40px;
+    &:hover,
+    &:focus {
+        background: transparent linear-gradient(180deg, #f68340 0%, #feb557 100%) 0% 0% no-repeat padding-box;
+    }
+}
+
+.btn {
+    display: block;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 10px;
+    &:hover,
+    &:focus {
+        box-shadow: 0 0 0 0.2rem #a6d5fa;
+    }
+}
+
+.btn-change-view-chart {
+    background-image: url(../images/buttons/change-view-chart.svg);
+    background-size: 44px;
+    width: 60px;
+    background-position: bottom;
+    border-radius: 0px;
+    &:hover,
+    &:focus {
+        background-image: url(../images/buttons/change-view-chart-blue.svg);
+        box-shadow: 0;
+        border-radius: 10px;
+    }
+}
+
+.btn-humburger {
+    background-image: url(../images/buttons/hamburger.svg);
+    background-size: 40px;
+    margin-right: 10px;
+    background-position: bottom;
+}
+
+.moreBtnwrap {
+    .p-button.p-component.more-btn {
+        background: inherit;
+        background-image: url(../images/buttons/more-btn.svg);
+        background-size: 5px;
+        margin-right: 10px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-color: transparent;
+        border: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        .p-button-label {
+            display: none;
+        }
+
+        &:hover,
+        &:focus {
+            background: inherit;
+            background-color: transparent;
+            background-image: url(../images/buttons/more-btn-hover.svg);
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 5px;
+            width: 40px;
+            height: 40px;
+        }
+    }
+}
+.p-menu.p-menu-overlay {
+    border-radius: 10px;
+}
+.p-menu-list.p-reset {
+    .p-submenu-header {
+        display: none;
+    }
+    .p-menuitem {
+        border-bottom: 1px solid #d7d7d7;
+        &:last-child {
+            border-bottom: 0;
+        }
+        .p-menuitem-link {
+            .p-menuitem-text {
+                color: $textColor0;
+            }
+            &:hover {
+                background: transparent;
+                .p-menuitem-text {
+                    color: #00aac0;
+                }
+            }
+        }
+    }
+}
+
+.btn-notification {
+    background-image: url(../images/buttons/notification.png);
+    background-size: 33px;
+}
+
+.btn-search-wite {
+    background-image: url(../images/buttons/search-wite.svg);
+    background-size: 19px;
+}
+
+.btn-print {
+    background-image: url(../images/buttons/print.svg);
+    background-size: 27px;
+}
+
+.btn-export {
+    background-image: url(../images/buttons/export.svg);
+    background-size: 26px;
+}
+
+.btn-filter {
+    background-image: url(../images/buttons/filter.svg);
+    background-size: 17px;
+}
+
+.logout-btn-wrap {
+    background: transparent linear-gradient(180deg, #feb557 0%, #f68340 100%) 0% 0% no-repeat padding-box;
+    width: 50px;
+    height: 49px;
+    border-radius: 50%;
+    transition: all 0.3s ease-in;
+
+    .logout-btn {
+        background-image: url(../images/logout.svg);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 23px;
+        background-color: transparent;
+        width: 50px;
+        height: 49px;
+        border: 0;
+    }
+
+    &:hover,
+    &:focus {
+        background: transparent linear-gradient(180deg, #f68340 0%, #feb557 100%) 0% 0% no-repeat padding-box;
+    }
+}

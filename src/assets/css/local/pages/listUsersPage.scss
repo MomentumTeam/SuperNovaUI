@@ -1,0 +1,93 @@
+$bgcolor0: #ffffff;
+$textColor0: #201961;
+
+$textColor1: #ffffff;
+
+$linkColor0: #2979f4;
+.main-inner-item2-table {
+    margin-left: 20px;
+    @media (max-width: 1630px) {
+        margin-left: 15px;
+    }
+
+    @media (max-width: 1279px) {
+        margin-left: 0px;
+    }
+    .main-inner-item2-content {
+        .content-unit-wrap {
+            padding-top: 0px;
+            .content-unit-inner {
+                .table-wrapper {
+                    margin-top: 20px;
+                    padding: 33px 12px 20px 12px;
+                    background-color: $bgcolor0;
+                    border-radius: 30px;
+
+                    @media (max-width: 1023px) {
+                        padding: 20px 0px 20px 0px;
+                    }
+
+                    @media (max-width: 599px) {
+                        padding: 0px;
+                    }
+                    .tableStyle {
+                        .p-datatable {
+                            .p-datatable-tbody {
+                                tr {
+                                    @media (max-width: 1023px) {
+                                        position: relative;
+                                    }
+
+                                    td {
+                                        &:last-child {
+                                            @media (max-width: 1023px) {
+                                                position: absolute;
+                                                top: 2px;
+                                                right: 30px;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .btns-wrap {
+                    padding-top: 20px;
+                    position: relative;
+                    @media (max-width: 599px) {
+                        flex-direction: column;
+                        padding-top: 60px;
+                    }
+
+                    .inner-flex {
+                        &:last-child {
+                            @media (max-width: 599px) {
+                                padding-top: 15px;
+                            }
+                        }
+
+                        .btn,
+                        .btn-underline {
+                            margin-left: 10px;
+
+                            &.btn {
+                                @media (max-width: 599px) {
+                                    position: absolute;
+                                    top: 10px;
+                                    left: -10px;
+                                }
+
+                                &.btn-export {
+                                    @media (max-width: 599px) {
+                                        left: 40px;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,325 @@
+$bgcolor0: #ffffff;
+$textColor0: #201961;
+
+$textColor1: #ffffff;
+
+$linkColor0: #2979f4;
+.main-inner-item2 {
+    flex: 1;
+    border-radius: 57px;
+    background-color: $bgcolor0;
+    margin: 0px 32px 0px 0px;
+
+    @media (max-width: 1630px) {
+        margin: 0px 15px 0px 0px;
+    }
+
+    @media (max-width: 1279px) {
+        width: 100%;
+        margin: 15px 0px 0px 0px;
+    }
+    .main-inner-item2-content {
+        padding: 27px 24px;
+        @media (max-width: 1630px) {
+            padding: 15px 15px;
+        }
+
+        @media (max-width: 599px) {
+            padding: 15px 10px;
+        }
+        .title-wrap {
+            align-items: flex-end;
+            padding-bottom: 20px;
+
+            @media (max-width: 1630px) {
+                padding-top: 10px;
+            }
+
+            @media (max-width: 599px) {
+                flex-direction: column-reverse;
+                align-items: flex-start;
+            }
+
+            .h-wrap {
+                @media (max-width: 599px) {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+                h3 {
+                    padding-right: 20px;
+                    @media (max-width: 599px) {
+                        padding-right: 0px;
+                    }
+                }
+            }
+
+            .btns-wrap {
+                @media (max-width: 599px) {
+                    width: 100%;
+                }
+            }
+        }
+
+        .personal-information-wrap {
+            .personal-information-inner {
+                background-color: rgba(227, 222, 247, 0.3);
+                border-radius: 30px;
+                padding: 30px 38px 20px 38px;
+                position: relative;
+                @media (max-width: 1630px) {
+                    padding: 20px 15px 20px 15px;
+                }
+
+                @media (max-width: 1440px) {
+                    padding: 40px 15px 20px 15px;
+                }
+
+                @media (max-width: 1366px) {
+                    align-items: flex-start;
+                }
+
+                @media (max-width: 750px) {
+                    flex-direction: column;
+                }
+                .personal-information-item {
+                    .userpic-wrap {
+                        padding-left: 10px;
+                        img {
+                            width: 118px;
+                            @media (max-width: 1366px) {
+                                width: 90px;
+                            }
+                        }
+                    }
+                    dl {
+                        margin: 0;
+                        padding: 0;
+                        padding-left: 10px;
+                        dt {
+                            margin: 0;
+                            padding: 0;
+                            font-weight: normal;
+                            font-size: 16px;
+                            line-height: 20px;
+                            font-weight: 700;
+                            padding-bottom: 15px;
+                            @media (max-width: 1560px) {
+                                font-size: 14px;
+                                line-height: 18px;
+                                padding-bottom: 10px;
+                            }
+
+                            @media (max-width: 750px) {
+                                padding-bottom: 5px;
+                            }
+                        }
+
+                        dd {
+                            margin: 0;
+                            padding: 0;
+                            font-size: 16px;
+                            line-height: 20px;
+                            font-weight: 400;
+                            padding-bottom: 15px;
+                            &.no-wrap {
+                                white-space: nowrap;
+                            }
+
+                            @media (max-width: 1560px) {
+                                font-size: 14px;
+                                line-height: 18px;
+                                padding-bottom: 10px;
+                            }
+
+                            @media (max-width: 750px) {
+                                padding-bottom: 5px;
+                            }
+
+                            a {
+                                text-decoration: underline;
+                                &:hover,
+                                &:focus {
+                                    text-decoration: none;
+                                }
+                            }
+                        }
+                    }
+
+                    .btn-full-details {
+                        @media (max-width: 1440px) {
+                            position: absolute;
+                            top: 15px;
+                            left: 15px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .content-unit-wrap {
+            padding-top: 20px;
+            .content-unit-inner {
+                background-color: #f7f7f7;
+                border-radius: 30px;
+                padding: 15px 32px 20px 32px;
+                min-height: 640px;
+                position: relative;
+                @media (max-width: 1630px) {
+                    padding: 15px 15px 20px 15px;
+                }
+
+                @media (max-width: 599px) {
+                    padding: 15px 0px 20px 0px;
+                    background-color: transparent;
+                }
+
+                .search-row-wrap-flex {
+                    @media (max-width: 1023px) {
+                        flex-direction: column;
+                    }
+
+                    .search-row-inner-flex {
+                        @media (max-width: 900px) {
+                            flex-direction: column;
+                            padding-top: 45px;
+                        }
+                        .btn-change-view-chart {
+                            margin-left: 20px;
+                            @media (max-width: 900px) {
+                                position: absolute;
+                                top: 27px;
+                                left: 23px;
+                                margin-left: 0px;
+                            }
+
+                            @media (max-width: 700px) {
+                                top: -8px;
+                                left: 28px;
+                            }
+                        }
+
+                        .btn-underline {
+                            white-space: nowrap;
+                            margin-right: 6%;
+
+                            @media (max-width: 1279px) {
+                                margin-right: 0;
+                            }
+
+                            @media (max-width: 900px) {
+                                position: absolute;
+                                top: 42px;
+                                left: 81px;
+                            }
+
+                            @media (max-width: 700px) {
+                                top: 5px;
+                                left: 86px;
+                            }
+                        }
+
+                        .search-item {
+                            .btn-search-wite {
+                                @media (max-width: 700px) {
+                                    position: absolute;
+                                    top: -2px;
+                                    left: -9px;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .btn-add-user {
+                    background-color: $bgcolor0;
+                    height: 74px;
+                    padding: 10px 20px;
+                    border: 0;
+                    border-radius: 14px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-right: 20px;
+
+                    @media (max-width: 1023px) {
+                        margin-top: 15px;
+                        width: 100%;
+                        margin-right: 0px;
+                    }
+
+                    @media (max-width: 599px) {
+                        border: 1px solid #d7d7d7;
+                    }
+
+                    .decoration {
+                        width: 50px;
+                        height: 49px;
+                        border-radius: 50%;
+                        transition: all 0.3s ease;
+                        background: transparent linear-gradient(180deg, #3cb699 0%, #01a9be 100%) 0% 0% no-repeat
+                            padding-box;
+
+                        .img {
+                            width: 50px;
+                            height: 49px;
+                            background-repeat: no-repeat;
+                            background-position: center;
+                            background-image: url(../../../images/actions-icon4.svg);
+                            background-size: 23px;
+                        }
+                    }
+
+                    p {
+                        font-size: 14px;
+                        line-height: 18px;
+                        font-weight: 900;
+                        padding-right: 10px;
+                    }
+
+                    &:hover,
+                    &:focus {
+                        .decoration {
+                            background: transparent linear-gradient(180deg, #01a9be 0%, #3cb699 100%) 0% 0% no-repeat
+                                padding-box;
+                        }
+                    }
+                }
+
+                &.content-unit-inner-before {
+                    position: relative;
+
+                    .decor-animation {
+                        position: absolute;
+                        bottom: -113px;
+                        left: -180px;
+                        svg {
+                            width: 250px;
+                        }
+
+                        @media (max-width: 1130px) {
+                            display: none;
+                        }
+                    }
+                    &::before {
+                        content: "";
+                        background-image: url("../../../images/decoration1.png");
+                        background-repeat: no-repeat;
+                        background-position: center;
+                        background-size: 250px;
+                        background-color: transparent;
+                        width: 250px;
+                        height: 226px;
+                        position: absolute;
+                        bottom: -3px;
+                        left: -30px;
+                        z-index: 1;
+
+                        @media (max-width: 1130px) {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
