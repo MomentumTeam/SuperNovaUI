@@ -25,10 +25,8 @@ class App extends React.Component {
 
   render() {
     return (
-
       <Router>
         <div className="display-flex main-inner-wrap">
-
           <Menu />
           <Switch>
             <Route path="/" component={Dashboard} exact />
@@ -36,7 +34,6 @@ class App extends React.Component {
           </Switch>
         </div>
       </Router >
-
     )
   };
 
