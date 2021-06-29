@@ -1,5 +1,5 @@
 # 🎉 SuperNova UI
-SuperNova UI show avaliable vendors that a shop can order supply from and also let you as a vendor to manage a shop online.
+SuperNova UI show [?].
 writing with react, primereact, Mobx.
 
 # 📚 Folders and modules
