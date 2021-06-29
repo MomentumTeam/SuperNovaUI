@@ -2,7 +2,6 @@ import React from 'react';
 import { getProductsSmall } from '../service/ProductService';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import MoreItem from '../components/more-item';
 
@@ -124,9 +123,6 @@ class Table extends React.Component {
 
 
     render() {
-
-
-
         return (
             <div className="table-wrapper">
                 <div className="tableStyle" >

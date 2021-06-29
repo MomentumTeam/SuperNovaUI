@@ -8,10 +8,6 @@ export default class CountriesStore {
         makeAutoObservable(this)
     }
 
-    bla() {
-        alert('hi');
-    }
-
     async loadContries() {
         this.countries = await getCountries();
     }

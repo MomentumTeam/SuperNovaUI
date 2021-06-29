@@ -1,14 +1,21 @@
 import { observer } from 'mobx-react'
+import { toJS } from 'mobx'
 import { useState, useEffect } from 'react';
-import Search from '../../components/search';
+import SearchBox from '../../components/SearchBox';
 import Chart from '../../components/chart';
 import Aside from '../../components/aside';
 import userpic from '../../assets/images/userpic.png';
 import '../../assets/css/local/pages/dashboard.min.css';
 import UserProfileCard from './UserProfileCard';
+import { useStores } from '../../hooks/use-stores';
 
 const Dashboard = observer(() => {
     const [user, setUser] = useState(null);
+    const { countryStore } = useStores();
+
+    useEffect(() => {
+        countryStore.loadContries();
+    }, []);
 
     useEffect(() => {
         setUser({
@@ -37,7 +44,7 @@ const Dashboard = observer(() => {
                         <div className="content-unit-inner content-unit-inner-before">
                             <div className="search-row">
                                 <div className="search-row-inner">
-                                    <Search />
+                                    <SearchBox data={toJS(countryStore.countries)} />
                                 </div>
                             </div>
                             <div className="chart-wrap">

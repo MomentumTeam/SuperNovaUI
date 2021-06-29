@@ -2,14 +2,12 @@ import React from 'react';
 import logo from '../assets/images/logo.png';
 import '../assets/css/local/components/menu.min.css';
 import {
-    BrowserRouter as Router,
     Link
 } from "react-router-dom";
 
 class Menu extends React.Component {
-
     componentDidMount() {
-        if (window.location.pathname == '/listUsersPage')
+        if (window.location.pathname === '/listUsersPage')
             this.setState({ pageClicked: 'menu5' })
 
     }

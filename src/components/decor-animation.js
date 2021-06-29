@@ -1,30 +1,21 @@
-import React from 'react';
 import Lottie from 'react-lottie';
 import animationData from "../assets/images/lottie/cactus.json";
 
-class DecorAnimation extends React.Component {
+const DecorAnimation = () => {
+    const defaultOptions = {
+        loop: true,
+        autoplay: true,
+        animationData: animationData,
+        rendererSettings: {
+            preserveAspectRatio: "xMidYMid slice"
+        }
+    };
 
-
-
-    render() {
-
-        const defaultOptions = {
-            loop: true,
-            autoplay: true,
-            animationData: animationData,
-            rendererSettings: {
-                preserveAspectRatio: "xMidYMid slice"
-            }
-        };
-        return (
-            <div className="decor-animation">
-                <Lottie options={defaultOptions} />
-            </div>
-        );
-
-    }
+    return (
+        <div className="decor-animation">
+            <Lottie options={defaultOptions} />
+        </div>
+    );
 }
 
-
-
-export default DecorAnimation
+export default DecorAnimation;
