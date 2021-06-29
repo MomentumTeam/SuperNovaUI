@@ -23,7 +23,7 @@ const Entities = observer(() => {
                     <div className="content-unit-wrap">
                         <div className="content-unit-inner">
                             <div className="display-flex search-row-wrap-flex">
-                                <SearchEntity />
+                                <SearchEntity data={productStore.products}/>
                                 <AddEntity />
                             </div>
                             <Table data={productStore.products}/>

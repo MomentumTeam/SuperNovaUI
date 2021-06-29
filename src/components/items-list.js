@@ -34,4 +34,4 @@ const ItemsList = ({ list }) =>(
     </table>
 );
 
-export default ItemsList
+export default ItemsList;

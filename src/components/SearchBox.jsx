@@ -14,9 +14,9 @@ const SearchBox = ({data}) => {
                 filteredResults = [...data];
             }
             else {
-                filteredResults = data.filter((country) => {
-                    return country.name.toLowerCase().startsWith(event.query.toLowerCase());
-                });
+                // filteredResults = data.filter((country) => {
+                //     return country.name.toLowerCase().startsWith(event.query.toLowerCase());
+                // });
             }
 
             setFilteredResults(filteredResults);

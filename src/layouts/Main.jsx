@@ -1,9 +1,9 @@
-import Menu from '../components/menu';
+import SideMenu from '../components/SideMenu';
 
 const MainLayout = ({children}) => {
     return (
         <>
-            <Menu />
+            <SideMenu />
             <>
                 {children}
             </>
