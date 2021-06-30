@@ -5,8 +5,6 @@ import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { InputTextarea } from 'primereact/inputtextarea';
 class ModalForm extends React.Component {
-
-
     constructor() {
         super();
         this.state = {
@@ -23,8 +21,6 @@ class ModalForm extends React.Component {
 
         this.onStateChange = this.onStateChange.bind(this);
     }
-
-
 
     onStateChange(e) {
         this.setState({ selectedState: e.value });
@@ -95,6 +91,4 @@ class ModalForm extends React.Component {
     }
 }
 
-
-
-export default ModalForm
+export default ModalForm;

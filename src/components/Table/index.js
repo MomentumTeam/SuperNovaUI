@@ -1,23 +1,18 @@
 import React from 'react';
-import ProductService from '../service/ProductService';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
-import MoreItem from '../components/more-item';
+import MoreItem from './TableActions';
+import { getProductsSmall } from '../../service/ProductService';
 
-import '../assets/css/local/general/table.min.css';
+import '../../assets/css/local/general/table.min.css';
 class Table extends React.Component {
-
-
     constructor(props) {
         super(props);
         this.state = {
             selectedCustomers: null,
             products: []
         };
-
-        this.productService = new ProductService();
 
         //body cells
         this.firstNameBodyTemplate = this.firstNameBodyTemplate.bind(this);
@@ -122,20 +117,17 @@ class Table extends React.Component {
 
 
     componentDidMount() {
-        this.productService.getProductsSmall().then(data => this.setState({ products: data }));
+        getProductsSmall().then(data => this.setState({ products: data }));
     }
 
 
 
     render() {
-
-
-
         return (
             <div className="table-wrapper">
                 <div className="tableStyle" >
                     <div className="card">
-                        <DataTable value={this.state.products} scrollable
+                        <DataTable value={this.props.data} scrollable
                             selection={this.state.selectedCustomers} onSelectionChange={e => this.setState({ selectedCustomers: e.value })}>
                             <Column selectionMode="multiple" style={{ width: '3em' }} />
 
@@ -157,9 +149,4 @@ class Table extends React.Component {
     }
 }
 
-
-
-
-
-
-export default Table
+export default Table;

@@ -1,18 +1,38 @@
 
 import axios from 'axios';
 
-export default class ProductService {
+export const getProductsSmall = async () => {
+    const response = await axios({
+      method: 'get',
+      url: `data/products-small.json`,
+      headers: {
+        'content-type': 'application/json',
+      },
+    })
 
-    getProductsSmall() {
-        return axios.get('data/products-small.json').then(res => res.data.data);
-    }
-
-    getProducts() {
-        return axios.get('data/products.json').then(res => res.data.data);
-    }
-
-    getProductsWithOrdersSmall() {
-        return axios.get('data/products-orders-small.json').then(res => res.data.data);
-    }
+    return response.data;
 }
 
+export const getProducts = async () => {
+    const response = await axios({
+      method: 'get',
+      url: `data/products-small.json`,
+      headers: {
+        'content-type': 'application/json',
+      },
+    })
+
+    return response.data;
+}
+
+export const getProductsWithOrdersSmall = async () => {
+    const response = await axios({
+      method: 'get',
+      url: `data/products-orders-small.json`,
+      headers: {
+        'content-type': 'application/json',
+      },
+    })
+
+    return response.data;
+}
