@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { observer } from 'mobx-react';
 import '../../assets/css/local/pages/listUsersPage.min.css';
-import Table from '../../components/table';
+import Table from '../../components/Table';
 import { useStores } from '../../hooks/use-stores';
 import Header from './Header';
 import SearchEntity from './SearchEntity';

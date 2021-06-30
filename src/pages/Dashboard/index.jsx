@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react'
 import { toJS } from 'mobx'
 import { useState, useEffect } from 'react';
+import { getCookie } from 'react-use-cookie';
 import SearchBox from '../../components/SearchBox';
 import HierarchyTree from '../../components/HierarchyTree';
 import SideToolbar from '../../components/SideToolbar';
@@ -8,6 +9,8 @@ import userpic from '../../assets/images/userpic.png';
 import '../../assets/css/local/pages/dashboard.min.css';
 import UserProfileCard from './UserProfileCard';
 import { useStores } from '../../hooks/use-stores';
+import axios from 'axios';
+
 
 const Dashboard = observer(() => {
     const [user, setUser] = useState(null);
@@ -72,6 +75,17 @@ const Dashboard = observer(() => {
             picture: userpic
         });
     }, []);
+
+    useEffect(() => {
+        (async () => {
+            const gamba = await axios.get('http://localhost:2000/api/requests/ui', {
+                headers: {
+                    'authorization': getCookie('ppp')
+                },
+            });
+            alert(gamba.data);
+        })();
+    }, [])
 
     return (
         <>

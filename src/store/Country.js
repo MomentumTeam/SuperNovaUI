@@ -1,11 +1,14 @@
-import { makeAutoObservable } from 'mobx';
+import { action, makeAutoObservable, observable } from 'mobx';
 import { getCountries } from '../service/CountryService';
 
 export default class CountriesStore {
     countries = [];
 
     constructor() {
-        makeAutoObservable(this)
+        makeAutoObservable(this, {
+            countries: observable,
+            loadContries: action
+        })
     }
 
     async loadContries() {

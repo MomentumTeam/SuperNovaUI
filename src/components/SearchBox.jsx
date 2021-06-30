@@ -2,7 +2,7 @@ import { AutoComplete } from 'primereact/autocomplete';
 import { useState } from 'react';
 
 const SearchBox = ({data}) => {
-    const [filteredResults, setFilteredResults] = useState(data);
+    const [filteredResults, setFilteredResults] = useState([]);
     const [selectedCountry1, setSelectedCountry1] = useState(data);
     const [role, setRole] = useState(data);
     const [selectedResults, setSelectedResults] = useState(data);

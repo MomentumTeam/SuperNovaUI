@@ -1,11 +1,11 @@
 import React from 'react';
-import { getProductsSmall } from '../service/ProductService';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { classNames } from 'primereact/utils';
-import MoreItem from '../components/more-item';
+import MoreItem from './TableActions';
+import { getProductsSmall } from '../../service/ProductService';
 
-import '../assets/css/local/general/table.min.css';
+import '../../assets/css/local/general/table.min.css';
 class Table extends React.Component {
     constructor(props) {
         super(props);

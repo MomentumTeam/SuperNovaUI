@@ -1,29 +1,23 @@
-const ItemsList = ({ list }) =>(
+import { STATUSES } from '../constants';
+
+const List = ({ list }) =>(
     <table className="tableStyle">
-        <thead>
-            <tr>
-                <th>תאריך</th>
-                <th>תיאור</th>
-                <th>סטטוס</th>
-            </tr>
-        </thead>
         <tbody>
             {list.map(({ id, date, description, status }) => (
                 <tr key={id}>
-                    <td data-th="תאריך" >
+                    <td>
                         <div className="td-inner">
                             {date}
                         </div>
                     </td>
-                    <td data-th="תיאור" >
+                    <td>
                         <div className="td-inner">
                             {description}
                         </div>
                     </td>
-                    <td data-th="סטטוס">
+                    <td>
                         <div className="td-inner td-inner-btn">
-                            <button className={'btn-status ' + (status === 'נשלחה' ? 'btn-sent' : ' btn-rejected')} type="button"
-                                title={status}>
+                            <button className={'btn-status ' + (status === STATUSES.SENT ? 'btn-sent' : ' btn-rejected')} type="button" title={status}>
                                 {status}
                             </button>
                         </div>
@@ -34,4 +28,4 @@ const ItemsList = ({ list }) =>(
     </table>
 );
 
-export default ItemsList;
+export default List;

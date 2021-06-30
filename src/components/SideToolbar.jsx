@@ -1,5 +1,5 @@
-import Action from './action';
-import ItemsList from './items-list';
+import Toolbar from './Toolbar';
+import List from './List';
 
 import '../assets/css/local/components/aside.min.css';
 
@@ -16,7 +16,7 @@ const SideToolbar = ({ lastRequests, lastMessages }) => (
             </div>
             <div className="actions-inner-wrap">
                 <h2>פעולות</h2>
-                <Action />
+                <Toolbar />
             </div>
             <div className="requests-inner-wrap">
                 <div className="display-flex title-wrap">
@@ -27,7 +27,7 @@ const SideToolbar = ({ lastRequests, lastMessages }) => (
                 </div>
                 <div className="table-item-wrap">
                     <div className="table-item-inner">
-                        <ItemsList list={lastRequests}/>
+                        <List list={lastRequests}/>
                     </div>
                 </div>
             </div>
@@ -40,7 +40,7 @@ const SideToolbar = ({ lastRequests, lastMessages }) => (
                 </div>
                 <div className="table-item-wrap">
                     <div className="table-item-inner">
-                        <ItemsList list={lastMessages}/>
+                        <List list={lastMessages}/>
                     </div>
                 </div>
             </div>
