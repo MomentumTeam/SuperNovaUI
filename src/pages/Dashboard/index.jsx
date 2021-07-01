@@ -71,7 +71,7 @@ const Dashboard = observer(() => {
             address: 'עליזה בגין 8 ראשלצ',
             picture: userpic
         });
-    }, []);
+    }, [countryStore]);
 
     return (
         <>

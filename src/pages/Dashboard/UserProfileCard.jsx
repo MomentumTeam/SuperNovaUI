@@ -20,7 +20,7 @@ const UserProfileCard = ({user}) => (
                 <dl>
                     <dt>תפקיד</dt>
                     <dd>
-                        <a href="#" className="" title="צלם מומחה1">
+                        <a href="#role" className="" title="צלם מומחה1">
                             {user?.role}
                         </a>
                     </dd>
