@@ -13,7 +13,7 @@ const Entities = observer(() => {
 
     useEffect(() => {
         productStore.loadProducts();
-    }, []);
+    }, [productStore]);
 
     return (
         <>

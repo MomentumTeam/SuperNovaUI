@@ -21,7 +21,7 @@ const SideToolbar = ({ lastRequests, lastMessages }) => (
             <div className="requests-inner-wrap">
                 <div className="display-flex title-wrap">
                     <h2>בקשות שלי</h2>
-                    <a href="#" title="הכל - נפתך בחלון חדש">
+                    <a href="#all" title="הכל - נפתך בחלון חדש">
                         הכל
                     </a>
                 </div>
@@ -34,7 +34,7 @@ const SideToolbar = ({ lastRequests, lastMessages }) => (
             <div className="messages-inner-wrap">
                 <div className="display-flex title-wrap">
                     <h2>הודעות</h2>
-                    <a href="#" title="הכל - נפתך בחלון חדש">
+                    <a href="#all" title="הכל - נפתך בחלון חדש">
                         הכל
                     </a>
                 </div>
