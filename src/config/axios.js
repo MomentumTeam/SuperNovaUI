@@ -3,12 +3,13 @@ const axiosApiInstance = axios.create();
 
 // Add a request interceptor
 axiosApiInstance.interceptors.request.use(function (config) {
-
+    console.log(localStorage.getItem('token'))
+    
     // Do something before request is sent
     return {
         ...config,
         headers: {
-            'authorization': getCookie('ppp')
+            'authorization': localStorage.getItem('token')
         },
     };
 }, function (error) {

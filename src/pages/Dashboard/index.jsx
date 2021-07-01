@@ -11,13 +11,17 @@ import { useStores } from '../../hooks/use-stores';
 
 const Dashboard = observer(() => {
     const [user, setUser] = useState(null);
+    const [kartoffelUser, setKartoffelUser] = useState(null);
+
     const [hierarchy, setHierarchy] = useState([{}]);
     const [requestList, setRequestList] = useState([]);
     const [messagesList, setMessagesList] = useState([]);
-    const { countryStore } = useStores();
+    const { userStore,countryStore } = useStores();
+    console.log('userStore', userStore)
 
-    useEffect(() => {
+    useEffect(async() => {
         countryStore.loadContries();
+        await userStore.setUser();
         setRequestList([
             { id: "1", date: "28/05/21", description: "בקשה ליצירת תפקיד חדש", status: "נשלחה" },
             { id: "2", date: "28/05/21", description: "בקשה לשינוי היררכיה", status: "נשלחה" },
@@ -71,7 +75,9 @@ const Dashboard = observer(() => {
             address: 'עליזה בגין 8 ראשלצ',
             picture: userpic
         });
-    }, []);
+        setKartoffelUser(toJS(userStore.user));
+
+    }, [userStore,countryStore]);
 
     return (
         <>
@@ -82,8 +88,9 @@ const Dashboard = observer(() => {
                             פרטים אישיים
                         </h2>
                     </div>
-                    <UserProfileCard user={user}/>
-                    <div className="content-unit-wrap">
+                    <UserProfileCard user={kartoffelUser} />
+                    <div className="content-unit-wrap">                    <div>{toJS(useStores.user)}</div>
+
                         <div className="content-unit-inner content-unit-inner-before">
                             <div className="search-row">
                                 <div className="search-row-inner">

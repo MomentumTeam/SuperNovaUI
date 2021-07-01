@@ -1,10 +1,10 @@
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-import ProtectedRoute from './ProtectedRoute';
 import MainLayout from '../layouts/Main';
 import Dashboard from '../pages/Dashboard';
 import ListUsersPage from '../pages/Entities';
 import NotFound from '../pages/NotFound';
+import ProtectedRoute from './ProtectedRoute';
 import { useQuery } from '../hooks/use-query';
 
 const RouteMainLayoutWrapper = ({

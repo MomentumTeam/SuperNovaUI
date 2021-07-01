@@ -9,18 +9,18 @@ const UserProfileCard = ({user}) => (
             <div className="personal-information-item">
                 <dl>
                     <dt>שם</dt>
-                    <dd>{user?.name}</dd>
+                    <dd>{user?.firstName}</dd>
                 </dl>
                 <dl>
                     <dt>מ"א</dt>
-                    <dd>{user?.privateNumber}</dd>
+                    <dd>{user}</dd>
                 </dl>
             </div>
             <div className="personal-information-item">
                 <dl>
                     <dt>תפקיד</dt>
                     <dd>
-                        <a href="#" className="" title="צלם מומחה1">
+                        <a href="#role" className="" title="צלם מומחה1">
                             {user?.role}
                         </a>
                     </dd>
