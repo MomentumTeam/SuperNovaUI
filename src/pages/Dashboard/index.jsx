@@ -1,7 +1,6 @@
 import { observer } from 'mobx-react'
 import { toJS } from 'mobx'
 import { useState, useEffect } from 'react';
-import { getCookie } from 'react-use-cookie';
 import SearchBox from '../../components/SearchBox';
 import HierarchyTree from '../../components/HierarchyTree';
 import SideToolbar from '../../components/SideToolbar';
@@ -9,8 +8,7 @@ import userpic from '../../assets/images/userpic.png';
 import '../../assets/css/local/pages/dashboard.min.css';
 import UserProfileCard from './UserProfileCard';
 import { useStores } from '../../hooks/use-stores';
-import axios from 'axios';
-
+import { useQuery } from '../../hooks/use-query';
 
 const Dashboard = observer(() => {
     const [user, setUser] = useState(null);
@@ -74,18 +72,13 @@ const Dashboard = observer(() => {
             address: 'עליזה בגין 8 ראשלצ',
             picture: userpic
         });
-    }, []);
 
-    useEffect(() => {
-        (async () => {
-            const gamba = await axios.get('http://localhost:2000/api/requests/ui', {
-                headers: {
-                    'authorization': getCookie('ppp')
-                },
-            });
-            alert(gamba.data);
-        })();
-    }, [])
+        const token = useQuery('token');
+
+        if(token) {
+          localStorage.setItem('token', useQuery('token'));
+        }
+    }, []);
 
     return (
         <>
