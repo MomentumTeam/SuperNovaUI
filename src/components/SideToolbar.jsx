@@ -3,7 +3,7 @@ import List from './List';
 
 import '../assets/css/local/components/aside.min.css';
 
-const SideToolbar = ({ lastRequests, lastMessages }) => (
+const SideToolbar = ({ recentApplies, lastMessages }) => (
     <div className="main-inner-item main-inner-item3">
         <div className="main-inner-item3-content">
             <div className="display-flex display-flex-end btns-wrap">
@@ -27,7 +27,7 @@ const SideToolbar = ({ lastRequests, lastMessages }) => (
                 </div>
                 <div className="table-item-wrap">
                     <div className="table-item-inner">
-                        <List list={lastRequests}/>
+                        <List list={recentApplies}/>
                     </div>
                 </div>
             </div>
@@ -40,7 +40,7 @@ const SideToolbar = ({ lastRequests, lastMessages }) => (
                 </div>
                 <div className="table-item-wrap">
                     <div className="table-item-inner">
-                        <List list={lastMessages}/>
+                        {/* <List list={lastMessages}/> */}
                     </div>
                 </div>
             </div>

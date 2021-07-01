@@ -12,18 +12,12 @@ import { useStores } from '../../hooks/use-stores';
 const Dashboard = observer(() => {
     const [user, setUser] = useState(null);
     const [hierarchy, setHierarchy] = useState([{}]);
-    const [requestList, setRequestList] = useState([]);
     const [messagesList, setMessagesList] = useState([]);
-    const { countryStore } = useStores();
+    const { countryStore, appliesStore } = useStores();
 
     useEffect(() => {
         countryStore.loadContries();
-        setRequestList([
-            { id: "1", date: "28/05/21", description: "בקשה ליצירת תפקיד חדש", status: "נשלחה" },
-            { id: "2", date: "28/05/21", description: "בקשה לשינוי היררכיה", status: "נשלחה" },
-            { id: "3", date: "28/05/21", description: "בקשה למעבר תפקיד", status: "נדחתה" },
-            { id: "4", date: "28/05/21", description: "btn-actions", status: "נדחתה" },
-        ]);
+        appliesStore.loadApplies();
         setMessagesList([
             { id: "1", date: "28/05/21", description: "בקשה ליצירת תפקיד חדש", status: "נשלחה" },
             { id: "2", date: "28/05/21", description: "בקשה לשינוי היררכיה", status: "נשלחה" },
@@ -71,7 +65,8 @@ const Dashboard = observer(() => {
             address: 'עליזה בגין 8 ראשלצ',
             picture: userpic
         });
-    }, [countryStore]);
+
+    }, []);
 
     return (
         <>
@@ -97,7 +92,7 @@ const Dashboard = observer(() => {
                     </div>
                 </div>
             </div>
-            <SideToolbar lastRequests={requestList} lastMessages={messagesList}/>
+            <SideToolbar recentApplies={toJS(appliesStore.applies)} lastMessages={messagesList}/>
         </>
     )
 });

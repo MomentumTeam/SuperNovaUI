@@ -3,16 +3,16 @@ import { STATUSES } from '../constants';
 const List = ({ list }) =>(
     <table className="tableStyle">
         <tbody>
-            {list.map(({ id, date, description, status }) => (
+            {list.map(({ id, createdAt, type, status }) => (
                 <tr key={id}>
                     <td>
                         <div className="td-inner">
-                            {date}
+                            {createdAt}
                         </div>
                     </td>
                     <td>
                         <div className="td-inner">
-                            {description}
+                            {type}
                         </div>
                     </td>
                     <td>

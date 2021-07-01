@@ -11,34 +11,11 @@ const UserProfileCard = ({user}) => (
                     <dt>שם</dt>
                     <dd>{user?.name}</dd>
                 </dl>
+            </div>
+            <div className="personal-information-item">
                 <dl>
                     <dt>מ"א</dt>
                     <dd>{user?.privateNumber}</dd>
-                </dl>
-            </div>
-            <div className="personal-information-item">
-                <dl>
-                    <dt>תפקיד</dt>
-                    <dd>
-                        <a href="#role" className="" title="צלם מומחה1">
-                            {user?.role}
-                        </a>
-                    </dd>
-                </dl>
-                <dl>
-                    <dt>היררכיה</dt>
-                    <dd>אמן <span>/</span> ספיר <span>/</span> צוותצילום <span>/</span> תכניתנית3
-                    </dd>
-                </dl>
-            </div>
-            <div className="personal-information-item">
-                <dl>
-                    <dt>טלפון</dt>
-                    <dd className="no-wrap">{user?.phone}</dd>
-                </dl>
-                <dl>
-                    <dt>תק"ש</dt>
-                    <dd>{user?.endOfService}</dd>
                 </dl>
             </div>
             <div className="personal-information-item">
@@ -50,9 +27,22 @@ const UserProfileCard = ({user}) => (
                         </a>
                     </dd>
                 </dl>
+            </div>
+            <div className="personal-information-item">
                 <dl>
-                    <dt>כתובת</dt>
-                    <dd>{user?.address}</dd>
+                    <dt>תפקיד</dt>
+                    <dd>
+                        <a href="#role" className="" title="צלם מומחה1">
+                            {user?.role}
+                        </a>
+                    </dd>
+                </dl>
+            </div>
+            <div className="personal-information-item">
+                <dl>
+                    <dt>היררכיה</dt>
+                    <dd>אמן <span>/</span> ספיר <span>/</span> צוותצילום <span>/</span> תכניתנית3
+                    </dd>
                 </dl>
             </div>
             <div className="personal-information-item">

@@ -1,5 +1,6 @@
 import { action, makeAutoObservable, observable } from 'mobx';
 import { getCountries } from '../service/CountryService';
+
 export default class CountriesStore {
     countries = [];
 
