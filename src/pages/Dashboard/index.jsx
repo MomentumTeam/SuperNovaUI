@@ -11,7 +11,6 @@ import UserProfileCard from './UserProfileCard';
 import { useStores } from '../../hooks/use-stores';
 import axios from 'axios';
 
-
 const Dashboard = observer(() => {
     const [user, setUser] = useState(null);
     const [hierarchy, setHierarchy] = useState([{}]);
