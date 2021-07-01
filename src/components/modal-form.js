@@ -44,7 +44,7 @@ class ModalForm extends React.Component {
                 <div className="p-fluid-item-flex p-fluid-item">
                     <div className="p-field">
                         <label htmlFor="2022"><span className="required-field">*</span> היררכיה </label>
-                        <InputText id="2022" type="text" required placeholder="Select" placeholder="היררכיה" />
+                        <InputText id="2022" type="text" required placeholder="היררכיה" />
                     </div>
                     <Button className="pi pi-plus" type="button" label="Submit" />
                 </div>

@@ -22,9 +22,9 @@ const AppRouter = () => {
   return (
     <BrowserRouter>
         <Switch>
-            <RouteMainLayoutWrapper path='/' component={Dashboard} exact />
-            <RouteMainLayoutWrapper path='/listUsersPage' component={ListUsersPage} exact />
-            <Route component={NotFound}/>
+          <RouteMainLayoutWrapper path='/' component={Dashboard} exact />
+          <RouteMainLayoutWrapper path='/listUsersPage' component={ListUsersPage} exact />
+          <Route component={NotFound}/>
         </Switch>
     </BrowserRouter>
   );

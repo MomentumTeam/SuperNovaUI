@@ -21,7 +21,7 @@ const Dashboard = observer(() => {
 
   useEffect(() => {
     countryStore.loadContries();
-    // treeStore.loadTree();
+    treeStore.loadTree();
 
     setRequestList([
       {
@@ -147,11 +147,7 @@ const Dashboard = observer(() => {
                 </div>
               </div>
               <div className="chart-wrap">
-                {TreeStore.treeRecieved ? (
-                  <HierarchyTree data={TreeStore.tree} />
-                ) : (
-                  ""
-                )}
+                <HierarchyTree data={hierarchy} />
               </div>
             </div>
           </div>
