@@ -66,7 +66,7 @@ const Dashboard = observer(() => {
             picture: userpic
         });
 
-    }, []);
+    }, [appliesStore, countryStore]);
 
     return (
         <>
@@ -97,4 +97,4 @@ const Dashboard = observer(() => {
     )
 });
 
-export default Dashboard
+export default Dashboard;
