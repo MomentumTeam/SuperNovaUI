@@ -1,6 +1,5 @@
 
 import { Route } from 'react-router-dom';
-import axiosApiInstance from '../config/axios';
 import { useStores } from '../hooks/use-stores';
 
 
@@ -14,11 +13,10 @@ const ProtectedRoute = ({
     const { userStore } = useStores();
     if(!token) {
         window.location.href = "http://localhost:2000/api/auth/login";
-        return;
+        return <div/>;
     }
-    else {
-        await userStore.setUser(userID);
-    }
+    
+    userStore.setUser(userID);
 
     return (
         <Route {...rest} render={(props) => 

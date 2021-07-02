@@ -12,7 +12,7 @@ export default class UserStore {
     }
 
     async setUser(userID) {
-        console.log('setUserrrrrrrrrrrrrrrrrrrrr')
-        this.user = await getUser(userID);
+        const userInfo = await getUser(userID);
+        this.user = userInfo;
     }
 }

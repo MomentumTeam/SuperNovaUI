@@ -25,9 +25,9 @@ axiosApiInstance.interceptors.response.use(function (response) {
 }, function (error) {
     const originalRequest = error.config;
 
-    if (error.response.status === 403 && !originalRequest.retry) {
+    if (error?.response?.status === 403 && !originalRequest.retry) {
         originalRequest.retry = true;
-        window.location.href = "http://localhost:9000/auth/login";
+        window.location.href = "http://localhost:2000/api/auth/login";
         return axiosApiInstance(originalRequest);
     }
 
