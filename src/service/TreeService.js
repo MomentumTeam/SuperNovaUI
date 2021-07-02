@@ -25,7 +25,5 @@ export const getTree = async (rootId) => {
   });
 
   const ogTree = [transformNode(response.data)];
-  console.log("ogTree");
-  console.log(ogTree);
   return ogTree;
 };

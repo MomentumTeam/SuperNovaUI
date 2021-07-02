@@ -1,7 +1,6 @@
 import { observer } from "mobx-react";
 import { toJS } from "mobx";
 import { useState, useEffect } from "react";
-import { getCookie } from "react-use-cookie";
 import SearchBox from "../../components/SearchBox";
 import HierarchyTree from "../../components/HierarchyTree";
 import SideToolbar from "../../components/SideToolbar";
@@ -9,12 +8,9 @@ import userpic from "../../assets/images/userpic.png";
 import "../../assets/css/local/pages/dashboard.min.css";
 import UserProfileCard from "./UserProfileCard";
 import { useStores } from "../../hooks/use-stores";
-import axios from "axios";
-import TreeStore from "../../store/Tree";
 
 const Dashboard = observer(() => {
   const [user, setUser] = useState(null);
-  const [hierarchy, setHierarchy] = useState([{}]);
   const [requestList, setRequestList] = useState([]);
   const [messagesList, setMessagesList] = useState([]);
   const { countryStore, treeStore } = useStores();
@@ -75,39 +71,6 @@ const Dashboard = observer(() => {
         status: "נדחתה",
       },
     ]);
-    setHierarchy([
-      {
-        label: "ספיר",
-        expanded: true,
-        children: [
-          {
-            label: "יחידה 1",
-            className: "style2",
-            expanded: true,
-            children: [
-              {
-                label: "יחידה 2",
-              },
-              {
-                label: "יחידה 2",
-              },
-            ],
-          },
-          {
-            label: "8200",
-            expanded: true,
-            children: [
-              {
-                label: "יחידה 2",
-              },
-              {
-                label: "יחידה 2",
-              },
-            ],
-          },
-        ],
-      },
-    ]);
     setUser({
       name: "לירן עזרא",
       privateNumber: "45808006",
@@ -118,17 +81,6 @@ const Dashboard = observer(() => {
       address: "עליזה בגין 8 ראשלצ",
       picture: userpic,
     });
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      const gamba = await axios.get("http://localhost:2000/api/requests/ui", {
-        headers: {
-          authorization: getCookie("ppp"),
-        },
-      });
-      alert(gamba.data);
-    })();
   }, []);
 
   return (
@@ -147,7 +99,7 @@ const Dashboard = observer(() => {
                 </div>
               </div>
               <div className="chart-wrap">
-                <HierarchyTree data={hierarchy} />
+                <HierarchyTree data={toJS(treeStore.tree)} />
               </div>
             </div>
           </div>

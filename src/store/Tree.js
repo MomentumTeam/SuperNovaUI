@@ -4,7 +4,7 @@ import { getTree } from "../service/TreeService";
 export default class TreeStore {
   tree = [
     {
-      label: "ספיר",
+      label: "ספר",
       expanded: true,
       children: [
         {
@@ -44,6 +44,7 @@ export default class TreeStore {
   }
 
   async loadTree() {
-    this.tree = await getTree();
+    const tree = await getTree();
+    this.tree = tree;
   }
 }
