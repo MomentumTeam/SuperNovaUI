@@ -1,15 +1,9 @@
 
-import axios from 'axios';
+import axiosApiInstance from '../config/axios';
 import { apiBaseUrl } from '../constants/api';
 
-export const getUserApplies = async (userId = '41224d776a326fb40f000002', rangeStart = 1, rangeEnd = 2) => {
-    const response = await axios({
-      method: 'get',
-      url: `${apiBaseUrl}/api/requests/getRequestsSubmittedBy/${userId}?from=${rangeStart}&to=${rangeEnd}`,
-      headers: {
-        'content-type': 'application/json',
-      },
-    })
-
-    return response.data;
+export const getUserApplies = async (userId, rangeStart = 1, rangeEnd = 2) => {
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/getRequestsSubmittedBy/${userId}?from=${rangeStart}&to=${rangeEnd}`);
+  
+  return response.data;
 }

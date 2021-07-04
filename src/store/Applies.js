@@ -11,8 +11,8 @@ export default class AppliesStore {
         })
     }
 
-    async loadApplies() {
-        const newApplies = await getUserApplies();
+    async loadApplies(userId) {
+        const newApplies = await getUserApplies(userId);
         this.applies = newApplies.requests;
     }
 }

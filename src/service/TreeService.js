@@ -1,16 +1,10 @@
-import axios from 'axios';
+import axiosApiInstance from '../config/axios';
 import { apiBaseUrl } from '../constants/index';
 import { transformNode } from '../utils/hierarchy';
 
 export const getTree = async (rootId) => {
-  const response = await axios({
-    method: 'get',
-    url: `${apiBaseUrl}/api/kartoffel/getOGTree/${rootId}`,
-    headers: {
-      'content-type': 'application/json',
-    },
-  });
-
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/getOGTree/${rootId}`);
+  
   const ogTree = [transformNode(response.data)];
   return ogTree;
 };
