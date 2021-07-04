@@ -1,4 +1,3 @@
-
 import './App.css';
 import './assets/css/main.min.css';
 
@@ -11,11 +10,11 @@ import AppRouter from './routes';
 const App = () => {
   return (
     <StoreProvider>
-      <div className="display-flex main-inner-wrap">
-        <AppRouter/>
+      <div className='display-flex main-inner-wrap'>
+        <AppRouter />
       </div>
     </StoreProvider>
-  )
-}
+  );
+};
 
 export default App;

@@ -8,10 +8,7 @@ import ProtectedRoute from './ProtectedRoute';
 import { useQuery } from '../hooks/use-query';
 import { useStores } from '../hooks/use-stores';
 
-const RouteMainLayoutWrapper = ({
-  component: Component,
-  ...rest
-}) => {
+const RouteMainLayoutWrapper = ({ component: Component, ...rest }) => {
   return (
     <ProtectedRoute>
       <Route {...rest} render={(props) =>
@@ -21,7 +18,7 @@ const RouteMainLayoutWrapper = ({
       } />
     </ProtectedRoute>
   );
-}
+};
 
 const AppRouter = () => {
   const { token } = useQuery();
@@ -36,13 +33,17 @@ const AppRouter = () => {
   
   return (
     <BrowserRouter>
-        <Switch>
-          <RouteMainLayoutWrapper path='/' component={Dashboard} exact />
-          <RouteMainLayoutWrapper path='/listUsersPage' component={ListUsersPage} exact />
-          <Route component={NotFound}/>
-        </Switch>
+      <Switch>
+        <RouteMainLayoutWrapper path='/' component={Dashboard} exact />
+        <RouteMainLayoutWrapper
+          path='/listUsersPage'
+          component={ListUsersPage}
+          exact
+        />
+        <Route component={NotFound} />
+      </Switch>
     </BrowserRouter>
   );
-}
+};
 
 export default AppRouter;
