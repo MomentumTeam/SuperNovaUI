@@ -1,6 +1,5 @@
 
 import { Route } from 'react-router-dom';
-import { useStores } from '../hooks/use-stores';
 
 
 const ProtectedRoute = ({
@@ -8,15 +7,11 @@ const ProtectedRoute = ({
     ...rest
   }) => {
     const token = localStorage.getItem('token');
-    const userID = "507f1f77bcf86cd799439011";
-
-    const { userStore } = useStores();
+  
     if(!token) {
         window.location.href = "http://localhost:2000/api/auth/login";
         return <div/>;
     }
-    
-    userStore.setUser(userID);
 
     return (
         <Route {...rest} render={(props) => 

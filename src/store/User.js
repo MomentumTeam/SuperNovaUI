@@ -2,7 +2,7 @@ import { action, makeAutoObservable, observable } from 'mobx';
 import { getUser } from '../service/UserService';
 
 export default class UserStore {
-    user = {};
+    user = null;
 
     constructor() {
         makeAutoObservable(this, {

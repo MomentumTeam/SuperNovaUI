@@ -6,6 +6,7 @@ import ListUsersPage from '../pages/Entities';
 import NotFound from '../pages/NotFound';
 import ProtectedRoute from './ProtectedRoute';
 import { useQuery } from '../hooks/use-query';
+import { useStores } from '../hooks/use-stores';
 
 const RouteMainLayoutWrapper = ({
   component: Component,
@@ -24,11 +25,15 @@ const RouteMainLayoutWrapper = ({
 
 const AppRouter = () => {
   const { token } = useQuery();
+  const { id } = useQuery();
+  const { userStore } = useStores();
 
-    if(token) {
-      localStorage.setItem('token', token);
+  if (!userStore.user && token) {
+    localStorage.setItem('token', token);
+    localStorage.setItem('id', id);
+    userStore.setUser(id);
     }
-
+  
   return (
     <BrowserRouter>
         <Switch>

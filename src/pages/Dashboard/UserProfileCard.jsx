@@ -13,7 +13,7 @@ const UserProfileCard = ({user}) => (
                 </dl>
                 <dl>
                     <dt>מ"א</dt>
-                    <dd>{user.personalNumber}</dd>
+                    <dd>{user?.personalNumber}</dd>
                 </dl>
             </div>
             <div className="personal-information-item">

@@ -17,7 +17,6 @@ const Dashboard = observer(() => {
 
     useEffect(() => {
         countryStore.loadContries();
-        userStore.setUser();
         setRequestList([
             { id: "1", date: "28/05/21", description: "בקשה ליצירת תפקיד חדש", status: "נשלחה" },
             { id: "2", date: "28/05/21", description: "בקשה לשינוי היררכיה", status: "נשלחה" },
