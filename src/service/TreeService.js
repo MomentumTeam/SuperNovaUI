@@ -1,18 +1,13 @@
 import axios from "axios";
 
 const transformNode = (node) => {
-  if (!node.children || node.children.length === 0) {
-    return {
-      label: node.name,
-      expanded: false,
-    };
-  } else {
-    return {
-      label: node.name,
-      children: node.children.map((child) => transformNode(child)),
-      expanded: false,
-    };
-  }
+  return {
+    label: node.name,
+    children: !node.children
+      ? []
+      : node.children.map((child) => transformNode(child)),
+    expanded: false,
+  };
 };
 
 export const getTree = async (rootId) => {
