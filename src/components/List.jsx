@@ -1,4 +1,4 @@
-import { STATUSES } from '../constants';
+import { STATUSES, TYPES } from '../constants';
 import datesUtil from '../utils/dates';
 
 const List = ({ list }) => {
@@ -14,7 +14,7 @@ const List = ({ list }) => {
                     </td>
                     <td>
                         <div className="td-inner">
-                            {type}
+                            {TYPES[type]}
                         </div>
                     </td>
                     <td>
