@@ -1,5 +1,3 @@
-/** @format */
-
 import Toolbar from './Toolbar';
 import List from './List';
 

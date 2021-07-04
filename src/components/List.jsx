@@ -1,5 +1,3 @@
-/** @format */
-
 import { STATUSES } from '../constants';
 
 const List = ({ list }) => (

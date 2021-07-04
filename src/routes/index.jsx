@@ -1,5 +1,3 @@
-/** @format */
-
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import MainLayout from '../layouts/Main';

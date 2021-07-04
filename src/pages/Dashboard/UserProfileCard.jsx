@@ -1,5 +1,3 @@
-/** @format */
-
 const UserProfileCard = ({ user }) => (
   <div className='personal-information-wrap'>
     <div className='display-flex personal-information-inner'>

@@ -1,5 +1,3 @@
-/** @format */
-
 import { AutoComplete } from 'primereact/autocomplete';
 import { useState } from 'react';
 

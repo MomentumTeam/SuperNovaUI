@@ -1,5 +1,3 @@
-/** @format */
-
 import { useState, useEffect } from 'react';
 import logo from '../assets/images/logo.png';
 import '../assets/css/local/components/menu.min.css';

@@ -1,5 +1,3 @@
-/** @format */
-
 import { createContext } from 'react';
 import CountryStore from './Country';
 import ProductStore from './Product';

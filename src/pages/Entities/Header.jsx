@@ -1,5 +1,3 @@
-/** @format */
-
 const Header = () => (
   <div className='display-flex title-wrap'>
     <div className='display-flex h-wrap'>

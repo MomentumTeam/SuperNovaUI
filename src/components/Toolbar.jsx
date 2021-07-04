@@ -1,5 +1,3 @@
-/** @format */
-
 import { useState, useEffect } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';

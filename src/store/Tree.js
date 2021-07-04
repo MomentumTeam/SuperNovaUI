@@ -1,5 +1,3 @@
-/** @format */
-
 import { action, makeAutoObservable, observable } from 'mobx';
 import { getTree } from '../service/TreeService';
 

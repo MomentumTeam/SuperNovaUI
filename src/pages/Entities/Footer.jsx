@@ -1,5 +1,3 @@
-/** @format */
-
 import { Dropdown } from 'primereact/dropdown';
 import { useState } from 'react';
 

@@ -1,5 +1,3 @@
-/** @format */
-
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 import { useState, useEffect } from 'react';

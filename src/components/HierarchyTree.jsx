@@ -1,5 +1,3 @@
-/** @format */
-
 import { OrganizationChart } from 'primereact/organizationchart';
 import '../assets/css/local/components/chart.min.css';
 

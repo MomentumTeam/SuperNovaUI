@@ -1,5 +1,3 @@
-/** @format */
-
 import './App.css';
 import './assets/css/main.min.css';
 

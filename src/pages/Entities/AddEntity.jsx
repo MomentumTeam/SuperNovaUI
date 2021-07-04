@@ -1,5 +1,3 @@
-/** @format */
-
 const AddEntity = () => (
   <button className='btn-add-user' title='הוספת משתמש' type='button'>
     <div className='decoration'>

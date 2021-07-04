@@ -1,5 +1,3 @@
-/** @format */
-
 import { useEffect } from 'react';
 import { observer } from 'mobx-react';
 import '../../assets/css/local/pages/listUsersPage.min.css';

@@ -1,5 +1,3 @@
-/** @format */
-
 import SideMenu from '../components/SideMenu';
 
 const MainLayout = ({ children }) => {
