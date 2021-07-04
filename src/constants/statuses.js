@@ -1,4 +1,8 @@
 export const STATUSES = {
-    SENT: 'נשלחה',
-    REJECTED: 'נדחתה',
+    SUBMITTED: 'הוגש',
+    DECLINED: 'סורב',
+    UNRECOGNIZED: 'לא ידוע',
+    IN_PROGRESS: 'בתהליך',
+    DONE: 'הסתיים',
+    FAILED: 'נכשל',
 };

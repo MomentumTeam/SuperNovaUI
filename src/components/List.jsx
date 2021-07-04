@@ -1,13 +1,15 @@
 import { STATUSES } from '../constants';
+import datesUtil from '../utils/dates';
 
-const List = ({ list }) =>(
+const List = ({ list }) => {
+    return (
     <table className="tableStyle">
         <tbody>
             {list.map(({ id, createdAt, type, status }) => (
                 <tr key={id}>
                     <td>
                         <div className="td-inner">
-                            {createdAt}
+                            {datesUtil.formattedDate(Number(createdAt))}
                         </div>
                     </td>
                     <td>
@@ -18,7 +20,7 @@ const List = ({ list }) =>(
                     <td>
                         <div className="td-inner td-inner-btn">
                             <button className={'btn-status ' + (status === STATUSES.SENT ? 'btn-sent' : ' btn-rejected')} type="button" title={status}>
-                                {status}
+                                {STATUSES[status]}
                             </button>
                         </div>
                     </td>
@@ -26,6 +28,6 @@ const List = ({ list }) =>(
             ))}
         </tbody>
     </table>
-);
+)};
 
 export default List;
