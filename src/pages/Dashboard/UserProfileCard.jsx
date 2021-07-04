@@ -13,7 +13,7 @@ const UserProfileCard = ({user}) => (
                 </dl>
                 <dl>
                     <dt>מ"א</dt>
-                    <dd>{user}</dd>
+                    <dd>{user.personalNumber}</dd>
                 </dl>
             </div>
             <div className="personal-information-item">
@@ -21,14 +21,13 @@ const UserProfileCard = ({user}) => (
                     <dt>תפקיד</dt>
                     <dd>
                         <a href="#role" className="" title="צלם מומחה1">
-                            {user?.role}
+                            {user?.jobTitle}
                         </a>
                     </dd>
                 </dl>
                 <dl>
                     <dt>היררכיה</dt>
-                    <dd>אמן <span>/</span> ספיר <span>/</span> צוותצילום <span>/</span> תכניתנית3
-                    </dd>
+                    <dd> {user?.hierarchy}</dd>
                 </dl>
             </div>
             <div className="personal-information-item">
@@ -38,7 +37,7 @@ const UserProfileCard = ({user}) => (
                 </dl>
                 <dl>
                     <dt>תק"ש</dt>
-                    <dd>{user?.endOfService}</dd>
+                    <dd>{user?.dischargeDay}</dd>
                 </dl>
             </div>
             <div className="personal-information-item">

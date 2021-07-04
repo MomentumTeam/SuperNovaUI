@@ -10,13 +10,10 @@ import UserProfileCard from './UserProfileCard';
 import { useStores } from '../../hooks/use-stores';
 
 const Dashboard = observer(() => {
-    const [user, setUser] = useState(null);
-    const [kartoffelUser, setKartoffelUser] = useState(null);
-
     const [hierarchy, setHierarchy] = useState([{}]);
     const [requestList, setRequestList] = useState([]);
     const [messagesList, setMessagesList] = useState([]);
-    const { userStore,countryStore } = useStores();
+    const { userStore, countryStore } = useStores();
 
     useEffect(() => {
         countryStore.loadContries();
@@ -64,17 +61,6 @@ const Dashboard = observer(() => {
                 }
             ]
         }]);
-        setUser({
-            name: 'לירן עזרא',
-            privateNumber: '45808006',
-            role: 'צלם מומחה1',
-            phone: '054-4769588',
-            endOfService: '12/12/22',
-            mail: 'iron@dynaamic.com',
-            address: 'עליזה בגין 8 ראשלצ',
-            picture: userpic
-        });
-
     }, [userStore,countryStore]);
 
     return (
@@ -86,7 +72,7 @@ const Dashboard = observer(() => {
                             פרטים אישיים
                         </h2>
                     </div>
-                    <UserProfileCard user={kartoffelUser} />
+                    <UserProfileCard user={toJS(userStore.user)} />
                     <div className="content-unit-wrap">
                         <div className="content-unit-inner content-unit-inner-before">
                             <div className="search-row">
