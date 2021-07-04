@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import SearchBox from '../../components/SearchBox';
 import HierarchyTree from '../../components/HierarchyTree';
 import SideToolbar from '../../components/SideToolbar';
-import userpic from '../../assets/images/userpic.png';
 import '../../assets/css/local/pages/dashboard.min.css';
 import UserProfileCard from './UserProfileCard';
 import { useStores } from '../../hooks/use-stores';
@@ -15,7 +14,6 @@ const Dashboard = observer(() => {
     
     useEffect(() => {
         countryStore.loadContries();
-        appliesStore.loadApplies();
         treeStore.loadTree('111');
 
         setMessagesList([
@@ -24,7 +22,13 @@ const Dashboard = observer(() => {
             { id: "3", date: "28/05/21", description: "בקשה למעבר תפקיד", status: "נדחתה" },
             { id: "4", date: "28/05/21", description: "btn-actions", status: "נדחתה" },
         ])
-    }, [userStore,countryStore,appliesStore,treeStore]);
+    }, [countryStore, treeStore]);
+
+    useEffect(() => {
+        if(userStore.user) {
+            appliesStore.loadApplies(userStore.user.id);
+        }
+    }, [userStore.user, appliesStore])
 
     return (
         <>

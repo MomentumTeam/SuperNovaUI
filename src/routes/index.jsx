@@ -21,15 +21,14 @@ const RouteMainLayoutWrapper = ({ component: Component, ...rest }) => {
 };
 
 const AppRouter = () => {
-  const { token } = useQuery();
-  const { id } = useQuery();
+  const { token, id } = useQuery();
   const { userStore } = useStores();
 
   if (!userStore.user && token) {
     localStorage.setItem('token', token);
     localStorage.setItem('id', id);
     userStore.fetchUserInfo(id);
-    }
+  }
   
   return (
     <BrowserRouter>

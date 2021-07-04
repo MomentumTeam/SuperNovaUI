@@ -11,35 +11,13 @@ const UserProfileCard = ({user}) => (
                   <dt>שם</dt>
                   <dd>{user?.firstName}</dd>
               </dl>
-              <dl>
-                  <dt>מ"א</dt>
-                  <dd>{user?.personalNumber}</dd>
-              </dl>
           </div>
           <div className="personal-information-item">
-              <dl>
-                  <dt>תפקיד</dt>
-                  <dd>
-                      <a href="#role" className="" title="צלם מומחה1">
-                          {user?.jobTitle}
-                      </a>
-                  </dd>
-              </dl>
-              <dl>
-                  <dt>היררכיה</dt>
-                  <dd> {user?.hierarchy}</dd>
-              </dl>
-          </div>
-          <div className="personal-information-item">
-              <dl>
-                  <dt>טלפון</dt>
-                  <dd className="no-wrap">{user?.phone}</dd>
-              </dl>
-              <dl>
-                  <dt>תק"ש</dt>
-                  <dd>{user?.dischargeDay}</dd>
-              </dl>
-          </div>
+             <dl>
+                 <dt>מ"א</dt>
+                 <dd>{user?.personalNumber}</dd>
+             </dl>
+           </div>
           <div className="personal-information-item">
               <dl>
                   <dt>מייל</dt>
@@ -49,9 +27,21 @@ const UserProfileCard = ({user}) => (
                       </a>
                   </dd>
               </dl>
+            </div>
+          <div className="personal-information-item">
               <dl>
-                  <dt>כתובת</dt>
-                  <dd>{user?.address}</dd>
+                  <dt>תפקיד</dt>
+                  <dd>
+                      <a href="#role" className="" title="צלם מומחה1">
+                          {user?.jobTitle}
+                      </a>
+                  </dd>
+              </dl>
+        </div>
+          <div className="personal-information-item">
+              <dl>
+                  <dt>היררכיה</dt>
+                  <dd> {user?.hierarchy}</dd>
               </dl>
           </div>
           <div className="personal-information-item">
