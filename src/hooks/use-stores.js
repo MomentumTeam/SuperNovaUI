@@ -1,4 +1,6 @@
-import { useContext } from 'react'
-import { StoresContext } from '../store'
+/** @format */
+
+import { useContext } from 'react';
+import { StoresContext } from '../store';
 
 export const useStores = () => useContext(StoresContext);

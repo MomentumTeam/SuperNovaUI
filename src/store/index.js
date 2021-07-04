@@ -1,7 +1,9 @@
-import { createContext } from "react";
-import CountryStore from "./Country";
-import ProductStore from "./Product";
-import TreeStore from "./Tree";
+/** @format */
+
+import { createContext } from 'react';
+import CountryStore from './Country';
+import ProductStore from './Product';
+import TreeStore from './Tree';
 
 const stores = {
   countryStore: new CountryStore(),

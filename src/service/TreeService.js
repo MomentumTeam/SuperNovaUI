@@ -1,4 +1,7 @@
-import axios from "axios";
+/** @format */
+
+import axios from 'axios';
+import { apiBaseUrl } from '../constants/index';
 
 const transformNode = (node) => {
   return {
@@ -11,11 +14,12 @@ const transformNode = (node) => {
 };
 
 export const getTree = async (rootId) => {
+  console.log(`${apiBaseUrl}/api/kartoffel/getOGTree/${rootId}`);
   const response = await axios({
-    method: "get",
-    url: `http://localhost:2000/api/kartoffel/getOGTree/1111`,
+    method: 'get',
+    url: `${apiBaseUrl}/api/kartoffel/getOGTree/${rootId}`,
     headers: {
-      "content-type": "application/json",
+      'content-type': 'application/json',
     },
   });
 

@@ -1,38 +1,14 @@
-import { action, makeAutoObservable, observable } from "mobx";
-import { getTree } from "../service/TreeService";
+/** @format */
+
+import { action, makeAutoObservable, observable } from 'mobx';
+import { getTree } from '../service/TreeService';
 
 export default class TreeStore {
   tree = [
     {
-      label: "ספר",
-      expanded: true,
-      children: [
-        {
-          label: "יחידה 1",
-          className: "style2",
-          expanded: true,
-          children: [
-            {
-              label: "יחידה 2",
-            },
-            {
-              label: "יחידה 2",
-            },
-          ],
-        },
-        {
-          label: "8200",
-          expanded: true,
-          children: [
-            {
-              label: "יחידה 2",
-            },
-            {
-              label: "יחידה 2",
-            },
-          ],
-        },
-      ],
+      label: '',
+      expanded: false,
+      children: [],
     },
   ];
 
@@ -43,8 +19,8 @@ export default class TreeStore {
     });
   }
 
-  async loadTree() {
-    const tree = await getTree();
+  async loadTree(rootId) {
+    const tree = await getTree(rootId);
     this.tree = tree;
   }
 }
