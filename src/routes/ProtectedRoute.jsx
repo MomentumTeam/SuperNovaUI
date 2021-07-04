@@ -1,6 +1,5 @@
-
 import { Route } from 'react-router-dom';
-
+import { apiBaseUrl } from '../constants/api';
 
 const ProtectedRoute = ({
     component: Component,
@@ -9,7 +8,7 @@ const ProtectedRoute = ({
     const token = localStorage.getItem('token');
   
     if(!token) {
-        window.location.href = "http://localhost:2000/api/auth/login";
+        window.location.href = `${apiBaseUrl}/api/auth/login`;
         return <div/>;
     }
 

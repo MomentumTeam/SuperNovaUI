@@ -7,11 +7,11 @@ export default class UserStore {
     constructor() {
         makeAutoObservable(this, {
             user: observable,
-            setUser: action
+            fetchUserInfo: action
         })
     }
 
-    async setUser(userID) {
+    async fetchUserInfo(userID) {
         const userInfo = await getUser(userID);
         this.user = userInfo;
     }

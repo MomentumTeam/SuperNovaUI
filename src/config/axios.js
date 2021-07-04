@@ -1,15 +1,16 @@
 import axios from 'axios';
+import { apiBaseUrl } from '../constants/api';
+
 const axiosApiInstance = axios.create();
 
 // Add a request interceptor
 axiosApiInstance.interceptors.request.use(function (config) {
-    console.log(localStorage.getItem('token'))
     
     // Do something before request is sent
     return {
         ...config,
         headers: {
-            'authorization': localStorage.getItem('token')
+            'Authorization': localStorage.getItem('token')
         },
     };
 }, function (error) {
@@ -27,7 +28,7 @@ axiosApiInstance.interceptors.response.use(function (response) {
 
     if (error?.response?.status === 403 && !originalRequest.retry) {
         originalRequest.retry = true;
-        window.location.href = "http://localhost:2000/api/auth/login";
+        window.location.href = `${apiBaseUrl}/api/auth/login`;
         return axiosApiInstance(originalRequest);
     }
 

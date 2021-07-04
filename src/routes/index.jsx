@@ -31,7 +31,7 @@ const AppRouter = () => {
   if (!userStore.user && token) {
     localStorage.setItem('token', token);
     localStorage.setItem('id', id);
-    userStore.setUser(id);
+    userStore.fetchUserInfo(id);
     }
   
   return (
