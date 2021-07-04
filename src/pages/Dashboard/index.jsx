@@ -10,12 +10,9 @@ import UserProfileCard from './UserProfileCard';
 import { useStores } from '../../hooks/use-stores';
 
 const Dashboard = observer(() => {
-    const [hierarchy, setHierarchy] = useState([{}]);
     const [messagesList, setMessagesList] = useState([]);
-    const { userStore, countryStore } = useStores();
-    const [messagesList, setMessagesList] = useState([]);
-    const { appliesStore, treeStore } = useStores();
-
+    const { userStore, countryStore, appliesStore, treeStore } = useStores();
+    
     useEffect(() => {
         countryStore.loadContries();
         appliesStore.loadApplies();
@@ -27,38 +24,7 @@ const Dashboard = observer(() => {
             { id: "3", date: "28/05/21", description: "בקשה למעבר תפקיד", status: "נדחתה" },
             { id: "4", date: "28/05/21", description: "btn-actions", status: "נדחתה" },
         ])
-        setHierarchy([{
-            label: 'ספיר',
-            expanded: true,
-            children: [
-                {
-                    label: 'יחידה 1',
-                    className: 'style2',
-                    expanded: true,
-                    children: [
-                        {
-                            label: 'יחידה 2',
-                        },
-                        {
-                            label: 'יחידה 2',
-                        }
-                    ]
-                },
-                {
-                    label: '8200',
-                    expanded: true,
-                    children: [
-                        {
-                            label: 'יחידה 2',
-                        },
-                        {
-                            label: 'יחידה 2',
-                        }
-                    ]
-                }
-            ]
-        }]);
-    }, [userStore,countryStore]);
+    }, [userStore,countryStore,appliesStore,treeStore]);
 
     return (
         <>
@@ -70,26 +36,23 @@ const Dashboard = observer(() => {
                         </h2>
                     </div>
                     <UserProfileCard user={toJS(userStore.user)} />
-                    <div className="content-unit-wrap">
-                        <div className="content-unit-inner content-unit-inner-before">
-                            <div className="search-row">
-                                <div className="search-row-inner">
+                    <div className='content-unit-wrap'>
+                        <div className='content-unit-inner content-unit-inner-before'>
+                            <div className='search-row'>
+                                <div className='search-row-inner'>
                                     <SearchBox data={toJS(countryStore.countries)} />
                                 </div>
                             </div>
-                            <div className="chart-wrap">
-                                <HierarchyTree data={hierarchy} />
+                            <div className='chart-wrap'>
+                                <HierarchyTree data={toJS(treeStore.tree)} />
                             </div>
                         </div>
                     </div>
                 </div>
-              </div>
-              <div className='chart-wrap'>
-                <HierarchyTree data={toJS(treeStore.tree)} />
-              </div>
-      <SideToolbar recentApplies={toJS(appliesStore.applies)} lastMessages={messagesList}/>
-    </>
-  )
+            </div>
+            <SideToolbar recentApplies={toJS(appliesStore.applies)} lastMessages={messagesList} />
+        </>
+    )
 });
 
 export default Dashboard;
