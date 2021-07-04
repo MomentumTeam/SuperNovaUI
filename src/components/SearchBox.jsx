@@ -3,9 +3,9 @@ import { useState } from 'react';
 
 const SearchBox = ({ data }) => {
   const [filteredResults, setFilteredResults] = useState([]);
-  const [selectedCountry1, setSelectedCountry1] = useState(data);
-  const [role, setRole] = useState(data);
-  const [selectedResults, setSelectedResults] = useState(data);
+  const [selectedCountry1, setSelectedCountry1] = useState([]);
+  const [role, setRole] = useState('');
+  const [selectedResults, setSelectedResults] = useState([]);
 
   const search = (event) => {
     setTimeout(() => {
