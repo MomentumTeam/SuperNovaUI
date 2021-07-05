@@ -10,33 +10,52 @@ import UserProfileCard from './UserProfileCard';
 import { useStores } from '../../hooks/use-stores';
 
 const Dashboard = observer(() => {
-    const [user, setUser] = useState(null);
-    const [messagesList, setMessagesList] = useState([]);
-    const { countryStore, appliesStore, treeStore } = useStores();
+  const [user, setUser] = useState(null);
+  const [messagesList, setMessagesList] = useState([]);
+  const { countryStore, appliesStore, treeStore } = useStores();
 
-    useEffect(() => {
-        countryStore.loadContries();
-        appliesStore.loadApplies();
-        treeStore.loadTree('111');
+  useEffect(() => {
+    countryStore.loadContries();
+    appliesStore.loadApplies();
+    treeStore.loadTree('111');
 
-        setMessagesList([
-            { id: "1", date: "28/05/21", description: "בקשה ליצירת תפקיד חדש", status: "נשלחה" },
-            { id: "2", date: "28/05/21", description: "בקשה לשינוי היררכיה", status: "נשלחה" },
-            { id: "3", date: "28/05/21", description: "בקשה למעבר תפקיד", status: "נדחתה" },
-            { id: "4", date: "28/05/21", description: "btn-actions", status: "נדחתה" },
-        ])
-        setUser({
-            name: 'לירן עזרא',
-            privateNumber: '45808006',
-            role: 'צלם מומחה1',
-            phone: '054-4769588',
-            endOfService: '12/12/22',
-            mail: 'iron@dynaamic.com',
-            address: 'עליזה בגין 8 ראשלצ',
-            picture: userpic
-        });
-
-    }, [appliesStore, countryStore, treeStore]);
+    setMessagesList([
+      {
+        id: '1',
+        date: '28/05/21',
+        description: 'בקשה ליצירת תפקיד חדש',
+        status: 'נשלחה',
+      },
+      {
+        id: '2',
+        date: '28/05/21',
+        description: 'בקשה לשינוי היררכיה',
+        status: 'נשלחה',
+      },
+      {
+        id: '3',
+        date: '28/05/21',
+        description: 'בקשה למעבר תפקיד',
+        status: 'נדחתה',
+      },
+      {
+        id: '4',
+        date: '28/05/21',
+        description: 'btn-actions',
+        status: 'נדחתה',
+      },
+    ]);
+    setUser({
+      name: 'לירן עזרא',
+      privateNumber: '45808006',
+      role: 'צלם מומחה1',
+      phone: '054-4769588',
+      endOfService: '12/12/22',
+      mail: 'iron@dynaamic.com',
+      address: 'עליזה בגין 8 ראשלצ',
+      picture: userpic,
+    });
+  }, [appliesStore, countryStore, treeStore]);
 
   return (
     <>
@@ -57,12 +76,15 @@ const Dashboard = observer(() => {
                 <HierarchyTree data={toJS(treeStore.tree)} />
               </div>
             </div>
-            </div>
+          </div>
         </div>
       </div>
-      <SideToolbar recentApplies={toJS(appliesStore.applies)} lastMessages={messagesList}/>
+      <SideToolbar
+        recentApplies={toJS(appliesStore.applies)}
+        lastMessages={messagesList}
+      />
     </>
-  )
+  );
 });
 
 export default Dashboard;
