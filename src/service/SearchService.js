@@ -1,9 +1,7 @@
-import axios from 'axios';
+import axiosApiInstance from '../config/axios';
 import { apiBaseUrl } from '../constants/index';
-import { transformNode } from '../utils/hierarchy';
-
 export const searchEntitiesByFullName = async (fullName) => {
-  const response = await axios({
+  const response = await axiosApiInstance({
     method: 'get',
     url: `${apiBaseUrl}/api/kartoffel/searchEntitiesByFullName?fullName=${fullName}`,
     headers: {
@@ -14,7 +12,7 @@ export const searchEntitiesByFullName = async (fullName) => {
 };
 
 export const getEntityByIdNumber = async (idNumber) => {
-  const response = await axios({
+  const response = await axiosApiInstance({
     method: 'get',
     url: `${apiBaseUrl}/api/kartoffel/getEntityByIdNumber/${idNumber}`,
     headers: {
@@ -25,7 +23,7 @@ export const getEntityByIdNumber = async (idNumber) => {
 };
 
 export const searchOG = async (hierarchyAndName) => {
-  const response = await axios({
+  const response = await axiosApiInstance({
     method: 'get',
     url: `${apiBaseUrl}/api/kartoffel/searchOG?hierarchyAndName=${hierarchyAndName}`,
     headers: {
