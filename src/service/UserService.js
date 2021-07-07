@@ -1,38 +1,13 @@
 
-import axios from 'axios';
+import axiosApiInstance from '../config/axios';
+import { apiBaseUrl } from '../constants/api';
 
-// export const getProductsSmall = async () => {
-//     const response = await axios({
-//       method: 'get',
-//       url: `data/products-small.json`,
-//       headers: {
-//         'content-type': 'application/json',
-//       },
-//     })
-
-//     return response.data;
-// }
+export const getUser = async (userID) => {
+    const userInfo = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/getEntityByMongoId/${userID}`);
+    return userInfo.data;
+};
 
 export const getUsers = async () => {
-    const response = await axios({
-      method: 'get',
-      url: `localhost:2000/api/kartoffel/searchOG`,
-      headers: {
-        'content-type': 'application/json',
-      },
-    })
-    console.log(response.data)
-    return response.data;
-}
-
-// export const getProductsWithOrdersSmall = async () => {
-//     const response = await axios({
-//       method: 'get',
-//       url: `data/products-orders-small.json`,
-//       headers: {
-//         'content-type': 'application/json',
-//       },
-//     })
-
-//     return response.data;
-// }
+  const users = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/searchOG/`);
+  return users;
+};

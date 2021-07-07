@@ -1,14 +1,21 @@
 import { action, makeAutoObservable, observable } from 'mobx';
-import { getUsers } from '../service/UserService';
+import { getUser, getUsers } from '../service/UserService';
 
-export default class UsersStore {
-    users = [];
+export default class UserStore {
+    user = null;
+    users=null;
 
     constructor() {
         makeAutoObservable(this, {
-            users: observable,
-            loadUsers: action
+            user: observable,
+            fetchUserInfo: action,
+            loadUsers: action,
         })
+    }
+
+    async fetchUserInfo(userID) {
+        const userInfo = await getUser(userID);
+        this.user = userInfo;
     }
 
     async loadUsers() {

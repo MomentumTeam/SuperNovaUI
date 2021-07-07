@@ -7,6 +7,7 @@ import Header from './Header';
 import SearchEntity from './SearchEntity';
 import AddEntity from './AddEntity';
 import Footer from './Footer';
+import { toJS } from 'mobx';
 
 const Entities = observer(() => {
     const { userStore } = useStores();
@@ -32,8 +33,8 @@ const Entities = observer(() => {
                     </div>
                 </div>
             </div>
-        </>
-    );
+    </>
+  );
 });
 
 export default Entities;

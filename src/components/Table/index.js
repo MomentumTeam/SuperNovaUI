@@ -6,6 +6,7 @@ import MoreItem from './TableActions';
 import { getUsers } from '../../service/UserService';
 
 import '../../assets/css/local/general/table.min.css';
+
 class Table extends React.Component {
     constructor(props) {
         super(props);
