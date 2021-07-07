@@ -5,10 +5,8 @@ import {
   getEntityByIdNumber,
   searchOG,
 } from '../service/SearchService';
-import { useStores } from '../hooks/use-stores';
 
 const SearchBox = ({ loadDataByEntity, loadDataByOG }) => {
-  const { treeStore } = useStores();
   const [filteredEntities, setFilteredEntities] = useState([]);
   const [selectedEntity, setSelectedEntity] = useState([]);
 
@@ -22,20 +20,10 @@ const SearchBox = ({ loadDataByEntity, loadDataByOG }) => {
       filteredResults = [];
     } else if (query.match('[0-9]+') && query.length >= 6) {
       filteredResults = await getEntityByIdNumber(event.query);
-      filteredResults = [
-        {
-          displayName: filteredResults.displayName,
-          id: filteredResults.id,
-          directGroup: filteredResults.directGroup,
-        },
-      ];
+      filteredResults = [filteredResults];
     } else {
       filteredResults = await searchEntitiesByFullName(event.query);
       filteredResults = filteredResults.entities;
-      filteredResults = filteredResults.map((entity) => ({
-        displayName: entity.displayName,
-        id: entity.id,
-      }));
     }
     setFilteredEntities(filteredResults);
   };
