@@ -9,54 +9,81 @@ import UserProfileCard from './UserProfileCard';
 import { useStores } from '../../hooks/use-stores';
 
 const Dashboard = observer(() => {
-    const [messagesList, setMessagesList] = useState([]);
-    const { userStore, countryStore, appliesStore, treeStore } = useStores();
-    
-    useEffect(() => {
-        countryStore.loadContries();
+  const [messagesList, setMessagesList] = useState([]);
+  const { userStore, countryStore, appliesStore, treeStore } = useStores();
 
-        setMessagesList([
-            { id: "1", date: "28/05/21", description: "בקשה ליצירת תפקיד חדש", status: "נשלחה" },
-            { id: "2", date: "28/05/21", description: "בקשה לשינוי היררכיה", status: "נשלחה" },
-            { id: "3", date: "28/05/21", description: "בקשה למעבר תפקיד", status: "נדחתה" },
-            { id: "4", date: "28/05/21", description: "btn-actions", status: "נדחתה" },
-        ])
-    }, [countryStore]);
+  useEffect(() => {
+    countryStore.loadContries();
 
-    useEffect(() => {
-        if(userStore.user) {
-            appliesStore.loadApplies(userStore.user.id);
-            treeStore.loadTree(userStore.user.directGroup);
-        }
-    }, [userStore.user, appliesStore, treeStore])
+    setMessagesList([
+      {
+        id: '1',
+        date: '28/05/21',
+        description: 'בקשה ליצירת תפקיד חדש',
+        status: 'נשלחה',
+      },
+      {
+        id: '2',
+        date: '28/05/21',
+        description: 'בקשה לשינוי היררכיה',
+        status: 'נשלחה',
+      },
+      {
+        id: '3',
+        date: '28/05/21',
+        description: 'בקשה למעבר תפקיד',
+        status: 'נדחתה',
+      },
+      {
+        id: '4',
+        date: '28/05/21',
+        description: 'btn-actions',
+        status: 'נדחתה',
+      },
+    ]);
+  }, [countryStore]);
 
-    return (
-        <>
-            <div className="main-inner-item main-inner-item2">
-                <div className="main-inner-item2-content">
-                    <div className="display-flex title-wrap">
-                        <h2>
-                            פרטים אישיים
-                        </h2>
-                    </div>
-                    <UserProfileCard user={toJS(userStore.user)} />
-                    <div className='content-unit-wrap'>
-                        <div className='content-unit-inner content-unit-inner-before'>
-                            <div className='search-row'>
-                                <div className='search-row-inner'>
-                                    <SearchBox data={toJS(countryStore.countries)} />
-                                </div>
-                            </div>
-                            <div className='chart-wrap'>
-                                <HierarchyTree data={toJS(treeStore.tree)} />
-                            </div>
-                        </div>
-                    </div>
+  useEffect(() => {
+    if (userStore.user) {
+      appliesStore.loadApplies(userStore.user.id);
+      treeStore.loadTree(userStore.user.directGroup);
+    }
+  }, [userStore.user, appliesStore, treeStore]);
+
+  useEffect(() => {
+    if (userStore.user) {
+      appliesStore.loadApplies(userStore.user.id);
+    }
+  }, [userStore.user, appliesStore]);
+
+  return (
+    <>
+      <div className='main-inner-item main-inner-item2'>
+        <div className='main-inner-item2-content'>
+          <div className='display-flex title-wrap'>
+            <h2>פרטים אישיים</h2>
+          </div>
+          <UserProfileCard user={toJS(userStore.user)} />
+          <div className='content-unit-wrap'>
+            <div className='content-unit-inner content-unit-inner-before'>
+              <div className='search-row'>
+                <div className='search-row-inner'>
+                  <SearchBox data={toJS(countryStore.countries)} />
                 </div>
+              </div>
+              <div className='chart-wrap'>
+                <HierarchyTree data={toJS(treeStore.tree)} />
+              </div>
             </div>
-            <SideToolbar recentApplies={toJS(appliesStore.applies)} lastMessages={messagesList} />
-        </>
-    )
+          </div>
+        </div>
+      </div>
+      <SideToolbar
+        recentApplies={toJS(appliesStore.applies)}
+        lastMessages={messagesList}
+      />
+    </>
+  );
 });
 
 export default Dashboard;
