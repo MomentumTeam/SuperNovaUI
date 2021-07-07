@@ -13,11 +13,17 @@ export default class TreeStore {
   constructor() {
     makeAutoObservable(this, {
       tree: observable,
-      loadTree: action,
+      loadTreeByEntity: action,
+      loadTreeByOG: action,
     });
   }
 
-  async loadTree(rootId) {
+  async loadTreeByEntity(entity) {
+    const tree = await getTree(entity.directGroup);
+    this.tree = tree;
+  }
+
+  async loadTreeByOG(rootId) {
     const tree = await getTree(rootId);
     this.tree = tree;
   }

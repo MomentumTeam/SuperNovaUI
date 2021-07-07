@@ -7,7 +7,7 @@ import {
 } from '../service/SearchService';
 import { useStores } from '../hooks/use-stores';
 
-const SearchBox = ({ data }) => {
+const SearchBox = ({ loadDataByEntity, loadDataByOG }) => {
   const { treeStore } = useStores();
   const [filteredEntities, setFilteredEntities] = useState([]);
   const [selectedEntity, setSelectedEntity] = useState([]);
@@ -26,6 +26,7 @@ const SearchBox = ({ data }) => {
         {
           displayName: filteredResults.displayName,
           id: filteredResults.id,
+          directGroup: filteredResults.directGroup,
         },
       ];
     } else {
@@ -70,7 +71,7 @@ const SearchBox = ({ data }) => {
                 setSelectedOG([]);
                 setSelectedEntity(e.value);
                 if (e.originalEvent.type === 'click') {
-                  treeStore.loadTree(selectedEntity.id);
+                  loadDataByEntity(selectedEntity);
                 }
               }}
             />
@@ -91,7 +92,7 @@ const SearchBox = ({ data }) => {
                 setSelectedEntity([]);
                 setSelectedOG(e.value);
                 if (e.originalEvent.type === 'click') {
-                  treeStore.loadTree(selectedOG.id);
+                  loadDataByOG(selectedOG);
                 }
               }}
             />
@@ -112,7 +113,7 @@ const SearchBox = ({ data }) => {
                 setSelectedOG([]);
                 setSelectedEntity(e.value);
                 if (e.originalEvent.type === 'click') {
-                  treeStore.loadTree(selectedEntity.id);
+                  loadDataByEntity(selectedEntity);
                 }
               }}
             />
