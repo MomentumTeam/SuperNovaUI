@@ -14,7 +14,6 @@ const Dashboard = observer(() => {
 
   useEffect(() => {
     countryStore.loadContries();
-    treeStore.loadTree('111');
 
     setMessagesList([
       {
@@ -42,7 +41,14 @@ const Dashboard = observer(() => {
         status: 'נדחתה',
       },
     ]);
-  }, [countryStore, treeStore]);
+  }, [countryStore]);
+
+  useEffect(() => {
+    if (userStore.user) {
+      appliesStore.loadApplies(userStore.user.id);
+      treeStore.loadTree(userStore.user.directGroup);
+    }
+  }, [userStore.user, appliesStore, treeStore]);
 
   useEffect(() => {
     if (userStore.user) {
