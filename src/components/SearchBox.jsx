@@ -5,10 +5,8 @@ import {
   getEntityByIdNumber,
   searchOG,
 } from '../service/SearchService';
-import { useStores } from '../hooks/use-stores';
 
-const SearchBox = ({ data }) => {
-  const { treeStore } = useStores();
+const SearchBox = ({ loadDataByEntity, loadDataByOG }) => {
   const [filteredEntities, setFilteredEntities] = useState([]);
   const [selectedEntity, setSelectedEntity] = useState([]);
 
@@ -22,19 +20,10 @@ const SearchBox = ({ data }) => {
       filteredResults = [];
     } else if (query.match('[0-9]+') && query.length >= 6) {
       filteredResults = await getEntityByIdNumber(event.query);
-      filteredResults = [
-        {
-          displayName: filteredResults.displayName,
-          id: filteredResults.id,
-        },
-      ];
+      filteredResults = [filteredResults];
     } else {
       filteredResults = await searchEntitiesByFullName(event.query);
       filteredResults = filteredResults.entities;
-      filteredResults = filteredResults.map((entity) => ({
-        displayName: entity.displayName,
-        id: entity.id,
-      }));
     }
     setFilteredEntities(filteredResults);
   };
@@ -70,7 +59,7 @@ const SearchBox = ({ data }) => {
                 setSelectedOG([]);
                 setSelectedEntity(e.value);
                 if (e.originalEvent.type === 'click') {
-                  treeStore.loadTree(selectedEntity.id);
+                  loadDataByEntity(selectedEntity);
                 }
               }}
             />
@@ -91,7 +80,7 @@ const SearchBox = ({ data }) => {
                 setSelectedEntity([]);
                 setSelectedOG(e.value);
                 if (e.originalEvent.type === 'click') {
-                  treeStore.loadTree(selectedOG.id);
+                  loadDataByOG(selectedOG);
                 }
               }}
             />
@@ -112,7 +101,7 @@ const SearchBox = ({ data }) => {
                 setSelectedOG([]);
                 setSelectedEntity(e.value);
                 if (e.originalEvent.type === 'click') {
-                  treeStore.loadTree(selectedEntity.id);
+                  loadDataByEntity(selectedEntity);
                 }
               }}
             />

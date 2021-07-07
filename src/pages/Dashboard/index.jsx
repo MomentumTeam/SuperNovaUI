@@ -46,7 +46,7 @@ const Dashboard = observer(() => {
   useEffect(() => {
     if (userStore.user) {
       appliesStore.loadApplies(userStore.user.id);
-      treeStore.loadTree(userStore.user.directGroup);
+      treeStore.loadTreeByEntity(userStore.user);
     }
   }, [userStore.user, appliesStore, treeStore]);
 
@@ -68,7 +68,14 @@ const Dashboard = observer(() => {
             <div className='content-unit-inner content-unit-inner-before'>
               <div className='search-row'>
                 <div className='search-row-inner'>
-                  <SearchBox data={toJS(countryStore.countries)} />
+                  <SearchBox
+                    loadDataByEntity={async (entity) => {
+                      await treeStore.loadTreeByEntity(entity);
+                    }}
+                    loadDataByOG={async (entity) => {
+                      await treeStore.loadTreeByOG(entity);
+                    }}
+                  />
                 </div>
               </div>
               <div className='chart-wrap'>
