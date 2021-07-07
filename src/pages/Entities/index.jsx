@@ -9,11 +9,11 @@ import AddEntity from './AddEntity';
 import Footer from './Footer';
 
 const Entities = observer(() => {
-    const { productStore } = useStores();
+    const { userStore } = useStores();
 
     useEffect(() => {
-        productStore.loadProducts();
-    }, [productStore]);
+        userStore.loadUsers();
+    }, [userStore]);
 
     return (
         <>
@@ -23,10 +23,10 @@ const Entities = observer(() => {
                     <div className="content-unit-wrap">
                         <div className="content-unit-inner">
                             <div className="display-flex search-row-wrap-flex">
-                                <SearchEntity data={productStore.products}/>
+                                <SearchEntity data={userStore.users}/>
                                 <AddEntity />
                             </div>
-                            <Table data={productStore.products}/>
+                            <Table data={userStore.users}/>
                             <Footer />
                         </div>
                     </div>

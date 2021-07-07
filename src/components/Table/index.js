@@ -3,7 +3,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { classNames } from 'primereact/utils';
 import MoreItem from './TableActions';
-import { getProductsSmall } from '../../service/ProductService';
+import { getUsers } from '../../service/UserService';
 
 import '../../assets/css/local/general/table.min.css';
 class Table extends React.Component {
@@ -11,7 +11,7 @@ class Table extends React.Component {
         super(props);
         this.state = {
             selectedCustomers: null,
-            products: []
+            users: []
         };
 
         //body cells
@@ -117,7 +117,7 @@ class Table extends React.Component {
 
 
     componentDidMount() {
-        getProductsSmall().then(data => this.setState({ products: data }));
+        getUsers().then(data => this.setState({ users: data }));
     }
 
 
