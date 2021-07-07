@@ -14,7 +14,6 @@ const Dashboard = observer(() => {
     
     useEffect(() => {
         countryStore.loadContries();
-        treeStore.loadTree('111');
 
         setMessagesList([
             { id: "1", date: "28/05/21", description: "בקשה ליצירת תפקיד חדש", status: "נשלחה" },
@@ -22,13 +21,14 @@ const Dashboard = observer(() => {
             { id: "3", date: "28/05/21", description: "בקשה למעבר תפקיד", status: "נדחתה" },
             { id: "4", date: "28/05/21", description: "btn-actions", status: "נדחתה" },
         ])
-    }, [countryStore, treeStore]);
+    }, [countryStore]);
 
     useEffect(() => {
         if(userStore.user) {
             appliesStore.loadApplies(userStore.user.id);
+            treeStore.loadTree(userStore.user.directGroup);
         }
-    }, [userStore.user, appliesStore])
+    }, [userStore.user, appliesStore, treeStore])
 
     return (
         <>
