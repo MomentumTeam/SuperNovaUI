@@ -52,6 +52,8 @@ const Dashboard = observer(() => {
 
   useEffect(() => {
     if (userStore.user) {
+      console.log('yes!!');
+      console.log(toJS(userStore.user));
       appliesStore.loadApplies(userStore.user.id);
     }
   }, [userStore.user, appliesStore]);
