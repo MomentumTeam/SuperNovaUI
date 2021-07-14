@@ -7,10 +7,16 @@ import SideToolbar from '../../components/SideToolbar';
 import '../../assets/css/local/pages/dashboard.min.css';
 import UserProfileCard from './UserProfileCard';
 import { useStores } from '../../hooks/use-stores';
+import {
+  getMyNotifications,
+  markAsRead,
+} from '../../service/NotificationService';
 
 const Dashboard = observer(() => {
   const [messagesList, setMessagesList] = useState([]);
   const { userStore, countryStore, appliesStore, treeStore } = useStores();
+
+  getMyNotifications();
 
   useEffect(() => {
     countryStore.loadContries();
