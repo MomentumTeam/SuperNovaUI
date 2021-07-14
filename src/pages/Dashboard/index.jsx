@@ -45,7 +45,7 @@ const Dashboard = observer(() => {
 
   useEffect(() => {
     if (userStore.user) {
-      appliesStore.loadApplies(userStore.user.id);
+      appliesStore.loadApplies();
       treeStore.loadTreeByEntity(userStore.user);
     }
   }, [userStore.user, appliesStore, treeStore]);
@@ -54,7 +54,7 @@ const Dashboard = observer(() => {
     if (userStore.user) {
       console.log('yes!!');
       console.log(toJS(userStore.user));
-      appliesStore.loadApplies(userStore.user.id);
+      appliesStore.loadApplies();
     }
   }, [userStore.user, appliesStore]);
 
