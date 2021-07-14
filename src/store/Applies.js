@@ -1,18 +1,24 @@
 import { action, makeAutoObservable, observable } from 'mobx';
-import { getUserApplies } from '../service/AppliesService';
+import { getUserApplies, createRoleRequest } from '../service/AppliesService';
 
 export default class AppliesStore {
-    applies = [];
+  applies = [];
 
-    constructor() {
-        makeAutoObservable(this, {
-            applies: observable,
-            loadApplies: action
-        })
-    }
+  constructor() {
+    makeAutoObservable(this, {
+      applies: observable,
+      loadApplies: action,
+      createRoleApply: action,
+    });
+  }
 
-    async loadApplies(userId) {
-        const newApplies = await getUserApplies(userId);
-        this.applies = newApplies.requests;
-    }
+  async loadApplies(userId) {
+    const newApplies = await getUserApplies(userId);
+    this.applies = newApplies.requests;
+  }
+
+  async createRoleApply(requestProperties) {
+    const newRoleRequest = await createRoleRequest(requestProperties);
+    this.applies.push(newRoleRequest);
+  }
 }

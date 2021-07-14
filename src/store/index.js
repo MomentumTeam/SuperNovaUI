@@ -6,12 +6,12 @@ import AppliesStore from './Applies';
 import TreeStore from './Tree';
 
 const stores = {
-    countryStore: new CountryStore(),
-    productStore: new ProductStore(),
-    userStore: new UserStore(),
-    appliesStore: new AppliesStore(),
-    treeStore: new TreeStore(),
-}
+  countryStore: new CountryStore(),
+  productStore: new ProductStore(),
+  userStore: new UserStore(),
+  appliesStore: new AppliesStore(),
+  treeStore: new TreeStore(),
+};
 
 export const StoresContext = createContext(stores);
 
