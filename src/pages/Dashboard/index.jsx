@@ -16,7 +16,7 @@ const Dashboard = observer(() => {
   const [messagesList, setMessagesList] = useState([]);
   const { userStore, countryStore, appliesStore, treeStore } = useStores();
 
-  getMyNotifications();
+  // getMyNotifications();
 
   useEffect(() => {
     countryStore.loadContries();
@@ -80,8 +80,8 @@ const Dashboard = observer(() => {
                     loadDataByEntity={async (entity) => {
                       await treeStore.loadTreeByEntity(entity);
                     }}
-                    loadDataByOG={async (entity) => {
-                      await treeStore.loadTreeByOG(entity);
+                    loadDataByOG={async (organizationGroup) => {
+                      await treeStore.loadTreeByOG(organizationGroup);
                     }}
                   />
                 </div>
