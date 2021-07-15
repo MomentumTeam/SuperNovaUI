@@ -11,11 +11,14 @@ import { useStores } from '../hooks/use-stores';
 const RouteMainLayoutWrapper = ({ component: Component, ...rest }) => {
   return (
     <ProtectedRoute>
-      <Route {...rest} render={(props) =>
-        <MainLayout {...props}>
-          <Component {...props} />
-        </MainLayout>
-      } />
+      <Route
+        {...rest}
+        render={(props) => (
+          <MainLayout {...props}>
+            <Component {...props} />
+          </MainLayout>
+        )}
+      />
     </ProtectedRoute>
   );
 };
@@ -24,12 +27,17 @@ const AppRouter = () => {
   const { token, id } = useQuery();
   const { userStore } = useStores();
 
+  console.log(userStore.user);
+  console.log(token);
   if (!userStore.user && token) {
     localStorage.setItem('token', token);
     localStorage.setItem('id', id);
     userStore.fetchUserInfo(id);
+  } else if (localStorage.getItem('id')) {
+    const id = localStorage.getItem('id');
+    userStore.fetchUserInfo(id);
   }
-  
+
   return (
     <BrowserRouter>
       <Switch>

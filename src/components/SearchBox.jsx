@@ -1,25 +1,47 @@
 import { AutoComplete } from 'primereact/autocomplete';
 import { useState } from 'react';
+import {
+  searchEntitiesByFullName,
+  getEntityByIdNumber,
+  searchOG,
+} from '../service/SearchService';
 
-const SearchBox = ({ data }) => {
-  const [filteredResults, setFilteredResults] = useState([]);
-  const [selectedCountry1, setSelectedCountry1] = useState([]);
-  const [role, setRole] = useState('');
-  const [selectedResults, setSelectedResults] = useState([]);
+const SearchBox = ({ loadDataByEntity, loadDataByOG }) => {
+  const [filteredEntities, setFilteredEntities] = useState([]);
+  const [selectedEntity, setSelectedEntity] = useState([]);
 
-  const search = (event) => {
-    setTimeout(() => {
-      let filteredResults;
-      if (!event.query.trim().length) {
-        filteredResults = [...data];
-      } else {
-        // filteredResults = data.filter((country) => {
-        //     return country.name.toLowerCase().startsWith(event.query.toLowerCase());
-        // });
-      }
+  const [filteredOGs, setFilteredOGs] = useState([]);
+  const [selectedOG, setSelectedOG] = useState([]);
 
-      setFilteredResults(filteredResults);
-    }, 250);
+  const searchEntity = async (event) => {
+    let filteredResults;
+    const query = event.query;
+    if (!query.trim().length) {
+      filteredResults = [];
+    } else if (query.match('[0-9]+') && query.length >= 6) {
+      filteredResults = await getEntityByIdNumber(event.query);
+      filteredResults = [filteredResults];
+    } else {
+      filteredResults = await searchEntitiesByFullName(event.query);
+      filteredResults = filteredResults.entities;
+    }
+    setFilteredEntities(filteredResults);
+  };
+
+  const searchHierarchy = async (event) => {
+    let filteredResults;
+    const query = event.query;
+    if (!query.trim().length) {
+      filteredResults = [];
+    } else {
+      filteredResults = await searchOG(event.query);
+      filteredResults = filteredResults.groups;
+      filteredResults = filteredResults.map((group) => ({
+        hierarchy: `${group.name}/${group.hierarchy}`,
+        id: group.id,
+      }));
+    }
+    setFilteredOGs(filteredResults);
   };
 
   return (
@@ -28,11 +50,18 @@ const SearchBox = ({ data }) => {
         <div className='p-fluid'>
           <span className='p-float-label'>
             <AutoComplete
-              value={selectedCountry1}
-              suggestions={filteredResults}
-              completeMethod={search}
-              field='name'
-              onChange={(e) => setSelectedCountry1(e.value)}
+              value={selectedEntity}
+              suggestions={filteredEntities}
+              completeMethod={searchEntity}
+              field='displayName'
+              onChange={(e) => {
+                setFilteredOGs([]);
+                setSelectedOG([]);
+                setSelectedEntity(e.value);
+                if (e.originalEvent.type === 'click') {
+                  loadDataByEntity(selectedEntity);
+                }
+              }}
             />
             <label htmlFor='autocomplete'>שם/מ"א/ת"ז </label>
           </span>
@@ -42,12 +71,18 @@ const SearchBox = ({ data }) => {
         <div className='p-fluid'>
           <span className='p-float-label'>
             <AutoComplete
-              value={selectedResults}
-              suggestions={filteredResults}
-              completeMethod={search}
-              field='name'
-              multiple
-              onChange={(e) => setSelectedResults(e.value)}
+              value={selectedOG}
+              suggestions={filteredOGs}
+              completeMethod={searchHierarchy}
+              field='hierarchy'
+              onChange={(e) => {
+                setFilteredEntities([]);
+                setSelectedEntity([]);
+                setSelectedOG(e.value);
+                if (e.originalEvent.type === 'click') {
+                  loadDataByOG(selectedOG);
+                }
+              }}
             />
             <label htmlFor='autocomplete2'>היררכיה</label>
           </span>
@@ -57,11 +92,18 @@ const SearchBox = ({ data }) => {
         <div className='p-fluid'>
           <span className='p-float-label'>
             <AutoComplete
-              value={role}
-              suggestions={filteredResults}
-              completeMethod={search}
-              field='name'
-              onChange={(e) => setRole(e.value)}
+              value={selectedEntity}
+              suggestions={filteredEntities}
+              completeMethod={searchEntity}
+              field='displayName'
+              onChange={(e) => {
+                setFilteredOGs([]);
+                setSelectedOG([]);
+                setSelectedEntity(e.value);
+                if (e.originalEvent.type === 'click') {
+                  loadDataByEntity(selectedEntity);
+                }
+              }}
             />
             <label htmlFor='autocomplete3'>חיפוש לפי תפקיד</label>
           </span>

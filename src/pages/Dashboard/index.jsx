@@ -7,53 +7,59 @@ import SideToolbar from '../../components/SideToolbar';
 import '../../assets/css/local/pages/dashboard.min.css';
 import UserProfileCard from './UserProfileCard';
 import { useStores } from '../../hooks/use-stores';
+import {
+  getMyNotifications,
+  markAsRead,
+} from '../../service/NotificationService';
 
 const Dashboard = observer(() => {
-    const [messagesList, setMessagesList] = useState([]);
-    const { userStore, countryStore, appliesStore, treeStore } = useStores();
-    
-    useEffect(() => {
-        countryStore.loadContries();
-        // treeStore.loadTree('111');
+  const [messagesList, setMessagesList] = useState([]);
+  const { userStore, appliesStore, treeStore } = useStores();
 
-        setMessagesList([
-            { id: "1", date: "28/05/21", description: "בקשה ליצירת תפקיד חדש", status: "נשלחה" },
-            { id: "2", date: "28/05/21", description: "בקשה לשינוי היררכיה", status: "נשלחה" },
-            { id: "3", date: "28/05/21", description: "בקשה למעבר תפקיד", status: "נדחתה" },
-            { id: "4", date: "28/05/21", description: "btn-actions", status: "נדחתה" },
-        ]);
-        if (userStore.user) {
-            appliesStore.loadApplies(userStore.user.id);
-        }
-    }, [userStore.user, appliesStore, countryStore, treeStore]);
+  // getMyNotifications();
 
-    return (
-        <>
-            <div className="main-inner-item main-inner-item2">
-                <div className="main-inner-item2-content">
-                    <div className="display-flex title-wrap">
-                        <h2>
-                            פרטים אישיים
-                        </h2>
-                    </div>
-                    <UserProfileCard user={toJS(userStore.user)} />
-                    <div className='content-unit-wrap'>
-                        <div className='content-unit-inner content-unit-inner-before'>
-                            <div className='search-row'>
-                                <div className='search-row-inner'>
-                                    <SearchBox data={toJS(countryStore.countries)} />
-                                </div>
-                            </div>
-                            <div className='chart-wrap'>
-                                {/* <HierarchyTree data={toJS(treeStore.tree)} /> */}
-                            </div>
-                        </div>
-                    </div>
+  useEffect(() => {
+    if (userStore.user) {
+      appliesStore.loadApplies();
+      treeStore.loadTreeByEntity(userStore.user);
+    }
+  }, [userStore.user, appliesStore, treeStore]);
+
+  return (
+    <>
+      <div className='main-inner-item main-inner-item2'>
+        <div className='main-inner-item2-content'>
+          <div className='display-flex title-wrap'>
+            <h2>פרטים אישיים</h2>
+          </div>
+          <UserProfileCard user={toJS(userStore.user)} />
+          <div className='content-unit-wrap'>
+            <div className='content-unit-inner content-unit-inner-before'>
+              <div className='search-row'>
+                <div className='search-row-inner'>
+                  <SearchBox
+                    loadDataByEntity={async (entity) => {
+                      await treeStore.loadTreeByEntity(entity);
+                    }}
+                    loadDataByOG={async (organizationGroup) => {
+                      await treeStore.loadTreeByOG(organizationGroup);
+                    }}
+                  />
                 </div>
+              </div>
+              <div className='chart-wrap'>
+                <HierarchyTree data={toJS(treeStore.tree)} />
+              </div>
             </div>
-            <SideToolbar recentApplies={toJS(appliesStore.applies)} lastMessages={messagesList} />
-        </>
-    )
+          </div>
+        </div>
+      </div>
+      <SideToolbar
+        recentApplies={toJS(appliesStore.applies)}
+        lastMessages={messagesList}
+      />
+    </>
+  );
 });
 
 export default Dashboard;
