@@ -13,10 +13,10 @@ export default class EntityStore {
       }
     
       async loadEntityByEntity(entity) {
-        this.entities = entity;
+        console.log(entity)
+        this.entities = [entity];
       }
     
-      // TODO: change this function to axios call via Entity Service, need to call: getEntitiesUnderOG
       async loadEntityByOG(rootId) {
         const entities = await getEntitiesUnderOG(rootId);
 
