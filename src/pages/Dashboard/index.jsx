@@ -14,40 +14,9 @@ import {
 
 const Dashboard = observer(() => {
   const [messagesList, setMessagesList] = useState([]);
-  const { userStore, countryStore, appliesStore, treeStore } = useStores();
+  const { userStore, appliesStore, treeStore } = useStores();
 
   // getMyNotifications();
-
-  useEffect(() => {
-    countryStore.loadContries();
-
-    setMessagesList([
-      {
-        id: '1',
-        date: '28/05/21',
-        description: 'בקשה ליצירת תפקיד חדש',
-        status: 'נשלחה',
-      },
-      {
-        id: '2',
-        date: '28/05/21',
-        description: 'בקשה לשינוי היררכיה',
-        status: 'נשלחה',
-      },
-      {
-        id: '3',
-        date: '28/05/21',
-        description: 'בקשה למעבר תפקיד',
-        status: 'נדחתה',
-      },
-      {
-        id: '4',
-        date: '28/05/21',
-        description: 'btn-actions',
-        status: 'נדחתה',
-      },
-    ]);
-  }, [countryStore]);
 
   useEffect(() => {
     if (userStore.user) {
@@ -55,14 +24,6 @@ const Dashboard = observer(() => {
       treeStore.loadTreeByEntity(userStore.user);
     }
   }, [userStore.user, appliesStore, treeStore]);
-
-  useEffect(() => {
-    if (userStore.user) {
-      console.log('yes!!');
-      console.log(toJS(userStore.user));
-      appliesStore.loadApplies();
-    }
-  }, [userStore.user, appliesStore]);
 
   return (
     <>

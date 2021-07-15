@@ -8,3 +8,12 @@ export const getMyApplies = async (rangeStart = 1, rangeEnd = 7) => {
 
   return response.data;
 };
+
+export const createRoleRequest = async (requestProperties) => {
+  const response = await axiosApiInstance.post(
+    `${apiBaseUrl}/api/requests/createRoleRequest`,
+    requestProperties
+  );
+
+  return response.data;
+};
