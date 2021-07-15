@@ -3,7 +3,7 @@ import { getUser, getUsers } from '../service/UserService';
 
 export default class UserStore {
     user = null;
-    users=null;
+    users = null;
 
     constructor() {
         makeAutoObservable(this, {

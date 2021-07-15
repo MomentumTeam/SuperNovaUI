@@ -26,7 +26,7 @@ const RouteMainLayoutWrapper = ({ component: Component, ...rest }) => {
 const AppRouter = () => {
   const { token, id } = useQuery();
   const { userStore } = useStores();
-
+  console.log(id)
   console.log(userStore.user);
   console.log(token);
   if (!userStore.user && token) {
