@@ -7,3 +7,10 @@ export const getUser = async (userID) => {
   );
   return userInfo.data;
 };
+
+export const getPictureByEntityId = async () => {
+  const userInfo = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/kartoffel/getPictureByEntityId`
+  );
+  return userInfo.data;
+};
