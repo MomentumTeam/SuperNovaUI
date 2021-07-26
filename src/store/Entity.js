@@ -12,12 +12,12 @@ export default class EntityStore {
         });
       }
     
-      async loadEntityByEntity(entity) {
+      async loadEntitiesByEntity(entity) {
         console.log(entity)
-        this.entities = [entity];
+        this.entities = entity;
       }
     
-      async loadEntityByOG(rootId) {
+      async loadEntitiesByOG(rootId) {
         const entities = await getEntitiesUnderOG(rootId);
 
         this.entities = entities;

@@ -17,10 +17,10 @@ const SearchEntity = ({ data }) => {
         <SearchBox
           data={data}
           loadDataByEntity={async (entity) => {
-            await entityStore.loadEntityByEntity(entity);
+            await entityStore.loadEntitiesByEntity(entity);
           }}
           loadDataByOG={async (entity) => {
-            await entityStore.loadEntityByOG(entity);
+            await entityStore.loadEntitiesByOG(entity);
           }}
         />
         <button className="btn-underline" type="button" title="חיפוש מורחב">
