@@ -8,8 +8,6 @@ import {
   assignRoleToEntityRequest,
   editEntityRequest,
   disconectRoleFromEntityRequest,
-  deleteRoleRequest,
-  deleteOGRequest,
   renameOGRequest,
   renameRoleRequest,
   deleteRoleRequest,
@@ -30,8 +28,6 @@ export default class AppliesStore {
       assignRoleToEntityApply: action,
       editEntityApply: action,
       disconectRoleFromEntityApply: action,
-      deleteRoleApply: action,
-      deleteOGApply: action,
       renameOGApply: action,
       renameRoleApply: action,
       deleteRoleApply: action,
@@ -81,16 +77,6 @@ export default class AppliesStore {
     const newDisconectRoleFromEntityApply =
       await disconectRoleFromEntityRequest(applyProperties);
     this.applies.push(newDisconectRoleFromEntityApply);
-  }
-
-  async deleteRoleApply(applyProperties) {
-    const newDeleteRoleApply = await deleteRoleRequest(applyProperties);
-    this.applies.push(newDeleteRoleApply);
-  }
-
-  async deleteOGApply(applyProperties) {
-    const newDeleteOGApply = await deleteOGRequest(applyProperties);
-    this.applies.push(newDeleteOGApply);
   }
 
   async renameOGApply(applyProperties) {
