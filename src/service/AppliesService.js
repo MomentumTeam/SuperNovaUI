@@ -77,55 +77,55 @@ export const getRequestsSubmittedBy = async (id, from, to) => {
 
 //create applies
 
-export const createRoleRequest = async (requestProperties) => {
+export const createRoleRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/requests/createRoleRequest`,
-    requestProperties
+    applyProperties
   );
 
   return response.data;
 };
 
-export const createOGRequest = async (requestProperties) => {
+export const createOGRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/requests/createOGRequest`,
-    requestProperties
+    applyProperties
   );
 
   return response.data;
 };
 
-export const createEntityRequest = async (requestProperties) => {
+export const createEntityRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/requests/createEntityRequest`,
-    requestProperties
+    applyProperties
   );
 
   return response.data;
 };
 
-export const assignRoleToEntityRequest = async (requestProperties) => {
+export const assignRoleToEntityRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/requests/assignRoleToEntityRequest`,
-    requestProperties
+    applyProperties
   );
 
   return response.data;
 };
 
-export const editEntityRequest = async (requestProperties) => {
+export const editEntityRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/requests/editEntityRequest`,
-    requestProperties
+    applyProperties
   );
 
   return response.data;
 };
 
-export const disconectRoleFromEntityRequest = async (requestProperties) => {
+export const disconectRoleFromEntityRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/requests/disconectRoleFromEntityRequest`,
-    requestProperties
+    applyProperties
   );
 
   return response.data;
@@ -133,19 +133,19 @@ export const disconectRoleFromEntityRequest = async (requestProperties) => {
 
 //update applies
 
-export const renameOGRequest = async (requestProperties) => {
+export const renameOGRequest = async (applyProperties) => {
   const response = await axiosApiInstance.put(
     `${apiBaseUrl}/api/requests/renameOGRequest`,
-    requestProperties
+    applyProperties
   );
 
   return response.data;
 };
 
-export const renameRoleRequest = async (requestProperties) => {
+export const renameRoleRequest = async (applyProperties) => {
   const response = await axiosApiInstance.put(
     `${apiBaseUrl}/api/requests/renameRoleRequest`,
-    requestProperties
+    applyProperties
   );
 
   return response.data;
@@ -153,19 +153,19 @@ export const renameRoleRequest = async (requestProperties) => {
 
 //delete applies
 
-export const deleteRoleRequest = async (requestProperties) => {
+export const deleteRoleRequest = async (applyProperties) => {
   const response = await axiosApiInstance.delete(
     `${apiBaseUrl}/api/requests/deleteRoleRequest`,
-    requestProperties
+    applyProperties
   );
 
   return response.data;
 };
 
-export const deleteOGRequest = async (requestProperties) => {
+export const deleteOGRequest = async (applyProperties) => {
   const response = await axiosApiInstance.delete(
     `${apiBaseUrl}/api/requests/deleteOGRequest`,
-    requestProperties
+    applyProperties
   );
 
   return response.data;

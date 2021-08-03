@@ -1,6 +1,7 @@
 import { action, makeAutoObservable, observable } from 'mobx';
 import {
   getMyApplies,
+  getAllRequests,
   createRoleRequest,
   createOGRequest,
   createEntityRequest,
@@ -10,7 +11,9 @@ import {
   deleteRoleRequest,
   deleteOGRequest,
   renameOGRequest,
-  renameRoleRequest
+  renameRoleRequest,
+  deleteRoleRequest,
+  deleteOGRequest,
 } from '../service/AppliesService';
 
 export default class AppliesStore {
@@ -20,6 +23,7 @@ export default class AppliesStore {
     makeAutoObservable(this, {
       applies: observable,
       loadApplies: action,
+      getAllApplies: action,
       createRoleApply: action,
       createOGApply: action,
       createEntityApply: action,
@@ -30,6 +34,8 @@ export default class AppliesStore {
       deleteOGApply: action,
       renameOGApply: action,
       renameRoleApply: action,
+      deleteRoleApply: action,
+      deleteOGApply: action,
     });
   }
 
@@ -38,60 +44,72 @@ export default class AppliesStore {
     this.applies = myApplies.requests;
   }
 
-  async createRoleApply(requestProperties) {
-    const newRoleApply = await createRoleRequest(requestProperties);
+  async getAllApplies(from, to) {
+    //only approvers can get all.
+    const myApplies = await getAllRequests(from, to);
+    this.applies = myApplies.requests;
+  }
+
+  async createRoleApply(applyProperties) {
+    const newRoleApply = await createRoleRequest(applyProperties);
     this.applies.push(newRoleApply);
   }
 
-  async createOGApply(requestProperties) {
-    const newOGApply = await createOGRequest(requestProperties);
+  async createOGApply(applyProperties) {
+    const newOGApply = await createOGRequest(applyProperties);
     this.applies.push(newOGApply);
   }
 
-  async createEntityApply(requestProperties) {
-    const newEntityApply = await createEntityRequest(requestProperties);
+  async createEntityApply(applyProperties) {
+    const newEntityApply = await createEntityRequest(applyProperties);
     this.applies.push(newEntityApply);
   }
 
-  async assignRoleToEntityApply(requestProperties) {
+  async assignRoleToEntityApply(applyProperties) {
     const newAssignRoleToEntityApply = await assignRoleToEntityRequest(
-      requestProperties
+      applyProperties
     );
     this.applies.push(newAssignRoleToEntityApply);
   }
 
-  async editEntityApply(requestProperties) {
-    const newEditEntityApply = await editEntityRequest(requestProperties);
+  async editEntityApply(applyProperties) {
+    const newEditEntityApply = await editEntityRequest(applyProperties);
     this.applies.push(newEditEntityApply);
   }
 
-  async disconectRoleFromEntityApply(requestProperties) {
+  async disconectRoleFromEntityApply(applyProperties) {
     const newDisconectRoleFromEntityApply =
-      await disconectRoleFromEntityRequest(requestProperties);
+      await disconectRoleFromEntityRequest(applyProperties);
     this.applies.push(newDisconectRoleFromEntityApply);
   }
 
-  async deleteRoleApply(requestProperties) {
-    const newDeleteRoleApply = await deleteRoleRequest(requestProperties);
+  async deleteRoleApply(applyProperties) {
+    const newDeleteRoleApply = await deleteRoleRequest(applyProperties);
     this.applies.push(newDeleteRoleApply);
   }
 
-  async deleteOGApply(requestProperties) {
-    const newDeleteOGApply = await deleteOGRequest(requestProperties);
+  async deleteOGApply(applyProperties) {
+    const newDeleteOGApply = await deleteOGRequest(applyProperties);
     this.applies.push(newDeleteOGApply);
   }
 
-  async renameOGApply(requestProperties) {
-    const newRenameOGApply = await renameOGRequest(requestProperties);
+  async renameOGApply(applyProperties) {
+    const newRenameOGApply = await renameOGRequest(applyProperties);
     this.applies.push(newRenameOGApply);
   }
 
-  async renameRoleApply(requestProperties) {
-    const newRenameRoleApply = await renameRoleRequest(requestProperties);
+  async renameRoleApply(applyProperties) {
+    const newRenameRoleApply = await renameRoleRequest(applyProperties);
     this.applies.push(newRenameRoleApply);
   }
 
+  async deleteRoleApply(applyProperties) {
+    const newDeleteRoleApply = await deleteRoleRequest(applyProperties);
+    this.applies.push(newDeleteRoleApply);
+  }
 
-  
-
+  async deleteOGApply(applyProperties) {
+    const newDeleteOGApplyApply = await deleteOGRequest(applyProperties);
+    this.applies.push(newDeleteOGApplyApply);
+  }
 }

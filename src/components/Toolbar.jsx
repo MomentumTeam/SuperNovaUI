@@ -55,7 +55,7 @@ const Toolbar = () => {
 
   const submitRoleRequest = () => {
     appliesStore.createRoleApply({
-      'submittedBy': '507f1f77bcf86cd799439011',
+      // 'submittedBy': '507f1f77bcf86cd799439011',
       'status': 0,
       'commanderDecision': {
         'approverId': '507f1f77bcf86cd799439011',
@@ -93,6 +93,7 @@ const Toolbar = () => {
         'jobTitle': 'Hello'
       }
     })
+    // appliesStore.getAllApplies(1,15)
     hideDialog();
   };
 

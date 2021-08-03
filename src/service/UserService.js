@@ -9,8 +9,8 @@ export const getUser = async (userID) => {
 };
 
 export const getPictureByEntityId = async () => {
-  const userInfo = await axiosApiInstance.get(
+  const userPic = await axiosApiInstance.get(
     `${apiBaseUrl}/api/kartoffel/getPictureByEntityId`
   );
-  return userInfo.data;
+  return userPic.data;
 };
