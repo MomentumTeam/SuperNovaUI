@@ -1,3 +1,4 @@
+
 import axiosApiInstance from '../config/axios';
 import { apiBaseUrl } from '../constants/api';
 
@@ -6,6 +7,11 @@ export const getUser = async (userID) => {
     `${apiBaseUrl}/api/kartoffel/getMyUser`
   );
   return userInfo.data;
+};
+
+export const getUsers = async () => {
+  const users = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/searchOG/`);
+  return users;
 };
 
 export const getPictureByEntityId = async () => {

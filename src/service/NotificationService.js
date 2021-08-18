@@ -5,7 +5,6 @@ export const getMyNotifications = async (rangeStart = 1, rangeEnd = 7) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/notifications/getMyNotifications?from=${rangeStart}&to=${rangeEnd}`
   );
-  console.log(response.data);
   return response.data;
 };
 
@@ -14,6 +13,5 @@ export const markAsRead = async (notificationIds) => {
     `${apiBaseUrl}/api/notifications/markAsRead`,
     { notificationIds: notificationIds }
   );
-  console.log(response.data);
   return response.data;
 };
