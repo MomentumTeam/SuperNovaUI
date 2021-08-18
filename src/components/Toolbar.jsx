@@ -3,10 +3,12 @@ import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import ModalForm from './modal-form';
 import '../assets/css/local/components/modal-item.min.css';
+import { useStores } from '../hooks/use-stores';
 
 const Toolbar = () => {
   const [isDialogShown, setIsDialogShown] = useState(false);
   const [actionList, setActionList] = useState([]);
+  const { appliesStore } = useStores();
 
   useEffect(() => {
     setActionList([
@@ -51,13 +53,57 @@ const Toolbar = () => {
     setIsDialogShown(false);
   };
 
+  const submitRoleRequest = () => {
+    appliesStore.createRoleApply({
+      // 'submittedBy': '507f1f77bcf86cd799439011',
+      'status': 0,
+      'commanderDecision': {
+        'approverId': '507f1f77bcf86cd799439011',
+        'approverDecision': 0
+      },
+      'securityDecision': {
+        'approverId': '507f1f77bcf86cd799439011',
+        'approverDecision': 0
+      },
+      'commanders': [
+        '507f1f77bcf86cd799439011'
+      ],
+      'kartoffelStatus': {
+        'status': 0,
+        'message': 'Hello',
+        'createdId': '507f1f77bcf86cd799439011'
+      },
+      'adStatus': {
+        'status': 0,
+        'message': 'Hello'
+      },
+      'kartoffelParams': {
+        'jobTitle': 'Hello',
+        'directGroup': 'Hello',
+        'roleId': '507f1f77bcf86cd799439011',
+        'type': 'Hello',
+        'source': 'Hello',
+        'uniqueId': '507f1f77bcf86cd799439011',
+        'mail': 'Hello',
+        'isRoleAttachable': true
+      },
+      'adParams': {
+        'samAccountName': 'Hello',
+        'ouDisplayName': 'Hello',
+        'jobTitle': 'Hello'
+      }
+    })
+    // appliesStore.getAllApplies(1,15)
+    hideDialog();
+  };
+
   const renderFooter = () => {
     return (
       <div className='display-flex display-flex-end'>
         <Button label='ביטול' onClick={hideDialog} className='btn-underline' />
         <Button
           label='שמירה'
-          onClick={hideDialog}
+          onClick={submitRoleRequest}
           className='btn-orange-gradient'
         />
       </div>

@@ -7,54 +7,23 @@ import SideToolbar from '../../components/SideToolbar';
 import '../../assets/css/local/pages/dashboard.min.css';
 import UserProfileCard from './UserProfileCard';
 import { useStores } from '../../hooks/use-stores';
+import {
+  getMyNotifications,
+  markAsRead,
+} from '../../service/NotificationService';
 
 const Dashboard = observer(() => {
   const [messagesList, setMessagesList] = useState([]);
-  const { userStore, countryStore, appliesStore, treeStore } = useStores();
+  const { userStore, appliesStore, treeStore } = useStores();
 
-  useEffect(() => {
-    countryStore.loadContries();
-
-    setMessagesList([
-      {
-        id: '1',
-        date: '28/05/21',
-        description: 'בקשה ליצירת תפקיד חדש',
-        status: 'נשלחה',
-      },
-      {
-        id: '2',
-        date: '28/05/21',
-        description: 'בקשה לשינוי היררכיה',
-        status: 'נשלחה',
-      },
-      {
-        id: '3',
-        date: '28/05/21',
-        description: 'בקשה למעבר תפקיד',
-        status: 'נדחתה',
-      },
-      {
-        id: '4',
-        date: '28/05/21',
-        description: 'btn-actions',
-        status: 'נדחתה',
-      },
-    ]);
-  }, [countryStore]);
+  // getMyNotifications();
 
   useEffect(() => {
     if (userStore.user) {
-      appliesStore.loadApplies(userStore.user.id);
+      appliesStore.loadApplies();
       treeStore.loadTreeByEntity(userStore.user);
     }
   }, [userStore.user, appliesStore, treeStore]);
-
-  useEffect(() => {
-    if (userStore.user) {
-      appliesStore.loadApplies(userStore.user.id);
-    }
-  }, [userStore.user, appliesStore]);
 
   return (
     <>
@@ -72,8 +41,8 @@ const Dashboard = observer(() => {
                     loadDataByEntity={async (entity) => {
                       await treeStore.loadTreeByEntity(entity);
                     }}
-                    loadDataByOG={async (entity) => {
-                      await treeStore.loadTreeByOG(entity);
+                    loadDataByOG={async (organizationGroup) => {
+                      await treeStore.loadTreeByOG(organizationGroup);
                     }}
                   />
                 </div>
