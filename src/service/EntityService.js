@@ -11,5 +11,31 @@ export const getEntitiesUnderOG = async (ogId) => {
     }
   );
 
-  return response.data;
+  return response.data.entities;
+};
+
+export const getRolesUnderOG = async (ogId) => {
+  const response = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/kartoffel/GetRolesUnderOG/:${ogId}`,
+    {
+      params: {
+        direct: false,
+      },
+    }
+  );
+
+  return response.data.roles;
+};
+
+export const getHierarchyUnderOG = async (ogId) => {
+  const response = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/kartoffel/GetChildrenOfOG/:${ogId}`,
+    {
+      params: {
+        direct: false,
+      },
+    }
+  );
+
+  return response.data.groups;
 };

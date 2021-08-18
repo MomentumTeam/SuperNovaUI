@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import '../../assets/css/local/pages/listUsersPage.min.css';
 import Table from '../../components/Table';
@@ -11,25 +11,39 @@ import { toJS } from 'mobx';
 
 const Entities = observer(() => {
     const { entityStore, userStore } = useStores();
+    const [ tabId, setTabId ] = useState('entities');
 
     useEffect(() => {
-        const userOGId = userStore.user?.directGroup;
-        entityStore.loadEntitiesByOG(userOGId);
-    }, [entityStore, userStore.user]);
+        if(tabId && userStore.user) {
+            const userOGId = userStore.user.directGroup;
+            
+            switch(tabId) {
+                case('entities'):
+                    entityStore.loadEntitiesByOG(userOGId);
+                    break;
+                case('roles'):
+                    entityStore.loadRolesByOG(userOGId);
+                    break;
+                case('hierarchy'):
+                    entityStore.loadHierarchyByOG(userOGId);
+                    break;
+            }
+        }
+    }, [tabId, userStore.user])
 
     return (
         <>
             <div className="main-inner-item main-inner-item2 main-inner-item2-table">
                 <div>{}</div>
                 <div className="main-inner-item2-content">
-                    <Header />
+                    <Header setTab={setTabId} selectedTab={tabId} />
                     <div className="content-unit-wrap">
                         <div className="content-unit-inner">
                             <div className="display-flex search-row-wrap-flex">
-                                <SearchEntity data={toJS(entityStore.entities)}/>
+                                <SearchEntity data={toJS(entityStore.entities)} />
                                 <AddEntity />
                             </div>
-                            <Table data={toJS(entityStore.entities)}/>
+                            <Table data={toJS(entityStore.entities)} tableType={tabId} />
                             <Footer />
                         </div>
                     </div>
