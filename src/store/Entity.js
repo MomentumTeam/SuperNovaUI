@@ -13,7 +13,6 @@ export default class EntityStore {
       }
     
       async loadEntitiesByEntity(entity) {
-        console.log(entity)
         this.entities = entity;
       }
     

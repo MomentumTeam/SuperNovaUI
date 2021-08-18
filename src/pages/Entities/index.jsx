@@ -13,9 +13,9 @@ const Entities = observer(() => {
     const { entityStore, userStore } = useStores();
 
     useEffect(() => {
-        const userOGId = userStore.user.directGroup;
+        const userOGId = userStore.user?.directGroup;
         entityStore.loadEntitiesByOG(userOGId);
-    }, [entityStore]);
+    }, [entityStore, userStore.user]);
 
     return (
         <>
