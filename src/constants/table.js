@@ -14,7 +14,7 @@ export const TableTypes = {
         { field: "hierarchy", displayName: "היררכיה" },
         { field: "lastName", displayName: "סוג קבוצה" },
         { field: "personalNumber", displayName: "מספר תפקידים" },
-        { field: "clearance", displayName: "סיווגתפקידים לא מאויישים" },
+        { field: "clearance", displayName: "תפקידים לא מאויישים" },
     ],
     roles: [
         { field: "jobTitle", displayName: "שם תפקיד" },

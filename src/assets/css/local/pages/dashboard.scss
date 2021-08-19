@@ -41,6 +41,7 @@ $linkColor0: #2979f4;
             }
 
             .h-wrap {
+                cursor: pointer;
                 @media (max-width: 599px) {
                     flex-direction: column;
                     align-items: flex-start;

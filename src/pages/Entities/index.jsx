@@ -27,9 +27,11 @@ const Entities = observer(() => {
                 case('hierarchy'):
                     entityStore.loadHierarchyByOG(userOGId);
                     break;
+                default:
+                    break;
             }
         }
-    }, [tabId, userStore.user])
+    }, [tabId, userStore.user, entityStore])
 
     return (
         <>
