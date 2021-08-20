@@ -15,6 +15,8 @@ const Entities = observer(() => {
     useEffect(() => {
         const userOGId = userStore.user?.directGroup;
         entityStore.loadEntitiesByOG(userOGId);
+
+        userStore.fetchUserNotifications(userStore.user?.id);
     }, [entityStore, userStore.user]);
 
     return (
@@ -22,7 +24,7 @@ const Entities = observer(() => {
             <div className="main-inner-item main-inner-item2 main-inner-item2-table">
                 <div>{}</div>
                 <div className="main-inner-item2-content">
-                    <Header />
+                    <Header notifications={toJS(userStore.userNotifications)} />
                     <div className="content-unit-wrap">
                         <div className="content-unit-inner">
                             <div className="display-flex search-row-wrap-flex">
