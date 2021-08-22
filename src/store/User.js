@@ -26,7 +26,7 @@ export default class UserStore {
 
     async fetchUserNotifications() {
         const userNotifications = await getMyNotifications();
-        this.userNotifications = userNotifications;
+        this.userNotifications = userNotifications.notifications;
     }
 
     async loadUsers() {

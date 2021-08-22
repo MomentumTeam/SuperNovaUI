@@ -17,7 +17,7 @@ const Entities = observer(() => {
         entityStore.loadEntitiesByOG(userOGId);
 
         userStore.fetchUserNotifications(userStore.user?.id);
-    }, [entityStore, userStore.user]);
+    }, [entityStore, userStore]);
 
     return (
         <>
