@@ -16,6 +16,7 @@ const Entities = observer(() => {
     useEffect(() => {
         if(tabId && userStore.user) {
             const userOGId = userStore.user.directGroup;
+            userStore.fetchUserNotifications(userStore.user?.id);
             
             switch(tabId) {
                 case('entities'):
@@ -36,9 +37,8 @@ const Entities = observer(() => {
     return (
         <>
             <div className="main-inner-item main-inner-item2 main-inner-item2-table">
-                <div>{}</div>
                 <div className="main-inner-item2-content">
-                    <Header setTab={setTabId} selectedTab={tabId} />
+                    <Header notifications={toJS(userStore.userNotifications)} setTab={setTabId} selectedTab={tabId} />
                     <div className="content-unit-wrap">
                         <div className="content-unit-inner">
                             <div className="display-flex search-row-wrap-flex">

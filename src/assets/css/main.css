@@ -142,6 +142,10 @@
   color: #00aac0;
 }
 
+.notificationPaginator {
+  direction: ltr;
+}
+
 .btn-notification {
   background-image: url(../images/buttons/notification.png);
   background-size: 33px;
