@@ -1,5 +1,5 @@
 import { action, makeAutoObservable, observable } from 'mobx';
-import { getEntitiesUnderOG } from '../service/EntityService';
+import { getEntitiesUnderOG , getRolesUnderOG, getHierarchyUnderOG } from '../service/EntityService';
 
 export default class EntityStore {
     entities = [];
@@ -18,6 +18,18 @@ export default class EntityStore {
     
       async loadEntitiesByOG(rootId) {
         const entities = await getEntitiesUnderOG(rootId);
+
+        this.entities = entities;
+      }
+
+      async loadRolesByOG(rootId) {
+        const entities = await getRolesUnderOG(rootId);
+
+        this.entities = entities;
+      }
+
+      async loadHierarchyByOG(rootId) {
+        const entities = await getHierarchyUnderOG(rootId);
 
         this.entities = entities;
       }

@@ -6,15 +6,16 @@ import { DataTable } from 'primereact/datatable';
 
 import "../../assets/css/main.css";
 
-const Header = ({notifications}) => {
+const Header = ({notifications, setTab, selectedTab}) => {
   const op = useRef(null);
 
   return (
     <div className='display-flex title-wrap'>
-      <div className='display-flex h-wrap'>
-        <h2>רשימת משתמשים</h2>
-        <h3>רשימת קבוצות</h3>
-      </div>
+    <div className='display-flex h-wrap' style={{cursor: 'pointer'}}>
+      <h3 style={{color: selectedTab === 'entities' && '#201961'}} onClick={() => setTab('entities')}>רשימת משתמשים</h3>
+      <h3 style={{color: selectedTab === 'hierarchy' && '#201961'}} onClick={() => setTab('hierarchy')}>רשימת היררכיה</h3>
+      <h3 style={{color: selectedTab === 'roles' && '#201961'}} onClick={() => setTab('roles')}>רשימת תפקידים</h3>
+    </div>
       <div className='display-flex display-flex-end btns-wrap'>
         <button
           className='btn btn-notification p-mr-4'
