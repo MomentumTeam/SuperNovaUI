@@ -32,7 +32,7 @@ const Entities = observer(() => {
                     break;
             }
         }
-    }, [tabId, userStore.user, entityStore])
+    }, [tabId, userStore, entityStore])
 
     return (
         <>

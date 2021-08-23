@@ -9,6 +9,17 @@ export const getUser = async (userID) => {
   return userInfo.data;
 };
 
+export const getUserType = async (userID) => {
+  return {
+    entityId: '123',
+    type: 'COMMANDER'
+  }
+  const userInfo = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/approver/getUserType/${userID}`
+  );
+  return userInfo.data;
+};
+
 export const getUsers = async () => {
   const users = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/searchOG/`);
   return users;
