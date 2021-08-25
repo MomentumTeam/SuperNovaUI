@@ -1,8 +1,6 @@
 import React from 'react';
-// import ProductService from '../service/ProductService';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import MoreItem from '../components/more-item';
 
