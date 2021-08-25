@@ -16,6 +16,7 @@ const Dashboard = observer(() => {
   const [isFullUserInfoModalOpen, setIsFullUserInfoModalOpen] = useState(false);
 
   const user = toJS(userStore.user);
+  const isUserApprovel = user?.type !== USER_TYPE.SOLDIER && user?.type !== USER_TYPE.UNRECOGNIZED;
 
   useEffect(() => {
     if (userStore.user) {
@@ -39,29 +40,31 @@ const Dashboard = observer(() => {
           <div className='display-flex title-wrap'>
             <h2>פרטים אישיים</h2>
           </div>
-          <UserProfileCard user={user} isUserApprovel={user?.type !== USER_TYPE.SOLDIER && user?.type !== USER_TYPE.UNRECOGNIZED} openFullDetailsModal={openFullDetailsModal} />
+          <UserProfileCard user={user} isUserApprovel={isUserApprovel} openFullDetailsModal={openFullDetailsModal} />
           <FullUserInformationModal user={user} isOpen={isFullUserInfoModalOpen} closeFullDetailsModal={closeFullDetailsModal} />
           <div className='content-unit-wrap'>
-          {user?.type === USER_TYPE.SOLDIER || user?.type === USER_TYPE.UNRECOGNIZED 
+          {isUserApprovel 
           ?
-            <div className='content-unit-inner content-unit-inner-before'>
-              <div className='search-row'>
-                <div className='search-row-inner'>
-                  <SearchBox
-                    loadDataByEntity={async (entity) => {
-                      await treeStore.loadTreeByEntity(entity);
-                    }}
-                    loadDataByOG={async (organizationGroup) => {
-                      await treeStore.loadTreeByOG(organizationGroup);
-                    }}
-                  />
-                </div>
-              </div>
-              <div className='chart-wrap'>
-                <HierarchyTree data={toJS(treeStore.tree)} />
+            <AprovelTable />
+          : 
+          <div className='content-unit-inner content-unit-inner-before'>
+            <div className='search-row'>
+              <div className='search-row-inner'>
+                <SearchBox
+                  loadDataByEntity={async (entity) => {
+                    await treeStore.loadTreeByEntity(entity);
+                  }}
+                  loadDataByOG={async (organizationGroup) => {
+                    await treeStore.loadTreeByOG(organizationGroup);
+                  }}
+                />
               </div>
             </div>
-          : <AprovelTable />}
+            <div className='chart-wrap'>
+              <HierarchyTree data={toJS(treeStore.tree)} />
+            </div>
+          </div>
+          }
           </div>
         </div>
       </div>

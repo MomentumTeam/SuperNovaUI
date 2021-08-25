@@ -10,10 +10,6 @@ export const getUser = async (userID) => {
 };
 
 export const getUserType = async (userID) => {
-  return {
-    entityId: '123',
-    type: 'COMMANDER'
-  }
   const userInfo = await axiosApiInstance.get(
     `${apiBaseUrl}/api/approver/getUserType/${userID}`
   );
