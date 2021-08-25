@@ -2,7 +2,7 @@ import React from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { classNames } from 'primereact/utils';
-import MoreItem from '../components/more-item';
+// import MoreItem from '../components/more-item';
 
 import '../assets/css/local/general/table.min.css';
 class Table extends React.Component {
@@ -24,14 +24,14 @@ class Table extends React.Component {
         this.userBodyTemplate = this.userBodyTemplate.bind(this);
         this.statusBodyTemplate = this.statusBodyTemplate.bind(this);
         this.unityBodyTemplate = this.unityBodyTemplate.bind(this);
-        this.actionBodyTemplate = this.actionBodyTemplate.bind(this);
+        // this.actionBodyTemplate = this.actionBodyTemplate.bind(this);
     };
 
-    actionBodyTemplate() {
-        return (
-            <MoreItem></MoreItem>
-        );
-    }
+    // actionBodyTemplate() {
+    //     return (
+    //         <MoreItem></MoreItem>
+    //     );
+    // }
 
     firstNameBodyTemplate(rowData) {
         return (
@@ -131,7 +131,7 @@ class Table extends React.Component {
                             <Column field="status" header="סטטוס" body={this.statusBodyTemplate} sortable></Column>
                             <Column field="unity" header="יחידה" body={this.unityBodyTemplate} sortable></Column>
                             <Column field="userType" header="סוג משתמש" body={this.userTypeBodyTemplate} sortable></Column>
-                            <Column body={this.actionBodyTemplate} headerStyle={{ width: '4em', textAlign: 'center' }} bodyStyle={{ textAlign: 'center', overflow: 'visible' }} />
+                            {/* <Column body={this.actionBodyTemplate} headerStyle={{ width: '4em', textAlign: 'center' }} bodyStyle={{ textAlign: 'center', overflow: 'visible' }} /> */}
                         </DataTable>
                     </div>
                 </div>

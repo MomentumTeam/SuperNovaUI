@@ -9,7 +9,7 @@ import '../../assets/css/local/pages/dashboard.min.css';
 import UserProfileCard from './UserProfileCard';
 import { useStores } from '../../hooks/use-stores';
 import { USER_TYPE } from '../../constants';
-import FullUserInformationModal from '../../components/modals/FullUserInformationModal';
+import FullUserInformationModal from '../../components/Modals/FullUserInformationModal';
 
 const Dashboard = observer(() => {
   const { userStore, appliesStore, treeStore } = useStores();
