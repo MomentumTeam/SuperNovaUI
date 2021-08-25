@@ -24,7 +24,7 @@ const Header = ({notifications, setTab, selectedTab}) => {
           onClick={(e) => op.current.toggle(e)}
         >
           {
-            notifications.length > 0 &&
+            notifications?.length > 0 &&
             <Badge
               value={notifications.length}
               style={{position: 'relative', top: '1.2rem', left: '1.2rem'}}

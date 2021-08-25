@@ -186,6 +186,7 @@
   .display-flex
   .p-field.w50:last-child {
   margin-right: 10px;
+  border-radius: 10px;
 }
 .p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-field select,
 .p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-field .p-dropdown,

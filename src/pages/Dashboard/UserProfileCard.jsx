@@ -1,7 +1,7 @@
 import blankProfilePic from '../../assets/images/blankProfile.png';
 import '../../assets/css/local/pages/dashboard.css';
 
-const UserProfileCard = ({ user, isUserApprovel }) => (
+const UserProfileCard = ({ user, isUserApprovel, openFullDetailsModal }) => (
   <div className='personal-information-wrap'>
     <div className='display-flex personal-information-inner'>
       {isUserApprovel &&
@@ -65,6 +65,7 @@ const UserProfileCard = ({ user, isUserApprovel }) => (
           className='btn-green-gradient btn-full-details'
           type='button'
           title='פרטים מלאים'
+          onClick={openFullDetailsModal}
         >
           פרטים מלאים
         </button>

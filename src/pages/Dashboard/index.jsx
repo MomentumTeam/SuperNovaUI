@@ -9,9 +9,11 @@ import '../../assets/css/local/pages/dashboard.min.css';
 import UserProfileCard from './UserProfileCard';
 import { useStores } from '../../hooks/use-stores';
 import { USER_TYPE } from '../../constants';
+import FullUserInformationModal from '../../components/modals/FullUserInformationModal';
 
 const Dashboard = observer(() => {
   const { userStore, appliesStore, treeStore } = useStores();
+  const [isFullUserInfoModalOpen, setIsFullUserInfoModalOpen] = useState(false);
 
   const user = toJS(userStore.user);
 
@@ -22,6 +24,14 @@ const Dashboard = observer(() => {
     }
   }, [userStore.user, appliesStore, treeStore]);
 
+  const openFullDetailsModal = () => {
+    setIsFullUserInfoModalOpen(true);
+  }
+
+  const closeFullDetailsModal = () => {
+    setIsFullUserInfoModalOpen(false);
+  }
+
   return (
     <>
       <div className='main-inner-item main-inner-item2'>
@@ -29,7 +39,8 @@ const Dashboard = observer(() => {
           <div className='display-flex title-wrap'>
             <h2>פרטים אישיים</h2>
           </div>
-          <UserProfileCard user={user} isUserApprovel={user?.type !== USER_TYPE.SOLDIER && user?.type !== USER_TYPE.UNRECOGNIZED} />
+          <UserProfileCard user={user} isUserApprovel={user?.type !== USER_TYPE.SOLDIER && user?.type !== USER_TYPE.UNRECOGNIZED} openFullDetailsModal={openFullDetailsModal} />
+          <FullUserInformationModal user={user} isOpen={isFullUserInfoModalOpen} closeFullDetailsModal={closeFullDetailsModal} />
           <div className='content-unit-wrap'>
           {user?.type === USER_TYPE.SOLDIER || user?.type === USER_TYPE.UNRECOGNIZED 
           ?
