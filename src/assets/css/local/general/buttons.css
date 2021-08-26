@@ -68,7 +68,7 @@
 }
 
 .btn-change-view-chart {
-  background-image: url(../images/buttons/change-view-chart.svg);
+  background-image: url(../../../images/buttons/change-view-chart.svg);
   background-size: 44px;
   width: 60px;
   background-position: bottom;
@@ -76,13 +76,13 @@
 }
 
 .btn-change-view-chart:hover, .btn-change-view-chart:focus {
-  background-image: url(../images/buttons/change-view-chart-blue.svg);
+  background-image: url(../../../images/buttons/change-view-chart-blue.svg);
   box-shadow: 0;
   border-radius: 10px;
 }
 
 .btn-humburger {
-  background-image: url(../images/buttons/hamburger.svg);
+  background-image: url(../../../images/buttons/hamburger.svg);
   background-size: 40px;
   margin-right: 10px;
   background-position: bottom;
@@ -94,7 +94,7 @@
 
 .moreBtnwrap .p-button.p-component.more-btn {
   background: inherit;
-  background-image: url(../images/buttons/more-btn.svg);
+  background-image: url(../../../images/buttons/more-btn.svg);
   background-size: 5px;
   margin-right: 10px;
   background-repeat: no-repeat;
@@ -113,7 +113,7 @@
 .moreBtnwrap .p-button.p-component.more-btn:hover, .moreBtnwrap .p-button.p-component.more-btn:focus {
   background: inherit;
   background-color: transparent;
-  background-image: url(../images/buttons/more-btn-hover.svg);
+  background-image: url(../../../images/buttons/more-btn-hover.svg);
   background-repeat: no-repeat;
   background-position: center;
   background-size: 5px;
@@ -150,7 +150,7 @@
 }
 
 .btn-notification {
-  background-image: url(../images/buttons/notification.png);
+  background-image: url(../../../images/buttons/notification.png);
   background-size: 33px;
 }
 
@@ -159,34 +159,34 @@
 }
 
 .btn-search-wite {
-  background-image: url(../images/buttons/search-wite.svg);
+  background-image: url(../../../images/buttons/search-wite.svg);
   background-size: 19px;
 }
 
 .btn-print {
-  background-image: url(../images/buttons/print.svg);
+  background-image: url(../../../images/buttons/print.svg);
   background-size: 27px;
 }
 
 .btn-export {
-  background-image: url(../images/buttons/export.svg);
+  background-image: url(../../../images/buttons/export.svg);
   background-size: 26px;
 }
 
 .btn-filter {
-  background-image: url(../images/buttons/filter.svg);
+  background-image: url(../../../images/buttons/filter.svg);
   background-size: 17px;
 }
 
 .btn-table-list {
-  background-image: url(../images/buttons/table-icon-list.svg);
+  /* background-image: url(../../../images/buttons/table-icon-list.svg); */
   background-size: 24px;
 }
 
 .btn-upload-img {
   width: 32px;
   height: 32px;
-  background-image: url(../images/buttons/upload-img.svg);
+  background-image: url(../../../images/buttons/upload-img.svg);
   background-size: 14px;
   background-color: #fff;
   border-radius: 50%;
@@ -201,7 +201,7 @@
 }
 
 .logout-btn-wrap .logout-btn {
-  background-image: url(../images/logout.svg);
+  background-image: url(../../../images/logout.svg);
   background-repeat: no-repeat;
   background-position: center;
   background-size: 23px;

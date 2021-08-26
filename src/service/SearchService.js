@@ -1,5 +1,6 @@
 import axiosApiInstance from '../config/axios';
 import { apiBaseUrl } from '../constants/index';
+
 export const searchEntitiesByFullName = async (fullName) => {
   const response = await axiosApiInstance({
     method: 'get',

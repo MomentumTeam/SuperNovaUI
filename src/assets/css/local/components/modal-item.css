@@ -288,7 +288,7 @@
 }
 
 .p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-button.p-component.OpeningHierarchy {
-  background-image: url(../../../images/buttons/hierarchy.svg);
+  /* background-image: url(../../images/buttons/hierarchy.svg); */
   background-size: 24px;
   background-repeat: no-repeat;
   background-position: center;
@@ -363,7 +363,7 @@
 
 .p-dialog .p-dialog-content .btn-back::before {
   content: "";
-  background-image: url(../../../images/select.svg);
+  /* background-image: url(../../images/select.svg); */
   background-repeat: no-repeat;
   background-position: center;
   background-size: 9px;
@@ -531,7 +531,7 @@
 
 .p-dialog .p-button.btn-before::before {
   content: "";
-  background-image: url(../../../images/buttons/microsoftexcel.svg);
+  /* background-image: url(../../images/buttons/microsoftexcel.svg); */
   background-repeat: no-repeat;
   background-position: center;
   background-size: 23px;
@@ -571,7 +571,7 @@
 }
 
 .p-dialog.dialogClass1 .p-dialog-header .p-dialog-title::before {
-  background-image: url(../../../images/actions-icon1.svg);
+  /* background-image: url(../../images/actions-icon1.svg); */
   background-size: 16px;
 }
 
@@ -580,7 +580,7 @@
 }
 
 .p-dialog.dialogClass2 .p-dialog-header .p-dialog-title::before {
-  background-image: url(../../../images/actions-icon2.svg);
+  /* background-image: url(../../images/actions-icon2.svg); */
   background-size: 25px;
 }
 
@@ -589,7 +589,7 @@
 }
 
 .p-dialog.dialogClass3 .p-dialog-header .p-dialog-title::before {
-  background-image: url(../../../images/actions-icon3.svg);
+  /* background-image: url(../../images/actions-icon3.svg); */
   background-size: 23px;
 }
 
@@ -681,7 +681,7 @@
 }
 
 .p-dialog.dialogClass4 .p-dialog-header .p-dialog-title::before {
-  background-image: url(../../../images/actions-icon4.svg);
+  /* background-image: url(../../images/actions-icon4.svg); */
   background-size: 23px;
 }
 
@@ -690,7 +690,7 @@
 }
 
 .p-dialog.dialogClass5 .p-dialog-header .p-dialog-title::before {
-  background-image: url(../../../images/actions-icon5.svg);
+  /* background-image: url(../../images/actions-icon5.svg); */
   background-size: 27px;
 }
 
@@ -703,7 +703,7 @@
 }
 
 .p-dialog.dialogClass6 .p-dialog-header .p-dialog-title::before {
-  background-image: url(../../../images/actions-icon6.svg);
+  /* background-image: url(../../images/actions-icon6.svg); */
   background-size: 26px;
 }
 
@@ -743,6 +743,7 @@
 
 .p-dialog.dialogClass7 .p-dialog-content {
   padding-top: 0px;
+  border-radius: 10px;
 }
 
 .p-dialog.dialogClass7 .p-dialog-content .userpic-wrap {
@@ -868,7 +869,7 @@
 }
 
 .p-dialog.dialogClass9 .p-dialog-header .p-dialog-title::before {
-  background-image: url(../../../images/actions-icon9.svg);
+  /* background-image: url(../../images/actions-icon9.svg); */
   background-size: 25px;
 }
 
@@ -1091,7 +1092,7 @@
 
 .p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode .p-treenode-content .p-treenode-label::before {
   content: "";
-  background-image: url(../../../images/icon-label1.svg);
+  /* background-image: url(../../images/icon-label1.svg); */
   background-repeat: no-repeat;
   background-position: center;
   background-size: 32px;
@@ -1133,7 +1134,7 @@
 
 .p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode .p-treenode-content .p-treenode-label p.number::before {
   content: "";
-  background-image: url(../../../images/aside-btn4.svg);
+  /* background-image: url(../../images/aside-btn4.svg); */
   background-repeat: no-repeat;
   background-position: center;
   background-size: 17px;
@@ -1294,7 +1295,7 @@
 
 .p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-treenode-children .p-treenode .p-treenode-content .p-treenode-label::before {
   content: "";
-  background-image: url(../../../images/icon-label2.svg);
+  /* background-image: url(../../images/icon-label2.svg); */
   background-repeat: no-repeat;
   background-position: center;
 }
@@ -1311,7 +1312,7 @@
 }
 
 .p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-treenode-children .p-treenode .p-treenode-content .p-treenode-label p.number::before {
-  background-image: url(../../../images/label-icon.svg);
+  /* background-image: url(../../images/label-icon.svg); */
   background-repeat: no-repeat;
   background-position: center;
   background-size: 17px;

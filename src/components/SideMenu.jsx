@@ -34,45 +34,6 @@ const SideMenu = () => {
           <li>
             <Link
               className={
-                'aside-item-btn aside-item-btn2 ' +
-                (pageClicked === 'menu2' ? 'active' : '')
-              }
-              onClick={toggleMenu('menu2')}
-              title='Home'
-              to='/'
-            >
-              <span className='for-screnReader'>Home</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              className={
-                'aside-item-btn aside-item-btn3 ' +
-                (pageClicked === 'menu3' ? 'active' : '')
-              }
-              onClick={toggleMenu('menu3')}
-              title='Home'
-              to='/'
-            >
-              <span className='for-screnReader'>Home</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              className={
-                'aside-item-btn aside-item-btn4 ' +
-                (pageClicked === 'menu4' ? 'active' : '')
-              }
-              onClick={toggleMenu('menu4')}
-              title='Home'
-              to='/'
-            >
-              <span className='for-screnReader'>Home</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              className={
                 'aside-item-btn aside-item-btn5 ' +
                 (pageClicked === 'menu5' ? 'active' : '')
               }
