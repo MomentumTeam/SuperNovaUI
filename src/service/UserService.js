@@ -9,6 +9,13 @@ export const getUser = async (userID) => {
   return userInfo.data;
 };
 
+export const getUserType = async (userID) => {
+  const userInfo = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/approver/getUserType/${userID}`
+  );
+  return userInfo.data;
+};
+
 export const getUsers = async () => {
   const users = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/searchOG/`);
   return users;
