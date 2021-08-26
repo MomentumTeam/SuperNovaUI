@@ -5,6 +5,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { InputTextarea } from 'primereact/inputtextarea';
 import Hierarchy from "./Hierarchy";
 import Approver from './Approver';
+import Entity from './Entity';
 // import { assignRoleToEntityRequest } from '../../service/AppliesService';
 import { useStores } from '../../hooks/use-stores';
 import { toJS } from 'mobx';
@@ -73,19 +74,7 @@ const ApproverForm = forwardRef((props, ref) => {
                 <Dropdown {...register("approverType")} value={approverType} inputId="2011" required options={approverTypes} onChange={handleApprover} placeholder="גורם מאשר ראשוני"  />
             </div>
         </div>
-        <div className="p-fluid-item">
-            <button className="btn-underline" onClick={setCurrentUser} type="button" title="עבורי">עבורי</button>
-            <div className="p-field">
-                <label htmlFor="2012"><span className="required-field">*</span>משתמש בתפקיד</label>
-                <InputText {...register("user")} id="2012" type="text" required placeholder="משתמש בתפקיד" />
-            </div>
-        </div>
-        <div className="p-fluid-item">
-            <div className="p-field">
-                <label htmlFor="2013"><span className="required-field">*</span>מ"א</label>
-                <InputText {...register("personalNumber")} id="2013" type="text" required placeholder="מ''א" />
-            </div>
-        </div>
+        <Entity setValue={setValue} name="entity"/>
         <div className="p-fluid-item">
             <Hierarchy setValue={setValue} name="hierarchy" />
         </div>
