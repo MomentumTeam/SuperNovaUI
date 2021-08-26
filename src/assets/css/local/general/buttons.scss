@@ -18,7 +18,8 @@ $linkColor0: #2979f4;
     }
 }
 
-.btn-green-gradient {
+.btn-green-gradient,
+.p-button.p-component.btn-green-gradient {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -90,6 +91,10 @@ $linkColor0: #2979f4;
     background-size: 40px;
     margin-right: 10px;
     background-position: bottom;
+    &:hover,
+    &:focus {
+        box-shadow: 0 0 0 0.2rem #eeeff0;
+    }
 }
 
 .moreBtnwrap {
@@ -151,6 +156,10 @@ $linkColor0: #2979f4;
 .btn-notification {
     background-image: url(../images/buttons/notification.png);
     background-size: 33px;
+    &:hover,
+    &:focus {
+        box-shadow: 0 0 0 0.2rem #eeeff0;
+    }
 }
 
 .btn-search-wite {
@@ -171,6 +180,20 @@ $linkColor0: #2979f4;
 .btn-filter {
     background-image: url(../images/buttons/filter.svg);
     background-size: 17px;
+}
+
+.btn-table-list {
+    background-image: url(../images/buttons/table-icon-list.svg);
+    background-size: 24px;
+}
+
+.btn-upload-img {
+    width: 32px;
+    height: 32px;
+    background-image: url(../images/buttons/upload-img.svg);
+    background-size: 14px;
+    background-color: #fff;
+    border-radius: 50%;
 }
 
 .logout-btn-wrap {

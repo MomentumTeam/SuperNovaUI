@@ -185,3 +185,20 @@ main {
         }
     }
 }
+.p-scrolltop.p-link {
+    background: rgba(1, 169, 190, 0.8) !important;
+    &:hover,
+    &:focus {
+        background: rgba(1, 169, 190, 1) !important;
+    }
+}
+
+.carousel {
+    //direction: inherit;
+    .card {
+        direction: ltr;
+    }
+    .p-carousel .p-carousel-indicators {
+        display: none;
+    }
+}

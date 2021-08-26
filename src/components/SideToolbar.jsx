@@ -1,4 +1,5 @@
 import Toolbar from './Toolbar';
+import Actions from '../components/Actions';
 import List from './List';
 
 import '../assets/css/local/components/aside.min.css';
@@ -20,7 +21,7 @@ const SideToolbar = ({ recentApplies, lastRequests, lastMessages }) => (
       </div>
       <div className='actions-inner-wrap'>
         <h2>פעולות</h2>
-        <Toolbar />
+        <Actions />
       </div>
       <div className='requests-inner-wrap'>
         <div className='display-flex title-wrap'>

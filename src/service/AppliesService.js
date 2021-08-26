@@ -104,6 +104,15 @@ export const createEntityRequest = async (applyProperties) => {
   return response.data;
 };
 
+export const createApproverRequest = async (applyProperties) => {
+  const response = await axiosApiInstance.post(
+    `${apiBaseUrl}/api/requests/createApproverRequest`,
+    applyProperties
+  );
+
+  return response.data;
+};
+
 export const assignRoleToEntityRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/requests/assignRoleToEntityRequest`,
