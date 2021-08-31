@@ -23,13 +23,13 @@ const Entities = observer(() => {
             
             switch(tabId) {
                 case('entities'):
-                    entityStore.loadEntitiesByOG(userOGId);
+                    entityStore.loadEntitiesUnderOG(userOGId);
                     break;
                 case('roles'):
-                    entityStore.loadRolesByOG(userOGId);
+                    entityStore.loadRolesUnderOG(userOGId);
                     break;
                 case('hierarchy'):
-                    entityStore.loadHierarchyByOG(userOGId);
+                    entityStore.loadChildrenOfOG(userOGId);
                     break;
                 default:
                     break;

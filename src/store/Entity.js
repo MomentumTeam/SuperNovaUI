@@ -1,14 +1,20 @@
 import { action, makeAutoObservable, observable } from 'mobx';
-import { getEntitiesUnderOG , getRolesUnderOG, getHierarchyUnderOG } from '../service/EntityService';
+import { getEntitiesUnderOG , getRolesUnderOG, getChildrenOfOG } from '../service/EntityService';
 
 export default class EntityStore {
     entities = [];
+    roles = [];
+    groups = [];
 
     constructor() {
         makeAutoObservable(this, {
           entities: observable,
+          roles:observable,
+          groups:observable,
           loadEntityByEntity: action,
-          loadEntityByOG: action,
+          loadEntitiesUnderOG: action,
+          loadRolesUnderOG: action,
+          loadChildrenOfOG: action,
         });
       }
     
@@ -16,21 +22,21 @@ export default class EntityStore {
         this.entities = entity;
       }
     
-      async loadEntitiesByOG(rootId) {
+      async loadEntitiesUnderOG(rootId) {
         const entities = await getEntitiesUnderOG(rootId);
 
         this.entities = entities;
       }
 
-      async loadRolesByOG(rootId) {
-        const entities = await getRolesUnderOG(rootId);
+      async loadRolesUnderOG(rootId) {
+        const roles = await getRolesUnderOG(rootId);
 
-        this.entities = entities;
+        this.roles = roles;
       }
 
-      async loadHierarchyByOG(rootId) {
-        const entities = await getHierarchyUnderOG(rootId);
+      async loadChildrenOfOG(rootId) {
+        const groups = await getChildrenOfOG(rootId);
 
-        this.entities = entities;
+        this.groups = groups;
       }
 }

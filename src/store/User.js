@@ -19,9 +19,9 @@ export default class UserStore {
         })
     }
 
-    async fetchUserInfo(userID) {
-        const userInfo = await Promise.all([getUser(userID), getUserType(userID)]);
-        this.user = {...userInfo[0], type: userInfo[1].type};
+    async fetchUserInfo() {
+        const userInfo = await getUser();
+        this.user = userInfo;
     }
 
     async fetchUserNotifications() {
@@ -30,11 +30,11 @@ export default class UserStore {
     }
 
     async loadUsers() {
-        this.users = await getUsers();
+        // this.users = await getUsers();
     }
 
     async getMyPicture() {
-      const myPicture = await getPictureByEntityId();
-      this.picture = myPicture;
+    const myPicture = await getPictureByEntityId();
+    this.picture = myPicture;
     }
 }
