@@ -3,7 +3,7 @@ import { apiBaseUrl } from '../constants/api';
 
 export const searchOG = async (hierarchyAndName) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/searchOG`,
+    `${apiBaseUrl}/api/kartoffel/groups/search`,
     {
       params: {
         hierarchyAndName,
@@ -16,7 +16,7 @@ export const searchOG = async (hierarchyAndName) => {
 
 export const searchEntitiesByFullName = async (fullName) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/searchEntitiesByFullName`,
+    `${apiBaseUrl}/api/kartoffel/entities/search`,
     {
       params: {
         fullName,
@@ -27,9 +27,9 @@ export const searchEntitiesByFullName = async (fullName) => {
   return response.data;
 };
 
-export const getEntityByIdNumber = async (idNumber) => {
+export const getEntityByIdentifier = async (identifier) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/getEntityByIdNumber/:${idNumber}`
+    `${apiBaseUrl}/api/kartoffel/entities/${identifier}`
   );
 
   return response.data;
@@ -37,15 +37,15 @@ export const getEntityByIdNumber = async (idNumber) => {
 
 export const getRoleByRoleId = async (roleId) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/getRoleByRoleId/:${roleId}`
+    `${apiBaseUrl}/api/kartoffel/getRoleByRoleId/${roleId}`
   );
 
   return response.data;
 };
 
-export const getRolesUnderOG = async (id, direct) => {
+export const getRolesUnderOG = async (roleId, direct) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/getRolesUnderOG/:${id}`,
+    `${apiBaseUrl}/api/kartoffel/roles/${roleId}`,
     {
       params: {
         direct,
@@ -58,7 +58,7 @@ export const getRolesUnderOG = async (id, direct) => {
 
 export const getEntityByRoleId = async (roleId) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/getEntityByRoleId/:${roleId}`
+    `${apiBaseUrl}/api/kartoffel/entities/role/${roleId}`
   );
 
   return response.data;
@@ -66,7 +66,7 @@ export const getEntityByRoleId = async (roleId) => {
 
 export const getEntityByMongoId = async (id) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/getEntityByMongoId/:${id}`
+    `${apiBaseUrl}/api/kartoffel/entities/${id}`
   );
 
   return response.data;
@@ -74,7 +74,7 @@ export const getEntityByMongoId = async (id) => {
 
 export const getChildrenOfOG = async (id) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/getChildrenOfOG/:${id}`
+    `${apiBaseUrl}/api/kartoffel/groups/${id}/children`
   );
 
   return response.data;
@@ -82,7 +82,7 @@ export const getChildrenOfOG = async (id) => {
 
 export const getEntitiesUnderOG = async (id, direct) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/getEntitiesUnderOG/:${id}`,
+    `${apiBaseUrl}/api/kartoffel/entities/groups/${id}`,
     {
       params: {
         direct,

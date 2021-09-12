@@ -4,7 +4,7 @@ import { apiBaseUrl } from '../constants/index';
 export const searchEntitiesByFullName = async (fullName) => {
   const response = await axiosApiInstance({
     method: 'get',
-    url: `${apiBaseUrl}/api/kartoffel/searchEntitiesByFullName?fullName=${fullName}`,
+    url: `${apiBaseUrl}/api/kartoffel/entities/search?fullName=${fullName}`,
     headers: {
       'content-type': 'application/json',
     },
@@ -12,10 +12,10 @@ export const searchEntitiesByFullName = async (fullName) => {
   return response.data;
 };
 
-export const getEntityByIdNumber = async (idNumber) => {
+export const getEntityByIdentifier = async (identifier) => {
   const response = await axiosApiInstance({
     method: 'get',
-    url: `${apiBaseUrl}/api/kartoffel/getEntityByIdNumber/${idNumber}`,
+    url: `${apiBaseUrl}/api/kartoffel/entities/${identifier}`,
     headers: {
       'content-type': 'application/json',
     },
@@ -23,10 +23,10 @@ export const getEntityByIdNumber = async (idNumber) => {
   return response.data;
 };
 
-export const searchOG = async (hierarchyAndName) => {
+export const searchOG = async (nameAndHierarchy) => {
   const response = await axiosApiInstance({
     method: 'get',
-    url: `${apiBaseUrl}/api/kartoffel/searchOG?hierarchyAndName=${hierarchyAndName}`,
+    url: `${apiBaseUrl}/api/kartoffel/groups/search?nameAndHierarchy=${nameAndHierarchy}`,
     headers: {
       'content-type': 'application/json',
     },

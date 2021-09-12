@@ -3,7 +3,7 @@ import { apiBaseUrl } from '../constants/api';
 
 export const getMyNotifications = async (rangeStart = 1, rangeEnd = 7) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/notifications/getMyNotifications?from=${rangeStart}&to=${rangeEnd}&startTime=0`
+    `${apiBaseUrl}/api/notifications?from=${rangeStart}&to=${rangeEnd}&startTime=0`
   );
   return response.data;
 };

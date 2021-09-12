@@ -1,9 +1,9 @@
 import axiosApiInstance from '../config/axios';
 import { apiBaseUrl } from '../constants/api';
 
-export const getMyApplies = async (from = 1, to = 7) => {
+export const getMyApplies = async (from , to ) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/getMyRequests`,
+    `${apiBaseUrl}/api/requests/myRequests`,
     {
       params: {
         from,
@@ -19,7 +19,7 @@ export const getMyApplies = async (from = 1, to = 7) => {
 
 export const getRequestsAsCommander = async (from, to) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/getRequestsAsCommander`,
+    `${apiBaseUrl}/api/requests/requestsByCommander`,
     {
       params: {
         from,
@@ -31,25 +31,12 @@ export const getRequestsAsCommander = async (from, to) => {
   return response.data;
 };
 
-export const getRequestsByCommander = async (id, from, to) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/renameRoleRequest/:${id}`,
-    {
-      params: {
-        from,
-        to,
-      }
-    }
-  );
-
-  return response.data;
-};
 
 //for security
 
 export const getAllRequests = async (from, to) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/getAllRequests`,
+    `${apiBaseUrl}/api/requests/`,
     {
       params: {
         from,
@@ -63,7 +50,7 @@ export const getAllRequests = async (from, to) => {
 
 export const getRequestsSubmittedBy = async (id, from, to) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/getRequestsSubmittedBy/:${id}`,
+    `${apiBaseUrl}/api/requests/submittedBy/${id}`,
     {
       params: {
         from,
@@ -79,7 +66,7 @@ export const getRequestsSubmittedBy = async (id, from, to) => {
 
 export const createRoleRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/requests/createRoleRequest`,
+    `${apiBaseUrl}/api/requests/roleRequest`,
     applyProperties
   );
 
@@ -88,7 +75,7 @@ export const createRoleRequest = async (applyProperties) => {
 
 export const createOGRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/requests/createOGRequest`,
+    `${apiBaseUrl}/api/requests/ogRequest`,
     applyProperties
   );
 
@@ -97,7 +84,7 @@ export const createOGRequest = async (applyProperties) => {
 
 export const createEntityRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/requests/createEntityRequest`,
+    `${apiBaseUrl}/api/requests/entityRequest`,
     applyProperties
   );
 
