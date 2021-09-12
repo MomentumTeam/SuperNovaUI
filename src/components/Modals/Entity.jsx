@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { searchEntitiesByFullName, getEntityByIdNumber } from '../../service/KartoffelService';
+import { searchEntitiesByFullName, getEntityByIdentifier } from '../../service/KartoffelService';
 import { AutoComplete } from 'primereact/autocomplete';
 import { InputText } from 'primereact/inputtext';
 import { useStores } from '../../hooks/use-stores';
@@ -19,7 +19,7 @@ const Entity = ({ setValue, name }) => {
     const searchEntityByNumber = async (event) => {
         setValue(name, "")
         setSelectedEntity(null);
-        const result = await getEntityByIdNumber(event.query)
+        const result = await getEntityByIdentifier(event.query)
         console.log(result)
         setSelectedEntity(result);
         setValue(name, result)
