@@ -1,5 +1,5 @@
 import { action, makeAutoObservable, observable } from 'mobx';
-import { getUser, getUsers, getPictureByEntityId, getUserType} from '../service/UserService';
+import { getUser, getUsers, getPictureByEntityId, getUserType } from '../service/UserService';
 import { getMyNotifications } from '../service/NotificationService';
 
 export default class UserStore {
@@ -16,7 +16,7 @@ export default class UserStore {
             fetchUserNotifications: action,
             loadUsers: action,
             getMyPicture: action,
-        })
+        });
     }
 
     async fetchUserInfo() {
@@ -34,7 +34,7 @@ export default class UserStore {
     }
 
     async getMyPicture() {
-    const myPicture = await getPictureByEntityId();
-    this.picture = myPicture;
+        const myPicture = await getPictureByEntityId();
+        this.picture = myPicture;
     }
 }
