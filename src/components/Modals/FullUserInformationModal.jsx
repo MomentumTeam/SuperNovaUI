@@ -31,7 +31,7 @@ const FullUserInformationModal = ({user, isOpen, closeFullDetailsModal}) => (
                 <div className="p-fluid-item">
                             <div className="p-field">
                                 <label>תאריך לידה</label>
-                                <InputText id="2012" type="text" disabled style={{opacity: 0.6,backgroundColor: '#f7f5fd', border: '1px solid #8390a9'}} placeholder={user?.birthdate} />
+                                <InputText id="2012" type="text" disabled style={{opacity: 0.6,backgroundColor: '#f7f5fd', border: '1px solid #8390a9'}} placeholder={new Date(user?.birthDate).toDateString()} />
                             </div>
                         </div>
                 <div className="p-fluid-item">

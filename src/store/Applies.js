@@ -13,6 +13,7 @@ import {
   renameRoleRequest,
   deleteRoleRequest,
   deleteOGRequest,
+  getRequestsAsCommander
 } from '../service/AppliesService';
 
 export default class AppliesStore {
@@ -45,6 +46,11 @@ export default class AppliesStore {
   async getAllApplies(from, to) {
     //only approvers can get all.
     const myApplies = await getAllRequests(from, to);
+    this.applies = myApplies.requests;
+  }
+
+  async getCommanderApplies(from, to) {
+    const myApplies = await getRequestsAsCommander(from, to);
     this.applies = myApplies.requests;
   }
 

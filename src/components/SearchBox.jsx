@@ -2,7 +2,7 @@ import { AutoComplete } from 'primereact/autocomplete';
 import { useState } from 'react';
 import {
   searchEntitiesByFullName,
-  getEntityByIdNumber,
+  getEntityByIdentifier,
   searchOG,
 } from '../service/SearchService';
 
@@ -19,7 +19,7 @@ const SearchBox = ({ loadDataByEntity, loadDataByOG }) => {
     if (!query.trim().length) {
       filteredResults = [];
     } else if (query.match('[0-9]+') && query.length >= 6) {
-      filteredResults = await getEntityByIdNumber(event.query);
+      filteredResults = await getEntityByIdentifier(event.query);
       filteredResults = [filteredResults];
     } else {
       filteredResults = await searchEntitiesByFullName(event.query);

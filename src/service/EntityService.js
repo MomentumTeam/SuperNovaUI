@@ -3,10 +3,10 @@ import { apiBaseUrl } from "../constants/index";
 
 export const getEntitiesUnderOG = async (ogId) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/getEntitiesUnderOG/:${ogId}`,
+    `${apiBaseUrl}/api/kartoffel/entities/groups/${ogId}`,
     {
       params: {
-        direct: false,
+        direct: true,  //if secuirty : false
       },
     }
   );
@@ -16,7 +16,7 @@ export const getEntitiesUnderOG = async (ogId) => {
 
 export const getRolesUnderOG = async (ogId) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/GetRolesUnderOG/:${ogId}`,
+    `${apiBaseUrl}/api/kartoffel/roles/group/${ogId}`,
     {
       params: {
         direct: false,
@@ -27,9 +27,9 @@ export const getRolesUnderOG = async (ogId) => {
   return response.data.roles;
 };
 
-export const getHierarchyUnderOG = async (ogId) => {
+export const getChildrenOfOG = async (ogId) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/GetChildrenOfOG/:${ogId}`,
+    `${apiBaseUrl}/api/kartoffel/groups/${ogId}/children`,
     {
       params: {
         direct: false,

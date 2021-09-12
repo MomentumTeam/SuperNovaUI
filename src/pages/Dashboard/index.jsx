@@ -16,12 +16,17 @@ const Dashboard = observer(() => {
   const [isFullUserInfoModalOpen, setIsFullUserInfoModalOpen] = useState(false);
 
   const user = toJS(userStore.user);
+  const applies = toJS(appliesStore.applies);
   const isUserApprovel = user?.type !== USER_TYPE.SOLDIER && user?.type !== USER_TYPE.UNRECOGNIZED;
 
   useEffect(() => {
     if (userStore.user) {
-      appliesStore.loadApplies();
-      treeStore.loadTreeByEntity(userStore.user);
+      if(isUserApprovel) {
+        appliesStore.getCommanderApplies();
+      } else {
+        appliesStore.loadApplies();
+        treeStore.loadTreeByEntity(userStore.user);
+      }
     }
   }, [userStore.user, appliesStore, treeStore]);
 
@@ -45,7 +50,7 @@ const Dashboard = observer(() => {
           <div className='content-unit-wrap'>
           {isUserApprovel 
           ?
-            <AprovelTable />
+            <AprovelTable applies={applies} />
           : 
           <div className='content-unit-inner content-unit-inner-before'>
             <div className='search-row'>
