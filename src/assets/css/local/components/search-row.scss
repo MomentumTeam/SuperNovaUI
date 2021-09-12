@@ -18,127 +18,153 @@ $linkColor0: #2979f4;
     @media (max-width: 700px) {
         padding: 17px 10px 8px 10px;
     }
+}
 
-    .search-row-inner {
+.search-row-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    @media (max-width: 700px) {
+        padding-top: 25px;
+        position: relative;
+    }
+
+    .search-item {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        width: 100%;
         @media (max-width: 700px) {
-            padding-top: 25px;
-            position: relative;
+            flex-direction: column;
         }
 
-        .search-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
+        .btn-search-wite {
             @media (max-width: 700px) {
-                flex-direction: column;
+                position: absolute;
+                top: -14px;
+                left: -9px;
+            }
+        }
+
+        .autocomplete-wrap {
+            width: 30%;
+
+            @media (max-width: 700px) {
+                width: 100%;
+                padding-bottom: 23px;
             }
 
-            .btn-search-wite {
-                @media (max-width: 700px) {
-                    position: absolute;
-                    top: -14px;
-                    left: -9px;
-                }
-            }
-
-            .autocomplete-wrap {
-                width: 30%;
-
-                @media (max-width: 700px) {
-                    width: 100%;
-                    padding-bottom: 23px;
-                }
-
-                .p-inputwrapper {
-                    width: 100%;
-                    input {
-                        font-size: 14px;
-                        font-weight: 300;
-                        color: $textColor0;
-                        box-sizing: border-box;
-                        padding: 0px 10px;
-                        text-align: right;
-                        height: 35px;
-                        width: 100%;
-                        border: 1px solid #e7e8ea;
-                        border-radius: 8px;
-                        background-color: $bgcolor0;
-                        font-family: "Heebo", sans-serif;
-                        margin: 0px;
-                        display: flex;
-                        align-items: center;
-
-                        &:hover,
-                        &:focus {
-                            border: 1px solid #5b7184;
-                        }
-                    }
-                }
-                .p-float-label > label {
-                    z-index: 1;
-                    left: inherit;
-                    right: 0.5rem;
-                    font-size: 15px;
+            .p-inputwrapper {
+                width: 100%;
+                input {
+                    font-size: 14px;
+                    font-weight: 300;
                     color: $textColor0;
-                    padding-top: 2px;
-                    font-weight: 400;
-                }
-
-                .p-float-label input:focus ~ label,
-                .p-float-label input.p-filled ~ label,
-                .p-float-label textarea:focus ~ label,
-                .p-float-label textarea.p-filled ~ label,
-                .p-float-label .p-inputwrapper-focus ~ label,
-                .p-float-label .p-inputwrapper-filled ~ label {
-                    top: -8px;
-                    font-weight: 500;
-                    font-size: 12px;
-                    @media (max-width: 700px) {
-                        right: 0rem;
-                    }
-                }
-                .p-autocomplete {
+                    box-sizing: border-box;
+                    padding: 0px 10px;
+                    text-align: right;
+                    height: 35px;
                     width: 100%;
+                    border: 1px solid #e7e8ea;
+                    border-radius: 8px;
+                    background-color: $bgcolor0;
+                    font-family: "Heebo", sans-serif;
+                    margin: 0px;
+                    display: flex;
+                    align-items: center;
 
-                    input {
+                    &:hover,
+                    &:focus {
+                        border: 1px solid #5b7184;
+                    }
+                }
+            }
+            .p-float-label > label {
+                z-index: 1;
+                left: inherit;
+                right: 0.5rem;
+                font-size: 15px;
+                color: $textColor0;
+                padding-top: 2px;
+                font-weight: 400;
+            }
+
+            .p-float-label input:focus ~ label,
+            .p-float-label input.p-filled ~ label,
+            .p-float-label textarea:focus ~ label,
+            .p-float-label textarea.p-filled ~ label,
+            .p-float-label .p-inputwrapper-focus ~ label,
+            .p-float-label .p-inputwrapper-filled ~ label {
+                top: -8px;
+                font-weight: 500;
+                font-size: 12px;
+                @media (max-width: 700px) {
+                    right: 0rem;
+                }
+            }
+            .p-autocomplete {
+                width: 100%;
+
+                input {
+                    border: 0px;
+                    &:hover,
+                    &:focus {
                         border: 0px;
-                        &:hover,
-                        &:focus {
-                            border: 0px;
-                        }
                     }
-                    .p-autocomplete-multiple-container .p-autocomplete-input-token {
-                        padding: 0;
+                }
+                .p-autocomplete-multiple-container .p-autocomplete-input-token {
+                    padding: 0;
+                }
+
+                .p-autocomplete-multiple-container {
+                    font-size: 14px;
+                    font-weight: 300;
+                    color: $textColor0;
+                    box-sizing: border-box;
+                    padding: 0px 0px 10px;
+                    text-align: right;
+                    height: 35px;
+                    width: 100%;
+                    border: 1px solid #e7e8ea;
+                    border-radius: 8px;
+                    background-color: $bgcolor0;
+                    font-family: "Heebo", sans-serif;
+                    margin: 0px;
+                    display: flex;
+                    align-items: center;
+
+                    &:hover,
+                    &:focus {
+                        border: 1px solid #5b7184;
                     }
+                    .p-autocomplete-token {
+                        margin-top: 4px;
+                    }
+                }
+            }
+        }
+    }
 
-                    .p-autocomplete-multiple-container {
-                        font-size: 14px;
-                        font-weight: 300;
-                        color: $textColor0;
-                        box-sizing: border-box;
-                        padding: 0px 0px 10px;
-                        text-align: right;
-                        height: 35px;
-                        width: 100%;
-                        border: 1px solid #e7e8ea;
-                        border-radius: 8px;
-                        background-color: $bgcolor0;
-                        font-family: "Heebo", sans-serif;
-                        margin: 0px;
-                        display: flex;
-                        align-items: center;
+    &.style2 {
+        .btn-search-wite {
+            background-image: url(../images/search.svg);
+            // @media (max-width: 700px) {
+            //     position: absolute;
+            //     top: -14px;
+            //     left: -9px;
+            // }
+        }
 
-                        &:hover,
-                        &:focus {
-                            border: 1px solid #5b7184;
-                        }
-                        .p-autocomplete-token {
-                            margin-top: 4px;
-                        }
+        .autocomplete-wrap {
+            .p-inputwrapper {
+                input {
+                    color: $textColor0;
+                    border: 1px solid #e7e8ea;
+                    background-color: #f7f7f7;
+
+                    &:hover,
+                    &:focus {
+                        border: 1px solid #5b7184;
                     }
                 }
             }

@@ -176,9 +176,10 @@ legend {
             color: rgba(32, 25, 97, 0.5);
             display: block;
             font-weight: 400;
-            padding-top: 2px;
             .required-field {
                 color: #f68340;
+                display: inline-block;
+                padding-left: 3px;
             }
         }
 
@@ -212,6 +213,21 @@ legend {
                 box-shadow: 0 0 0 0.2rem #a6d5fa;
             }
 
+            &:disabled {
+                background-color: #f7f5fd;
+                border: 1px solid #8390a9;
+                cursor: none;
+                &:hover,
+                &:focus {
+                    border: 1px solid #8390a9;
+                    box-shadow: 0 0 0 0rem #a6d5fa;
+                }
+
+                &:focus {
+                    box-shadow: 0 0 0 0rem #a6d5fa;
+                }
+            }
+
             &::placeholder {
                 color: $textColor0;
                 opacity: 1; /* Firefox */
@@ -233,7 +249,7 @@ legend {
             .p-dropdown-trigger {
                 width: 11px;
                 .p-dropdown-trigger-icon {
-                    font-size: 14px;
+                    font-size: 12px;
                     color: $textColor0;
                 }
             }
@@ -254,6 +270,7 @@ legend {
             margin: 0px;
             display: flex;
             align-items: center;
+            resize: none;
 
             &:hover,
             &:focus {
@@ -269,6 +286,44 @@ legend {
                 color: $textColor0;
                 opacity: 1; /* Firefox */
                 font-family: "Heebo", sans-serif;
+            }
+        }
+
+        &.p-field-green {
+            .p-dropdown-label {
+                background-color: rgba(115, 202, 113, 0.01);
+            }
+            .p-component {
+                color: rgba(115, 202, 113, 1);
+                border: 1px solid rgba(115, 202, 113, 0.5);
+                background-color: rgba(115, 202, 113, 0.1);
+                &::placeholder {
+                    color: rgba(115, 202, 113, 1);
+                }
+            }
+        }
+
+        &.p-field-red {
+            .p-dropdown-label {
+                background-color: rgba(255, 0, 0, 0.01);
+            }
+            .p-component {
+                color: rgba(255, 0, 0, 1);
+                border: 1px solid rgba(255, 0, 0, 0.3);
+                background-color: rgba(255, 0, 0, 0.1);
+                &::placeholder {
+                    color: rgba(255, 0, 0, 1);
+                }
+            }
+        }
+
+        &.p-field-blue {
+            .p-dropdown-label {
+                background-color: rgba(227, 222, 247, 0.1);
+            }
+            .p-component {
+                border: 1px solid rgba(227, 222, 247, 1);
+                background-color: rgba(227, 222, 247, 0.5);
             }
         }
     }

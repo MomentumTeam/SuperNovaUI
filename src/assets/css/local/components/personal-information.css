@@ -1,0 +1,137 @@
+.personal-information-wrap .personal-information-inner {
+  background-color: rgba(227, 222, 247, 0.3);
+  border-radius: 30px;
+  padding: 11px 50px 14px 38px;
+  position: relative;
+}
+
+@media (max-width: 1630px) {
+  .personal-information-wrap .personal-information-inner {
+    padding: 20px 15px 14px 15px;
+  }
+}
+
+@media (max-width: 1440px) {
+  .personal-information-wrap .personal-information-inner {
+    padding: 40px 15px 14px 15px;
+  }
+}
+
+@media (max-width: 1366px) {
+  .personal-information-wrap .personal-information-inner {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 750px) {
+  .personal-information-wrap .personal-information-inner {
+    flex-direction: column;
+  }
+}
+
+.personal-information-wrap .personal-information-inner .confirms {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: transparent linear-gradient(180deg, #f68340 60%, #feb557 100%) 0% 0% no-repeat padding-box;
+  width: 82px;
+  height: 68px;
+  border-radius: 0px 30px 0px 102px;
+  padding: 11px 11px 0px 0px;
+}
+
+.personal-information-wrap .personal-information-inner .confirms h3 {
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 18px;
+  text-align: center;
+  font-weight: 500;
+  width: 44px;
+}
+
+.personal-information-wrap .personal-information-inner .personal-information-item .userpic-wrap {
+  padding-left: 10px;
+}
+
+.personal-information-wrap .personal-information-inner .personal-information-item .userpic-wrap img {
+  width: 92px;
+}
+
+@media (max-width: 1366px) {
+  .personal-information-wrap .personal-information-inner .personal-information-item .userpic-wrap img {
+    width: 90px;
+  }
+}
+
+.personal-information-wrap .personal-information-inner .personal-information-item dl {
+  margin: 0;
+  padding: 0;
+  padding-left: 10px;
+}
+
+.personal-information-wrap .personal-information-inner .personal-information-item dl dt {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 700;
+  padding-bottom: 15px;
+}
+
+@media (max-width: 1560px) {
+  .personal-information-wrap .personal-information-inner .personal-information-item dl dt {
+    font-size: 14px;
+    line-height: 18px;
+    padding-bottom: 10px;
+  }
+}
+
+@media (max-width: 750px) {
+  .personal-information-wrap .personal-information-inner .personal-information-item dl dt {
+    padding-bottom: 5px;
+  }
+}
+
+.personal-information-wrap .personal-information-inner .personal-information-item dl dd {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 400;
+  padding-bottom: 15px;
+}
+
+.personal-information-wrap .personal-information-inner .personal-information-item dl dd.no-wrap {
+  white-space: nowrap;
+}
+
+@media (max-width: 1560px) {
+  .personal-information-wrap .personal-information-inner .personal-information-item dl dd {
+    font-size: 14px;
+    line-height: 18px;
+    padding-bottom: 10px;
+  }
+}
+
+@media (max-width: 750px) {
+  .personal-information-wrap .personal-information-inner .personal-information-item dl dd {
+    padding-bottom: 5px;
+  }
+}
+
+.personal-information-wrap .personal-information-inner .personal-information-item dl dd a {
+  text-decoration: underline;
+}
+
+.personal-information-wrap .personal-information-inner .personal-information-item dl dd a:hover, .personal-information-wrap .personal-information-inner .personal-information-item dl dd a:focus {
+  text-decoration: none;
+}
+
+@media (max-width: 1440px) {
+  .personal-information-wrap .personal-information-inner .personal-information-item .btn-full-details {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+  }
+}

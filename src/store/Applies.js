@@ -4,6 +4,7 @@ import {
   getAllRequests,
   createRoleRequest,
   createOGRequest,
+  createApproverRequest,
   createEntityRequest,
   assignRoleToEntityRequest,
   editEntityRequest,
@@ -26,6 +27,7 @@ export default class AppliesStore {
       createRoleApply: action,
       createOGApply: action,
       createEntityApply: action,
+      createApproverApply: action,
       assignRoleToEntityApply: action,
       editEntityApply: action,
       disconectRoleFromEntityApply: action,
@@ -60,6 +62,11 @@ export default class AppliesStore {
   async createOGApply(applyProperties) {
     const newOGApply = await createOGRequest(applyProperties);
     this.applies.push(newOGApply);
+  }
+
+  async createApproverApply(applyProperties) {
+    const newApproverApply = await createApproverRequest(applyProperties);
+    this.applies.push(newApproverApply);
   }
 
   async createEntityApply(applyProperties) {

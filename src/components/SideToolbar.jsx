@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { toJS } from 'mobx';
 
 import Toolbar from './Toolbar';
+import Actions from '../components/Actions';
 import List from './List';
 import Notifications from '../components/Notifications';
 import { useStores } from '../hooks/use-stores';
@@ -21,7 +22,7 @@ const SideToolbar = ({ recentApplies }) => {
       <Notifications notifications={notifications} />
       <div className='actions-inner-wrap'>
         <h2>פעולות</h2>
-        <Toolbar />
+        <Actions />
       </div>
       <div className='requests-inner-wrap'>
         <div className='display-flex title-wrap'>

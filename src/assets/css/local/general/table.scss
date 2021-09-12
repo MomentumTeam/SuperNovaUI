@@ -168,6 +168,34 @@ $linkColor0: #2979f4;
                     font-weight: 500;
                     border-top: none;
                     border: 0;
+                    .color-red {
+                        color: #ff3e3e;
+                    }
+
+                    .btn-status {
+                        font-size: 16px;
+                        line-height: 20px;
+                        color: #3fbc9d;
+                        width: 58px;
+                        height: 28px;
+                        font-weight: 500;
+                        background-color: rgba(63, 188, 157, 0.1);
+                        border-radius: 19px;
+                        border: 0;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        margin: 0 auto;
+
+                        &.btn-rejected {
+                            color: #f68340;
+                            background-color: rgba(246, 131, 64, 0.1);
+                        }
+                        &.btn-waiting {
+                            color: #00aac0;
+                            background-color: rgba(0, 170, 192, 0.1);
+                        }
+                    }
 
                     .moreBtnwrap .p-button.p-component.more-btn {
                         margin: 0;
@@ -217,6 +245,16 @@ $linkColor0: #2979f4;
                 }
             }
         }
+    }
+}
+
+.p-component-overlay {
+    background-color: rgba(255, 255, 255, 0.6);
+    transition-duration: 0.2s;
+
+    .pi-spinner:before {
+        content: "\e926";
+        color: #00aac0;
     }
 }
 /////////////////////////////////////////.tableStyle end/////////////////////////////
