@@ -4,6 +4,19 @@ import { apiBaseUrl } from '../constants/api';
 
 //GET
 
+export const getMyRequests = async (from,to) => {
+  const response = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/requests`,
+    {
+      params: {
+        from,
+        to
+    }
+  });
+
+  return response.data;
+};
+
 export const getRequestById = async (id) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/requests/${id}`);

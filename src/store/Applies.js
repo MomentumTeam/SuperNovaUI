@@ -1,5 +1,6 @@
 import { action, makeAutoObservable, observable } from 'mobx';
 import {
+  getMyRequests,
   getRequestById,
   getAllRequests,
   getRequestsByPerson,
@@ -49,8 +50,8 @@ export default class AppliesStore {
 
   // GET
 
-  async loadMyApplies(userId, from, to) {
-    const myApplies = await getRequestsByPerson(userId, from, to);
+  async loadMyApplies(from, to) {
+    const myApplies = await getMyRequests(from, to);
     this.applies = myApplies.requests;
   }
 
@@ -60,17 +61,17 @@ export default class AppliesStore {
   }
 
   async getApplyById(id) {
-    const myApplies = await getApplyById(id);
+    const myApplies = await getRequestById(id);
     // this.applies = myApplies.requests;
   }
 
   async getAppliesByPerosn(identifier, from, to) {
-    const myApplies = await getAppliesByPerosn(identifier, from, to);
+    const myApplies = await getRequestsByPerson(identifier, from, to);
     // this.applies = myApplies.requests;
   }
 
   async getApplyBySerialNumber(serialNumber) {
-    const myApplies = await getApplyBySerialNumber(serialNumber);
+    const myApplies = await getRequestBySerialNumber(serialNumber);
     // this.applies = myApplies.requests;
   }
 
