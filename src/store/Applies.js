@@ -1,19 +1,23 @@
 import { action, makeAutoObservable, observable } from 'mobx';
 import {
-  getMyApplies,
+  getMyRequests,
+  getRequestById,
   getAllRequests,
+  getRequestsByPerson,
+  getRequestBySerialNumber,
+  searchRequestsBySubmitterDisplayName,
   createRoleRequest,
-  createOGRequest,
-  createApproverRequest,
-  createEntityRequest,
   assignRoleToEntityRequest,
-  editEntityRequest,
-  disconectRoleFromEntityRequest,
+  createOGRequest,
+  createNewApproverRequest,
+  createEntityRequest,
   renameOGRequest,
   renameRoleRequest,
+  editEntityRequest,
   deleteRoleRequest,
   deleteOGRequest,
-  getRequestsAsCommander
+  disconectRoleFromEntityRequest,
+  updateApproverDecision
 } from '../service/AppliesService';
 
 export default class AppliesStore {
@@ -22,37 +26,62 @@ export default class AppliesStore {
   constructor() {
     makeAutoObservable(this, {
       applies: observable,
-      loadApplies: action,
+      loadMyApplies: action,
       getAllApplies: action,
+      getAppliesByPerosn: action,
+      getApplyById: action,
+      getApplyBySerialNumber: action,
+      searchAppliesBySubmitterDisplayName: action,
       createRoleApply: action,
       createOGApply: action,
-      createEntityApply: action,
-      createApproverApply: action,
       assignRoleToEntityApply: action,
-      editEntityApply: action,
-      disconectRoleFromEntityApply: action,
+      createNewApproverApply: action,
+      createEntityApply: action,
       renameOGApply: action,
       renameRoleApply: action,
+      editEntityApply: action,
       deleteRoleApply: action,
       deleteOGApply: action,
+      disconectRoleFromEntityApply: action,
+      updateApplyDecision: action
+
     });
   }
 
-  async loadApplies() {
-    const myApplies = await getMyApplies();
+  // GET
+
+  async loadMyApplies(from, to) {
+    const myApplies = await getMyRequests(from, to);
     this.applies = myApplies.requests;
   }
 
-  async getAllApplies(from, to) {
-    //only approvers can get all.
-    const myApplies = await getAllRequests(from, to);
-    this.applies = myApplies.requests;
+  async getAllApplies(approvementStatus, from, to) {
+    const myApplies = await getAllRequests(approvementStatus, from, to);
+    // this.applies = myApplies.requests;
   }
 
-  async getCommanderApplies(from, to) {
-    const myApplies = await getRequestsAsCommander(from, to);
-    this.applies = myApplies.requests;
+  async getApplyById(id) {
+    const myApplies = await getRequestById(id);
+    // this.applies = myApplies.requests;
   }
+
+  async getAppliesByPerosn(identifier, from, to) {
+    const myApplies = await getRequestsByPerson(identifier, from, to);
+    // this.applies = myApplies.requests;
+  }
+
+  async getApplyBySerialNumber(serialNumber) {
+    const myApplies = await getRequestBySerialNumber(serialNumber);
+    // this.applies = myApplies.requests;
+  }
+
+  async searchAppliesBySubmitterDisplayName(displayName, from, to) {
+    const myApplies = await searchRequestsBySubmitterDisplayName(displayName, from, to);
+    // this.applies = myApplies.requests;
+  }
+
+
+  // POST
 
   async createRoleApply(applyProperties) {
     const newRoleApply = await createRoleRequest(applyProperties);
@@ -64,16 +93,6 @@ export default class AppliesStore {
     this.applies.push(newOGApply);
   }
 
-  async createApproverApply(applyProperties) {
-    const newApproverApply = await createApproverRequest(applyProperties);
-    this.applies.push(newApproverApply);
-  }
-
-  async createEntityApply(applyProperties) {
-    const newEntityApply = await createEntityRequest(applyProperties);
-    this.applies.push(newEntityApply);
-  }
-
   async assignRoleToEntityApply(applyProperties) {
     const newAssignRoleToEntityApply = await assignRoleToEntityRequest(
       applyProperties
@@ -81,15 +100,14 @@ export default class AppliesStore {
     this.applies.push(newAssignRoleToEntityApply);
   }
 
-  async editEntityApply(applyProperties) {
-    const newEditEntityApply = await editEntityRequest(applyProperties);
-    this.applies.push(newEditEntityApply);
+  async createNewApproverApply(applyProperties) {
+    const newApproverApply = await createNewApproverRequest(applyProperties);
+    this.applies.push(newApproverApply);
   }
 
-  async disconectRoleFromEntityApply(applyProperties) {
-    const newDisconectRoleFromEntityApply =
-      await disconectRoleFromEntityRequest(applyProperties);
-    this.applies.push(newDisconectRoleFromEntityApply);
+  async createEntityApply(applyProperties) {
+    const newEntityApply = await createEntityRequest(applyProperties);
+    this.applies.push(newEntityApply);
   }
 
   async renameOGApply(applyProperties) {
@@ -102,6 +120,11 @@ export default class AppliesStore {
     this.applies.push(newRenameRoleApply);
   }
 
+  async editEntityApply(applyProperties) {
+    const newEditEntityApply = await editEntityRequest(applyProperties);
+    this.applies.push(newEditEntityApply);
+  }
+
   async deleteRoleApply(applyProperties) {
     const newDeleteRoleApply = await deleteRoleRequest(applyProperties);
     this.applies.push(newDeleteRoleApply);
@@ -110,5 +133,19 @@ export default class AppliesStore {
   async deleteOGApply(applyProperties) {
     const newDeleteOGApplyApply = await deleteOGRequest(applyProperties);
     this.applies.push(newDeleteOGApplyApply);
+  }
+
+  async disconectRoleFromEntityApply(applyProperties) {
+    const newDisconectRoleFromEntityApply =
+      await disconectRoleFromEntityRequest(applyProperties);
+    this.applies.push(newDisconectRoleFromEntityApply);
+  }
+
+  // PUT
+
+  async updateApplyDecision(applyProperties) {
+    const updatedRequest =
+      await updateApproverDecision(applyProperties);
+    //TODO- update Decision in state
   }
 }
