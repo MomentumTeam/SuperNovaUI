@@ -1,12 +1,12 @@
 import { createContext } from 'react';
 import CountryStore from './Country';
-import EntityStore from './Entity';
+import TablesStore from './Tables';
 import AppliesStore from './Applies';
 import TreeStore from './Tree';
 import UserStore from './User';
 
 const stores = {
-  entityStore: new EntityStore(),
+  tablesStore: new TablesStore(),
   countryStore: new CountryStore(),
   userStore: new UserStore(),
   appliesStore: new AppliesStore(),

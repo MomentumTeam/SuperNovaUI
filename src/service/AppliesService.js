@@ -26,7 +26,7 @@ export const getRequestById = async (id) => {
 
 export const getAllRequests = async (approvementStatus, from, to) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/all/${approvementStatus}`,
+    `${apiBaseUrl}/api/requests/status/${approvementStatus}`,
     {
       params: {
         from,
@@ -37,11 +37,13 @@ export const getAllRequests = async (approvementStatus, from, to) => {
   return response.data;
 };
 
-export const getRequestsByPerson = async (identifier, from, to) => {
+export const getRequestsByPerson = async (identifier,personType,personInfoType, from, to) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/requests/person/${identifier}`,
     {
       params: {
+        personType,
+        personInfoType,
         from,
         to,
       }
@@ -58,11 +60,12 @@ export const getRequestBySerialNumber = async (serialNumber) => {
   return response.data;
 };
 
-export const searchRequestsBySubmitterDisplayName = async (displayName, from, to) => {
+export const searchRequestsBySubmitterDisplayName = async (displayName,personType, from, to) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/submitterDisplayName/${displayName}`,
+    `${apiBaseUrl}/api/requests/displayName/${displayName}`,
     {
       params: {
+        personType,
         from,
         to,
       }

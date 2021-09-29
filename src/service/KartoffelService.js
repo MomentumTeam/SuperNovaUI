@@ -29,7 +29,7 @@ export const searchEntitiesByFullName = async (fullName) => {
 
 export const getEntityByIdentifier = async (identifier) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/entities/${identifier}`
+    `${apiBaseUrl}/api/kartoffel/entities/identifier/${identifier}`
   );
 
   return response.data;
@@ -37,7 +37,7 @@ export const getEntityByIdentifier = async (identifier) => {
 
 export const getRoleByRoleId = async (roleId) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/getRoleByRoleId/${roleId}`
+    `${apiBaseUrl}/api/kartoffel/roles/${roleId}`
   );
 
   return response.data;
@@ -45,7 +45,7 @@ export const getRoleByRoleId = async (roleId) => {
 
 export const getRolesUnderOG = async (roleId, direct) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/roles/${roleId}`,
+    `${apiBaseUrl}/api/kartoffel/roles/group/${roleId}`,
     {
       params: {
         direct,
@@ -66,13 +66,13 @@ export const getEntityByRoleId = async (roleId) => {
 
 export const getEntityByMongoId = async (id) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/entities/${id}`
+    `${apiBaseUrl}/api/kartoffel/entities/search/${id}`
   );
 
   return response.data;
 };
 
-export const getChildrenOfOG = async (id) => {
+export const getOGChildren = async (id) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/kartoffel/groups/${id}/children`
   );

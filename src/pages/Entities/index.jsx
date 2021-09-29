@@ -10,7 +10,7 @@ import AddEntity from './AddEntity';
 import Footer from './Footer';
 
 const Entities = observer(() => {
-    const { entityStore, userStore } = useStores();
+    const { tablesStore, userStore } = useStores();
     const [ tabId, setTabId ] = useState('entities');
 
     useEffect(() => {
@@ -23,19 +23,19 @@ const Entities = observer(() => {
             
             switch(tabId) {
                 case('entities'):
-                    entityStore.loadEntitiesUnderOG(userOGId);
+                tablesStore.loadEntitiesUnderOG(userOGId);
                     break;
                 case('roles'):
-                    entityStore.loadRolesUnderOG(userOGId);
+                tablesStore.loadRolesUnderOG(userOGId);
                     break;
                 case('hierarchy'):
-                    entityStore.loadChildrenOfOG(userOGId);
+                tablesStore.loadOGChildren(userOGId);
                     break;
                 default:
                     break;
             }
         }
-    }, [tabId, userStore, entityStore])
+    }, [tabId, userStore, tablesStore])
 
     return (
         <>
@@ -45,10 +45,10 @@ const Entities = observer(() => {
                     <div className="content-unit-wrap">
                         <div className="content-unit-inner">
                             <div className="display-flex search-row-wrap-flex">
-                                <SearchEntity data={toJS(entityStore.entities)} />
+                                <SearchEntity data={toJS(tablesStore.entities)} />
                                 <AddEntity />
                             </div>
-                            <Table data={toJS(entityStore.entities)} tableType={tabId} />
+                            <Table data={toJS(tablesStore.entities)} tableType={tabId} />
                             <Footer />
                         </div>
                     </div>
