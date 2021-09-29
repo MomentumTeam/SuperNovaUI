@@ -1,5 +1,5 @@
-import SearchBox from "../../components/SearchBox";
-import { useStores } from "../../hooks/use-stores";
+import SearchBox from '../../components/SearchBox';
+import { useStores } from '../../context/use-stores';
 
 const SearchEntity = ({ data }) => {
   const { tablesStore } = useStores();

@@ -1,6 +1,9 @@
 import { action, makeAutoObservable, observable } from 'mobx';
-import { getUser, getUsers, getPictureByEntityId, getUserType} from '../service/UserService';
+import { getPictureByEntityId } from '../service/UserService';
 import { getMyNotifications } from '../service/NotificationService';
+import { Base64 } from 'js-base64';
+import { tokenName } from '../constants/api';
+import cookies from 'js-cookie';
 
 export default class UserStore {
     user = null;
@@ -16,13 +19,29 @@ export default class UserStore {
             fetchUserNotifications: action,
             loadUsers: action,
             getMyPicture: action,
-        })
+        });
     }
 
-    async fetchUserInfo() {
-        const userInfo = await getUser();
-        this.user = userInfo;
+    setUserInfo() {
+        const user = this.parseToken();
+        this.user = user;
     }
+
+    parseToken() {
+         try {
+             const token = cookies.get(tokenName);
+             const parts = token.split('.');
+             if (parts.length !== 3) {
+                console.error('token malford');
+             }
+
+             let user = JSON.parse(Base64.decode(parts[1]));
+             return user;
+         } catch (err) {
+            console.log(err);
+         }
+    }
+
 
     async fetchUserNotifications() {
         const userNotifications = await getMyNotifications();
@@ -34,7 +53,7 @@ export default class UserStore {
     }
 
     async getMyPicture() {
-    const myPicture = await getPictureByEntityId();
-    this.picture = myPicture;
+        const myPicture = await getPictureByEntityId();
+        this.picture = myPicture;
     }
 }

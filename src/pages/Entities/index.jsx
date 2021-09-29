@@ -3,8 +3,8 @@ import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 import '../../assets/css/local/pages/listUsersPage.min.css';
 import Table from '../../components/Table';
-import { useStores } from '../../hooks/use-stores';
-import Header   from './Header';
+import { useStores } from '../../context/use-stores';
+import Header from './Header';
 import SearchEntity from './SearchEntity';
 import AddEntity from './AddEntity';
 import Footer from './Footer';
@@ -15,10 +15,10 @@ const Entities = observer(() => {
 
     useEffect(() => {
         userStore.fetchUserNotifications(userStore.user?.id);
-    }, [userStore])
+    }, [userStore]);
 
     useEffect(() => {
-        if(tabId && userStore.user) {
+        if (tabId && userStore.user) {
             const userOGId = userStore.user.directGroup;
             
             switch(tabId) {
@@ -39,8 +39,8 @@ const Entities = observer(() => {
 
     return (
         <>
-            <div className="main-inner-item main-inner-item2 main-inner-item2-table">
-                <div className="main-inner-item2-content">
+            <div className='main-inner-item main-inner-item2 main-inner-item2-table'>
+                <div className='main-inner-item2-content'>
                     <Header setTab={setTabId} selectedTab={tabId} />
                     <div className="content-unit-wrap">
                         <div className="content-unit-inner">
@@ -54,8 +54,8 @@ const Entities = observer(() => {
                     </div>
                 </div>
             </div>
-    </>
-  );
+        </>
+    );
 });
 
 export default Entities;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from 'primereact/button';
 import '../assets/css/local/components/modal-item.min.css';
-import { useStores } from '../hooks/use-stores';
+import { useStores } from '../context/use-stores';
 
 const Toolbar = () => {
   const [isDialogShown, setIsDialogShown] = useState(false);
@@ -54,43 +54,41 @@ const Toolbar = () => {
   const submitRoleRequest = () => {
     appliesStore.createRoleApply({
       // 'submittedBy': '507f1f77bcf86cd799439011',
-      'status': 0,
-      'commanderDecision': {
-        'approverId': '507f1f77bcf86cd799439011',
-        'approverDecision': 0
+      status: 0,
+      commanderDecision: {
+        approverId: '507f1f77bcf86cd799439011',
+        approverDecision: 0,
       },
-      'securityDecision': {
-        'approverId': '507f1f77bcf86cd799439011',
-        'approverDecision': 0
+      securityDecision: {
+        approverId: '507f1f77bcf86cd799439011',
+        approverDecision: 0,
       },
-      'commanders': [
-        '507f1f77bcf86cd799439011'
-      ],
-      'kartoffelStatus': {
-        'status': 0,
-        'message': 'Hello',
-        'createdId': '507f1f77bcf86cd799439011'
+      commanders: ['507f1f77bcf86cd799439011'],
+      kartoffelStatus: {
+        status: 0,
+        message: 'Hello',
+        createdId: '507f1f77bcf86cd799439011',
       },
-      'adStatus': {
-        'status': 0,
-        'message': 'Hello'
+      adStatus: {
+        status: 0,
+        message: 'Hello',
       },
-      'kartoffelParams': {
-        'jobTitle': 'Hello',
-        'directGroup': 'Hello',
-        'roleId': '507f1f77bcf86cd799439011',
-        'type': 'Hello',
-        'source': 'Hello',
-        'uniqueId': '507f1f77bcf86cd799439011',
-        'mail': 'Hello',
-        'isRoleAttachable': true
+      kartoffelParams: {
+        jobTitle: 'Hello',
+        directGroup: 'Hello',
+        roleId: '507f1f77bcf86cd799439011',
+        type: 'Hello',
+        source: 'Hello',
+        uniqueId: '507f1f77bcf86cd799439011',
+        mail: 'Hello',
+        isRoleAttachable: true,
       },
-      'adParams': {
-        'samAccountName': 'Hello',
-        'ouDisplayName': 'Hello',
-        'jobTitle': 'Hello'
-      }
-    })
+      adParams: {
+        samAccountName: 'Hello',
+        ouDisplayName: 'Hello',
+        jobTitle: 'Hello',
+      },
+    });
     // appliesStore.getAllApplies(1,15)
     hideDialog();
   };

@@ -1,4 +1,4 @@
-import SideMenu from '../components/SideMenu';
+import SideMenu from '../components/Layout/SideMenu';
 
 const MainLayout = ({ children }) => {
   return (
