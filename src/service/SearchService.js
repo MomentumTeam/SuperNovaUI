@@ -14,7 +14,7 @@ export const searchEntitiesByFullName = async (fullName) => {
 };
 
 export const getEntityByIdentifier = async (identifier) => {
-  const response = await axiosApiInstanceget(
+  const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/kartoffel/entities/identifier/${identifier}`
   );
   return response.data;

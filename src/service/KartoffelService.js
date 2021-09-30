@@ -90,5 +90,5 @@ export const getEntitiesUnderOG = async (id, direct) => {
     }
   );
 
-  return response.data;
+  return response.data.entities;
 };
