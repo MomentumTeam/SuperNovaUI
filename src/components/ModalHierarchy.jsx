@@ -32,7 +32,7 @@ class ModalHierarchy extends React.Component {
         this.onHide = this.onHide.bind(this);
 
         this.searchCountry = this.searchCountry.bind(this);
-        // this.countryservice = new CountryService();
+        // this.countryservice = new CountryService(); 
         this.items = Array.from({ length: 100000 }).map((_, i) => ({ label: `Item #${i}`, value: i }));
     }
 

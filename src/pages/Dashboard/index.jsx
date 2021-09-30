@@ -10,6 +10,7 @@ import UserProfileCard from './UserProfileCard';
 import { useStores } from '../../context/use-stores';
 import { USER_TYPE } from '../../constants';
 import FullUserInformationModal from '../../components/Modals/FullUserInformationModal';
+import ExampleTree from '../../components/tree';
 
 const Dashboard = observer(() => {
     const { userStore, appliesStore, treeStore } = useStores();
@@ -17,14 +18,15 @@ const Dashboard = observer(() => {
 
     const user = toJS(userStore.user);
     const applies = toJS(appliesStore.applies);
-    const isUserApprovel = user?.type !== USER_TYPE.SOLDIER && user?.type !== USER_TYPE.UNRECOGNIZED;
+    // const isUserApprovel = user?.type !== USER_TYPE.SOLDIER && user?.type !== USER_TYPE.UNRECOGNIZED;
+    const isUserApprovel = false;
 
     useEffect(() => {
         if (userStore.user) {
             if (isUserApprovel) {
-                appliesStore.getCommanderApplies();
+                // appliesStore.getCommanderApplies();
             } else {
-                appliesStore.loadApplies();
+                // appliesStore.loadApplies();
                 treeStore.loadTreeByEntity(userStore.user);
             }
         }
@@ -37,6 +39,10 @@ const Dashboard = observer(() => {
     const closeFullDetailsModal = () => {
         setIsFullUserInfoModalOpen(false);
     };
+
+
+    const data = [{"label":"Emelie","children":[{"label":"Hunter","children":[{"label":"Alba","children":[],"expanded":true},{"label":"Felicity","children":[],"expanded":true}],"expanded":true},{"label":"Orlando","children":[],"expanded":true}],"expanded":true}]
+    console.log(JSON.stringify(toJS(treeStore.tree)))
 
     return (
         <>
@@ -73,7 +79,8 @@ const Dashboard = observer(() => {
                                     </div>
                                 </div>
                                 <div className='chart-wrap'>
-                                    <HierarchyTree data={toJS(treeStore.tree)} />
+                                    {/* <ExampleTree data={datta}/> */}
+                                    <HierarchyTree data={data} />
                                 </div>
                             </div>
                         )}
