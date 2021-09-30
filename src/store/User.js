@@ -25,6 +25,8 @@ export default class UserStore {
     setUserInfo() {
         const user = this.parseToken();
         this.user = user;
+
+        this.getMyPicture();
     }
 
     parseToken() {
