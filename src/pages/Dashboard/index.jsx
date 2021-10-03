@@ -22,7 +22,7 @@ const Dashboard = observer(() => {
     useEffect(() => {
         if (userStore.user) {
             if (isUserApprovel) {
-                appliesStore.getCommanderApplies();
+                // appliesStore.getCommanderApplies();
             } else {
                 appliesStore.loadApplies();
                 treeStore.loadTreeByEntity(userStore.user);
@@ -40,9 +40,9 @@ const Dashboard = observer(() => {
 
     return (
         <>
-            <div className='main-inner-item main-inner-item2'>
-                <div className='main-inner-item2-content'>
-                    <div className='display-flex title-wrap'>
+            <div className="main-inner-item main-inner-item2">
+                <div className="main-inner-item2-content">
+                    <div className="display-flex title-wrap">
                         <h2>פרטים אישיים</h2>
                     </div>
                     <UserProfileCard
@@ -55,13 +55,13 @@ const Dashboard = observer(() => {
                         isOpen={isFullUserInfoModalOpen}
                         closeFullDetailsModal={closeFullDetailsModal}
                     />
-                    <div className='content-unit-wrap'>
+                    <div className="content-unit-wrap">
                         {isUserApprovel ? (
                             <ApprovalTable applies={applies} />
                         ) : (
-                            <div className='content-unit-inner content-unit-inner-before'>
-                                <div className='search-row'>
-                                    <div className='search-row-inner'>
+                            <div className="content-unit-inner content-unit-inner-before">
+                                <div className="search-row">
+                                    <div className="search-row-inner">
                                         <SearchBox
                                             loadDataByEntity={async (entity) => {
                                                 await treeStore.loadTreeByEntity(entity);
@@ -72,7 +72,7 @@ const Dashboard = observer(() => {
                                         />
                                     </div>
                                 </div>
-                                <div className='chart-wrap'>
+                                <div className="chart-wrap">
                                     <HierarchyTree data={toJS(treeStore.tree)} />
                                 </div>
                             </div>

@@ -1,41 +1,41 @@
-import { useState } from "react";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
+import React, { useEffect, useState } from 'react';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 
-import { TableTypes } from '../../constants/table'
+import { TableTypes, TableIds } from '../../constants/table';
 
-import "../../assets/css/local/general/table.min.css";
+import '../../assets/css/local/general/table.min.css';
 
-const Table = ({data, tableType}) => {
+const Table = ({ data, tableType }) => {
+    const [selectedItem, setSelectedItem] = useState(null);
 
-  const [selectedCustomers, setSelectedCustomers] = useState(null);
-  const rowData = TableTypes[tableType];
+    const idColName = TableIds[tableType];
+    const rowData = TableTypes[tableType];
+
+    useEffect(() => {
+        setSelectedItem(null);
+    }, [tableType]);
 
     return (
-      <div className="table-wrapper">
-        <div className="tableStyle">
-          <div className="card">
-            <DataTable
-              value={data}
-              scrollable
-              selection={selectedCustomers}
-              onSelectionChange={(e) => setSelectedCustomers(e.value)}
-            >
-              <Column selectionMode="multiple" style={{ width: "3em" }} />
-
-              {rowData.map((col) => (
-                    <Column
-                      key={col.field}
-                      field={col.field}
-                      header={col.displayName}
-                    />
-                ))
-              }
-            </DataTable>
-          </div>
+        <div className="table-wrapper">
+            <div className="tableStyle">
+                <div className="card">
+                    <DataTable
+                        value={data}
+                        scrollable
+                        selectionMode="single"
+                        selection={selectedItem}
+                        onSelectionChange={(e) => setSelectedItem(e.value)}
+                        dataKey={idColName}
+                    >
+                        {rowData.map((col) => (
+                            <Column key={col.field} field={col.field} header={col.displayName} />
+                        ))}
+                    </DataTable>
+                </div>
+            </div>
         </div>
-      </div>
     );
-}
+};
 
 export default Table;

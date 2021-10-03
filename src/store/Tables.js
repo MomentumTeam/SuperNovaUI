@@ -26,9 +26,8 @@ export default class TablesStore {
     this.entities = entity;
   }
 
-  async loadEntitiesUnderOG(rootId) {
+  async loadEntitiesUnderOG(rootId, page = 0, pageSize = 100) {
     const entities = await getEntitiesUnderOG(rootId);
-
     this.entities = entities;
   }
 
