@@ -16,15 +16,16 @@ const Dashboard = observer(() => {
     const [isFullUserInfoModalOpen, setIsFullUserInfoModalOpen] = useState(false);
 
     const user = toJS(userStore.user);
+    const userPicture = toJS(userStore.userPicture);
     const applies = toJS(appliesStore.applies);
     const isUserApprovel = user?.type !== USER_TYPE.SOLDIER && user?.type !== USER_TYPE.UNRECOGNIZED;
 
     useEffect(() => {
         if (userStore.user) {
             if (isUserApprovel) {
-                appliesStore.getCommanderApplies();
+                // appliesStore.getCommanderApplies();
             } else {
-                appliesStore.loadApplies();
+                // appliesStore.loadApplies();
                 treeStore.loadTreeByEntity(userStore.user);
             }
         }
@@ -47,11 +48,13 @@ const Dashboard = observer(() => {
                     </div>
                     <UserProfileCard
                         user={user}
+                        userPicture={userPicture}
                         isUserApprovel={isUserApprovel}
                         openFullDetailsModal={openFullDetailsModal}
                     />
                     <FullUserInformationModal
                         user={user}
+                        userPicture={userPicture}
                         isOpen={isFullUserInfoModalOpen}
                         closeFullDetailsModal={closeFullDetailsModal}
                     />

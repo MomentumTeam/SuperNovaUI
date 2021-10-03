@@ -1,7 +1,7 @@
 import blankProfilePic from '../../assets/images/blankProfile.png';
 import '../../assets/css/local/pages/dashboard.css';
 
-const UserProfileCard = ({ user, isUserApprovel, openFullDetailsModal }) => (
+const UserProfileCard = ({ user, userPicture,isUserApprovel, openFullDetailsModal }) => (
   <div className='personal-information-wrap'>
     <div className='display-flex personal-information-inner'>
       {isUserApprovel &&
@@ -14,8 +14,8 @@ const UserProfileCard = ({ user, isUserApprovel, openFullDetailsModal }) => (
           <img
             style={{borderRadius: '50%'}}
             src={
-              user && user.picture
-                ? `data:image/jpeg;base64,${user.picture}`
+              user && userPicture
+                ? `data:image/jpeg;base64,${userPicture}`
                 : blankProfilePic
             }
             alt='userpic'
