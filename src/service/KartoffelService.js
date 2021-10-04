@@ -27,6 +27,14 @@ export const searchEntitiesByFullName = async (fullName) => {
   return response.data;
 };
 
+export const getOGById = async (id) => {
+  const response = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/kartoffel/groups/search/${id}`
+  );
+
+  return response.data;
+};
+
 export const getEntityByIdentifier = async (identifier) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/kartoffel/entities/identifier/${identifier}`

@@ -10,26 +10,30 @@ export const getUserTypeReq = async (entityId) => {
 
 export const searchApproverByDisplayNameReq = async (
   displayName,
+  type,
   from,
   to
 ) => {
   const approvers = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/approver/displayname/${displayName}`,
+    `${apiBaseUrl}/api/approvers/displayname/${displayName}`,
     {
       params: {
-        from, to
-      }
-    });
+        type,
+        from,
+        to,
+      },
+    }
+  );
   return approvers.data;
 };
 
 export const searchApproverByDomainUser = async (domainUser, type) => {
   const approvers = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/approver/domainuser/${domainUser}`,
+    `${apiBaseUrl}/api/approvers/domainuser/${domainUser}`,
     {
-      params:{
-        type
-      }
+      params: {
+        type,
+      },
     }
   );
   return approvers.data;
@@ -37,35 +41,44 @@ export const searchApproverByDomainUser = async (domainUser, type) => {
 
 export const getAllApproversReq = async (type) => {
   const allCommanderApprovers = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/approver/`,
+    `${apiBaseUrl}/api/approvers/`,
     {
       params: {
-        type
-      }
+        type,
+      },
     }
   );
   return allCommanderApprovers.data;
 };
 
-export const updateCommanderDecisionReq = async (requestId, approverDecision) => {
+export const updateCommanderDecisionReq = async (
+  requestId,
+  approverDecision
+) => {
   const response = await axiosApiInstance.put(
-    `${apiBaseUrl}/api/approver/commanderDecision/${requestId}`,
+    `${apiBaseUrl}/api/approvers/commanderDecision/${requestId}`,
     { approverDecision: approverDecision }
   );
   return response.data;
 };
 
-export const updateSecurityDecisionReq = async (requestId, approverDecision) => {
+export const updateSecurityDecisionReq = async (
+  requestId,
+  approverDecision
+) => {
   const response = await axiosApiInstance.put(
-    `${apiBaseUrl}/api/approver/securityDecision/${requestId}`,
+    `${apiBaseUrl}/api/approvers/securityDecision/${requestId}`,
     { approverDecision: approverDecision }
   );
   return response.data;
 };
 
-export const updateSuperSecurityDecisionReq = async (requestId, approverDecision) => {
+export const updateSuperSecurityDecisionReq = async (
+  requestId,
+  approverDecision
+) => {
   const response = await axiosApiInstance.put(
-    `${apiBaseUrl}/api/approver/superSecurityDecision/${requestId}`,
+    `${apiBaseUrl}/api/approvers/superSecurityDecision/${requestId}`,
     { approverDecision: approverDecision }
   );
   return response.data;
