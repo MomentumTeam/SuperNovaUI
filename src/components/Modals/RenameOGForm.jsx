@@ -94,7 +94,7 @@ const EditOGForm = forwardRef((props, ref) => {
             <Hierarchy
               setValue={setCurrentHierarchyFunction}
               name="currentHierarchy"
-              initialValue={hierarchyByIdentifier}
+              value={hierarchyByIdentifier}
             />
           </div>
         </div>
