@@ -20,12 +20,12 @@ const TableActions = () => {
       },
     },
     {
-      label: 'עריכת תפקיד',
+      label: 'עריכה',
       command: () => {
         toast.current.show({
           severity: 'success',
-          summary: 'עריכת תפקיד',
-          detail: 'Data Editing a role',
+          summary: 'עריכה',
+          detail: 'Data Editing',
           life: 3000,
         });
       },
@@ -36,7 +36,7 @@ const TableActions = () => {
         toast.current.show({
           severity: 'success',
           summary: 'מחיקה',
-          detail: 'Data Request permission',
+          detail: 'Data deletion',
           life: 3000,
         });
       },

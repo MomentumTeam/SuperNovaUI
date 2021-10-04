@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 
+import TableFieldTemplate from './TableFieldTemplate'
 import { TableTypes } from "../../constants/table";
 import { pageSize } from '../../constants/api';
-
 import '../../assets/css/local/general/table.min.css';
 
 const Table = ({data, tableType, isLoading, onScroll}) => {
@@ -15,15 +15,6 @@ const Table = ({data, tableType, isLoading, onScroll}) => {
 
   const loadingText = () => {
     return <span className="loading-text"></span>;
-  };
-
-  const fieldBodyTemplate = (data, props) => {
-    return (
-      <React.Fragment>
-        <span className="p-column-title">{props.header}</span>
-        {data[props.field]}
-      </React.Fragment>
-    );
   };
 
   useEffect(() => {
@@ -54,13 +45,14 @@ const Table = ({data, tableType, isLoading, onScroll}) => {
                   field={col.field}
                   header={col.displayName}
                   loadingBody={loadingText}
-                  body={fieldBodyTemplate}
+                  body={TableFieldTemplate}
                 />
               ))}
-              <Column loadingBody={loadingText} body={fieldBodyTemplate} />
+              <Column loadingBody={loadingText} body={TableFieldTemplate} />
             </DataTable>
           </div>
         </div>
+      </div>
     );
 };
 
