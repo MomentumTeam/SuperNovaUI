@@ -1,12 +1,12 @@
 import axiosApiInstance from '../config/axios';
 import { apiBaseUrl } from '../constants/api';
 
-export const searchOG = async (hierarchyAndName) => {
+export const searchOG = async (nameAndHierarchy) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/kartoffel/groups/search`,
     {
       params: {
-        hierarchyAndName,
+        nameAndHierarchy,
       },
     }
   );

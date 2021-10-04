@@ -191,3 +191,12 @@ export const updateApproverDecision = async (id,approverDecision,approverType) =
 
   return response.data;
 };
+
+export const changeRoleHierarchyRequest = async (data) => {
+  const response = await axiosApiInstance.put(
+    `${apiBaseUrl}/api/requests/request/role/og`,
+    data
+  );
+
+  return response.data;
+};

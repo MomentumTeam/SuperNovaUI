@@ -3,7 +3,7 @@ import ModalHierarchy from '../ModalHierarchy';
 import { searchOG } from '../../service/KartoffelService';
 import { AutoComplete } from 'primereact/autocomplete';
 
-const Hierarchy = ({setValue, name}) => {
+const Hierarchy = ({setValue, name, initialValue, fieldName = 'היררכיה'}) => {
 
     const [ogSuggestions, setOgSuggestions] = useState([]);
     const [selectedOg, setSelectedOg] = useState(null);
@@ -17,9 +17,9 @@ const Hierarchy = ({setValue, name}) => {
         <>
             {/* <ModalHierarchy /> */}
                 <div className="p-field">
-                    <label htmlFor="2020"> <span className="required-field">*</span>היררכיה</label>
+                    <label htmlFor="2020"> <span className="required-field">*</span>{fieldName}</label>
                     <AutoComplete
-                        value={selectedOg}
+                        value={initialValue || selectedOg}
                         suggestions={ogSuggestions}
                         completeMethod={searchOg}
                         id="2020" type="text" field="name"
@@ -28,7 +28,7 @@ const Hierarchy = ({setValue, name}) => {
                             setValue(name, e.value )
                         }}
                         required
-                        placeholder="היררכיה" />
+                        placeholder={fieldName} />
                 </div>
         </>
     )
