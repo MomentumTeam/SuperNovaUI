@@ -1,12 +1,12 @@
 import axiosApiInstance from '../config/axios';
 import { apiBaseUrl } from '../constants/api';
 
-export const searchOG = async (hierarchyAndName) => {
+export const searchOG = async (nameAndHierarchy) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/kartoffel/groups/search`,
     {
       params: {
-        hierarchyAndName,
+        nameAndHierarchy,
       },
     }
   );
@@ -22,6 +22,14 @@ export const searchEntitiesByFullName = async (fullName) => {
         fullName,
       },
     }
+  );
+
+  return response.data;
+};
+
+export const getOGById = async (id) => {
+  const response = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/kartoffel/groups/search/${id}`
   );
 
   return response.data;
