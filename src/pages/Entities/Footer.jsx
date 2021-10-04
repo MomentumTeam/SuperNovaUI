@@ -19,19 +19,19 @@ const Footer = () => {
   return (
     <div className='display-flex btns-wrap'>
       <div className='display-flex inner-flex'>
-        <button className='btn btn-print' title='Print' type='button'>
+        {/* <button className='btn btn-print' title='Print' type='button'>
           <span className='for-screnReader'>Print</span>
         </button>
         <button className='btn btn-export' title='Export' type='button'>
           <span className='for-screnReader'>Export</span>
-        </button>
+        </button> */}
         <div className='p-fluid'>
           <div className='p-fluid-item'>
             <div className='display-flex pad0 p-field'>
-              <label htmlFor='6000'>
+              {/* <label htmlFor='6000'>
                 נבחרו:
                 <span>0</span>
-              </label>
+              </label> */}
               <Dropdown
                 inputId='6000'
                 value={selectedState}

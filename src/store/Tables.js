@@ -26,21 +26,18 @@ export default class TablesStore {
     this.entities = entity;
   }
 
-  async loadEntitiesUnderOG(rootId) {
-    const entities = await getEntitiesUnderOG(rootId);
-
-    this.entities = entities;
+  async loadEntitiesUnderOG(id, page, pageSize, append = false) {
+    const entities = await getEntitiesUnderOG({ id, page, pageSize });
+    this.entities =  (append)? [...this.entities, ...entities]:entities;
   }
 
-  async loadRolesUnderOG(rootId) {
-    const roles = await getRolesUnderOG(rootId);
-
-    this.roles = roles;
+  async loadRolesUnderOG(id, page, pageSize, append = false) {
+    const roles = await getRolesUnderOG({ id, page, pageSize });
+    this.roles = (append)? [...this.roles, ...roles]: roles;
   }
 
-  async loadOGChildren(rootId) {
-    const groups = await getOGChildren(rootId);
-
-    this.groups = groups;
+  async loadOGChildren(id, page, pageSize, append = false) {
+    const groups = await getOGChildren({ id, page, pageSize });
+    this.groups = append ? [...this.groups, ...groups] : groups;
   }
 }
