@@ -5,7 +5,7 @@ import { Column } from "primereact/column";
 import { TableTypes } from "../../constants/table";
 import { pageSize } from '../../constants/api';
 
-import "../../assets/css/local/general/table.min.css";
+import '../../assets/css/local/general/table.min.css';
 
 const Table = ({data, tableType, isLoading, onScroll}) => {
 
@@ -61,8 +61,7 @@ const Table = ({data, tableType, isLoading, onScroll}) => {
             </DataTable>
           </div>
         </div>
-      </div>
     );
-}
+};
 
 export default Table;

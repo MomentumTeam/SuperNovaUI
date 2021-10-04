@@ -15,16 +15,13 @@ export const searchOG = async (nameAndHierarchy) => {
 };
 
 export const searchEntitiesByFullName = async (fullName) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/entities/search`,
-    {
-      params: {
-        fullName,
-      },
-    }
-  );
+    const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/entities/search`, {
+        params: {
+            fullName,
+        },
+    });
 
-  return response.data;
+    return response.data;
 };
 
 export const getOGById = async (id) => {
@@ -36,19 +33,15 @@ export const getOGById = async (id) => {
 };
 
 export const getEntityByIdentifier = async (identifier) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/entities/identifier/${identifier}`
-  );
+    const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/entities/identifier/${identifier}`);
 
-  return response.data;
+    return response.data;
 };
 
 export const getRoleByRoleId = async (roleId) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/roles/${roleId}`
-  );
+    const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/roles/${roleId}`);
 
-  return response.data;
+    return response.data;
 };
 
 export const getRolesUnderOG = async ({ id, direct, page, pageSize }) => {
@@ -64,19 +57,15 @@ export const getRolesUnderOG = async ({ id, direct, page, pageSize }) => {
 };
 
 export const getEntityByRoleId = async (roleId) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/entities/role/${roleId}`
-  );
+    const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/entities/role/${roleId}`);
 
-  return response.data;
+    return response.data;
 };
 
 export const getEntityByMongoId = async (id) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/entities/search/${id}`
-  );
+    const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/entities/search/${id}`);
 
-  return response.data;
+    return response.data;
 };
 
 export const getOGChildren = async ({id, page, pageSize}) => {
