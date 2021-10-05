@@ -258,11 +258,10 @@ const EditOGForm = forwardRef((props, ref) => {
     );
   };
 
-  // TODO: remove !
-  return !isBulkPermitted ? (
+  return isBulkPermitted ? (
     <Accordion
       expandIcon="pi pi-chevron-left"
-      activeIndex={1}
+      activeIndex={0}
       style={{ "margin-bottom": "20px" }}
     >
       <AccordionTab header="שינוי היררכיה לתפקיד">
