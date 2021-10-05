@@ -1,59 +1,54 @@
-import { useRef } from 'react';
-import { Menu } from 'primereact/menu';
-import { Button } from 'primereact/button';
-import { Toast } from 'primereact/toast';
+import React from "react";
+import { toJS } from "mobx";
+import { useStores } from "../../context/use-stores";
+import { USER_TYPE } from "../../constants";
 
-const TableActions = () => {
-  const toast = useRef(null);
-  const menu = useRef(null);
+const TableActions = ({ toast, data, openFullDetailsModal }) => {
+  const { userStore } = useStores();
+  const user = toJS(userStore.user);
 
-  const actions = [
+  let actions = [
     {
-      label: 'צפייה',
+      label: "צפייה",
       command: () => {
-        toast.current.show({
-          severity: 'success',
-          summary: 'צפייה',
-          detail: 'Data Viewing',
-          life: 3000,
-        });
+        openFullDetailsModal();
+        // console.log(data);
+        // toast.current.show({
+        //   severity: "success",
+        //   summary: "צפייה",
+        //   detail: `Data Viewing ${data.id}`,
+        //   life: 3000,
+        // });
       },
     },
     {
-      label: 'עריכה',
+      label: "עריכה",
       command: () => {
         toast.current.show({
-          severity: 'success',
-          summary: 'עריכה',
-          detail: 'Data Editing',
-          life: 3000,
-        });
-      },
-    },
-    {
-      label: 'מחיקה',
-      command: () => {
-        toast.current.show({
-          severity: 'success',
-          summary: 'מחיקה',
-          detail: 'Data deletion',
+          severity: "success",
+          summary: "עריכה",
+          detail: "Data Editing",
           life: 3000,
         });
       },
     },
   ];
 
-  const openMenu = (event) => {
-    menu.current.toggle(event);
-  };
+  if (user.types.includes(USER_TYPE.COMMANDER)) {
+    actions.push({
+      label: "מחיקה",
+      command: () => {
+        toast.current.show({
+          severity: "success",
+          summary: "מחיקה",
+          detail: "Data deletion",
+          life: 3000,
+        });
+      },
+    });
+  }
 
-  return (
-    <div className='moreBtnwrap'>
-      <Toast ref={toast}></Toast>
-      <Menu model={actions} popup ref={menu} />
-      <Button className='btn more-btn' onClick={openMenu} />
-    </div>
-  );
+  return actions;
 };
 
-export default TableActions;
+export { TableActions };

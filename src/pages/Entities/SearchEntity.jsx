@@ -1,5 +1,5 @@
-import SearchBox from '../../components/SearchBox';
-import { useStores } from '../../context/use-stores';
+import SearchBox from "../../components/SearchBox";
+import { useStores } from "../../context/use-stores";
 
 const SearchEntity = ({ data }) => {
   const { tablesStore } = useStores();
@@ -7,11 +7,7 @@ const SearchEntity = ({ data }) => {
   return (
     <div className="search-row">
       <div className="search-row-inner search-row-inner-flex">
-        <button
-          className="btn btn-change-view-chart"
-          title="Change View to Chart"
-          type="button"
-        >
+        <button className="btn btn-change-view-chart" title="Change View to Chart" type="button">
           <span className="for-screnReader">Change View to Chart</span>
         </button>
         <SearchBox
@@ -23,9 +19,9 @@ const SearchEntity = ({ data }) => {
             await tablesStore.loadEntitiesByOG(entity);
           }}
         />
-        <button className="btn-underline" type="button" title="חיפוש מורחב">
+        {/* <button className="btn-underline" type="button" title="חיפוש מורחב">
           חיפוש מורחב
-        </button>
+        </button> */}
       </div>
     </div>
   );

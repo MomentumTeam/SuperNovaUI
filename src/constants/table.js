@@ -12,20 +12,20 @@ export const TableTypes = {
   ],
   hierarchy: [
     { field: "hierarchy", displayName: "היררכיה" },
-    { field: "name", displayName: "סוג קבוצה" }, // ASK: which field
-    { field: "directRoles", displayName: "מספר תפקידים" }, // ASK: which field
-    { field: "directEntities", displayName: "תפקידים לא מאויישים" }, // ASK: which field
+    { field: "id", displayName: "מפתח" },
+    { field: "directRoles", displayName: "מספר תפקידים" },
   ],
   roles: [
     { field: "jobTitle", displayName: "שם תפקיד" },
     { field: "hierarchy", displayName: "היררכיה" },
     { field: "clearance", displayName: "סיווג התפקיד" },
     { field: "digitalIdentityUniqueId", displayName: "משתמש" },
-    { field: "a", displayName: "סטטוס" }, // ASK: which field
-    { field: "displayName", displayName: "משתמש בתפקיד" }, // ASK: which field
   ],
 };
 
+export const TableSearch = {
+  entities: "",
+};
 export const TableKeys = {
   entities: "id",
   hierarchy: "id",

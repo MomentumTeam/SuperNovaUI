@@ -1,27 +1,65 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { Button } from "primereact/button";
+import { ContextMenu } from "primereact/contextmenu";
+import { Toast } from "primereact/toast";
 
-import TableFieldTemplate from './TableFieldTemplate'
+import TableFieldTemplate from "./TableFieldTemplate";
 import { TableTypes } from "../../constants/table";
-import { pageSize } from '../../constants/api';
-import '../../assets/css/local/general/table.min.css';
+import { itemsInPage } from "../../constants/api";
+import "../../assets/css/local/general/table.min.css";
+import PaginatorTemplate from "./TablePaginatorTemplate";
 
-const Table = ({data, tableType, isLoading, onScroll}) => {
+import { TableActions } from "./TableActions";
+import { useStores } from "../../context/use-stores";
+import FullUserInformationModal from "../../components/Modals/FullUserInformationModal";
 
+const Table = ({ data, tableType, isLoading, onScroll, first }) => {
   const [selectedItem, setSelectedItem] = useState(null);
-  const [totalRecords, setTotalRecords] = useState(pageSize + data.length);
+  const toast = useRef(null);
+  const menu = useRef(null);
+
+  const { userStore } = useStores();
+  const [isFullUserInfoModalOpen, setIsFullUserInfoModalOpen] = useState(false);
+
   const rowData = TableTypes[tableType];
+
+  const openMenu = (e) => menu.current.show(e.originalEvent);
 
   const loadingText = () => {
     return <span className="loading-text"></span>;
   };
 
-  useEffect(() => {
-    setTotalRecords((pageSize + data.length)*5); // TODO: check with proper api
-  }, [data]);
+  const TableActionsTemplate = () => {
+    return <Button icon="pi pi-ellipsis-h" className="p-button-rounded p-button-text" />;
+  };
 
-    return (
+  const openFullDetailsModal = () => {
+    setIsFullUserInfoModalOpen(true);
+  };
+
+  const closeFullDetailsModal = () => {
+    setIsFullUserInfoModalOpen(false);
+  };
+
+  return (
+    <>
+      <Toast ref={toast}></Toast>
+      <ContextMenu
+        model={TableActions({ toast, selectedItem, openFullDetailsModal })}
+        popup
+        ref={menu}
+        // onHide={() => setSelectedItem(null)}
+      />
+
+      <FullUserInformationModal
+        user={selectedItem}
+        userPicture={userStore.userPicture}
+        isOpen={isFullUserInfoModalOpen}
+        closeFullDetailsModal={closeFullDetailsModal}
+      />
+
       <div className="table-wrapper">
         <div className="tableStyle">
           <div className="card">
@@ -30,14 +68,14 @@ const Table = ({data, tableType, isLoading, onScroll}) => {
               selection={selectedItem}
               selectionMode="single"
               onSelectionChange={(e) => setSelectedItem(e.value)}
-              scrollable // scroll start
-              scrollHeight="350px"
-              lazy
-              loading={isLoading}
-              rows={pageSize}
-              virtualScroll
-              totalRecords={totalRecords} // ASK: how to get this???
-              onVirtualScroll={onScroll} // scroll finish
+              paginator // paginator start
+              paginatorTemplate={PaginatorTemplate}
+              rows={itemsInPage}
+              first={first}
+              onPage={onScroll}
+              loading={isLoading} // paginator end
+              onContextMenuSelectionChange={(e) => setSelectedItem(e.value)}
+              onContextMenu={(e) => openMenu(e)}
             >
               {rowData.map((col) => (
                 <Column
@@ -48,12 +86,13 @@ const Table = ({data, tableType, isLoading, onScroll}) => {
                   body={TableFieldTemplate}
                 />
               ))}
-              <Column loadingBody={loadingText} body={TableFieldTemplate} />
+              {/* <Column loadingBody={loadingText} body={TableActionsTemplate} /> */}
             </DataTable>
           </div>
         </div>
       </div>
-    );
+    </>
+  );
 };
 
 export default Table;
