@@ -101,7 +101,7 @@ const Action = () => {
     try {
       const res = await ref.current.handleSubmit();
       console.log({ res });
-      toast.current.show({
+      res && toast.current.show({
         severity: 'success',
         summary: 'Success Message',
         detail: 'Message Content',

@@ -5,47 +5,32 @@ import { Dropdown } from 'primereact/dropdown';
 import { InputTextarea } from 'primereact/inputtextarea';
 import Hierarchy from './Hierarchy';
 import Approver from './Approver';
-// import { assignRoleToEntityRequest } from '../../service/AppliesService';
 import { useStores } from '../../context/use-stores';
 import { toJS } from 'mobx';
+import { AutoComplete } from 'primereact/autocomplete';
+import { Calendar } from 'primereact/calendar';
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Accordion, AccordionTab } from "primereact/accordion";
 
-const states = [
-    { name: 'מספר1', code: 'מספר1' },
-    { name: 'מספר2', value: 'מספר2' },
-    { name: 'מספר3', code: 'מספר3' },
-    { name: 'מספר4', code: 'מספר4' },
-    { name: 'מספר5', code: 'מספר5' },
-];
+
+// TODO: move to different file (restructe project files...)
+const validationSchema = Yup.object().shape({
+    personalNumber: Yup.number().required()
+});
 
 const CreateEntityForm = forwardRef((props, ref) => {
-    const { appliesStore, userStore } = useStores();
-    const { register, handleSubmit, setValue } = useForm();
+    const { userStore } = useStores();
+    const { register, handleSubmit, setValue, getValues, watch, formState } =
+        useForm();
+    const { errors } = formState;
 
     const onSubmit = async (data) => {
-        const { approver, hierarchy, userName, personalNumber, role, roleStatus, roleName, roleId, comments } = data;
-
-        const req = {
-            status: 'SUBMITTED',
-            commanders: [{ ...approver, identityCard: '', personalNumber: 123456 }],
-            kartoffelParams: {
-                name: roleName,
-                parent: hierarchy.id,
-                source: 'oneTree',
-            },
-            kartoffelStatus: { status: 'STAGE_UNKNOWN' },
-            adStatus: { status: 'STAGE_UNKNOWN' },
-            adParams: {
-                ouDisplayName: hierarchy.name,
-                ouName: hierarchy.name,
-                name: roleName,
-            },
-            comments,
-            due: Date.now(),
-        };
-        console.log(req);
-        return await appliesStore.createEntityApply(req);
+        throw new Error('asdasdasd')
+        // get data from from and handle change (AD + kartoffel + etc' )
     };
 
+    // must be used - doesnt do much
     useImperativeHandle(
         ref,
         () => ({
@@ -54,96 +39,43 @@ const CreateEntityForm = forwardRef((props, ref) => {
         []
     );
 
-    const setCurrentUser = () => {
-        const user = toJS(userStore.user);
-        setValue('userName', user.displayName);
-        setValue('personalNumber', user.personalNumber);
-    };
+    const newEntityTab = () => {
+        return (
+            <div className='p-fluid'>
+                <div className='row2flex'>
+                    <div className='p-fluid-item'>
+                        <div className='p-field'>
+                            <label htmlFor='2021'>
+                                {' '}
+                                <span className='required-field'>*</span>מ"א/ת"ז
+                            </label>
+                            <InputText
+                                {...register('personalNumber', { required: true })}
+                                id='2021'
+                                type='text'
+                                required
+                            />
+                            {errors.personalNumber && <small>יש למלא ערך</small>}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
     return (
-        <div className='p-fluid'>
-            <div className='row3flex'>
-                <div className='p-fluid-item'>
-                    <button className='btn-underline left19' onClick={setCurrentUser} type='button' title='עבורי'>
-                        עבורי
-                    </button>
-                    <div className='p-field'>
-                        <label htmlFor='2020'>
-                            {' '}
-                            <span className='required-field'>*</span>שם משתמש
-                        </label>
-                        <InputText {...register('userName')} id='2020' type='text' required placeholder='שם משתמש' />
-                    </div>
-                </div>
-                <div className='p-fluid-item'>
-                    <div className='p-field'>
-                        <label htmlFor='2021'>
-                            {' '}
-                            <span className='required-field'>*</span>מ"א/ת"ז
-                        </label>
-                        <InputText
-                            {...register('personalNumber')}
-                            id='2021'
-                            type='text'
-                            required
-                            placeholder="מ''א/ת''ז"
-                        />
-                    </div>
-                </div>
-                <div className='p-fluid-item'>
-                    <div className='p-field p-field-blue'>
-                        <label htmlFor='2022'>תפקיד</label>
-                        <InputText {...register('role')} id='2022' type='text' placeholder='צילום מתקדם1' />
-                    </div>
-                </div>
-            </div>
+        <Accordion
+            expandIcon="pi pi-chevron-left"
+            activeIndex={0}
+            style={{ "margin-bottom": "20px" }}
+        >
+            <AccordionTab header="משתמש חדש">
+                {newEntityTab()}
+            </AccordionTab>
+            <AccordionTab header="משתמש מיוחד">
 
-            <div className='p-fluid-item p-fluid-item-flex1'>
-                <hr />
-                <h2>מעבר לתפקיד</h2>
-            </div>
-
-            <div className='p-fluid-item-flex p-fluid-item'>
-                <Hierarchy setValue={setValue} name='hierarchy' />
-            </div>
-
-            <div className='p-fluid-item-flex p-fluid-item'>
-                <div className='p-field p-field-green'>
-                    <label htmlFor='2024'>סטטוס תפקיד</label>
-                    <InputText {...register('roleStatus')} id='2024' type='text' placeholder='פנוי' />
-                </div>
-            </div>
-            <div className='row3flex'>
-                <div className='p-fluid-item '>
-                    <div className='p-field p-field-blue'>
-                        <label htmlFor='2025'>שם תפקיד</label>
-                        <Dropdown
-                            {...register('roleName')}
-                            inputId='2025'
-                            options={states}
-                            placeholder='שם תפקיד'
-                            optionLabel='name'
-                        />
-                    </div>
-                </div>
-                <div className='p-fluid-item'>
-                    <div className='p-field'>
-                        <label htmlFor='2026'>מזהה תפקיד</label>
-                        <InputText {...register('roleId')} id='2026' type='text' placeholder='מזהה תפקיד' />
-                    </div>
-                </div>
-                <div className='p-fluid-item'>
-                    <Approver setValue={setValue} name='approver' />
-                </div>
-            </div>
-            <div className='p-fluid-item p-fluid-item-flex1'>
-                <div className='p-field'>
-                    <label htmlFor='2028'>סיבת מעבר</label>
-                    <InputTextarea {...register('comments')} id='2028' type='text' placeholder='הערות' />
-                </div>
-            </div>
-        </div>
-    );
+            </AccordionTab>
+        </Accordion>)
 });
 
 export default CreateEntityForm;
