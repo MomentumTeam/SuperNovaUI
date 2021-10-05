@@ -101,7 +101,7 @@ const AssignRoleToEntityForm = forwardRef((props, ref) => {
     const user = toJS(userStore.user);
     setValue('user', user);
     setValue('userName', user.displayName);
-    setValue('personalNumber', user.personalNumber);
+    setValue('personalNumber', user.personalNumber || user.identityCard);
   };
 
   const onSearchUser = async (event) => {
@@ -193,14 +193,13 @@ const AssignRoleToEntityForm = forwardRef((props, ref) => {
               field='fullName'
               onSelect={(e) => {
                 setValue('user', e.value);
-                setValue('personalNumber', e.value.identityCard);
+                setValue('personalNumber', e.value.personalNumber || e.value.identityCard);
                 setValue('userRole', e.value.jobTitle);
               }}
               onChange={(e) => {
                 setValue('userName', e.value);
               }}
               required
-              placeholder='שם משתמש'
             />
             {errors.userName && <small>יש למלא ערך</small>}
           </div>
@@ -216,7 +215,6 @@ const AssignRoleToEntityForm = forwardRef((props, ref) => {
               id='2021'
               type='text'
               required
-              placeholder="מ''א/ת''ז"
               onBlur={onSearchUserById}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
@@ -293,12 +291,11 @@ const AssignRoleToEntityForm = forwardRef((props, ref) => {
         </div>
         <div className='p-fluid-item'>
           <div className='p-field'>
-            <label htmlFor='2026'>מזהה תפקיד</label>
+            <label htmlFor='2026'>מזהה תפקיד (T)</label>
             <InputText
               {...register('roleId')}
               id='2026'
               type='text'
-              placeholder='מזהה תפקיד'
               onBlur={onRoleIdChanged}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {

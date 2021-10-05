@@ -1,0 +1,4 @@
+.approver-selection-multiple > ul {
+    display: inline-table !important;
+    vertical-align: middle;   
+}
