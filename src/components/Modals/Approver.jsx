@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { searchApproverByDisplayNameReq } from '../../service/ApproverService';
 import { AutoComplete } from 'primereact/autocomplete';
+import '../../assets/css/local/components/approver.css';
 
 const Approver = ({ setValue, name, multiple }) => {
   const [ApproverSuggestions, setApproverSuggestions] = useState([]);
@@ -22,6 +23,7 @@ const Approver = ({ setValue, name, multiple }) => {
         </label>
         <AutoComplete
           id='2022'
+          className={`approver-selection-${multiple === true ? 'multiple' : 'single'}`}
           multiple={multiple}
           value={selectedApprover}
           suggestions={ApproverSuggestions}
