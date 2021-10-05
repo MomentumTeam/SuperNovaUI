@@ -200,7 +200,6 @@ const AssignRoleToEntityForm = forwardRef((props, ref) => {
                 setValue('userName', e.value);
               }}
               required
-              placeholder='שם משתמש'
             />
             {errors.userName && <small>יש למלא ערך</small>}
           </div>
@@ -216,7 +215,6 @@ const AssignRoleToEntityForm = forwardRef((props, ref) => {
               id='2021'
               type='text'
               required
-              placeholder="מ''א/ת''ז"
               onBlur={onSearchUserById}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
@@ -293,12 +291,11 @@ const AssignRoleToEntityForm = forwardRef((props, ref) => {
         </div>
         <div className='p-fluid-item'>
           <div className='p-field'>
-            <label htmlFor='2026'>מזהה תפקיד</label>
+            <label htmlFor='2026'>מזהה תפקיד (T)</label>
             <InputText
               {...register('roleId')}
               id='2026'
               type='text'
-              placeholder='מזהה תפקיד'
               onBlur={onRoleIdChanged}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
