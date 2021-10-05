@@ -185,6 +185,15 @@ export const disconectRoleFromEntityRequest = async (applyProperties) => {
   return response.data;
 };
 
+export const uploadBulkFile = async (file) => {
+  const response = await axiosApiInstance.post(
+    `${apiBaseUrl}/api/bulk/upload`,
+    file, { headers: { 'Content-Type': 'multipart/form-data' } }
+  );
+
+  return response.data;
+};
+
 // PUT
 
 export const updateApproverDecision = async (
@@ -208,6 +217,15 @@ export const updateApproverDecision = async (
 export const changeRoleHierarchyRequest = async (data) => {
   const response = await axiosApiInstance.put(
     `${apiBaseUrl}/api/requests/request/role/og`,
+    data
+  );
+
+  return response.data;
+};
+
+export const changeRoleHierarchyBulkRequest = async (data) => {
+  const response = await axiosApiInstance.put(
+    `${apiBaseUrl}/api/bulk/request/role/hierarchy`,
     data
   );
 

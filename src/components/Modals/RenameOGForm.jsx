@@ -1,6 +1,5 @@
 import React, { useState, useImperativeHandle, forwardRef } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
@@ -11,9 +10,14 @@ import {
   getRolesUnderOG,
   getRoleByRoleId,
 } from "../../service/KartoffelService";
-import { changeRoleHierarchyRequest } from "../../service/AppliesService";
+import {
+  changeRoleHierarchyRequest,
+  uploadBulkFile,
+  changeRoleHierarchyBulkRequest,
+} from "../../service/AppliesService";
 import { useStores } from "../../context/use-stores";
 import { toJS } from "mobx";
+import FormData from "form-data";
 
 import "../../assets/css/local/components/rename-og-form.css";
 
@@ -22,10 +26,6 @@ const EditOGForm = forwardRef((props, ref) => {
   const { register, handleSubmit, setValue, watch } = useForm();
   const [roles, setRoles] = useState([]);
   const [hierarchyByIdentifier, setHierarchyByIdentifier] = useState(null);
-  /*
-  bulk/request/role/hierarchy - change hierarchy bulk
-  requests/role/og - change hierarchy
-  */
 
   const isBulkPermitted = toJS(userStore.user)?.type?.includes("BULK");
 
@@ -33,7 +33,6 @@ const EditOGForm = forwardRef((props, ref) => {
   const identifierRegister = register("identifier");
 
   const setCurrentHierarchyFunction = async (name, value) => {
-    // console.log(value);
     setValue(name, value);
 
     if (value.id) {
@@ -42,29 +41,54 @@ const EditOGForm = forwardRef((props, ref) => {
   };
 
   const onSubmit = async (data) => {
-    if (data.currentHierarchy && data.newHierarchy && data.approver) {
-      // TODO: add approvers as commanders
-      console.log(data);
+    if (
+      data.currentHierarchy &&
+      data.newHierarchy &&
+      data.approvers &&
+      data.approvers.length > 0
+    ) {
       if (data.role && data.comments) {
-        await changeRoleHierarchyRequest({
-          comments: data.comments,
-          kartoffelParams: {
-            roleId: data.identifier,
-            directGroup: data.newHierarchy.id,
-          },
-          adParams: {
-            samAccountName: data.identifier,
-            ouDisplayName: data.newHierarchy.name,
-          },
-        });
+        try {
+          await changeRoleHierarchyRequest({
+            comments: data.comments,
+            commanders: data.approvers,
+            kartoffelParams: {
+              roleId: data.identifier,
+              directGroup: data.newHierarchy.id,
+            },
+            adParams: {
+              samAccountName: data.identifier,
+              ouDisplayName: data.newHierarchy.name,
+            },
+          });
+        } catch (e) {
+          throw new Error("נכשל בשינוי היררכיה לתפקיד");
+        }
       }
 
       if (data.bulkFile) {
-        // bulk
+        const formData = new FormData();
+        formData.append("bulkFiles", data.bulkFile[0]);
+
+        try {
+          const { uploadFiles } = await uploadBulkFile(formData);
+
+          await changeRoleHierarchyBulkRequest({
+            commanders: data.approvers,
+            kartoffelParams: {
+              directGroup: data.newHierarchy.id,
+            },
+            adParams: {
+              ouDisplayName: data.newHierarchy.name,
+            },
+            excelFilePath: uploadFiles[0],
+          });
+        } catch (e) {
+          throw new Error("נכשל בבקשה מרובה");
+        }
       }
     } else {
-      // not enough data
-      throw new Error("form validation error");
+      throw new Error("חלק מהשדות לא תקינים");
     }
   };
 
@@ -134,7 +158,6 @@ const EditOGForm = forwardRef((props, ref) => {
                     setHierarchyByIdentifier(role.hierarchy);
                   } catch (e) {
                     initializeIdentifierDependencies();
-                    console.log(e);
                   }
                 } else {
                   initializeIdentifierDependencies();
@@ -161,10 +184,8 @@ const EditOGForm = forwardRef((props, ref) => {
             <Hierarchy setValue={setValue} name="newHierarchy" />
           </div>
         </div>
-        <div className="p-fluid-item-flex p-fluid-item">
-          <div className="p-field">
-            <Approver setValue={setValue} name="approver" />
-          </div>
+        <div className="p-fluid-item">
+          <Approver setValue={setValue} name="approvers" multiple={true} />
         </div>
         <div className="p-fluid-item p-fluid-item-flex1">
           <div className="p-field">
@@ -204,7 +225,7 @@ const EditOGForm = forwardRef((props, ref) => {
             />
           </div>
         </div>
-        <div className="p-fluid-item p-fluid-item-flex1">
+        <div className="p-fluid-item-flex p-fluid-item">
           <div className="p-field">
             <label htmlFor="1903">
               <span className="required-field">*</span>העלאת קובץ
@@ -218,14 +239,20 @@ const EditOGForm = forwardRef((props, ref) => {
                 required
                 placeholder="קובץ"
                 style={{ paddingTop: "10px" }}
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
               />
             </span>
           </div>
         </div>
+        <div
+          className="p-fluid-item-flex p-fluid-item"
+          style={{ alignItems: "center" }}
+        >
+          {/* TODO: bring good excel example route */}
+          <a href="https://www.w3schools.com">להורדת הפורמט לחץ כאן</a>
+        </div>
         <div className="p-fluid-item-flex p-fluid-item">
-          <div className="p-field">
-            <Approver setValue={setValue} name="approver" />
-          </div>
+          <Approver setValue={setValue} name="approvers" multiple={true} />
         </div>
       </div>
     );
@@ -235,7 +262,7 @@ const EditOGForm = forwardRef((props, ref) => {
   return !isBulkPermitted ? (
     <Accordion
       expandIcon="pi pi-chevron-left"
-      activeIndex={0}
+      activeIndex={1}
       style={{ "margin-bottom": "20px" }}
     >
       <AccordionTab header="שינוי היררכיה לתפקיד">

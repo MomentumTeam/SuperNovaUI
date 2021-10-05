@@ -110,7 +110,7 @@ const Action = () => {
     } catch (e) {
       toast.current.show({
         severity: 'error',
-        summary: 'Error Message',
+        summary: e.message || 'Error Message',
         detail: 'Message Content',
         life: 3000,
       });
