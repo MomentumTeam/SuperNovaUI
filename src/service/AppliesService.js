@@ -116,7 +116,7 @@ export const createOGRequest = async (applyProperties) => {
 
 export const createNewApproverRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/requests/newApproverRequest`,
+    `${apiBaseUrl}/api/requests/request/approver`,
     applyProperties
   );
 

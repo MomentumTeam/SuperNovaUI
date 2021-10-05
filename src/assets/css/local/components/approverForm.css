@@ -1,0 +1,7 @@
+#approverForm-userName > input {
+    padding-left: 5vh;
+}
+
+.approver-fillMe {
+    z-index: 1;
+}
