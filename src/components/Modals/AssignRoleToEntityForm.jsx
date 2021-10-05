@@ -101,7 +101,7 @@ const AssignRoleToEntityForm = forwardRef((props, ref) => {
     const user = toJS(userStore.user);
     setValue('user', user);
     setValue('userName', user.displayName);
-    setValue('personalNumber', user.personalNumber);
+    setValue('personalNumber', user.personalNumber || user.identityCard);
   };
 
   const onSearchUser = async (event) => {
@@ -193,7 +193,7 @@ const AssignRoleToEntityForm = forwardRef((props, ref) => {
               field='fullName'
               onSelect={(e) => {
                 setValue('user', e.value);
-                setValue('personalNumber', e.value.identityCard);
+                setValue('personalNumber', e.value.personalNumber || e.value.identityCard);
                 setValue('userRole', e.value.jobTitle);
               }}
               onChange={(e) => {
