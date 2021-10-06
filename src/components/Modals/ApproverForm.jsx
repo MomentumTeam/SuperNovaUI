@@ -34,7 +34,7 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj }, ref) => {
     setValue('approverType', 'COMMANDER');
     setApproverType('COMMANDER');
   }, []);
-
+  
   const onSubmit = async (data) => {
     const {
       approvers,
@@ -191,7 +191,7 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj }, ref) => {
         <Hierarchy disabled={true} setValue={setValue} name='hierarchy' ogValue={getValues('hierarchy')} />
       </div>
       <div className='p-fluid-item'>
-        <Approver disabled={onlyForView} setValue={setValue} name='approvers' multiple={true} />
+        <Approver disabled={onlyForView} setValue={setValue} name='approvers' defaultApprovers={approverRequestObj?.approvers || []} multiple={true} />
       </div>
       <div className='p-fluid-item p-fluid-item-flex1'>
         <div className='p-field'>
@@ -210,8 +210,8 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj }, ref) => {
 });
 
 ApproverForm.defaultProps = {
-  onlyForView: true,
-  approverRequestObj: { }
+  onlyForView: false,
+  approverRequestObj: {}
 }
 
 export default ApproverForm;
