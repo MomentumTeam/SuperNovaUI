@@ -23,10 +23,10 @@ const approverTypes = [
   { label: 'משתמש על', value: 'ADMIN' },
 ];
 
-const ApproverForm = forwardRef((props, ref) => {
+const ApproverForm = forwardRef(({ onlyForView, approverRequestObj }, ref) => {
   const { appliesStore, userStore } = useStores();
   const [approverType, setApproverType] = useState();
-  const { register, handleSubmit, setValue, getValues, formState, watch } = useForm();
+  const { register, handleSubmit, setValue, getValues, formState, watch } = useForm({ defaultValues: approverRequestObj });
   const [userSuggestions, setUserSuggestions] = useState([]);
   const { errors } = formState;
 
@@ -34,7 +34,7 @@ const ApproverForm = forwardRef((props, ref) => {
     setValue('approverType', 'COMMANDER');
     setApproverType('COMMANDER');
   }, []);
-
+  
   const onSubmit = async (data) => {
     const {
       approvers,
@@ -117,6 +117,8 @@ const ApproverForm = forwardRef((props, ref) => {
           </label>
           <Dropdown
             {...register('approverType')}
+            disabled={onlyForView}
+            className={`${onlyForView ? 'disabled' : ''}`}
             value={approverType}
             inputId='2011'
             required
@@ -131,16 +133,20 @@ const ApproverForm = forwardRef((props, ref) => {
               {' '}
               <span className='required-field'>*</span>שם משתמש
             </label>
+            { !onlyForView ? 
             <button
                 className='btn-underline left19 approver-fillMe'
                 onClick={setCurrentUser}
                 type='button'
                 title='עבורי'
               >
-            עבורי
+                עבורי
             </button>
+            : null
+            }
             <AutoComplete
               value={watch('userName')}
+              disabled={onlyForView}
               suggestions={userSuggestions}
               completeMethod={onSearchUser}
               id='approverForm-userName'
@@ -167,6 +173,7 @@ const ApproverForm = forwardRef((props, ref) => {
             </label>
             <InputText
               {...register('personalNumber', { required: true })}
+              disabled={onlyForView}
               id='2021'
               type='text'
               required
@@ -184,12 +191,13 @@ const ApproverForm = forwardRef((props, ref) => {
         <Hierarchy disabled={true} setValue={setValue} name='hierarchy' ogValue={getValues('hierarchy')} />
       </div>
       <div className='p-fluid-item'>
-        <Approver setValue={setValue} name='approvers' multiple={true} />
+        <Approver disabled={onlyForView} setValue={setValue} name='approvers' defaultApprovers={approverRequestObj?.approvers || []} multiple={true} />
       </div>
       <div className='p-fluid-item p-fluid-item-flex1'>
         <div className='p-field'>
           <label htmlFor='2016'>הערות</label>
           <InputTextarea
+            disabled={onlyForView}
             {...register('comments')}
             id='2016'
             type='text'
@@ -200,5 +208,10 @@ const ApproverForm = forwardRef((props, ref) => {
     </div>
   );
 });
+
+ApproverForm.defaultProps = {
+  onlyForView: false,
+  approverRequestObj: {}
+}
 
 export default ApproverForm;
