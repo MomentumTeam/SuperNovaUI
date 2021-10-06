@@ -1,9 +1,10 @@
 export const STATUSES = {
   SUBMITTED: 'הוגש',
+  APPROVED_BY_COMMANDER : 'בתהליך',
+  APPROVED_BY_SECURITY: 'בתהליך',
+  IN_PROGRESS: 'אושר',
   DECLINED: 'סורב',
-  UNRECOGNIZED: 'לא ידוע',
-  IN_PROGRESS: 'בתהליך',
-  DONE: 'הסתיים',
+  DONE: 'בוצע',
   FAILED: 'נכשל',
 };
 
