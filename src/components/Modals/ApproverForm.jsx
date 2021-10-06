@@ -10,6 +10,8 @@ import '../../assets/css/local/components/approverForm.css'
 // import { assignRoleToEntityRequest } from '../../service/AppliesService';
 import { useStores } from '../../context/use-stores';
 import { toJS } from 'mobx';
+import * as Yup from 'yup';
+
 import {
   searchEntitiesByFullName,
   getEntityByIdentifier,
@@ -22,6 +24,15 @@ const approverTypes = [
   { label: 'הרשאת בקשה מרובה', value: 'BULK' },
   { label: 'משתמש על', value: 'ADMIN' },
 ];
+
+const validationSchema = Yup.object().shape({
+  userName: Yup.string().required().min(1).label("שם משתמש"),
+  personalNumber: Yup.string().required().min(1).label('מ"א/ת"ז'),
+  hierarchy: Yup.string().required().min(1).label('היררכיה'),
+  approverType: Yup.string().required().label('סוג גורם מאשר'),
+  approvers: Yup.array().min(1).required().label('גורם מאשר'),
+  comments: Yup.string().optional(),
+});
 
 const ApproverForm = forwardRef((props, ref) => {
   const { appliesStore, userStore } = useStores();
@@ -45,10 +56,15 @@ const ApproverForm = forwardRef((props, ref) => {
       approverType,
       comments,
     } = data;
+    try {
+      await validationSchema.validate(data, { abortEarly: false })
+    } catch (err) {
+      throw new Error("לא כל שדות החובה מולאו")
+    }
 
     const req = {
       status: 'SUBMITTED',
-      commanders: [...approvers],
+      commanders: [...(approvers || [])],
       AdditionalParams: {
         entityId: user.id,
         displayName: '',
