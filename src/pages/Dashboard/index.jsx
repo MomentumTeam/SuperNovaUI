@@ -17,7 +17,7 @@ const Dashboard = observer(() => {
 
   const user = toJS(userStore.user);
   const userPicture = toJS(userStore.userPicture);
-  const applies = toJS(appliesStore.applies);
+  const applies = toJS(appliesStore.myApplies);
   let isUserApprovel;
 
   user?.types.forEach((type) => {
@@ -119,7 +119,7 @@ const Dashboard = observer(() => {
           </div>
         </div>
       </div>
-      <SideToolbar recentApplies={toJS(appliesStore.applies)} />
+      <SideToolbar recentApplies={applies} />
     </>
   );
 });
