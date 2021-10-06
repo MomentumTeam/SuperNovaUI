@@ -288,7 +288,7 @@
 }
 
 .p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-button.p-component.OpeningHierarchy {
-  /* background-image: url(../../images/buttons/hierarchy.svg); */
+  background-image: url(../../../images/buttons/hierarchy.svg);
   background-size: 24px;
   background-repeat: no-repeat;
   background-position: center;

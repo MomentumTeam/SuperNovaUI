@@ -45,7 +45,7 @@ const CreateOGForm = forwardRef((props, ref) => {
     return (
         <div className='p-fluid'>
             <div className='p-fluid-item p-fluid-item-flex1'>
-                <Hierarchy setValue={setValue} name='parentHierarchy' />
+                <Hierarchy setValue={setValue} name='parentHierarchy'/>
             </div>
             <div className='p-fluid-item'>
                 <div className='p-field'>
@@ -57,7 +57,6 @@ const CreateOGForm = forwardRef((props, ref) => {
                         id='2021'
                         type='text'
                         required
-                        placeholder='שם היררכיה חדשה'
                     />
                 </div>
             </div>

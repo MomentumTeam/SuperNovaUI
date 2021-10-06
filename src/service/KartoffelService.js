@@ -1,12 +1,12 @@
 import axiosApiInstance from '../config/axios';
 import { apiBaseUrl } from '../constants/api';
 
-export const searchOG = async (hierarchyAndName) => {
+export const searchOG = async (nameAndHierarchy) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/kartoffel/groups/search`,
     {
       params: {
-        hierarchyAndName,
+        nameAndHierarchy,
       },
     }
   );
@@ -72,9 +72,18 @@ export const getEntityByMongoId = async (id) => {
   return response.data;
 };
 
-export const getOGChildren = async (id) => {
+export const getOGChildren = async (id, direct=false) => {
+
+  // If id not specified, using the Aman group children
+
   const response = await axiosApiInstance.get(
+    id ?
     `${apiBaseUrl}/api/kartoffel/groups/${id}/children`
+    :
+    `${apiBaseUrl}/api/kartoffel/groups/children`,
+    {
+      ...(direct ? { params: { direct } } : {})
+    }
   );
 
   return response.data;

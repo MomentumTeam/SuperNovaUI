@@ -20,98 +20,52 @@ class ModalHierarchy extends React.Component {
             displayPosition: false,
             displayResponsive: false,
             position: 'center',
-            countries: [],
-            selectedCountry1: null,
-            selectedCountry2: null,
-            selectedCountries: null,
-            filteredCountries: null,
 
+            selectedHierarchy: null,
+            visible: false,
         };
-
-        this.onClick = this.onClick.bind(this);
-        this.onHide = this.onHide.bind(this);
-
-        this.searchCountry = this.searchCountry.bind(this);
-        // this.countryservice = new CountryService();
-        this.items = Array.from({ length: 100000 }).map((_, i) => ({ label: `Item #${i}`, value: i }));
     }
 
-    componentDidMount() {
-        getCountries().then(data => this.setState({ countries: data }));
-    }
-
-    searchCountry(event) {
-        setTimeout(() => {
-            let filteredCountries;
-            if (!event.query.trim().length) {
-                filteredCountries = [...this.state.countries];
-            }
-            else {
-                filteredCountries = this.state.countries.filter((country) => {
-                    return country.name.toLowerCase().startsWith(event.query.toLowerCase());
-                });
-            }
-
-            this.setState({ filteredCountries });
-        }, 250);
-    }
-
-    onClick(name, position) {
-
-        // this.props.callbackModalHide();
-
-        let state = {
-            [`${name}`]: true
-        };
-
-        if (position) {
-            state = {
-                ...state,
-                position
-            }
-        }
-
-        this.setState(state);
-
-
-    }
-
-    onHide(name, isDelete) {
-        // if (!isDelete)
-        //     this.props.callbackModalShow();
-        // else
-        //     this.props.callbackModalClose();
+    toggleModalVisibility = (visible) => {
         this.setState({
-            [`${name}`]: false
+            visible,
         });
     }
 
+    closeModalWithData = (sendDataBack) => {
+        if (sendDataBack && this.state.selectedHierarchy) {
+            if (this.props.onSelectHierarchy && typeof this.props.onSelectHierarchy === 'function') {
+                this.props.onSelectHierarchy(this.state.selectedHierarchy);
+            }
+        }
 
+        this.toggleModalVisibility(false);
+    }
 
-    renderFooter(name) {
+    renderFooter = () => {
         return (
             <div className="display-flex display-flex-end">
-                <Button label="ביטול" onClick={() => this.onHide(name, false)} className="btn-underline" />
-                <Button label="בחירה" onClick={() => this.onHide(name, true)} className="btn-gradient orange" />
+                <Button label="ביטול" onClick={() => this.closeModalWithData(false)} className="btn-underline" />
+                <Button label="בחירה" onClick={() => this.closeModalWithData(true)} className="btn-gradient orange" />
             </div>
         );
     }
+
+    setHierarchySelected = (hierarchy) => {
+        this.setState({
+            selectedHierarchy: hierarchy
+        })
+    }
+
     render() {
         return (
             <div>
-                <Button title="פתיחת היררכיה" className="OpeningHierarchy" type="button" label="פתיחת היררכיה" onClick={() => this.onClick('displayBasic')} />
+                <Button title="פתיחת היררכיה" className="OpeningHierarchy" type="button" label="פתיחת היררכיה" onClick={() => this.toggleModalVisibility(true)} />
 
-                <Dialog className="dialogClass9" header="היררכיה" visible={this.state.displayBasic} footer={this.renderFooter('displayBasic')} onHide={() => this.onHide('displayBasic')}>
+                <Dialog className="dialogClass9" header="היררכיה" visible={this.state.visible} footer={this.renderFooter()} onHide={() => this.toggleModalVisibility(false)}>
                     <div>
-                        <Button className="btn-back" type="button" label="חזרה" />
-                        <h2>חיפוש</h2>
-
-                        <div className="search-row-inner style2">
-                            <Search />
-                        </div>
-
                         <div>
-                            <ChartForTree />
+                            <ChartForTree onSelectNode={this.setHierarchySelected}/>
                         </div>
                     </div>
                 </Dialog>
