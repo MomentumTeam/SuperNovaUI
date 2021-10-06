@@ -18,47 +18,47 @@ const Dashboard = observer(() => {
   const user = toJS(userStore.user);
   const userPicture = toJS(userStore.userPicture);
   const applies = toJS(appliesStore.myApplies);
-  let isUserApprovel;
+  let userType;
 
   user?.types.forEach((type) => {
     switch (type) {
       case 5:
-        isUserApprovel = {
+        userType = {
           type: USER_TYPE.ADMIN,
           tag: USER_TYPE_TAG.ADMIN
         };
         break;
       case 2:
-        isUserApprovel = {
+        userType = {
           type: USER_TYPE.SUPER_SECURITY,
           tag: USER_TYPE_TAG.SECURITY_APPROVER,
         };
         break;
       case 1:
-        isUserApprovel = {
+        userType = {
           type: USER_TYPE.SECURITY,
           tag: USER_TYPE_TAG.SECURITY_APPROVER,
         };
         break;
       case 3:
-          isUserApprovel = {
+        userType = {
             type: USER_TYPE.COMMANDER,
             tag: USER_TYPE_TAG.APPROVER,
           };
         break;
       case 6:
-        isUserApprovel = { type: USER_TYPE.BULK };
+        userType = { type: USER_TYPE.BULK };
         break;
 
       default:
-        isUserApprovel = { type: USER_TYPE.SOLDIER };
+        userType = { type: USER_TYPE.SOLDIER };
         break;
     }
   });
 
   useEffect(() => {
     if (userStore.user) {
-      if (isUserApprovel) {
+      if (userType.type===USER_TYPE_TAG.COMMANDER) {
         // appliesStore.getCommanderApplies();
       } else {
         // appliesStore.loadApplies();
@@ -85,7 +85,7 @@ const Dashboard = observer(() => {
           <UserProfileCard
             user={user}
             userPicture={userPicture}
-            isUserApprovel={isUserApprovel}
+            userType={userType}
             openFullDetailsModal={openFullDetailsModal}
           />
           <FullUserInformationModal
@@ -95,7 +95,7 @@ const Dashboard = observer(() => {
             closeFullDetailsModal={closeFullDetailsModal}
           />
           <div className="content-unit-wrap">
-            {isUserApprovel ? (
+            {userType.APPROVER ? (
               <ApprovalTable applies={applies} />
             ) : (
               <div className="content-unit-inner content-unit-inner-before">

@@ -1,12 +1,12 @@
 import blankProfilePic from '../../assets/images/blankProfile.png';
 import '../../assets/css/local/pages/dashboard.css';
 
-const UserProfileCard = ({ user, userPicture,isUserApprovel, openFullDetailsModal }) => (
+const UserProfileCard = ({ user, userPicture,userType, openFullDetailsModal }) => (
   <div className='personal-information-wrap'>
     <div className='display-flex personal-information-inner'>
-      {isUserApprovel.tag &&
+      {userType.tag &&
           <div className="confirms">
-              <h3>{isUserApprovel.tag}</h3>
+              <h3>{userType.tag}</h3>
           </div>
       }
       <div className='personal-information-item'>
