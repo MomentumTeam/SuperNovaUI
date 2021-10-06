@@ -1,159 +1,163 @@
-import React, { useState, useImperativeHandle, forwardRef } from 'react';
+import React, { useState, useImperativeHandle, forwardRef } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { createRoleRequest } from '../../service/AppliesService';
+import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
+import { Dropdown } from "primereact/dropdown";
+import { InputTextarea } from "primereact/inputtextarea";
+import {
+  createRoleRequest,
+  isJobTitleAlreadyTakenRequest,
+} from "../../service/AppliesService";
 import Hierarchy from "./Hierarchy";
-import Approver from './Approver';
+import Approver from "./Approver";
+import { useStores } from "../../context/use-stores";
 
-const states = [
-  { name: 'מספר1', code: 'מספר1' },
-  { name: 'מספר2', value: 'מספר2' },
-  { name: 'מספר3', code: 'מספר3' },
-  { name: 'מספר4', code: 'מספר4' },
-  { name: 'מספר5', code: 'מספר5' },
-];
 
 const CreateRoleForm = forwardRef((props, ref) => {
-  const { register, handleSubmit, setValue } = useForm();
+  const { userStore, appliesStore } = useStores();
+
+  const { register, handleSubmit, setValue, watch } = useForm();
+  const [units, setUnits] = useState([]);
+  const [isRoleAlreadyTaken, setIsRoleAlreadyTaken] = useState(false);
 
   const onSubmit = async (data) => {
-    const { 
-      approver,
-      hierarchy,
-      userName,
-      personalNumber,
-      role,
-      roleStatus,
-      roleName,
-      roleId,
-      comments
-  } = data
+    const { approvers, hierarchy, roleName, unit, clearance, comments } = data;
     const req = {
       status: "SUBMITTED",
-      commanders: [{ ...approver, identityCard: "", personalNumber: 123456 }],
+      commanders: approvers,
       kartoffelParams: {
-        name: roleName,
-        parent: hierarchy.id,
-        source: "oneTree"
+        jobTitle: roleName,
+        directGroup: hierarchy.id,
+        source: "oneTree",
+        clearance: clearance,
+        isRoleAttachable: true,
+        // TODO: check this
+        type: "domainUser",
+        unit,
       },
-      kartoffelStatus: { status: "STAGE_UNKNOWN" },
-      adStatus: { status: "STAGE_UNKNOWN" },
       adParams: {
         ouDisplayName: hierarchy.name,
-        ouName: hierarchy.name,
-        name: roleName
+        jobTitle: roleName,
+        // TODO: check
+        samAccountName: "bla",
       },
       comments,
-      due: Date.now()
-    }
+      due: Date.now(),
+    };
 
-    console.log(data)
-    return await createRoleRequest(req)
-  }
+    return appliesStore.createRoleApply(req);
+  };
 
-  useImperativeHandle(ref, () => ({
-    handleSubmit: handleSubmit(onSubmit)
-  }), []);
+  useImperativeHandle(
+    ref,
+    () => ({
+      handleSubmit: handleSubmit(onSubmit),
+    }),
+    []
+  );
 
-  const setCurrentUser = () =>{
-    setValue("user", "ss")
-    setValue("personalNumber", 1234)
-  }
+  const roleName = register("roleName");
 
-  return (
-    <div className='p-fluid' >
-      <div className='p-fluid-item'>
-        <div className='p-field '>
-          <label htmlFor='2020'>
-            {' '}
-            <span className='required-field'>*</span> שם תפקיד
-          </label>
-          <InputText {...register("roleName")} id='2020' type='text' required placeholder='שם תפקיד' />
+  const renderCreateRole = () => {
+    return (
+      <div className="p-fluid">
+        <div className="display-flex title-wrap" style={{ width: "inherit" }}>
+          <h2>היררכיה</h2>
         </div>
-      </div>
-      <div className='p-fluid-item'>
-        <div className='p-field'>
-          <label htmlFor='2021'>תגית תפקיד</label>
-          <Dropdown
-            {...register("roleTag")}
-            inputId='2021'
-            options={states}
-            placeholder='תגית תפקיד'
-            optionLabel='name'
-          />
-        </div>
-      </div>
-      <div className='p-fluid-item-flex p-fluid-item'>
-        <Hierarchy setValue={setValue} name="parentHierarchy" />
-        <Button className='pi pi-plus' type='button' label='Submit' />
-      </div>
-      <div className='p-fluid-item-flex p-fluid-item'>
-        <Approver setValue={setValue} name="approver" />
-        <Button className='pi pi-plus' type='button' label='Submit' />
-      </div>
-      <div className='p-fluid-item'>
-        <button class='btn-underline' onClick={setCurrentUser} type='button' title='עבורי'>
-          עבורי
-        </button>
-        <div className='p-field'>
-          <label htmlFor='2024'>
-            <span className='required-field'>*</span> משתמש בתפקיד{' '}
-          </label>
-          <InputText
-            {...register("user")}
-            id='2024'
-            type='text'
-            required
-            placeholder='משתמש בתפקיד'
-          />
-        </div>
-      </div>
-      <div className='p-fluid-item'>
-        <div className='display-flex'>
-          <div className='p-field w50'>
-            <label htmlFor='2025'>
-              <span className='required-field'>*</span> מ"א{' '}
-            </label>
-            <InputText  {...register("personalNumber")} id='2025' type='text' required placeholder="מ''א" />
+        <div className="p-fluid-item p-fluid-item-flex1">
+          <div className="p-field">
+            <Hierarchy setValue={setValue} name="hierarchy" />
           </div>
-          <div className='p-field w50'>
-            <label htmlFor='2026'>סטטוס</label>
+        </div>
+        <div className="p-fluid-item-flex p-fluid-item">
+          <div className="p-field">
+            <label htmlFor="2011">
+              <span className="required-field">*</span>שם תפקיד
+            </label>
+            <span className="p-input-icon-left">
+              <i>{isRoleAlreadyTaken ? "תפוס" : "פנוי"}</i>
+              <InputText
+                {...roleName}
+                onChange={async (e) => {
+                  const roleNameToSearch = e.target.value;
+                  if (roleNameToSearch && watch("hierarchy")?.id) {
+                    const isJobTitleAlreadyTakenResponse =
+                      await isJobTitleAlreadyTakenRequest(
+                        roleNameToSearch,
+                        watch("hierarchy").id
+                      );
+
+                    setIsRoleAlreadyTaken(
+                      isJobTitleAlreadyTakenResponse.isRoleAlreadyTaken
+                    );
+                  }
+                }}
+              />
+            </span>
+          </div>
+        </div>
+        <div className="p-fluid-item-flex p-fluid-item">
+          <div className="p-field">
+            <label htmlFor="1900">
+              <span className="required-field">*</span>יחידה
+            </label>
             <Dropdown
-              {...register("status")}
-              inputId='2026'
-              options={states}
-              placeholder='סטטוס'
-              optionLabel='name'
+              inputId="1900"
+              options={units}
+              placeholder="יחידה"
+              {...register("unit")}
+              value={watch("unit")}
+            />
+          </div>
+        </div>
+
+        <div className="p-fluid-item p-fluid-item-flex1">
+          <div className="p-field" style={{ display: "flex" }}>
+            <div style={{ marginTop: "35px" }}>שמות פנויים:</div>
+            <div style={{ margin: "20px", display: "flex" }}>
+              {/*
+              TODO: get
+              <Button className="p-button-secondary p-button-outlined">
+                Blue
+              </Button>*/}
+            </div>
+          </div>
+        </div>
+        <div className="p-fluid-item-flex p-fluid-item">
+          <div className="p-field">
+            <label htmlFor="1900">
+              <span className="required-field">*</span>סיווג תפקיד
+            </label>
+            <Dropdown
+              inputId="1900"
+              options={["אדום", "כחול", "סגול"]}
+              placeholder="סיווג תפקיד"
+              {...register("clearance")}
+              value={watch("clearance")}
+            />
+          </div>
+        </div>
+        <div className="p-fluid-item">
+          <Approver setValue={setValue} name="approvers" multiple={true} />
+        </div>
+        <div className="p-fluid-item p-fluid-item-flex1">
+          <div className="p-field">
+            <label htmlFor="1902">
+              <span></span>הערות
+            </label>
+            <InputTextarea
+              {...register("comments")}
+              id="1902"
+              type="text"
+              autoResize="false"
             />
           </div>
         </div>
       </div>
-      <div className='p-fluid-item'>
-        <div className='p-field'>
-          <label htmlFor='2027'>
-            <span className='required-field'>*</span> פרטי תפקיד / תיאור{' '}
-          </label>
-          <InputTextarea
-            {...register("roleDetails")}
-            id='2027'
-            type='text'
-            required
-            placeholder='פרטי תפקיד / תיאור'
-            rows='4'
-          />
-        </div>
-      </div>
-      <div className='p-fluid-item'>
-        <div className='p-field'>
-          <label htmlFor='2028'>הערות</label>
-          <InputTextarea {...register("comments")} id='2028' type='text' placeholder='הערות' rows='4' />
-        </div>
-      </div>
-    </div>
-  );
-})
+    );
+  };
+
+  return renderCreateRole();
+});
 
 export default CreateRoleForm;

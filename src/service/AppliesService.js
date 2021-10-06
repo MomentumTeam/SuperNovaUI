@@ -97,7 +97,7 @@ export const isJobTitleAlreadyTakenRequest = async (jobTitle, directGroup) => {
 
 export const createRoleRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/requests/roleRequest`,
+    `${apiBaseUrl}/api/requests/request/role`,
     applyProperties
   );
 
