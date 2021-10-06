@@ -3,9 +3,9 @@ import { searchApproverByDisplayNameReq } from '../../service/ApproverService';
 import { AutoComplete } from 'primereact/autocomplete';
 import '../../assets/css/local/components/approver.css';
 
-const Approver = ({ setValue, name, multiple }) => {
+const Approver = ({ setValue, name, multiple, disabled, defaultApprovers }) => {
   const [ApproverSuggestions, setApproverSuggestions] = useState([]);
-  const [selectedApprover, setSelectedApprover] = useState(null);
+  const [selectedApprover, setSelectedApprover] = useState(defaultApprovers);
 
   const searchApprover = async (event) => {
     const result = await searchApproverByDisplayNameReq(
@@ -22,8 +22,9 @@ const Approver = ({ setValue, name, multiple }) => {
           <span className='required-field'>*</span>גורם מאשר
         </label>
         <AutoComplete
+          disabled={disabled}
           id='2022'
-          className={`approver-selection-${multiple === true ? 'multiple' : 'single'}`}
+          className={`approver-selection-${multiple === true ? 'multiple' : 'single'} ${disabled ? 'disabled' : ''}`}
           multiple={multiple}
           value={selectedApprover}
           suggestions={ApproverSuggestions}
@@ -55,5 +56,9 @@ const Approver = ({ setValue, name, multiple }) => {
     </div>
   );
 };
+
+Approver.defaultProps = {
+    disabled: false
+}
 
 export default Approver;
