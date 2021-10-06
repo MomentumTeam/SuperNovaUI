@@ -5,3 +5,7 @@
 .approver-fillMe {
     z-index: 1;
 }
+
+.disabled {
+    background-color:#faf8fd !important;
+}

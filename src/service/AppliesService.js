@@ -85,6 +85,14 @@ export const searchRequestsBySubmitterDisplayName = async (
   return response.data;
 };
 
+export const isJobTitleAlreadyTakenRequest = async (jobTitle, directGroup) => {
+  const response = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/kartoffel/roles/job/taken?jobTitle=${jobTitle}&directGroup=${directGroup}`,
+  );
+
+  return response.data;
+}
+
 //POST
 
 export const createRoleRequest = async (applyProperties) => {
