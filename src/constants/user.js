@@ -10,5 +10,6 @@ export const USER_TYPE = {
 
 export const USER_TYPE_TAG = {
   APPROVER: 'גורם מאשר',
+  SECURITY_APPROVER: 'גורם מאשר במ',
   ADMIN: 'משתמש אדמין',
 };

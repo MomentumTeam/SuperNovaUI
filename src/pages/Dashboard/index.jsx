@@ -31,13 +31,13 @@ const Dashboard = observer(() => {
       case 2:
         isUserApprovel = {
           type: USER_TYPE.SUPER_SECURITY,
-          tag: USER_TYPE_TAG.APPROVER,
+          tag: USER_TYPE_TAG.SECURITY_APPROVER,
         };
         break;
       case 1:
         isUserApprovel = {
           type: USER_TYPE.SECURITY,
-          tag: USER_TYPE_TAG.APPROVER,
+          tag: USER_TYPE_TAG.SECURITY_APPROVER,
         };
         break;
       case 3:
