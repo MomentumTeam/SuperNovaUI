@@ -24,9 +24,11 @@ import {
 
 export default class AppliesStore {
   applies = [];
+  myApplies = [];
 
   constructor() {
     makeAutoObservable(this, {
+      myApplies: observable,
       applies: observable,
       loadMyApplies: action,
       getAllApplies: action,
@@ -45,16 +47,15 @@ export default class AppliesStore {
       deleteRoleApply: action,
       deleteOGApply: action,
       disconectRoleFromEntityApply: action,
-      updateApplyDecision: action
-
+      updateApplyDecision: action,
     });
   }
 
   // GET
 
   async loadMyApplies(from, to) {
-    const myApplies = await getMyRequests(from, to);
-    this.applies = myApplies.requests;
+    const myApplies = await getMyRequests(1, 6);
+    this.myApplies = myApplies.requests;
   }
 
   async getAllApplies(approvementStatus, from, to) {
@@ -67,9 +68,16 @@ export default class AppliesStore {
     // this.applies = myApplies.requests;
   }
 
-  async getAppliesByPerosn(identifier, from, to) {
-    const myApplies = await getRequestsByPerson(identifier, from, to);
-    // this.applies = myApplies.requests;
+  async getAppliesByPerosn(id, personType, personInfoType, from, to) {
+    const myApplies = await getRequestsByPerson(
+      id,
+      personType,
+      personInfoType,
+      from,
+      to
+    );
+
+    this.myApplies = myApplies.requests;
   }
 
   async getApplyBySerialNumber(serialNumber) {
@@ -78,10 +86,13 @@ export default class AppliesStore {
   }
 
   async searchAppliesBySubmitterDisplayName(displayName, from, to) {
-    const myApplies = await searchRequestsBySubmitterDisplayName(displayName, from, to);
+    const myApplies = await searchRequestsBySubmitterDisplayName(
+      displayName,
+      from,
+      to
+    );
     // this.applies = myApplies.requests;
   }
-
 
   // POST
 
@@ -157,8 +168,7 @@ export default class AppliesStore {
   }
 
   async updateApplyDecision(applyProperties) {
-    const updatedRequest =
-      await updateApproverDecision(applyProperties);
+    const updatedRequest = await updateApproverDecision(applyProperties);
     //TODO- update Decision in state
   }
 }
