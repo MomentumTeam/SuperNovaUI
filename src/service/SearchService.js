@@ -20,12 +20,12 @@ export const getEntityByIdentifier = async (identifier) => {
   return response.data;
 };
 
-export const searchOG = async (hierarchyAndName) => {
+export const searchOG = async (nameAndHierarchy) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/kartoffel/groups/search`,
     {
       params: {
-        hierarchyAndName,
+        nameAndHierarchy,
       },
     }
   );
