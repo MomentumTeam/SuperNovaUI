@@ -1,17 +1,14 @@
 import axiosApiInstance from '../config/axios';
 import { apiBaseUrl } from '../constants/api';
 
-
 //GET
 
-export const getMyRequests = async (from,to) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests`,
-    {
-      params: {
-        from,
-        to
-    }
+export const getMyRequests = async (from, to) => {
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests`, {
+    params: {
+      from,
+      to,
+    },
   });
 
   return response.data;
@@ -19,7 +16,8 @@ export const getMyRequests = async (from,to) => {
 
 export const getRequestById = async (id) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/${id}`);
+    `${apiBaseUrl}/api/requests/${id}`
+  );
 
   return response.data;
 };
@@ -31,13 +29,19 @@ export const getAllRequests = async (approvementStatus, from, to) => {
       params: {
         from,
         to,
-      }
+      },
     }
   );
   return response.data;
 };
 
-export const getRequestsByPerson = async (identifier,personType,personInfoType, from, to) => {
+export const getRequestsByPerson = async (
+  identifier,
+  personType,
+  personInfoType,
+  from,
+  to
+) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/requests/person/${identifier}`,
     {
@@ -46,7 +50,7 @@ export const getRequestsByPerson = async (identifier,personType,personInfoType, 
         personInfoType,
         from,
         to,
-      }
+      },
     }
   );
 
@@ -55,12 +59,18 @@ export const getRequestsByPerson = async (identifier,personType,personInfoType, 
 
 export const getRequestBySerialNumber = async (serialNumber) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/serialNumber/${serialNumber}`);
+    `${apiBaseUrl}/api/requests/serialNumber/${serialNumber}`
+  );
 
   return response.data;
 };
 
-export const searchRequestsBySubmitterDisplayName = async (displayName,personType, from, to) => {
+export const searchRequestsBySubmitterDisplayName = async (
+  displayName,
+  personType,
+  from,
+  to
+) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/requests/displayName/${displayName}`,
     {
@@ -68,12 +78,20 @@ export const searchRequestsBySubmitterDisplayName = async (displayName,personTyp
         personType,
         from,
         to,
-      }
-    });
+      },
+    }
+  );
 
   return response.data;
 };
 
+export const isJobTitleAlreadyTakenRequest = async (jobTitle, directGroup) => {
+  const response = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/kartoffel/roles/job/taken?jobTitle=${jobTitle}&directGroup=${directGroup}`,
+  );
+
+  return response.data;
+}
 
 //POST
 
@@ -87,8 +105,8 @@ export const createRoleRequest = async (applyProperties) => {
 };
 
 export const assignRoleToEntityRequest = async (applyProperties) => {
-  const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/requests/assignRoleToEntityRequest`,
+  const response = await axiosApiInstance.put(
+    `${apiBaseUrl}/api/requests/request/entity/role`,
     applyProperties
   );
 
@@ -106,7 +124,7 @@ export const createOGRequest = async (applyProperties) => {
 
 export const createNewApproverRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/requests/newApproverRequest`,
+    `${apiBaseUrl}/api/requests/request/approver`,
     applyProperties
   );
 
@@ -175,18 +193,48 @@ export const disconectRoleFromEntityRequest = async (applyProperties) => {
   return response.data;
 };
 
+export const uploadBulkFile = async (file) => {
+  const response = await axiosApiInstance.post(
+    `${apiBaseUrl}/api/bulk/upload`,
+    file, { headers: { 'Content-Type': 'multipart/form-data' } }
+  );
+
+  return response.data;
+};
 
 // PUT
 
-export const updateApproverDecision = async (id,approverDecision,approverType) => {
+export const updateApproverDecision = async (
+  id,
+  approverDecision,
+  approverType
+) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/requests/approverDecision/${id}`,
     {
-      body:{
-        approverDecision:approverDecision,
-        approverType:approverType
-      }
+      body: {
+        approverDecision: approverDecision,
+        approverType: approverType,
+      },
     }
+  );
+
+  return response.data;
+};
+
+export const changeRoleHierarchyRequest = async (data) => {
+  const response = await axiosApiInstance.put(
+    `${apiBaseUrl}/api/requests/request/role/og`,
+    data
+  );
+
+  return response.data;
+};
+
+export const changeRoleHierarchyBulkRequest = async (data) => {
+  const response = await axiosApiInstance.put(
+    `${apiBaseUrl}/api/bulk/request/role/hierarchy`,
+    data
   );
 
   return response.data;

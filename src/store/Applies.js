@@ -17,7 +17,9 @@ import {
   deleteRoleRequest,
   deleteOGRequest,
   disconectRoleFromEntityRequest,
-  updateApproverDecision
+  updateApproverDecision,
+  changeRoleHierarchyRequest,
+  changeRoleHierarchyBulkRequest
 } from '../service/AppliesService';
 
 export default class AppliesStore {
@@ -142,6 +144,17 @@ export default class AppliesStore {
   }
 
   // PUT
+  async changeRoleHierarchy(applyProperties) {
+    const changeRoleHierarchyApply =
+      await changeRoleHierarchyRequest(applyProperties);
+    this.applies.push(changeRoleHierarchyApply);
+  }
+
+  async changeRoleHierarchyBulk(applyProperties) {
+    const changeRoleHierarchyBulkApply =
+      await changeRoleHierarchyBulkRequest(applyProperties);
+    this.applies.push(changeRoleHierarchyBulkApply);
+  }
 
   async updateApplyDecision(applyProperties) {
     const updatedRequest =
