@@ -4,9 +4,9 @@ import '../../assets/css/local/pages/dashboard.css';
 const UserProfileCard = ({ user, userPicture,isUserApprovel, openFullDetailsModal }) => (
   <div className='personal-information-wrap'>
     <div className='display-flex personal-information-inner'>
-      {isUserApprovel &&
+      {isUserApprovel.tag &&
           <div className="confirms">
-              <h3>גורם מאשר</h3>
+              <h3>{isUserApprovel.tag}</h3>
           </div>
       }
       <div className='personal-information-item'>
