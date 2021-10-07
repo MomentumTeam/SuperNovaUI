@@ -10,7 +10,7 @@ import UserProfileCard from './UserProfileCard';
 import { useStores } from '../../context/use-stores';
 import { USER_TYPE } from '../../constants';
 import FullUserInformationModal from '../../components/Modals/FullUserInformationModal';
-import ExampleTree from '../../components/tree';
+import DecorAnimation from '../../components/decor-animation';
 
 const Dashboard = observer(() => {
     const { userStore, appliesStore, treeStore } = useStores();
@@ -39,11 +39,7 @@ const Dashboard = observer(() => {
     const closeFullDetailsModal = () => {
         setIsFullUserInfoModalOpen(false);
     };
-
-
-    const data = [{"label":"Emelie","children":[{"label":"Hunter","children":[{"label":"Alba","children":[],"expanded":true},{"label":"Felicity","children":[],"expanded":true}],"expanded":true},{"label":"Orlando","children":[],"expanded":true}],"expanded":true}]
-    console.log(JSON.stringify(toJS(treeStore.tree)))
-
+    
     return (
         <>
             <div className='main-inner-item main-inner-item2'>
@@ -66,7 +62,7 @@ const Dashboard = observer(() => {
                             <ApprovalTable applies={applies} />
                         ) : (
                             <div className='content-unit-inner content-unit-inner-before'>
-                                <div className='search-row'>
+                                {/* <div className='search-row'>
                                     <div className='search-row-inner'>
                                         <SearchBox
                                             loadDataByEntity={async (entity) => {
@@ -77,10 +73,10 @@ const Dashboard = observer(() => {
                                             }}
                                         />
                                     </div>
-                                </div>
+                                </div> */}
                                 <div className='chart-wrap'>
-                                    {/* <ExampleTree data={datta}/> */}
-                                    <HierarchyTree data={data} />
+                                    <DecorAnimation/>
+                                    <HierarchyTree data={toJS(treeStore.tree)} />
                                 </div>
                             </div>
                         )}
