@@ -118,7 +118,7 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj }, ref) => {
           <Dropdown
             {...register('approverType')}
             disabled={onlyForView}
-            className={`${onlyForView ? 'disabled' : ''}`}
+            className={`${onlyForView ? 'disabled' : ''} approverType`}
             value={approverType}
             inputId='2011'
             required
