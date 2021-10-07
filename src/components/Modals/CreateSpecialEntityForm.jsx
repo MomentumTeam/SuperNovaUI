@@ -48,8 +48,8 @@ const CreateSpecialEntityForm = forwardRef(({ setIsActionDone }, ref) => {
                 clearance: classification,
                 sex,
                 // TODO: put it correct type
-                entityType: "???",
-                serviceType: "???"
+                entityType: "civillian", //TODO: what should this be??
+                serviceType: "???" //TODO: what should this be??
             },
             comments,
             adParams: {} // IS THIS NEEDED???
