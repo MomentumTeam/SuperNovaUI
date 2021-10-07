@@ -1,79 +1,36 @@
-import React, { useState, useImperativeHandle, forwardRef } from 'react';
-import { useForm } from 'react-hook-form';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { InputTextarea } from 'primereact/inputtextarea';
-import Hierarchy from './Hierarchy';
-import Approver from './Approver';
-import { useStores } from '../../context/use-stores';
-import { toJS } from 'mobx';
-import { AutoComplete } from 'primereact/autocomplete';
-import { Calendar } from 'primereact/calendar';
-import * as Yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
+import React, { forwardRef, useState, useImperativeHandle, useMemo, createRef } from 'react';
+import AssignRoleToEntityForm from './AssignRoleToEntityForm';
+import CreateSpecialEntityForm from './CreateSpecialEntityForm';
 import { Accordion, AccordionTab } from "primereact/accordion";
 
-
-// TODO: move to different file (restructe project files...)
-const validationSchema = Yup.object().shape({
-    personalNumber: Yup.number().required()
-});
-
 const CreateEntityForm = forwardRef((props, ref) => {
-    const { userStore } = useStores();
-    const { register, handleSubmit, setValue, getValues, watch, formState } =
-        useForm();
-    const { errors } = formState;
 
-    const onSubmit = async (data) => {
-        throw new Error('asdasdasd')
-        // get data from from and handle change (AD + kartoffel + etc' )
-    };
-
-    // must be used - doesnt do much
-    useImperativeHandle(
-        ref,
-        () => ({
-            handleSubmit: handleSubmit(onSubmit),
-        }),
+    const [activeIndex, setActiveIndex] = useState(0);
+    const formRefs = useMemo(
+        () => ({ 0: createRef(), 1: createRef() }),
         []
     );
 
-    const newEntityTab = () => {
-        return (
-            <div className='p-fluid'>
-                <div className='row2flex'>
-                    <div className='p-fluid-item'>
-                        <div className='p-field'>
-                            <label htmlFor='2021'>
-                                {' '}
-                                <span className='required-field'>*</span>מ"א/ת"ז
-                            </label>
-                            <InputText
-                                {...register('personalNumber', { required: true })}
-                                id='2021'
-                                type='text'
-                                required
-                            />
-                            {errors.personalNumber && <small>יש למלא ערך</small>}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )
-    }
+    useImperativeHandle(
+        ref,
+        () => ({
+            handleSubmit: formRefs[activeIndex].current.handleSubmit,
+        }),
+        [activeIndex, formRefs]
+    );
 
     return (
         <Accordion
             expandIcon="pi pi-chevron-left"
-            activeIndex={0}
-            style={{ "margin-bottom": "20px" }}
+            style={{ "marginBottom": "20px" }}
+            activeIndex={activeIndex}
+            onTabChange={({ index }) => setActiveIndex(index)}
         >
             <AccordionTab header="משתמש חדש">
-                {newEntityTab()}
+                <AssignRoleToEntityForm ref={formRefs[0]} showJob={false} />
             </AccordionTab>
             <AccordionTab header="משתמש מיוחד">
-
+                <CreateSpecialEntityForm ref={formRefs[1]} />
             </AccordionTab>
         </Accordion>)
 });

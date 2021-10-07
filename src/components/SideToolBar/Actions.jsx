@@ -99,9 +99,8 @@ const Action = () => {
   const handleRequest = async (id) => {
     const ref = getRef(id);
     try {
-      const res = await ref.current.handleSubmit();
-      console.log({ res });
-      res && toast.current.show({
+      await ref.current.handleSubmit();
+      toast.current.show({
         severity: 'success',
         summary: 'Success Message',
         detail: 'Message Content',
@@ -128,15 +127,7 @@ const Action = () => {
     return (
       <div className='display-flex '>
         <div className='display-flex'>
-          {name == 4 ? (
-            <Button
-              label='הוספה מקובץ'
-              onClick={() => onHide(name)}
-              className='btn-before'
-            />
-          ) : (
-            ''
-          )}
+
         </div>
         <div className='display-flex '>
           <Button

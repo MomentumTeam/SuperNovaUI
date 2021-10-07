@@ -125,7 +125,7 @@ export const createNewApproverRequest = async (applyProperties) => {
 
 export const createEntityRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/requests/entityRequest`,
+    `${apiBaseUrl}/api/requests/request/entity`,
     applyProperties
   );
 
