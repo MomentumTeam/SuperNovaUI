@@ -18,7 +18,7 @@ import FormData from "form-data";
 import "../../assets/css/local/components/rename-og-form.css";
 import { apiBaseUrl } from "../../constants";
 
-const EditOGForm = forwardRef((props, ref) => {
+const EditOGForm = forwardRef(({ setIsActionDone }, ref) => {
   const { userStore, appliesStore } = useStores();
   const { register, handleSubmit, setValue, watch } = useForm();
   const [roles, setRoles] = useState([]);
@@ -87,6 +87,7 @@ const EditOGForm = forwardRef((props, ref) => {
     } else {
       throw new Error("חלק מהשדות לא תקינים");
     }
+    setIsActionDone(true);
   };
 
   useImperativeHandle(
