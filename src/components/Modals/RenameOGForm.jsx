@@ -16,7 +16,7 @@ import { toJS } from "mobx";
 import FormData from "form-data";
 
 import "../../assets/css/local/components/rename-og-form.css";
-import { apiBaseUrl } from "../../constants";
+import { apiBaseUrl, USER_TYPE } from "../../constants";
 
 const EditOGForm = forwardRef((props, ref) => {
   const { userStore, appliesStore } = useStores();
@@ -24,10 +24,11 @@ const EditOGForm = forwardRef((props, ref) => {
   const [roles, setRoles] = useState([]);
   const [hierarchyByIdentifier, setHierarchyByIdentifier] = useState(null);
 
-  const isBulkPermitted = toJS(userStore.user)?.type?.includes("BULK");
+  const isBulkPermitted = toJS(userStore.user)?.type?.includes(USER_TYPE.BULK);
 
   const roleRegister = register("role");
   const identifierRegister = register("identifier");
+  const isBulkRequestRegister = register("isBulkRequest");
 
   const setCurrentHierarchyFunction = async (name, value) => {
     setValue(name, value);
@@ -249,6 +250,7 @@ const EditOGForm = forwardRef((props, ref) => {
           <a
             href={`${apiBaseUrl}/api/bulk/request/example?bulkType=1`}
             style={{ textDecoration: "underline" }}
+            download="exampleFile"
           >
             להורדת הפורמט לחץ כאן
           </a>
@@ -260,13 +262,14 @@ const EditOGForm = forwardRef((props, ref) => {
     );
   };
 
+  // TODO: remove !
   return !isBulkPermitted ? (
     <Accordion
       expandIcon="pi pi-chevron-left"
-      activeIndex={0}
       style={{ "margin-bottom": "20px" }}
+      onTabOpen={(e) => setValue("isBulkRequest", !!e.index)}
     >
-      <AccordionTab header="שינוי היררכיה לתפקיד">
+      <AccordionTab header="שינוי היררכיה לתפקיד" id="1" index="2">
         {renderChangeHierarchy()}
       </AccordionTab>
       <AccordionTab header="הגשת בקשה מרובה">{renderBulk()}</AccordionTab>

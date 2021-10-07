@@ -19,7 +19,8 @@ import {
   disconectRoleFromEntityRequest,
   updateApproverDecision,
   changeRoleHierarchyRequest,
-  changeRoleHierarchyBulkRequest
+  changeRoleHierarchyBulkRequest,
+  createRoleBulkRequest
 } from '../service/AppliesService';
 
 export default class AppliesStore {
@@ -153,6 +154,14 @@ export default class AppliesStore {
       await disconectRoleFromEntityRequest(applyProperties);
     this.myApplies.unshift(newDisconectRoleFromEntityApply);
   }
+
+
+  async createRoleBulk(applyProperties) {
+    const createRoleBulkApply =
+      await createRoleBulkRequest(applyProperties);
+    this.myApplies.unshift(createRoleBulkApply);
+  }
+
 
   // PUT
   async changeRoleHierarchy(applyProperties) {
