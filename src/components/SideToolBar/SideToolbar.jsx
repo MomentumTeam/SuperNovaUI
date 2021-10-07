@@ -10,7 +10,8 @@ import '../../assets/css/local/components/aside.min.css';
 const SideToolbar = ({ recentApplies }) => {
     const { userStore } = useStores();
     const notifications = toJS(userStore.userNotifications);
-
+    const previweApplies = recentApplies.slice(0, 8);
+    
     useEffect(() => {
         userStore.fetchUserNotifications(userStore.user?.id);
     }, [userStore]);
@@ -32,7 +33,7 @@ const SideToolbar = ({ recentApplies }) => {
                     </div>
                     <div className='table-item-wrap'>
                         <div className='table-item-inner'>
-                            <List list={recentApplies} />
+                            <List list={previweApplies} />
                         </div>
                     </div>
                 </div>

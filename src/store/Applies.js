@@ -98,34 +98,34 @@ export default class AppliesStore {
 
   async createRoleApply(applyProperties) {
     const newRoleApply = await createRoleRequest(applyProperties);
-    this.applies.push(newRoleApply);
+    this.myApplies.unshift(newRoleApply);
   }
 
   async createOGApply(applyProperties) {
     const newOGApply = await createOGRequest(applyProperties);
-    this.applies.push(newOGApply);
+    this.myApplies.unshift(newOGApply);
   }
 
   async assignRoleToEntityApply(applyProperties) {
     const newAssignRoleToEntityApply = await assignRoleToEntityRequest(
       applyProperties
     );
-    this.applies.push(newAssignRoleToEntityApply);
+    this.myApplies.unshift(newAssignRoleToEntityApply);
   }
 
   async createNewApproverApply(applyProperties) {
     const newApproverApply = await createNewApproverRequest(applyProperties);
-    this.applies.push(newApproverApply);
+    this.myApplies.unshift(newApproverApply);
   }
 
   async createEntityApply(applyProperties) {
     const newEntityApply = await createEntityRequest(applyProperties);
-    this.applies.push(newEntityApply);
+    this.myApplies.unshift(newEntityApply);
   }
 
   async renameOGApply(applyProperties) {
     const newRenameOGApply = await renameOGRequest(applyProperties);
-    this.applies.push(newRenameOGApply);
+    this.myApplies.unshift(newRenameOGApply);
   }
 
   async renameRoleApply(applyProperties) {
@@ -135,23 +135,23 @@ export default class AppliesStore {
 
   async editEntityApply(applyProperties) {
     const newEditEntityApply = await editEntityRequest(applyProperties);
-    this.applies.push(newEditEntityApply);
+    this.myApplies.unshift(newEditEntityApply);
   }
 
   async deleteRoleApply(applyProperties) {
     const newDeleteRoleApply = await deleteRoleRequest(applyProperties);
-    this.applies.push(newDeleteRoleApply);
+    this.myApplies.unshift(newDeleteRoleApply);
   }
 
   async deleteOGApply(applyProperties) {
     const newDeleteOGApplyApply = await deleteOGRequest(applyProperties);
-    this.applies.push(newDeleteOGApplyApply);
+    this.myApplies.unshift(newDeleteOGApplyApply);
   }
 
   async disconectRoleFromEntityApply(applyProperties) {
     const newDisconectRoleFromEntityApply =
       await disconectRoleFromEntityRequest(applyProperties);
-    this.applies.push(newDisconectRoleFromEntityApply);
+    this.myApplies.unshift(newDisconectRoleFromEntityApply);
   }
 
   // PUT
