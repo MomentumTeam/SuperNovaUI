@@ -3,7 +3,7 @@ import ModalHierarchy from '../ModalHierarchy';
 import { searchOG } from '../../service/KartoffelService';
 import { AutoComplete } from 'primereact/autocomplete';
 
-const Hierarchy = ({ setValue, name, onOrgSelected, value }) => {
+const Hierarchy = ({ setValue, name, onOrgSelected, value, errors }) => {
   const [ogSuggestions, setOgSuggestions] = useState([]);
   const [selectedOg, setSelectedOg] = useState(null);
 
@@ -43,6 +43,10 @@ const Hierarchy = ({ setValue, name, onOrgSelected, value }) => {
           required
           placeholder='היררכיה'
         />
+        <label htmlFor='2020'>
+          {' '}
+          {errors?.hierarchy && <small>יש למלא ערך</small>}
+        </label>
       </div>
     </>
   );

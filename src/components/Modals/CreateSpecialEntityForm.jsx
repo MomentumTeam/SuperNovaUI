@@ -4,6 +4,7 @@ import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
 import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useStores } from '../../context/use-stores';
 import Approver from './Approver';
 
@@ -22,7 +23,10 @@ const validationSchema = Yup.object().shape({
 });
 
 const CreateSpecialEntityForm = forwardRef((props, ref) => {
-    const { register, handleSubmit, watch, setValue } = useForm();
+    const { register, handleSubmit, watch, setValue, formState } = useForm({
+        resolver: yupResolver(validationSchema)
+    });
+    const { errors } = formState;
     const { appliesStore } = useStores();
 
     const onSubmit = async (data) => {
@@ -73,6 +77,10 @@ const CreateSpecialEntityForm = forwardRef((props, ref) => {
                             id='firstName'
                             type='text'
                         />
+                        <label htmlFor='2020'>
+                            {' '}
+                            {errors?.firstName && <small style={{ color: "red" }}>יש למלא ערך</small>}
+                        </label>
                     </label>
                 </div>
             </div>
@@ -85,6 +93,10 @@ const CreateSpecialEntityForm = forwardRef((props, ref) => {
                             id='lastName'
                             type='text'
                         />
+                        <label htmlFor='2020'>
+                            {' '}
+                            {errors?.lastName && <small style={{ color: "red" }}>יש למלא ערך</small>}
+                        </label>
                     </label>
                 </div>
             </div>
@@ -97,6 +109,10 @@ const CreateSpecialEntityForm = forwardRef((props, ref) => {
                             id='identityNumber'
                             type='text'
                         />
+                        <label htmlFor='2020'>
+                            {' '}
+                            {errors?.identityNumber && <small style={{ color: "red" }}> יש למלא ערך חוקי</small>}
+                        </label>
                     </label>
                 </div>
             </div>
@@ -109,6 +125,10 @@ const CreateSpecialEntityForm = forwardRef((props, ref) => {
                             id='phone'
                             type='text'
                         />
+                        <label htmlFor='2020'>
+                            {' '}
+                            {errors?.phone && <small style={{ color: "red" }}>יש למלא ערך חוקי</small>}
+                        </label>
                     </label>
                 </div>
             </div>
@@ -121,6 +141,10 @@ const CreateSpecialEntityForm = forwardRef((props, ref) => {
                             id='classification'
                             type='text'
                         />
+                        <label htmlFor='2020'>
+                            {' '}
+                            {errors?.classification && <small style={{ color: "red" }}>יש למלא ערך חוקי</small>}
+                        </label>
                     </label>
                 </div>
             </div>

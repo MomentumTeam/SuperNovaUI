@@ -3,7 +3,7 @@ import AssignRoleToEntityForm from './AssignRoleToEntityForm';
 import CreateSpecialEntityForm from './CreateSpecialEntityForm';
 import { Accordion, AccordionTab } from "primereact/accordion";
 
-const CreateEntityForm = forwardRef((props, ref) => {
+const CreateEntityForm = forwardRef(({ setIsActionDone }, ref) => {
 
     const [activeIndex, setActiveIndex] = useState(0);
     const formRefs = useMemo(
@@ -27,10 +27,10 @@ const CreateEntityForm = forwardRef((props, ref) => {
             onTabChange={({ index }) => setActiveIndex(index)}
         >
             <AccordionTab header="משתמש חדש">
-                <AssignRoleToEntityForm ref={formRefs[0]} showJob={false} />
+                <AssignRoleToEntityForm ref={formRefs[0]} showJob={false} setIsActionDone={setIsActionDone} />
             </AccordionTab>
             <AccordionTab header="משתמש מיוחד">
-                <CreateSpecialEntityForm ref={formRefs[1]} />
+                <CreateSpecialEntityForm ref={formRefs[1]} setIsActionDone={setIsActionDone} />
             </AccordionTab>
         </Accordion>)
 });

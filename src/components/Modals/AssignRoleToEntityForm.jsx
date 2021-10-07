@@ -10,6 +10,7 @@ import { toJS } from 'mobx';
 import { AutoComplete } from 'primereact/autocomplete';
 import { Calendar } from 'primereact/calendar';
 import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 import {
   searchEntitiesByFullName,
@@ -31,10 +32,12 @@ const validationSchema = Yup.object().shape({
   comments: Yup.string().optional(),
 });
 
-const AssignRoleToEntityForm = forwardRef(({ showJob = true }, ref) => {
+const AssignRoleToEntityForm = forwardRef(({ showJob = true, setIsActionDone }, ref) => {
   const { appliesStore, userStore } = useStores();
   const { register, handleSubmit, setValue, getValues, watch, formState } =
-    useForm();
+    useForm({
+      resolver: yupResolver(validationSchema)
+    });
   const [userSuggestions, setUserSuggestions] = useState([]);
   const [roles, setRoles] = useState([]);
   const { errors } = formState;
@@ -69,7 +72,7 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true }, ref) => {
       due: changeRoleAt ? new Date(changeRoleAt).getTime() : Date.now(),
     };
     await appliesStore.assignRoleToEntityApply(req);
-    return { success: true };
+    setIsActionDone(true);
   };
 
   useImperativeHandle(
@@ -201,7 +204,10 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true }, ref) => {
             }}
             required
           />
-          {errors.userName && <small>יש למלא ערך</small>}
+          <label htmlFor='2020'>
+            {' '}
+            {errors.userName && <small style={{ color: "red" }}>יש למלא ערך</small>}
+          </label>
         </div>
       </div>
       <div className='p-fluid-item-flex p-fluid-item'>
@@ -222,7 +228,10 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true }, ref) => {
               }
             }}
           />
-          {errors.personalNumber && <small>יש למלא ערך</small>}
+          <label htmlFor='2021'>
+            {' '}
+            {errors.personalNumber && <small style={{ color: "red" }}>יש למלא ערך</small>}
+          </label>
         </div>
       </div>
       {showJob ? <div className='p-fluid-item' >
@@ -247,8 +256,8 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true }, ref) => {
           setValue={setValue}
           name='hierarchy'
           onOrgSelected={handleOrgSelected}
+          errors={errors}
         />
-        {errors.hierarchy && <small>יש למלא ערך</small>}
       </div>
       {watch('currentRoleUser') && (
         <div className='p-fluid-item-flex p-fluid-item'>
@@ -284,7 +293,10 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true }, ref) => {
                 handleRoleSelected(e.value.roleId);
               }}
             />
-            {errors.role && <small>יש למלא ערך</small>}
+            <label htmlFor='2021'>
+              {' '}
+              {errors.role && <small style={{ color: "red" }}>יש למלא ערך</small>}
+            </label>
           </div>
         </div>
         <div className='p-fluid-item'>
@@ -301,7 +313,10 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true }, ref) => {
                 }
               }}
             />
-            {errors.roleId && <small>יש למלא ערך</small>}
+            <label htmlFor='2021'>
+              {' '}
+              {errors.roleId && <small style={{ color: "red" }}>יש למלא ערך</small>}
+            </label>
           </div>
         </div>
         <div className='p-fluid-item'>
@@ -333,7 +348,10 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true }, ref) => {
                 onChange={(e) => setValue('changeRoleAt', e.target.value)}
                 placeholder='בצע החלפה בתאריך'
               />
-              {errors.changeRoleAt && <small>יש למלא ערך</small>}
+              <label htmlFor='2021'>
+                {' '}
+                {errors.changeRoleAt && <small style={{ color: "red" }}>יש למלא ערך</small>}
+              </label>
             </div>
           </div>
         </div>

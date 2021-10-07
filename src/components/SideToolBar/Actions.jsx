@@ -67,6 +67,7 @@ const actions = [
 
 const Action = () => {
   const [actionList, setActionList] = useState(actions);
+  const [isActionDone, setIsActionDone] = useState(false);
   const modalRefs = useMemo(
     () =>
       actions.map((i) => {
@@ -100,7 +101,7 @@ const Action = () => {
     const ref = getRef(id);
     try {
       await ref.current.handleSubmit();
-      toast.current.show({
+      isActionDone && toast.current.show({
         severity: 'success',
         summary: 'Success Message',
         detail: 'Message Content',
@@ -109,18 +110,20 @@ const Action = () => {
     } catch (e) {
       toast.current.show({
         severity: 'error',
-        summary: e.message || 'Error Message',
-        detail: 'Message Content',
+        summary: 'Error Message',
+        detail: e.message || 'Message Content',
         life: 3000,
       });
     }
-    setActionList(
+    isActionDone && setActionList(
       actionList.map((action) =>
         action.id == id
           ? { ...action, displayResponsive: false }
           : { ...action }
       )
     );
+
+    setIsActionDone(false);
   };
 
   const renderFooter = (name) => {
@@ -163,7 +166,7 @@ const Action = () => {
   const renderModalForm = (name, id) => {
     const ref = getRef(id);
     const FormName = name;
-    return <FormName ref={ref} />;
+    return <FormName ref={ref} setIsActionDone={setIsActionDone} />;
   };
 
   return (
