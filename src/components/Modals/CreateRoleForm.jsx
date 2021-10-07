@@ -16,11 +16,11 @@ const states = [
   { name: 'מספר5', code: 'מספר5' },
 ];
 
-const CreateRoleForm = forwardRef((props, ref) => {
+const CreateRoleForm = forwardRef(({ setIsActionDone }, ref) => {
   const { register, handleSubmit, setValue } = useForm();
 
   const onSubmit = async (data) => {
-    const { 
+    const {
       approver,
       hierarchy,
       userName,
@@ -30,7 +30,7 @@ const CreateRoleForm = forwardRef((props, ref) => {
       roleName,
       roleId,
       comments
-  } = data
+    } = data
     const req = {
       status: "SUBMITTED",
       commanders: [{ ...approver, identityCard: "", personalNumber: 123456 }],
@@ -50,15 +50,15 @@ const CreateRoleForm = forwardRef((props, ref) => {
       due: Date.now()
     }
 
-    console.log(data)
-    return await createRoleRequest(req)
+    await createRoleRequest(req);
+    setIsActionDone(true);
   }
 
   useImperativeHandle(ref, () => ({
     handleSubmit: handleSubmit(onSubmit)
   }), []);
 
-  const setCurrentUser = () =>{
+  const setCurrentUser = () => {
     setValue("user", "ss")
     setValue("personalNumber", 1234)
   }

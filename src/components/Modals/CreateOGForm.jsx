@@ -7,7 +7,7 @@ import { useStores } from '../../context/use-stores';
 import Hierarchy from './Hierarchy';
 import Approver from './Approver';
 
-const CreateOGForm = forwardRef((props, ref) => {
+const CreateOGForm = forwardRef(({setIsActionDone}, ref) => {
     const { appliesStore } = useStores();
     const { register, handleSubmit, setValue } = useForm();
 
@@ -31,7 +31,8 @@ const CreateOGForm = forwardRef((props, ref) => {
             due: Date.now(),
         };
 
-        return await appliesStore.createOGApply(req);
+        await appliesStore.createOGApply(req);
+        setIsActionDone(true);
     };
 
     useImperativeHandle(

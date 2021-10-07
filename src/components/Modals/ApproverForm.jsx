@@ -23,7 +23,7 @@ const approverTypes = [
   { label: 'משתמש על', value: 'ADMIN' },
 ];
 
-const ApproverForm = forwardRef((props, ref) => {
+const ApproverForm = forwardRef(({ setIsActionDone }, ref) => {
   const { appliesStore, userStore } = useStores();
   const [approverType, setApproverType] = useState();
   const { register, handleSubmit, setValue, getValues, formState, watch } = useForm();
@@ -63,7 +63,8 @@ const ApproverForm = forwardRef((props, ref) => {
       due: Date.now(),
     };
 
-    return await appliesStore.createNewApproverApply(req);
+    await appliesStore.createNewApproverApply(req);
+    setIsActionDone(true);
   };
 
   useImperativeHandle(
@@ -127,59 +128,59 @@ const ApproverForm = forwardRef((props, ref) => {
       </div>
       <div className='p-fluid-item'>
         <div className='p-field'>
-            <label htmlFor='2020'>
-              {' '}
-              <span className='required-field'>*</span>שם משתמש
-            </label>
-            <button
-                className='btn-underline left19 approver-fillMe'
-                onClick={setCurrentUser}
-                type='button'
-                title='עבורי'
-              >
+          <label htmlFor='2020'>
+            {' '}
+            <span className='required-field'>*</span>שם משתמש
+          </label>
+          <button
+            className='btn-underline left19 approver-fillMe'
+            onClick={setCurrentUser}
+            type='button'
+            title='עבורי'
+          >
             עבורי
-            </button>
-            <AutoComplete
-              value={watch('userName')}
-              suggestions={userSuggestions}
-              completeMethod={onSearchUser}
-              id='approverForm-userName'
-              type='text'
-              field='fullName'
-              onSelect={(e) => {
-                setValue('user', e.value);
-                setValue('personalNumber', e.value.personalNumber || e.value.identityCard);
-                setValue('hierarchy', e.value.hierarchy);
-              }}
-              onChange={(e) => {
-                setValue('userName', e.value);
-              }}
-              required
-            />
-            {errors.userName && <small>יש למלא ערך</small>}
-          </div>
+          </button>
+          <AutoComplete
+            value={watch('userName')}
+            suggestions={userSuggestions}
+            completeMethod={onSearchUser}
+            id='approverForm-userName'
+            type='text'
+            field='fullName'
+            onSelect={(e) => {
+              setValue('user', e.value);
+              setValue('personalNumber', e.value.personalNumber || e.value.identityCard);
+              setValue('hierarchy', e.value.hierarchy);
+            }}
+            onChange={(e) => {
+              setValue('userName', e.value);
+            }}
+            required
+          />
+          {errors.userName && <small>יש למלא ערך</small>}
+        </div>
       </div>
       <div className='p-fluid-item'>
-          <div className='p-field'>
-            <label htmlFor='2021'>
-              {' '}
-              <span className='required-field'>*</span>מ"א/ת"ז
-            </label>
-            <InputText
-              {...register('personalNumber', { required: true })}
-              id='2021'
-              type='text'
-              required
-              onBlur={onSearchUserByPersonalNumber}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  onSearchUserByPersonalNumber();
-                }
-              }}
-            />
-            {errors.personalNumber && <small>יש למלא ערך</small>}
-          </div>
+        <div className='p-field'>
+          <label htmlFor='2021'>
+            {' '}
+            <span className='required-field'>*</span>מ"א/ת"ז
+          </label>
+          <InputText
+            {...register('personalNumber', { required: true })}
+            id='2021'
+            type='text'
+            required
+            onBlur={onSearchUserByPersonalNumber}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                onSearchUserByPersonalNumber();
+              }
+            }}
+          />
+          {errors.personalNumber && <small>יש למלא ערך</small>}
         </div>
+      </div>
       <div className='p-fluid-item'>
         <Hierarchy disabled={true} setValue={setValue} name='hierarchy' ogValue={getValues('hierarchy')} />
       </div>
