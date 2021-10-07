@@ -35,15 +35,9 @@ export const getAllRequests = async (approvementStatus, from, to) => {
   return response.data;
 };
 
-export const getRequestsByPerson = async (
-  identifier,
-  personType,
-  personInfoType,
-  from,
-  to
-) => {
+export const getRequestsByPerson = async (id,personType,personInfoType, from, to) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/person/${identifier}`,
+    `${apiBaseUrl}/api/requests/person/${id}`,
     {
       params: {
         personType,
@@ -84,6 +78,14 @@ export const searchRequestsBySubmitterDisplayName = async (
 
   return response.data;
 };
+
+export const isJobTitleAlreadyTakenRequest = async (jobTitle, directGroup) => {
+  const response = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/kartoffel/roles/job/taken?jobTitle=${jobTitle}&directGroup=${directGroup}`,
+  );
+
+  return response.data;
+}
 
 //POST
 

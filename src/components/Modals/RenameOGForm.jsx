@@ -10,19 +10,16 @@ import {
   getRolesUnderOG,
   getRoleByRoleId,
 } from "../../service/KartoffelService";
-import {
-  changeRoleHierarchyRequest,
-  uploadBulkFile,
-  changeRoleHierarchyBulkRequest,
-} from "../../service/AppliesService";
+import { uploadBulkFile } from "../../service/AppliesService";
 import { useStores } from "../../context/use-stores";
 import { toJS } from "mobx";
 import FormData from "form-data";
 
 import "../../assets/css/local/components/rename-og-form.css";
+import { apiBaseUrl } from "../../constants";
 
 const EditOGForm = forwardRef(({ setIsActionDone }, ref) => {
-  const { userStore } = useStores();
+  const { userStore, appliesStore } = useStores();
   const { register, handleSubmit, setValue, watch } = useForm();
   const [roles, setRoles] = useState([]);
   const [hierarchyByIdentifier, setHierarchyByIdentifier] = useState(null);
@@ -49,7 +46,7 @@ const EditOGForm = forwardRef(({ setIsActionDone }, ref) => {
     ) {
       if (data.role && data.comments) {
         try {
-          await changeRoleHierarchyRequest({
+          return appliesStore.changeRoleHierarchy({
             comments: data.comments,
             commanders: data.approvers,
             kartoffelParams: {
@@ -73,7 +70,7 @@ const EditOGForm = forwardRef(({ setIsActionDone }, ref) => {
         try {
           const { uploadFiles } = await uploadBulkFile(formData);
 
-          await changeRoleHierarchyBulkRequest({
+          return appliesStore.changeRoleHierarchyBulk({
             commanders: data.approvers,
             kartoffelParams: {
               directGroup: data.newHierarchy.id,
@@ -213,7 +210,7 @@ const EditOGForm = forwardRef(({ setIsActionDone }, ref) => {
             <Hierarchy
               setValue={setValue}
               name="currentHierarchy"
-              fieldName="היררכיה נוכחית"
+              labelText="היררכיה נוכחית"
             />
           </div>
         </div>
@@ -222,7 +219,7 @@ const EditOGForm = forwardRef(({ setIsActionDone }, ref) => {
             <Hierarchy
               setValue={setValue}
               name="newHierarchy"
-              fieldName="היררכיה חדשה"
+              labelText="היררכיה חדשה"
             />
           </div>
         </div>
@@ -250,7 +247,12 @@ const EditOGForm = forwardRef(({ setIsActionDone }, ref) => {
           style={{ alignItems: "center" }}
         >
           {/* TODO: bring good excel example route */}
-          <a href="https://www.w3schools.com">להורדת הפורמט לחץ כאן</a>
+          <a
+            href={`${apiBaseUrl}/api/bulk/request/example?bulkType=1`}
+            style={{ textDecoration: "underline" }}
+          >
+            להורדת הפורמט לחץ כאן
+          </a>
         </div>
         <div className="p-fluid-item-flex p-fluid-item">
           <Approver setValue={setValue} name="approvers" multiple={true} />
@@ -259,7 +261,7 @@ const EditOGForm = forwardRef(({ setIsActionDone }, ref) => {
     );
   };
 
-  return isBulkPermitted ? (
+  return !isBulkPermitted ? (
     <Accordion
       expandIcon="pi pi-chevron-left"
       activeIndex={0}

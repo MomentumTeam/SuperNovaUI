@@ -23,10 +23,11 @@ const approverTypes = [
   { label: 'משתמש על', value: 'ADMIN' },
 ];
 
-const ApproverForm = forwardRef(({ setIsActionDone }, ref) => {
+
+const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionDone }, ref) => {
   const { appliesStore, userStore } = useStores();
   const [approverType, setApproverType] = useState();
-  const { register, handleSubmit, setValue, getValues, formState, watch } = useForm();
+  const { register, handleSubmit, setValue, getValues, formState, watch } = useForm({ defaultValues: approverRequestObj });
   const [userSuggestions, setUserSuggestions] = useState([]);
   const { errors } = formState;
 
@@ -118,6 +119,8 @@ const ApproverForm = forwardRef(({ setIsActionDone }, ref) => {
           </label>
           <Dropdown
             {...register('approverType')}
+            disabled={onlyForView}
+            className={`${onlyForView ? 'disabled' : ''}`}
             value={approverType}
             inputId='2011'
             required
@@ -185,12 +188,13 @@ const ApproverForm = forwardRef(({ setIsActionDone }, ref) => {
         <Hierarchy disabled={true} setValue={setValue} name='hierarchy' ogValue={getValues('hierarchy')} />
       </div>
       <div className='p-fluid-item'>
-        <Approver setValue={setValue} name='approvers' multiple={true} />
+        <Approver disabled={onlyForView} setValue={setValue} name='approvers' defaultApprovers={approverRequestObj?.approvers || []} multiple={true} />
       </div>
       <div className='p-fluid-item p-fluid-item-flex1'>
         <div className='p-field'>
           <label htmlFor='2016'>הערות</label>
           <InputTextarea
+            disabled={onlyForView}
             {...register('comments')}
             id='2016'
             type='text'
@@ -201,5 +205,10 @@ const ApproverForm = forwardRef(({ setIsActionDone }, ref) => {
     </div>
   );
 });
+
+ApproverForm.defaultProps = {
+  onlyForView: false,
+  approverRequestObj: {}
+}
 
 export default ApproverForm;
