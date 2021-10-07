@@ -11,10 +11,10 @@ const CreateOGForm = forwardRef((props, ref) => {
     const { appliesStore } = useStores();
     const { register, handleSubmit, setValue } = useForm();
 
-    const onSubmit = async ({ newHierarchy, parentHierarchy, approver, comments }) => {
+    const onSubmit = async ({ newHierarchy, parentHierarchy, approvers, comments }) => {
         const req = {
             status: 'SUBMITTED',
-            commanders: [{ ...approver, identityCard: '', personalNumber: 123456 }],
+            commanders: approvers,
             kartoffelParams: {
                 name: newHierarchy,
                 parent: parentHierarchy.id,
@@ -61,7 +61,7 @@ const CreateOGForm = forwardRef((props, ref) => {
                 </div>
             </div>
             <div className='p-fluid-item'>
-                <Approver setValue={setValue} name='approver' />
+                <Approver setValue={setValue} name='approvers' defaultApprovers={[]} multiple={true} />
             </div>
             <div className='p-fluid-item p-fluid-item-flex1'>
                 <div className='p-field'>
