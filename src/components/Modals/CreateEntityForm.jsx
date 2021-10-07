@@ -14,7 +14,7 @@ const CreateEntityForm = forwardRef(({ setIsActionDone }, ref) => {
     useImperativeHandle(
         ref,
         () => ({
-            handleSubmit: formRefs[activeIndex].current.handleSubmit,
+            handleSubmit: formRefs[activeIndex].current.handleSubmit
         }),
         [activeIndex, formRefs]
     );

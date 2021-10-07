@@ -48,8 +48,7 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true, setIsActionDone }, 
     } catch (err) {
       throw new Error(err.errors);
     }
-    const { changeRoleAt, approvers, personalNumber, roleId, comments, user } =
-      data;
+    const { changeRoleAt, approvers, roleId, comments, user } = data;
     const userRole = getUserRole();
     const req = {
       commanders: approvers,
@@ -78,7 +77,7 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true, setIsActionDone }, 
   useImperativeHandle(
     ref,
     () => ({
-      handleSubmit: handleSubmit(onSubmit),
+      handleSubmit: handleSubmit(onSubmit)
     }),
     []
   );

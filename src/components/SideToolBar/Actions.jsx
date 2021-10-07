@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo, createRef } from 'react';
+import React, { useCallback, useEffect, useState, useRef, useMemo, createRef } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import CreateRoleForm from '../Modals/CreateRoleForm';
@@ -6,10 +6,7 @@ import CreateOGForm from '../Modals/CreateOGForm';
 import RenameOGForm from '../Modals/RenameOGForm';
 import AssignRoleToEntityForm from '../Modals/AssignRoleToEntityForm';
 import CreateEntityForm from '../Modals/CreateEntityForm';
-// import ModalForm5 from './modal-form5';
-// import ModalForm6 from './modal-form6';
 import { Toast } from 'primereact/toast';
-import { classNames } from 'primereact/utils';
 
 import '../../assets/css/local/components/modal-item.min.css';
 import ApproverForm from '../Modals/ApproverForm';
@@ -68,6 +65,7 @@ const actions = [
 const Action = () => {
   const [actionList, setActionList] = useState(actions);
   const [isActionDone, setIsActionDone] = useState(false);
+  const [currentActionId, setCurrentActionId] = useState(null);
   const modalRefs = useMemo(
     () =>
       actions.map((i) => {
@@ -77,12 +75,12 @@ const Action = () => {
   );
   const toast = useRef(null);
 
-  const getRef = (id) => modalRefs.find((ref) => ref.id === id).ref;
+  const getRef = useCallback((id) => modalRefs.find((ref) => ref.id === id).ref, [modalRefs]);
 
   const onClick = (id) => {
     setActionList(
       actionList.map((action) =>
-        action.id == id ? { ...action, displayResponsive: true } : { ...action }
+        action.id === id ? { ...action, displayResponsive: true } : { ...action }
       )
     );
   };
@@ -90,23 +88,38 @@ const Action = () => {
   const onHide = (id) => {
     setActionList(
       actionList.map((action) =>
-        action.id == id
+        action.id === id
           ? { ...action, displayResponsive: false }
           : { ...action }
       )
     );
   };
 
-  const handleRequest = async (id) => {
+  useEffect(() => {
+    isActionDone && toast.current.show({
+      severity: 'success',
+      summary: 'Success Message',
+      detail: 'Message Content',
+      life: 3000,
+    });
+
+    isActionDone && setActionList(
+      actionList.map((action) =>
+        action.id === currentActionId
+          ? { ...action, displayResponsive: false }
+          : { ...action }
+      )
+    );
+
+    setIsActionDone(false);
+
+  }, [actionList, currentActionId, isActionDone])
+
+  const handleRequest = useCallback(async (id) => {
+    setCurrentActionId(id);
     const ref = getRef(id);
     try {
       await ref.current.handleSubmit();
-      isActionDone && toast.current.show({
-        severity: 'success',
-        summary: 'Success Message',
-        detail: 'Message Content',
-        life: 3000,
-      });
     } catch (e) {
       toast.current.show({
         severity: 'error',
@@ -115,16 +128,7 @@ const Action = () => {
         life: 3000,
       });
     }
-    isActionDone && setActionList(
-      actionList.map((action) =>
-        action.id == id
-          ? { ...action, displayResponsive: false }
-          : { ...action }
-      )
-    );
-
-    setIsActionDone(false);
-  };
+  }, [getRef]);
 
   const renderFooter = (name) => {
     return (
@@ -139,13 +143,13 @@ const Action = () => {
             className='btn-underline'
           />
 
-          {name == 5 ? (
+          {name === 5 ? (
             <Button
               label=' שליחת בקשה'
               onClick={() => handleRequest(name)}
               className='btn-gradient orange'
             />
-          ) : name == 6 ? (
+          ) : name === 6 ? (
             <Button
               label=' שליחת בקשה'
               onClick={() => handleRequest(name)}

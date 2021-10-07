@@ -22,7 +22,7 @@ const validationSchema = Yup.object().shape({
     sex: Yup.number().optional().nullable()
 });
 
-const CreateSpecialEntityForm = forwardRef((props, ref) => {
+const CreateSpecialEntityForm = forwardRef(({ setIsActionDone }, ref) => {
     const { register, handleSubmit, watch, setValue, formState } = useForm({
         resolver: yupResolver(validationSchema)
     });
@@ -56,12 +56,13 @@ const CreateSpecialEntityForm = forwardRef((props, ref) => {
         };
 
         await appliesStore.createEntityApply(req);
+        await setIsActionDone(true);
     };
 
     useImperativeHandle(
         ref,
         () => ({
-            handleSubmit: handleSubmit(onSubmit),
+            handleSubmit: handleSubmit(onSubmit)
         }),
         []
     );
