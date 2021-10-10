@@ -91,7 +91,7 @@ export const isJobTitleAlreadyTakenRequest = async (jobTitle, directGroup) => {
 
 export const createRoleRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/requests/roleRequest`,
+    `${apiBaseUrl}/api/requests/request/role`,
     applyProperties
   );
 
@@ -109,7 +109,7 @@ export const assignRoleToEntityRequest = async (applyProperties) => {
 
 export const createOGRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/requests/ogRequest`,
+    `${apiBaseUrl}/api/requests/request/og`,
     applyProperties
   );
 
@@ -195,6 +195,16 @@ export const uploadBulkFile = async (file) => {
 
   return response.data;
 };
+
+export const createRoleBulkRequest = async (data) => {
+  const response = await axiosApiInstance.post(
+    `${apiBaseUrl}/api/bulk/request/role`,
+    data
+  );
+
+  return response.data;
+};
+
 
 // PUT
 

@@ -45,7 +45,7 @@ const Hierarchy = ({ setValue, name, onOrgSelected, value, labelText= 'הירר�
         />
         <label htmlFor='2020'>
           {' '}
-          {errors?.hierarchy && <small>יש למלא ערך</small>}
+          {errors?.hierarchy && <small style={{ color: "red" }}>יש למלא ערך</small>}
         </label>
       </div>
     </>

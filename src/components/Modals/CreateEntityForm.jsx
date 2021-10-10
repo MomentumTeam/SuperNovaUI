@@ -24,7 +24,15 @@ const CreateEntityForm = forwardRef(({ setIsActionDone }, ref) => {
             expandIcon="pi pi-chevron-left"
             style={{ "marginBottom": "20px" }}
             activeIndex={activeIndex}
-            onTabChange={({ index }) => setActiveIndex(index)}
+            onTabChange={({ index }) => {
+                setActiveIndex((currentIndex) => {
+                  if (index !== null) {
+                    return index;
+                  } else {
+                    return currentIndex === 0 ? 1 : 0;
+                  }
+                });
+            }}
         >
             <AccordionTab header="משתמש חדש">
                 <AssignRoleToEntityForm ref={formRefs[0]} showJob={false} setIsActionDone={setIsActionDone} />

@@ -14,6 +14,8 @@ import {
   searchEntitiesByFullName,
   getEntityByIdentifier,
 } from '../../service/KartoffelService';
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 const approverTypes = [
   { label: 'גורם מאשר ראשוני', value: 'COMMANDER' },
@@ -23,11 +25,22 @@ const approverTypes = [
   { label: 'משתמש על', value: 'ADMIN' },
 ];
 
+const validationSchema = Yup.object().shape({
+  approverType: Yup.string().required(),
+  user: Yup.object().required(),
+  hierarchy: Yup.object().required(),
+  approvers: Yup.array().min(1).required(),
+  comments: Yup.string().optional(),
+});
 
 const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionDone }, ref) => {
   const { appliesStore, userStore } = useStores();
   const [approverType, setApproverType] = useState();
-  const { register, handleSubmit, setValue, getValues, formState, watch } = useForm({ defaultValues: approverRequestObj });
+  const { register, handleSubmit, setValue, getValues, formState, watch } =
+    useForm({
+      defaultValues: approverRequestObj,
+      resolver: yupResolver(validationSchema),
+    });
   const [userSuggestions, setUserSuggestions] = useState([]);
   const { errors } = formState;
 
@@ -41,15 +54,20 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
       approvers,
       user,
       hierarchy,
-      userName,
-      personalNumber,
       approverType,
       comments,
     } = data;
 
+    try {
+      await validationSchema.validate(data);
+    } catch (err) {
+      console.log(err);
+      throw new Error(err.errors);
+    }
+
     const req = {
       status: 'SUBMITTED',
-      commanders: [...approvers],
+      commanders: approvers,
       AdditionalParams: {
         entityId: user.id,
         displayName: '',
@@ -160,7 +178,7 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
             }}
             required
           />
-          {errors.userName && <small>יש למלא ערך</small>}
+          {errors.user && <small style={{ color: "red" }}>יש למלא ערך</small>}
         </div>
       </div>
       <div className='p-fluid-item'>
@@ -181,14 +199,14 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
               }
             }}
           />
-          {errors.personalNumber && <small>יש למלא ערך</small>}
+          {errors.user && <small style={{ color: "red" }}>יש למלא ערך</small>}
         </div>
       </div>
       <div className='p-fluid-item'>
-        <Hierarchy disabled={true} setValue={setValue} name='hierarchy' ogValue={getValues('hierarchy')} />
+        <Hierarchy disabled={true} setValue={setValue} name='hierarchy' ogValue={getValues('hierarchy')} errors={errors} />
       </div>
       <div className='p-fluid-item'>
-        <Approver disabled={onlyForView} setValue={setValue} name='approvers' defaultApprovers={approverRequestObj?.approvers || []} multiple={true} />
+        <Approver disabled={onlyForView} setValue={setValue} name='approvers' defaultApprovers={approverRequestObj?.approvers || []} multiple={true} errors={errors} />
       </div>
       <div className='p-fluid-item p-fluid-item-flex1'>
         <div className='p-field'>
