@@ -1,72 +1,90 @@
-import React, {
-  useEffect,
-  useState,
-  useImperativeHandle,
-  forwardRef,
-} from 'react';
+import React from 'react';
 import { Dialog } from 'primereact/dialog';
 import { classNames } from 'primereact/utils';
 import { InputText } from 'primereact/inputtext';
 import blankProfilePic from '../../assets/images/blankProfile.png';
-
-
-
+import '../../assets/css/local/general/buttons.css';
+import '../../assets/css/local/components/modal-item.css';
 import { useForm } from 'react-hook-form';
-import '../../assets/css/local/pages/dashboard.min.css';
 import { useStores } from '../../context/use-stores';
 import { Button } from 'primereact/button';
 
-const edit = forwardRef(
+const Edit =(
   (
     {
       user,
       userPicture,
       isOpen,
+      isEditMode,
+      setIsEditMode,
       closeFullDetailsModal,
     },
-    ref
   ) => {
-    const { userStore, appliesStore, treeStore } = useStores();
+    const { userStore, appliesStore,  } = useStores();
 
-    const [editMode, setEditMode] = useState(false);
-    const { register, handleSubmit, setValue, getValues, formState, watch } = useForm({ defaultValues: user });
+    const {
+      register,
+      handleSubmit,
+      getValues,
+      formState,
+      reset,
+    } = useForm({
+      defaultValues: user,
+    });
 
     const submitedData = async (data) => {
-      console.log('submitedData', data);
-      const { firstName, lastName, identityCard, phone } = data;
+      if (isEditMode) {
+
+        const { firstName, lastName, identityCard, mobilePhone } =
+          data;
+        
+        const uniqueID = await userStore.getUniqueId();
+
+        const req = {
+          kartoffelParams: {
+            id: user.id,
+            firstName: firstName,
+            lastName: lastName,
+            identityCard: identityCard,
+            mobilePhone: mobilePhone,
+          },
+          adParams: {
+            samAccountName: uniqueID,
+            firstName: firstName,
+            lastName: lastName,
+            fullName: `${firstName} ${lastName}`,
+          },
+        };
+        
+        reset(user);
+        closeFullDetailsModal();
+        return await appliesStore.editEntityApply(req);
+      }
+      closeFullDetailsModal();
+
     };
 
-    useEffect(() => {
-    //   setValue('approverType', 'COMMANDER');
-    //   setApproverType('COMMANDER');
-    }, []);
-
-    const changeEditMode = () => {
-      if (editMode) setEditMode(false);
-      else setEditMode(true);
-    };
-
-    const renderFooter = (name) => {
+    const renderFooter = () => {
       return (
-        <div className="display-flex">
+        <div>
           <div className="display-flex">
-            {editMode && (
+            {isEditMode && user.rank != 'אזרח' && (
               <Button
                 label="ביטול"
-                onClick={() => changeEditMode(false)}
+                onClick={() => setIsEditMode(false)}
                 className="btn-underline"
               />
             )}
-            {!editMode && (
+            {!isEditMode && user.rank != 'אזרח' && (
               <Button
                 label="עריכה"
-                onClick={() => changeEditMode(true)}
+                onClick={() => setIsEditMode(true)}
                 className="btn-border orange"
               />
             )}
             <Button
-              label={editMode ? 'שמור' : 'סגור'}
-              onClick={() => closeFullDetailsModal(name)}
+              label={isEditMode ? 'שמור' : 'סגור'}
+              onClick={handleSubmit(submitedData)}
               className="btn-gradient orange"
             />
           </div>
@@ -74,18 +92,10 @@ const edit = forwardRef(
       );
     };
 
-    useImperativeHandle(
-      ref,
-      () => ({
-        handleSubmit: handleSubmit(submitedData),
-      }),
-      []
-    );
-
     return (
       <Dialog
         className={classNames('dialogClass7')}
-        header="פרטי משתמש/ת"
+        header={isEditMode ? 'עריכת המשתמש שלי' : 'פרטי משתמש/ת'}
         visible={isOpen}
         footer={renderFooter}
         style={{ borderRadius: '30px' }}
@@ -112,7 +122,7 @@ const edit = forwardRef(
                   <InputText
                     id="2011"
                     type="text"
-                    disabled={!editMode}
+                    disabled={!isEditMode}
                     value={`${getValues(`firstName`)} ${getValues(`lastName`)}`}
                   />
                 </div>
@@ -125,9 +135,9 @@ const edit = forwardRef(
                     <InputText
                       id="2011"
                       type="text"
-                      disabled={!editMode}
-                      value={getValues(`firstName`)}
-                      onChange={setValue('firstName')}
+                      disabled={!isEditMode}
+                      defaultValue={user.firstName}
+                      {...register('firstName')}
                     />
                   </div>
                 </div>
@@ -138,8 +148,9 @@ const edit = forwardRef(
                     <InputText
                       id="2011"
                       type="text"
-                      disabled={!editMode}
-                      value={getValues(`lastName`)}
+                      disabled={!isEditMode}
+                      defaultValue={getValues(`lastName`)}
+                      {...register('lastName')}
                     />
                   </div>
                 </div>
@@ -152,8 +163,11 @@ const edit = forwardRef(
                 <InputText
                   id="2014"
                   type="text"
-                  disabled={!editMode}
-                  value={getValues('identityCard')}
+                  disabled={!isEditMode}
+                  defaultValue={getValues('identityCard')}
+                  {...register('identityCard', {
+                    required: true 
+                  })}
                 />
               </div>
             </div>
@@ -167,7 +181,7 @@ const edit = forwardRef(
                       <InputText
                         id="2012"
                         type="text"
-                        disabled={!editMode}
+                        disabled={true}
                         value={new Date(getValues('birthDate')).toDateString()}
                       />
                     </div>
@@ -178,9 +192,8 @@ const edit = forwardRef(
                       <InputText
                         id="2013"
                         type="text"
-                        disabled={!editMode}
+                        disabled={true}
                         value={getValues('personalNumber')}
-                        // onChange={(e) => setValue(e.target.value)}
                       />
                     </div>
                   </div>
@@ -191,7 +204,7 @@ const edit = forwardRef(
                       <InputText
                         id="2015"
                         type="text"
-                        disabled={!editMode}
+                        disabled={true}
                         value={getValues('dischargeDay')}
                       />
                     </div>
@@ -202,7 +215,7 @@ const edit = forwardRef(
                       <InputText
                         id="2016"
                         type="text"
-                        disabled={!editMode}
+                        disabled={true}
                         value={getValues('rank')}
                       />
                     </div>
@@ -217,7 +230,7 @@ const edit = forwardRef(
                 <InputText
                   id="2017"
                   type="text"
-                  disabled={!editMode}
+                  disabled={true}
                   value={getValues('hierarchy')}
                 />
               </div>
@@ -232,7 +245,7 @@ const edit = forwardRef(
                       <InputText
                         id="2018"
                         type="text"
-                        disabled={!editMode}
+                        disabled={true}
                         value={getValues('mail')}
                       />
                     </div>
@@ -244,7 +257,7 @@ const edit = forwardRef(
                       <InputText
                         id="2020"
                         type="text"
-                        disabled={!editMode}
+                        disabled={true}
                         value={getValues('jobTitle')}
                       />
                     </div>
@@ -256,7 +269,7 @@ const edit = forwardRef(
                       <InputText
                         id="2021"
                         type="text"
-                        disabled={!editMode}
+                        disabled={true}
                         value={getValues('address')}
                       />
                     </div>
@@ -271,8 +284,9 @@ const edit = forwardRef(
                 <InputText
                   id="2022"
                   type="text"
-                  disabled={!editMode}
-                  value={getValues('mobilePhone')[0]}
+                  disabled={!isEditMode}
+                  defaultValue={getValues('mobilePhone')}
+                  {...register('mobilePhone')}
                 />
               </div>
             </div>
@@ -283,9 +297,4 @@ const edit = forwardRef(
   }
 );
 
-// ApproverForm.defaultProps = {
-//   onlyForView: false,
-//   approverRequestObj: {},
-// };
-
-export default edit;
+export default Edit;

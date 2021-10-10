@@ -1,6 +1,11 @@
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
-import React, { useEffect, useState, useImperativeHandle, forwardRef } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useImperativeHandle,
+  forwardRef,
+} from 'react';
 import { useForm } from 'react-hook-form';
 import SearchBox from '../../components/SearchBox';
 import HierarchyTree from '../../components/HierarchyTree';
@@ -10,9 +15,8 @@ import '../../assets/css/local/pages/dashboard.min.css';
 import UserProfileCard from './UserProfileCard';
 import { useStores } from '../../context/use-stores';
 import { USER_TYPE, USER_TYPE_TAG } from '../../constants';
-import FullUserInformationModal from '../../components/Modals/FullUserInformationModal';
-import { Button } from 'primereact/button';
-import edit from '../../components/Modals/edit';
+
+import Edit from '../../components/Modals/Edit';
 
 const Dashboard = observer(() => {
   let userType;
@@ -22,136 +26,123 @@ const Dashboard = observer(() => {
   const userPicture = toJS(userStore.userPicture);
   const applies = toJS(appliesStore.myApplies);
   const [isFullUserInfoModalOpen, setIsFullUserInfoModalOpen] = useState(false);
-  const [editMode, setEditMode] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const { register, handleSubmit, setValue, getValues, formState, watch } =
     useForm({ defaultValues: user });
-
+  user.types = [8];
   user?.types.forEach((type) => {
     switch (type) {
       case 5:
+      case 'ADMIN':
         userType = {
           type: USER_TYPE.ADMIN,
           tag: USER_TYPE_TAG.ADMIN,
         };
         break;
       case 2:
+      case 'SUPER_SECURITY':
         userType = {
           type: USER_TYPE.SUPER_SECURITY,
           tag: USER_TYPE_TAG.SECURITY_APPROVER,
         };
         break;
       case 1:
+      case 'SECURITY':
         userType = {
           type: USER_TYPE.SECURITY,
           tag: USER_TYPE_TAG.SECURITY_APPROVER,
         };
         break;
       case 3:
+      case 'COMMANDER':
         userType = {
           type: USER_TYPE.COMMANDER,
           tag: USER_TYPE_TAG.APPROVER,
         };
         break;
       case 6:
+      case 'BULK':
         userType = { type: USER_TYPE.BULK };
         break;
-
+      case 'SOLDIER':
       default:
         userType = { type: USER_TYPE.SOLDIER };
         break;
     }
   });
 
-  const submitedData = async (data) => {
-    console.log('submitedData', data)
-    const {
-      firstName,
-      lastName,
-      identityCard,
-      phone,
-    } = data;
-  }
-
-    useEffect(() => {
-      if (userStore.user) {
-        if (userType.type === USER_TYPE_TAG.COMMANDER) {
-          // appliesStore.getCommanderApplies();
-        } else {
-          // appliesStore.loadApplies();
-          treeStore.loadTreeByEntity(userStore.user);
-        }
+  useEffect(() => {
+    if (userStore.user) {
+      if (userType.type === USER_TYPE_TAG.COMMANDER) {
+        // appliesStore.getCommanderApplies();
+      } else {
+        // appliesStore.loadApplies();
+        treeStore.loadTreeByEntity(userStore.user);
       }
-    }, [userStore.user, appliesStore, treeStore]);
+    }
+  }, [userStore.user, appliesStore, treeStore]);
 
-    const openFullDetailsModal = () => {
-      setIsFullUserInfoModalOpen(true);
-    };
+  const openFullDetailsModal = () => {
+    setIsFullUserInfoModalOpen(true);
+  };
 
-    const closeFullDetailsModal = () => {
-      setIsFullUserInfoModalOpen(false);
-    };
+  const closeFullDetailsModal = () => {
+    setIsFullUserInfoModalOpen(false);
+    setIsEditMode(false);
+  };
 
-    
-
-    
-    // useImperativeHandle(
-    //   ref,
-    //   () => ({
-    //     handleSubmit: handleSubmit(submitedData),
-    //   }),
-    //   []
-    // );
-    
-    return (
-      <>
-        <div className="main-inner-item main-inner-item2">
-          <div className="main-inner-item2-content">
-            <div className="display-flex title-wrap">
-              <h2>פרטים אישיים</h2>
-            </div>
-            <UserProfileCard
-              user={user}
-              userPicture={userPicture}
-              userType={userType}
-              openFullDetailsModal={openFullDetailsModal}
-            />
-            <edit
-              user={user}
-              userPicture={userPicture}
-              isOpen={isFullUserInfoModalOpen}
-              closeFullDetailsModal={closeFullDetailsModal}
-            />
-            <div className="content-unit-wrap">
-              {userType.type === USER_TYPE.ADMIN ||
-                userType.type === USER_TYPE.SUPER_SECURITY ||
-                userType.type === USER_TYPE.SECURITY ? (
-                <ApprovalTable applies={applies} />
-              ) : (
-                <div className="content-unit-inner content-unit-inner-before">
-                  <div className="search-row">
-                    <div className="search-row-inner">
-                      <SearchBox
-                        loadDataByEntity={async (entity) => {
-                          await treeStore.loadTreeByEntity(entity);
-                        }}
-                        loadDataByOG={async (organizationGroup) => {
-                          await treeStore.loadTreeByOG(organizationGroup);
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="chart-wrap">
-                    <HierarchyTree data={toJS(treeStore.tree)} />
+  return (
+    <>
+      <div className="main-inner-item main-inner-item2">
+        <div className="main-inner-item2-content">
+          <div className="display-flex title-wrap">
+            <h2>פרטים אישיים</h2>
+          </div>
+          <UserProfileCard
+            user={user}
+            userPicture={userPicture}
+            userType={userType}
+            openFullDetailsModal={openFullDetailsModal}
+          />
+          <Edit
+            user={user}
+            userPicture={userPicture}
+            isOpen={isFullUserInfoModalOpen}
+            isEditMode={isEditMode}
+            setIsEditMode={setIsEditMode}
+            closeFullDetailsModal={closeFullDetailsModal}
+          />
+          <div className="content-unit-wrap">
+            {userType.type === USER_TYPE.ADMIN ||
+            userType.type === USER_TYPE.SUPER_SECURITY ||
+            userType.type === USER_TYPE.SECURITY ? (
+              <ApprovalTable applies={applies} />
+            ) : (
+              <div className="content-unit-inner content-unit-inner-before">
+                <div className="search-row">
+                  <div className="search-row-inner">
+                    <SearchBox
+                      loadDataByEntity={async (entity) => {
+                        await treeStore.loadTreeByEntity(entity);
+                      }}
+                      loadDataByOG={async (organizationGroup) => {
+                        await treeStore.loadTreeByOG(organizationGroup);
+                      }}
+                    />
                   </div>
                 </div>
-              )}
-            </div>
+                <div className="chart-wrap">
+                  <HierarchyTree data={toJS(treeStore.tree)} />
+                </div>
+              </div>
+            )}
           </div>
         </div>
-        <SideToolbar recentApplies={applies} />
-      </>
-    );
-  });
+      </div>
+      <SideToolbar recentApplies={applies} />
+    </>
+  );
+});
 
 export default Dashboard;

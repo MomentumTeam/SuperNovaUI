@@ -152,8 +152,8 @@ export const renameRoleRequest = async (applyProperties) => {
 };
 
 export const editEntityRequest = async (applyProperties) => {
-  const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/requests/editEntityRequest`,
+  const response = await axiosApiInstance.put(
+    `${apiBaseUrl}/api/requests/request/entity`,
     applyProperties
   );
 
