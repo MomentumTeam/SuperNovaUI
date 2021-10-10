@@ -126,7 +126,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
                 : "פנוי"}
             </i>
             <InputText {...register("roleName")} onChange={onRoleNameChange} />
-            <label>{errors.roleName && <small>יש למלא ערך</small>}</label>
+            <label>{errors.roleName && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
             <label>
               {errors.isJobAlreadyTakenData && (
                 <small>יש לבחור תפקיד פנוי</small>
@@ -170,7 +170,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
             {...register("clearance")}
             value={watch("clearance")}
           />
-          <label>{errors.clearance && <small>יש למלא ערך</small>}</label>
+          <label>{errors.clearance && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
         </div>
       </div>
       <div className="p-fluid-item">
@@ -200,7 +200,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
             type="text"
             autoResize="false"
           />
-          <label>{errors.comments && <small>יש למלא ערך</small>}</label>
+          <label>{errors.comments && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
         </div>
       </div>
     </div>

@@ -37,7 +37,7 @@ const Unit = ({ setValue, name, onOrgSelected, value, errors }) => {
         }}
         required
       />
-      <label>{errors?.unit && <small>יש למלא ערך</small>}</label>
+      <label>{errors?.unit && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
     </div>
   );
 };

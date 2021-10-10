@@ -96,7 +96,7 @@ const RenameBulkOGForm = forwardRef(({ setIsActionDone }, ref) => {
               style={{ paddingTop: "10px" }}
               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             />
-            <label>{errors.bulkFile && <small>יש להעלות קובץ</small>}</label>
+            <label>{errors.bulkFile && <small style={{ color: "red" }}>יש להעלות קובץ</small>}</label>
           </span>
         </div>
       </div>

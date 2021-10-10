@@ -160,7 +160,7 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
             }}
             required
           />
-          {errors.userName && <small>יש למלא ערך</small>}
+          {errors.userName && <small style={{ color: "red" }}>יש למלא ערך</small>}
         </div>
       </div>
       <div className='p-fluid-item'>
@@ -181,7 +181,7 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
               }
             }}
           />
-          {errors.personalNumber && <small>יש למלא ערך</small>}
+          {errors.personalNumber && <small style={{ color: "red" }}>יש למלא ערך</small>}
         </div>
       </div>
       <div className='p-fluid-item'>

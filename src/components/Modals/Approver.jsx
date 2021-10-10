@@ -53,7 +53,7 @@ const Approver = ({ setValue, name, multiple, disabled, defaultApprovers, errors
           }}
         />
         <label htmlFor="2020">
-          {errors?.approvers && <small>יש למלא ערך</small>}
+          {errors?.approvers && <small style={{ color: "red" }}>יש למלא ערך</small>}
         </label>
       </div>
     </div>

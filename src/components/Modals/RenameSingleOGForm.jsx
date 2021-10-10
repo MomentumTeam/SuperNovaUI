@@ -124,7 +124,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
             }}
             value={watch("role")}
           />
-          {errors.role && <small>יש למלא ערך</small>}
+          {errors.role && <small style={{ color: "red" }}>יש למלא ערך</small>}
         </div>
       </div>
       <div className="p-fluid-item-flex p-fluid-item">
@@ -139,7 +139,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
             required
             placeholder="מזהה תפקיד"
           />
-          <label>{errors.identifier && <small>יש למלא ערך</small>}</label>
+          <label>{errors.identifier && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
         </div>
       </div>
       <hr
