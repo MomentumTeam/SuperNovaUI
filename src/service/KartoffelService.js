@@ -14,6 +14,19 @@ export const searchOG = async (nameAndHierarchy) => {
   return response.data;
 };
 
+export const searchUnits = async (nameAndHierarchy) => {
+  const response = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/tea/units/search`,
+    {
+      params: {
+        nameAndHierarchy,
+      },
+    }
+  );
+
+  return response.data;
+}
+
 export const searchEntitiesByFullName = async (fullName) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/kartoffel/entities/search`,

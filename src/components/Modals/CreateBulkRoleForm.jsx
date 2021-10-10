@@ -2,6 +2,7 @@ import React, { useImperativeHandle, forwardRef } from "react";
 import { useForm } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import Hierarchy from "./Hierarchy";
+import Unit from "./Unit";
 import Approver from "./Approver";
 import { useStores } from "../../context/use-stores";
 import * as Yup from "yup";
@@ -17,7 +18,7 @@ const validationSchema = Yup.object().shape({
   bulkFile: Yup.mixed()
     .test("fileSize", (value) => !!value)
     .required(),
-  });
+});
 
 const RenameBulkOGForm = forwardRef(({ setIsActionDone }, ref) => {
   const { appliesStore } = useStores();
@@ -33,7 +34,7 @@ const RenameBulkOGForm = forwardRef(({ setIsActionDone }, ref) => {
     } catch (err) {
       throw new Error(err.errors);
     }
-    const { hierarchy, approvers, bulkFile } = data;
+    const { hierarchy, approvers, unit, bulkFile } = data;
 
     const formData = new FormData();
     formData.append("bulkFiles", bulkFile[0]);
@@ -43,13 +44,14 @@ const RenameBulkOGForm = forwardRef(({ setIsActionDone }, ref) => {
       commanders: approvers,
       kartoffelParams: {
         directGroup: hierarchy.id,
+        unit,
       },
       adParams: {
         ouDisplayName: hierarchy.name,
       },
       excelFilePath: uploadFiles[0],
     };
-    await appliesStore.changeRoleHierarchyBulk(req);
+    await appliesStore.assignRoleToEntityApply(req);
     setIsActionDone(true);
   };
 
@@ -67,31 +69,27 @@ const RenameBulkOGForm = forwardRef(({ setIsActionDone }, ref) => {
         <div className="p-field">
           <Hierarchy
             setValue={setValue}
-            name="currentHierarchy"
-            labelText="היררכיה נוכחית"
-            errors={errors}
-          />
-        </div>
-      </div>
-      <div className="p-fluid-item-flex p-fluid-item">
-        <div className="p-field">
-          <Hierarchy
-            setValue={setValue}
             name="hierarchy"
-            labelText="היררכיה חדשה"
+            labelText="היררכיה"
             errors={errors}
           />
         </div>
       </div>
+      <div className="p-fluid-item">
+        <div className="p-field">
+          <Unit setValue={setValue} name="unit" errors={errors} />
+        </div>
+      </div>
       <div className="p-fluid-item-flex p-fluid-item">
         <div className="p-field">
-          <label>
+          <label htmlFor="1903">
             <span className="required-field">*</span>העלאת קובץ
           </label>
           <span className="p-input-icon-left">
             <i className="pi pi-file-excel" />
             <InputText
               {...register("bulkFile")}
+              id="1903"
               type="file"
               required
               placeholder="קובץ"
@@ -108,7 +106,7 @@ const RenameBulkOGForm = forwardRef(({ setIsActionDone }, ref) => {
       >
         {/* TODO: bring good excel example route */}
         <a
-          href={`${apiBaseUrl}/api/bulk/request/example?bulkType=1`}
+          href={`${apiBaseUrl}/api/bulk/request/example?bulkType=0`}
           style={{ textDecoration: "underline" }}
           download="exampleFile"
         >
