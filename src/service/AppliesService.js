@@ -109,7 +109,7 @@ export const assignRoleToEntityRequest = async (applyProperties) => {
 
 export const createOGRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/requests/ogRequest`,
+    `${apiBaseUrl}/api/requests/request/og`,
     applyProperties
   );
 
