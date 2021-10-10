@@ -3,7 +3,7 @@ import { searchApproverByDisplayNameReq } from '../../service/ApproverService';
 import { AutoComplete } from 'primereact/autocomplete';
 import '../../assets/css/local/components/approver.css';
 
-const Approver = ({ setValue, name, multiple, disabled, defaultApprovers }) => {
+const Approver = ({ setValue, name, multiple, disabled, defaultApprovers, errors }) => {
   const [ApproverSuggestions, setApproverSuggestions] = useState([]);
   const [selectedApprover, setSelectedApprover] = useState(defaultApprovers);
 
@@ -52,6 +52,9 @@ const Approver = ({ setValue, name, multiple, disabled, defaultApprovers }) => {
             }
           }}
         />
+        <label htmlFor="2020">
+          {errors?.approvers && <small>יש למלא ערך</small>}
+        </label>
       </div>
     </div>
   );
