@@ -23,11 +23,14 @@ const Notifications = ({notifications}) => {
                 />
             }
         </button>
-        <OverlayPanel ref={op} id="overlay_panel" style={{width: '450px'}} className="overlaypanel-demo">
-            <DataTable value={notifications} selectionMode="single" paginator rows={5} paginatorClassName="notificationPaginator">
-                <Column field="type" header="סוג" />
-                <Column field="message" header="תוכן" />
-                <Column field="reason" header="סיבה" />
+        <OverlayPanel ref={op} id="overlay_panel" style={{ width: '450px', direction: 'rtl', borderRadius: '40px' }} className="overlaypanel-demo">
+            <DataTable value={notifications} selectionMode="single" paginator rows={5} da paginatorClassName="notificationPaginator">
+                <Column 
+                    header="התראות"
+                    field="message"
+                    headerStyle={{ textAlignLast: 'center' }}
+                    body={(notification) => <div style={{ textAlign: 'initial' }} dangerouslySetInnerHTML={{ __html: notification.message }} /> }
+                />
             </DataTable>
         </OverlayPanel>
     </div>

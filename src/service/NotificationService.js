@@ -6,8 +6,8 @@ export const getMyNotifications = async (rangeStart, rangeEnd) => {
     `${apiBaseUrl}/api/notifications`,
     {
       params: {
-        rangeStart,
-        rangeEnd,
+        from: rangeStart,
+        to: rangeEnd,
       }
     });
   return response.data;
