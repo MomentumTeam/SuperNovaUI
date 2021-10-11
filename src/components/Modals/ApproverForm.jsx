@@ -151,7 +151,7 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
         <div className='p-field'>
           <label htmlFor='2020'>
             {' '}
-            <span className='required-field'>*</span>שם משתמש
+            <span className='required-field'>*</span>שם מלא
           </label>
           <button
             className='btn-underline left19 approver-fillMe'

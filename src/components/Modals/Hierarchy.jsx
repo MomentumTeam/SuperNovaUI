@@ -41,7 +41,6 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
           }}
           required
           forceSelection
-          placeholder="היררכיה"
         />
         <label htmlFor='2020'>
           {' '}
