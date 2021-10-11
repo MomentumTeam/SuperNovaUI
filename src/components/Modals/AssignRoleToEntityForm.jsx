@@ -11,6 +11,7 @@ import { AutoComplete } from 'primereact/autocomplete';
 import { Calendar } from 'primereact/calendar';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import '../../assets/css/local/components/calendar.css';
 
 import {
   searchEntitiesByFullName,
@@ -245,10 +246,6 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true, setIsActionDone }, 
           />
         </div>
       </div> : null}
-      <div className='p-fluid-item p-fluid-item-flex1'>
-        <hr />
-        <h2>מעבר לתפקיד</h2>
-      </div>
       <div className='p-fluid-item-flex p-fluid-item'>
         <Hierarchy
           value={watch('hierarchy')}
