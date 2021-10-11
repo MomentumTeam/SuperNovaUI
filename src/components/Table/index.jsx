@@ -1,63 +1,65 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
-import { ContextMenu } from "primereact/contextmenu";
-import { Toast } from "primereact/toast";
 
 import TableFieldTemplate from "./TableFieldTemplate";
+import PaginatorTemplate from "./TablePaginatorTemplate";
 import { TableTypes } from "../../constants/table";
 import { itemsInPage } from "../../constants/api";
-import "../../assets/css/local/general/table.min.css";
-import PaginatorTemplate from "./TablePaginatorTemplate";
+import { TableContextMenu } from "./TableContextMenu";
 
-import { TableActions } from "./TableActions";
+import "../../assets/css/local/general/table.min.css";
+import { TableFooter } from "./TableFooter";
+import { toJS } from "mobx";
 import { useStores } from "../../context/use-stores";
-import FullUserInformationModal from "../../components/Modals/FullUserInformationModal";
 
 const Table = ({ data, tableType, isLoading, onScroll, first }) => {
+  const contextMenu = useRef(null);
   const [selectedItem, setSelectedItem] = useState(null);
-  const toast = useRef(null);
-  const menu = useRef(null);
+  const [selectedColumns, setSelectedColumns] = useState([]);
 
   const { userStore } = useStores();
-  const [isFullUserInfoModalOpen, setIsFullUserInfoModalOpen] = useState(false);
+  const user = toJS(userStore.user);
 
   const rowData = TableTypes[tableType];
-
-  const openMenu = (e) => menu.current.show(e.originalEvent);
 
   const loadingText = () => {
     return <span className="loading-text"></span>;
   };
 
-  const TableActionsTemplate = () => {
-    return <Button icon="pi pi-ellipsis-h" className="p-button-rounded p-button-text" />;
+  const openContextMenu = (event) => {
+    contextMenu.current.show(event);
   };
 
-  const openFullDetailsModal = () => {
-    setIsFullUserInfoModalOpen(true);
+  const TableActionsTemplate = (data) => {
+    return (
+      <Button
+        icon="pi pi-ellipsis-h"
+        className="p-button-rounded p-button-text p-button-secondary"
+        onClick={(e) => {
+          setSelectedItem(data);
+          openContextMenu(e);
+        }}
+      />
+    );
   };
 
-  const closeFullDetailsModal = () => {
-    setIsFullUserInfoModalOpen(false);
+  const isAllowed = (col) => {
+    return col.secured === undefined || col.secured.some((allowedType) => user.types.includes(allowedType));
   };
+
+  useEffect(() => {
+    setSelectedItem(null);
+  }, [tableType]);
 
   return (
     <>
-      <Toast ref={toast}></Toast>
-      <ContextMenu
-        model={TableActions({ toast, selectedItem, openFullDetailsModal })}
-        popup
-        ref={menu}
-        // onHide={() => setSelectedItem(null)}
-      />
-
-      <FullUserInformationModal
-        user={selectedItem}
-        userPicture={userStore.userPicture}
-        isOpen={isFullUserInfoModalOpen}
-        closeFullDetailsModal={closeFullDetailsModal}
+      <TableContextMenu
+        ref={contextMenu}
+        tableType={tableType}
+        selectedItem={selectedItem}
+        setSelectedItem={setSelectedItem}
       />
 
       <div className="table-wrapper">
@@ -68,6 +70,13 @@ const Table = ({ data, tableType, isLoading, onScroll, first }) => {
               selection={selectedItem}
               selectionMode="single"
               onSelectionChange={(e) => setSelectedItem(e.value)}
+              footer={
+                <TableFooter
+                  setSelectedColumns={setSelectedColumns}
+                  selectedColumns={selectedColumns}
+                  rowData={rowData}
+                />
+              }
               paginator // paginator start
               paginatorTemplate={PaginatorTemplate}
               rows={itemsInPage}
@@ -75,18 +84,21 @@ const Table = ({ data, tableType, isLoading, onScroll, first }) => {
               onPage={onScroll}
               loading={isLoading} // paginator end
               onContextMenuSelectionChange={(e) => setSelectedItem(e.value)}
-              onContextMenu={(e) => openMenu(e)}
+              onContextMenu={(e) => contextMenu.current.show(e.originalEvent)}
             >
-              {rowData.map((col) => (
-                <Column
-                  key={col.field}
-                  field={col.field}
-                  header={col.displayName}
-                  loadingBody={loadingText}
-                  body={TableFieldTemplate}
-                />
-              ))}
-              {/* <Column loadingBody={loadingText} body={TableActionsTemplate} /> */}
+              {selectedColumns.map(
+                (col) =>
+                  isAllowed(col) && (
+                    <Column
+                      key={col.field}
+                      field={col.field}
+                      header={col.displayName}
+                      loadingBody={loadingText}
+                      body={TableFieldTemplate}
+                    />
+                  )
+              )}
+              <Column loadingBody={loadingText} body={TableActionsTemplate} />
             </DataTable>
           </div>
         </div>

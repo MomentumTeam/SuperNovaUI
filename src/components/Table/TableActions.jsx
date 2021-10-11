@@ -1,54 +1,68 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { toJS } from "mobx";
 import { useStores } from "../../context/use-stores";
-import { USER_TYPE } from "../../constants";
 
-const TableActions = ({ toast, data, openFullDetailsModal }) => {
+import { TableActionsTypes, TableNames } from "../../constants/table";
+import { USER_TYPE } from "../../constants";
+import { canEditEntity } from "../../utils/entites";
+import { canEditRole } from "../../utils/roles";
+import { canEditHierarchy } from "../../utils/hierarchy";
+
+const TableActions = ({ selectedItem, tableType, setActionType, openActionModal }) => {
   const { userStore } = useStores();
   const user = toJS(userStore.user);
 
-  let actions = [
-    {
-      label: "צפייה",
-      command: () => {
-        openFullDetailsModal();
-        // console.log(data);
-        // toast.current.show({
-        //   severity: "success",
-        //   summary: "צפייה",
-        //   detail: `Data Viewing ${data.id}`,
-        //   life: 3000,
-        // });
-      },
-    },
-    {
-      label: "עריכה",
-      command: () => {
-        toast.current.show({
-          severity: "success",
-          summary: "עריכה",
-          detail: "Data Editing",
-          life: 3000,
-        });
-      },
-    },
-  ];
+  let actions = [];
+  const tableActions = TableActionsTypes[tableType];
 
-  if (user.types.includes(USER_TYPE.COMMANDER)) {
-    actions.push({
-      label: "מחיקה",
-      command: () => {
-        toast.current.show({
-          severity: "success",
-          summary: "מחיקה",
-          detail: "Data deletion",
-          life: 3000,
-        });
-      },
-    });
+  const viewAction = {
+    label: "צפייה",
+    command: () => {
+      setActionType(tableActions.view);
+      openActionModal();
+    },
+  };
+
+  const editAction = {
+    label: "עריכה",
+    command: () => {
+      setActionType(tableActions.edit);
+      openActionModal();
+    },
+  };
+
+  const deleteAction = {
+    label: "מחיקה",
+    command: () => {
+      setActionType(tableActions.delete);
+      openActionModal();
+    },
+  };
+
+  if (tableActions) {
+    // Add view action
+    if (tableActions.view) actions.push(viewAction);
+
+    // Add edit action
+    if (tableActions.edit) {
+      if (
+        (tableType === TableNames.entities && canEditEntity(selectedItem, user)) ||
+        (tableType === TableNames.roles && canEditRole(selectedItem, user)) ||
+        (tableType === TableNames.hierarchy && canEditHierarchy(user))
+      ) {
+        actions.push(editAction);
+      }
+    }
+
+    // Add delete action
+    if (tableActions.delete) {
+      if (user.types.includes(USER_TYPE.COMMANDER)) {
+        actions.push(deleteAction);
+      }
+    }
+
+    return actions;
   }
-
-  return actions;
 };
 
 export { TableActions };

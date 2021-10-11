@@ -1,9 +1,12 @@
+import { USER_TYPE } from '.';
+import { useStores } from "../context/use-stores";
+
 export const TableTypes = {
   entities: [
     { field: "firstName", displayName: "שם פרטי" },
     { field: "lastName", displayName: "שם משפחה" },
     { field: "personalNumber", displayName: 'מ"א/ת"ז' },
-    { field: "clearance", displayName: "סיווג" },
+    { field: "clearance", displayName: "סיווג", secured: [USER_TYPE.COMMANDER, USER_TYPE.SUPER_SECURITY] },
     { field: "jobTitle", displayName: "תפקיד" },
     { field: "displayName", displayName: "יוזר" },
     { field: "rank", displayName: "דרגה" },
@@ -12,7 +15,7 @@ export const TableTypes = {
   ],
   hierarchy: [
     { field: "hierarchy", displayName: "היררכיה" },
-    { field: "id", displayName: "מפתח" },
+    { field: "id", displayName: "מפתח", hide: true },
     { field: "directRoles", displayName: "מספר תפקידים" },
   ],
   roles: [
@@ -23,11 +26,77 @@ export const TableTypes = {
   ],
 };
 
-export const TableSearch = {
-  entities: "",
+export const TableNames = {
+  entities: "entities",
+  hierarchy: "hierarchy",
+  roles: "roles",
 };
-export const TableKeys = {
-  entities: "id",
-  hierarchy: "id",
-  roles: "roleId",
+
+export const tableActionsEnum = {
+  VIEW_ENTITY: "VIEW_ENTITY",
+  EDIT_ENTITY: "EDIT_ENTITY",
+  VIEW_HIERARCHY: "VIEW_HIERARCHY",
+  EDIT_HIERARCHY: "EDIT_HIERARCHY",
+  DELETE_HIERARCHY: "DELETE_HIERARCHY",
+  VIEW_ROLE: "VIEW_ROLE",
+  EDIT_ROLE: "EDIT_ROLE",
+  DELETE_ROLE: "DELETE_ROLE",
 };
+
+export const TableActionsTypes = {
+  entities: {
+    view: tableActionsEnum.VIEW_ENTITY,
+    edit: tableActionsEnum.EDIT_ENTITY,
+  },
+  hierarchy: {
+    view: tableActionsEnum.VIEW_HIERARCHY,
+    edit: tableActionsEnum.EDIT_HIERARCHY,
+    delete: tableActionsEnum.DELETE_HIERARCHY,
+  },
+  roles: {
+    view: tableActionsEnum.VIEW_ROLE,
+    edit: tableActionsEnum.EDIT_ROLE,
+    delete: tableActionsEnum.DELETE_ROLE,
+  },
+};
+
+export const TableSearch = (tableType) => {
+  const { tablesStore } = useStores();
+
+  const searchFields = {
+    entities: [
+      {
+        searchField: "displayName",
+        searchDisplayName: 'שם/מ"א/ת"ז',
+        searchFunc: tablesStore.getEntitiesByEntity,
+      },
+      {
+        searchField: "displayName",
+        searchDisplayName: "היררכיה",
+        searchFunc: tablesStore.getEntitiesByHierarchy,
+      },
+      {
+        searchField: "displayName",
+        searchDisplayName: "חיפוש לפי תפקיד",
+        searchFunc: tablesStore.getEntitiesByRoleId,
+      },
+    ],
+    hierarchy: [
+      {
+        searchField: "hierarchy",
+        searchDisplayName: "היררכיה",
+        searchFunc: tablesStore.getEntitiesByHierarchy,
+      },
+    ],
+    roles: [
+      {
+        searchField: "hierarchy",
+        searchDisplayName: "היררכיה",
+        searchFunc: tablesStore.getEntitiesByHierarchy,
+      },
+    ],
+  };
+  return searchFields[tableType]? searchFields[tableType]: [];
+};
+
+

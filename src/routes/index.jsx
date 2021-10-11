@@ -26,12 +26,6 @@ const routeGenerator = (routes) => {
 routeGenerator(appRoutes);
 
 const AppRouter = () => {
-    const { userStore } = useStores();
-
-    if (!userStore.user) {
-        userStore.setUserInfo();
-    }
-
     return (
         <BrowserRouter>
             <Switch>

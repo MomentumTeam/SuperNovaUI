@@ -132,8 +132,8 @@ export const createEntityRequest = async (applyProperties) => {
   return response.data;
 };
 export const renameOGRequest = async (applyProperties) => {
-  const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/requests/renameOGRequest`,
+  const response = await axiosApiInstance.put(
+    `${apiBaseUrl}/api/requests/request/og/rename`,
     applyProperties
   );
 
@@ -141,8 +141,8 @@ export const renameOGRequest = async (applyProperties) => {
 };
 
 export const renameRoleRequest = async (applyProperties) => {
-  const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/requests/renameRoleRequest`,
+  const response = await axiosApiInstance.put(
+    `${apiBaseUrl}/api/requests/request/role/rename`,
     applyProperties
   );
 
@@ -150,8 +150,8 @@ export const renameRoleRequest = async (applyProperties) => {
 };
 
 export const editEntityRequest = async (applyProperties) => {
-  const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/requests/editEntityRequest`,
+  const response = await axiosApiInstance.put(
+    `${apiBaseUrl}/api/requests/request/entity`,
     applyProperties
   );
 
@@ -169,8 +169,8 @@ export const deleteRoleRequest = async (applyProperties) => {
 
 export const deleteOGRequest = async (applyProperties) => {
   const response = await axiosApiInstance.delete(
-    `${apiBaseUrl}/api/requests/deleteOGRequest`,
-    applyProperties
+    `${apiBaseUrl}/api/requests/request/og`,
+    {data: applyProperties}
   );
 
   return response.data;
