@@ -24,9 +24,13 @@ export default class TablesStore {
       loadEntitiesUnderOG: action,
       loadRolesUnderOG: action,
       loadOGChildren: action,
+      
       getEntitiesByEntity: action,
       getEntitiesByHierarchy: action,
       getEntitiesByRoleId: action,
+      getHierarchyByHierarchy: action, 
+      getHierarchyByRoleId: action,
+      getRolesByRoleId: action
     });
   }
 
@@ -96,7 +100,6 @@ export default class TablesStore {
       filteredResults = [];
     } else {
       filteredResults = await searchOG(query);
-      filteredResults = [filteredResults];
     }
     return filteredResults;
   }
@@ -110,11 +113,21 @@ export default class TablesStore {
     } else {
       const role = await getRoleByRoleId(query);
 
-      if(role) {
-        console.log(roles)
-        const filteredResults = await searchOG(query);
-
+      if (role && role.hierarchy) {
+        filteredResults = await searchOG(role.hierarchy);
       }
+    }
+    return filteredResults;
+  }
+
+  async getRolesByRoleId(event) {
+    let filteredResults;
+    const { query } = event;
+
+    if (!query.trim().length) {
+      filteredResults = [];
+    } else {
+      filteredResults = await getRoleByRoleId(query);
       filteredResults = [filteredResults];
     }
     return filteredResults;

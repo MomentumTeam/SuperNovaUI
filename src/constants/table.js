@@ -85,14 +85,19 @@ export const TableSearch = (tableType) => {
       {
         searchField: "hierarchy",
         searchDisplayName: "היררכיה",
-        searchFunc: tablesStore.getEntitiesByHierarchy,
+        searchFunc: tablesStore.getHierarchyByHierarchy,
+      },
+      {
+        searchField: "hierarchy",
+        searchDisplayName: "חיפוש לפי תפקיד",
+        searchFunc: tablesStore.getHierarchyByRoleId,
       },
     ],
     roles: [
       {
-        searchField: "hierarchy",
-        searchDisplayName: "היררכיה",
-        searchFunc: tablesStore.getEntitiesByHierarchy,
+        searchField: "roleId",
+        searchDisplayName: "חיפוש לפי תפקיד",
+        searchFunc: tablesStore.getRolesByRoleId,
       },
     ],
   };

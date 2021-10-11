@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { searchUnits } from "../../service/KartoffelService";
+import { searchUnits } from "../../service/TeaService";
 import { AutoComplete } from "primereact/autocomplete";
 
 const Unit = ({ setValue, name, onOrgSelected, value, errors }) => {

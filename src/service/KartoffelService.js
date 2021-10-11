@@ -12,22 +12,9 @@ export const searchOG = async (nameAndHierarchy) => {
     }
   );
 
-  return response.data;
+  return response.data.groups;
 };
 
-// TODO: MOVE TO TEA SERVICE
-export const searchUnits = async (nameAndHierarchy) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/tea/units/search`,
-    {
-      params: {
-        nameAndHierarchy,
-      },
-    }
-  );
-
-  return response.data;
-}
 
 export const getOGById = async (id) => {
   const response = await axiosApiInstance.get(

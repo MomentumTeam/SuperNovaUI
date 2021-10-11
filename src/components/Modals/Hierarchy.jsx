@@ -13,7 +13,7 @@ const Hierarchy = ({ setValue, name, onOrgSelected, value, labelText= 'הירר�
 
   const searchOg = async (event) => {
     const result = await searchOG(event.query);
-    setOgSuggestions(result.groups);
+    setOgSuggestions(result);
   };
 
   return (

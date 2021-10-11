@@ -1,27 +1,26 @@
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 import { useState, useEffect } from 'react';
+
+import '../../assets/css/local/pages/dashboard.min.css';
+
+import { useStores } from '../../context/use-stores';
+import { USER_TYPE, USER_TYPE_TAG, USER_NO_PICTURE } from "../../constants/user";
 import SearchBox from '../../components/Search/SearchBox';
 import HierarchyTree from '../../components/HierarchyTree';
 import SideToolbar from '../../components/SideToolBar/SideToolbar';
 import ApprovalTable from '../../components/ApprovalTable';
-import '../../assets/css/local/pages/dashboard.min.css';
 import UserProfileCard from './UserProfileCard';
-import { useStores } from '../../context/use-stores';
 import FullEntityInformationModal from "../../components/Modals/Entity/FullEntityInformationModal";
-import { USER_TYPE, USER_TYPE_TAG } from '../../constants';
 
 const Dashboard = observer(() => {
   const { userStore, appliesStore, treeStore } = useStores();
   const [isFullUserInfoModalOpen, setIsFullUserInfoModalOpen] = useState(false);
 
   const user = toJS(userStore.user);
-  const userPicture = user.picture;
+  const userPicture = user && user.picture ? user.picture : USER_NO_PICTURE;
   const applies = toJS(appliesStore.myApplies);
   let userType;
-
-  const isUserApprovel = user?.type !== USER_TYPE.SOLDIER && user?.type !== USER_TYPE.UNRECOGNIZED;
-
 
   user?.types.forEach((type) => {
     switch (type) {
@@ -91,13 +90,13 @@ const Dashboard = observer(() => {
             userType={userType}
             openFullDetailsModal={openFullDetailsModal}
           />
-         <FullEntityInformationModal
+          <FullEntityInformationModal
             user={user}
             isOpen={isFullUserInfoModalOpen}
             closeFullDetailsModal={closeFullDetailsModal}
           />
           <div className="content-unit-wrap">
-            {userType.APPROVER ? (
+            {userType.tag === USER_TYPE_TAG.APPROVER ? (
               <ApprovalTable applies={applies} />
             ) : (
               <div className="content-unit-inner content-unit-inner-before">

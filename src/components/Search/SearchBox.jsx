@@ -6,15 +6,17 @@ const SearchBox = ({ setTableData, searchFields }) => {
 
   return (
     <div className="search-item">
-      {searchFields.map(searchField => {
-         return <SearchField
-           searchFunc={searchField.searchFunc}
-           searchField={searchField.searchField}
-           searchDisplayName={searchField.searchDisplayName}
-           setTable={setTableData}
-           isSetTable={isSetTable}
-           setIsSetTable={setIsSetTable}
-         />;
+      {searchFields && searchFields.map((searchField) => {
+        return (
+          <SearchField
+            searchFunc={searchField.searchFunc}
+            searchField={searchField.searchField}
+            searchDisplayName={searchField.searchDisplayName}
+            setTable={setTableData}
+            isSetTable={isSetTable}
+            setIsSetTable={setIsSetTable}
+          />
+        );
       })}
 
       <button
