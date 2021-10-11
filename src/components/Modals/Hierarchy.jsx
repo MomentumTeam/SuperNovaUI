@@ -4,7 +4,7 @@ import { searchOG } from '../../service/KartoffelService';
 import { AutoComplete } from 'primereact/autocomplete';
 
 
-const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText = 'היררכיה' }) => {
+const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText = 'היררכיה', errors }) => {
   const [ogSuggestions, setOgSuggestions] = useState([]);
   const [selectedOg, setSelectedOg] = useState(ogValue);
 
@@ -43,6 +43,10 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
           forceSelection
           placeholder="היררכיה"
         />
+        <label htmlFor='2020'>
+          {' '}
+          {errors?.hierarchy && <small style={{ color: "red" }}>יש למלא ערך</small>}
+        </label>
       </div>
       {
         (!disabled || true) &&

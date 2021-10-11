@@ -14,6 +14,8 @@ import {
   searchEntitiesByFullName,
   getEntityByIdentifier,
 } from '../../service/KartoffelService';
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 const approverTypes = [
   { label: 'גורם מאשר ראשוני', value: 'COMMANDER' },
@@ -23,10 +25,22 @@ const approverTypes = [
   { label: 'משתמש על', value: 'ADMIN' },
 ];
 
-const ApproverForm = forwardRef(({ onlyForView, approverRequestObj }, ref) => {
+const validationSchema = Yup.object().shape({
+  approverType: Yup.string().required(),
+  user: Yup.object().required(),
+  hierarchy: Yup.object().required(),
+  approvers: Yup.array().min(1).required(),
+  comments: Yup.string().optional(),
+});
+
+const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionDone }, ref) => {
   const { appliesStore, userStore } = useStores();
   const [approverType, setApproverType] = useState();
-  const { register, handleSubmit, setValue, getValues, formState, watch } = useForm({ defaultValues: approverRequestObj });
+  const { register, handleSubmit, setValue, getValues, formState, watch } =
+    useForm({
+      defaultValues: approverRequestObj,
+      resolver: yupResolver(validationSchema),
+    });
   const [userSuggestions, setUserSuggestions] = useState([]);
   const { errors } = formState;
 
@@ -34,21 +48,26 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj }, ref) => {
     setValue('approverType', 'COMMANDER');
     setApproverType('COMMANDER');
   }, []);
-  
+
   const onSubmit = async (data) => {
     const {
       approvers,
       user,
       hierarchy,
-      userName,
-      personalNumber,
       approverType,
       comments,
     } = data;
 
+    try {
+      await validationSchema.validate(data);
+    } catch (err) {
+      console.log(err);
+      throw new Error(err.errors);
+    }
+
     const req = {
       status: 'SUBMITTED',
-      commanders: [...approvers],
+      commanders: approvers,
       AdditionalParams: {
         entityId: user.id,
         displayName: '',
@@ -63,7 +82,8 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj }, ref) => {
       due: Date.now(),
     };
 
-    return await appliesStore.createNewApproverApply(req);
+    await appliesStore.createNewApproverApply(req);
+    setIsActionDone(true);
   };
 
   useImperativeHandle(
@@ -129,69 +149,64 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj }, ref) => {
       </div>
       <div className='p-fluid-item'>
         <div className='p-field'>
-            <label htmlFor='2020'>
-              {' '}
-              <span className='required-field'>*</span>שם משתמש
-            </label>
-            { !onlyForView ? 
-            <button
-                className='btn-underline left19 approver-fillMe'
-                onClick={setCurrentUser}
-                type='button'
-                title='עבורי'
-              >
-                עבורי
-            </button>
-            : null
-            }
-            <AutoComplete
-              value={watch('userName')}
-              disabled={onlyForView}
-              suggestions={userSuggestions}
-              completeMethod={onSearchUser}
-              id='approverForm-userName'
-              type='text'
-              field='fullName'
-              onSelect={(e) => {
-                setValue('user', e.value);
-                setValue('personalNumber', e.value.personalNumber || e.value.identityCard);
-                setValue('hierarchy', e.value.hierarchy);
-              }}
-              onChange={(e) => {
-                setValue('userName', e.value);
-              }}
-              required
-            />
-            {errors.userName && <small>יש למלא ערך</small>}
-          </div>
-      </div>
-      <div className='p-fluid-item'>
-          <div className='p-field'>
-            <label htmlFor='2021'>
-              {' '}
-              <span className='required-field'>*</span>מ"א/ת"ז
-            </label>
-            <InputText
-              {...register('personalNumber', { required: true })}
-              disabled={onlyForView}
-              id='2021'
-              type='text'
-              required
-              onBlur={onSearchUserByPersonalNumber}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  onSearchUserByPersonalNumber();
-                }
-              }}
-            />
-            {errors.personalNumber && <small>יש למלא ערך</small>}
-          </div>
+          <label htmlFor='2020'>
+            {' '}
+            <span className='required-field'>*</span>שם משתמש
+          </label>
+          <button
+            className='btn-underline left19 approver-fillMe'
+            onClick={setCurrentUser}
+            type='button'
+            title='עבורי'
+          >
+            עבורי
+          </button>
+          <AutoComplete
+            value={watch('userName')}
+            suggestions={userSuggestions}
+            completeMethod={onSearchUser}
+            id='approverForm-userName'
+            type='text'
+            field='fullName'
+            onSelect={(e) => {
+              setValue('user', e.value);
+              setValue('personalNumber', e.value.personalNumber || e.value.identityCard);
+              setValue('hierarchy', e.value.hierarchy);
+            }}
+            onChange={(e) => {
+              setValue('userName', e.value);
+            }}
+            required
+          />
+          {errors.user && <small style={{ color: "red" }}>יש למלא ערך</small>}
         </div>
-      <div className='p-fluid-item'>
-        <Hierarchy disabled={true} setValue={setValue} name='hierarchy' ogValue={getValues('hierarchy')} />
       </div>
       <div className='p-fluid-item'>
-        <Approver disabled={onlyForView} setValue={setValue} name='approvers' defaultApprovers={approverRequestObj?.approvers || []} multiple={true} />
+        <div className='p-field'>
+          <label htmlFor='2021'>
+            {' '}
+            <span className='required-field'>*</span>מ"א/ת"ז
+          </label>
+          <InputText
+            {...register('personalNumber', { required: true })}
+            id='2021'
+            type='text'
+            required
+            onBlur={onSearchUserByPersonalNumber}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                onSearchUserByPersonalNumber();
+              }
+            }}
+          />
+          {errors.user && <small style={{ color: "red" }}>יש למלא ערך</small>}
+        </div>
+      </div>
+      <div className='p-fluid-item'>
+        <Hierarchy disabled={true} setValue={setValue} name='hierarchy' ogValue={getValues('hierarchy')} errors={errors} />
+      </div>
+      <div className='p-fluid-item'>
+        <Approver disabled={onlyForView} setValue={setValue} name='approvers' defaultApprovers={approverRequestObj?.approvers || []} multiple={true} errors={errors} />
       </div>
       <div className='p-fluid-item p-fluid-item-flex1'>
         <div className='p-field'>
