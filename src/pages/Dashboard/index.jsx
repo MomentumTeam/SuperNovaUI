@@ -22,30 +22,35 @@ const Dashboard = observer(() => {
 
   user?.types.forEach((type) => {
     switch (type) {
+      case 'ADMIN':
       case 5:
         userType = {
           type: USER_TYPE.ADMIN,
           tag: USER_TYPE_TAG.ADMIN,
         };
         break;
+      case 'SUPER_SECURITY':
       case 2:
         userType = {
           type: USER_TYPE.SUPER_SECURITY,
           tag: USER_TYPE_TAG.SECURITY_APPROVER,
         };
         break;
+      case 'SECURITY':
       case 1:
         userType = {
           type: USER_TYPE.SECURITY,
           tag: USER_TYPE_TAG.SECURITY_APPROVER,
         };
         break;
+      case 'COMMANDER':
       case 3:
         userType = {
           type: USER_TYPE.COMMANDER,
           tag: USER_TYPE_TAG.APPROVER,
         };
         break;
+      case 'BULK':
       case 6:
         userType = { type: USER_TYPE.BULK };
         break;
@@ -94,9 +99,8 @@ const Dashboard = observer(() => {
             isOpen={isFullUserInfoModalOpen}
             closeFullDetailsModal={closeFullDetailsModal}
           />
-
           <div className='content-unit-wrap'>
-            {userType.APPROVER ? (
+            {userType.tag === USER_TYPE_TAG.APPROVER ? (
               <ApprovalTable applies={applies} />
             ) : (
               <div className='content-unit-inner content-unit-inner-before'>
