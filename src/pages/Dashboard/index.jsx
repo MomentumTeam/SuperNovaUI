@@ -77,7 +77,6 @@ const Dashboard = observer(() => {
 
   return (
     <>
-      {console.log(user)}
       <div className='main-inner-item main-inner-item2'>
         <div className='main-inner-item2-content'>
           <div className='display-flex title-wrap'>
