@@ -949,6 +949,539 @@
     width: 50px;
     height: 49px;
     position: absolute;
+  padding-right: 60px;
+  padding-top: 40px;
+}
+
+.p-dialog .p-dialog-header .p-dialog-title::before {
+  content: "";
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent;
+  width: 50px;
+  height: 49px;
+  position: absolute;
+  margin: 0 auto;
+  top: 24px;
+  right: 0;
+  z-index: 2;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.p-dialog .p-dialog-header .p-dialog-title::after {
+  content: "";
+  width: 50px;
+  height: 49px;
+  border-radius: 50%;
+  position: absolute;
+  top: 24px;
+  right: 0;
+  z-index: 1;
+  transition: all 0.3s ease;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+.p-dialog .p-dialog-header .p-dialog-header-icons {
+  background: #a7abbd;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+.p-dialog .p-dialog-header .p-dialog-header-icons .pi-times:before {
+  color: #ffffff;
+  font-size: 15px;
+}
+
+.p-dialog .p-dialog-content {
+  padding: 24px 24px 0px 24px;
+  scrollbar-color: #e1e0e2 #e4e5e6;
+  scrollbar-width: thin;
+}
+
+@media (max-width: 730px) {
+  .p-dialog .p-dialog-content {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+.p-dialog .p-dialog-content::-webkit-scrollbar-track {
+  background-color: #e4e5e6;
+  border-radius: 30px;
+}
+
+.p-dialog .p-dialog-content::-webkit-scrollbar {
+  width: 8px;
+  height: 0;
+  background-color: #e4e5e6;
+  border-radius: 30px;
+  background-clip: padding-box;
+}
+
+.p-dialog .p-dialog-content::-webkit-scrollbar-thumb {
+  background: #d6d6d6;
+  border-radius: 30px;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content::-webkit-scrollbar:horizontal {
+  height: 8px;
+  background-color: #e4e5e6;
+  border-radius: 30px;
+  background-clip: padding-box;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content::-webkit-scrollbar-thumb:horizontal {
+  background: #d6d6d6;
+  border-radius: 30px;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content::-webkit-scrollbar-track:horizontal {
+  background-color: #e4e5e6;
+  border-radius: 30px;
+}
+
+.p-dialog .p-dialog-content .p-fluid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+}
+
+@media (max-width: 799px) {
+  .p-dialog .p-dialog-content .p-fluid {
+    flex-direction: column;
+  }
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item {
+  position: relative;
+  width: 50%;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item.p-fluid-item-flex1 {
+  width: 100%;
+  flex-basis: auto;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item.p-fluid-item-flex1:nth-child(odd), .p-dialog .p-dialog-content .p-fluid .p-fluid-item.p-fluid-item-flex1:nth-child(even) {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .AutoCompleteWrap label {
+  font-size: 14px;
+  line-height: 18px;
+  color: rgba(32, 25, 97, 0.5);
+  display: block;
+  font-weight: 400;
+  padding-bottom: 5px;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .AutoCompleteWrap label .required-field {
+  color: #f68340;
+  display: inline-block;
+  padding-left: 3px;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .AutoCompleteWrap .p-autocomplete .p-autocomplete-multiple-container {
+  height: 47px;
+  min-width: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: #201961;
+  box-sizing: border-box;
+  padding: 0px 10px;
+  text-align: right;
+  border: 1px solid #e7e8ea;
+  border-radius: 8px;
+  background-color: #fff;
+  font-family: "Heebo", sans-serif;
+  margin: 0px;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .AutoCompleteWrap .p-autocomplete .p-autocomplete-multiple-container .p-autocomplete-token {
+  padding: 0.25rem 0.5rem;
+  margin-right: 0rem;
+  margin-left: 10px;
+  background-color: #a7abbd;
+  color: #f7f7f7;
+  border-radius: 3px;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .AutoCompleteWrap .p-autocomplete .p-autocomplete-multiple-container .p-autocomplete-token .p-autocomplete-token-label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: center;
+  max-width: 20px;
+  margin: 0 auto;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .AutoCompleteWrap .p-autocomplete .p-autocomplete-multiple-container .p-autocomplete-token .p-autocomplete-token-icon {
+  position: absolute;
+  top: 15px;
+  left: 1px;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .AutoCompleteWrap .p-autocomplete .p-autocomplete-multiple-container .p-autocomplete-token .p-autocomplete-token-icon:before {
+  content: "\e90b";
+  color: #a7abbd;
+  border: 0;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .btn-underline {
+  color: #5bbdfe;
+  position: absolute;
+  top: 25px;
+  left: 16px;
+  display: inline-block;
+  background-color: #ffffff;
+  height: 40px;
+  font-size: 12px;
+  border-radius: 10px;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .btn-underline.left19 {
+  left: 19px;
+}
+
+@media (max-width: 799px) {
+  .p-dialog .p-dialog-content .p-fluid .p-fluid-item .btn-underline.left19 {
+    left: 8px;
+  }
+}
+
+@media (max-width: 799px) {
+  .p-dialog .p-dialog-content .p-fluid .p-fluid-item .btn-underline {
+    left: 8px;
+  }
+}
+
+@media (max-width: 799px) {
+  .p-dialog .p-dialog-content .p-fluid .p-fluid-item {
+    width: 100%;
+  }
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item:nth-child(odd) {
+  padding-right: 8px;
+}
+
+@media (max-width: 799px) {
+  .p-dialog .p-dialog-content .p-fluid .p-fluid-item:nth-child(odd) {
+    padding-right: 0px;
+  }
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item:nth-child(even) {
+  padding-left: 8px;
+}
+
+@media (max-width: 799px) {
+  .p-dialog .p-dialog-content .p-fluid .p-fluid-item:nth-child(even) {
+    padding-left: 0px;
+  }
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item:nth-child(even) .p-button.p-component.OpeningHierarchy {
+  left: 10px;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item.p-fluid-item-flex {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item.p-fluid-item-flex .p-field {
+  flex: 1;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-button.p-component {
+  background-color: rgba(167, 171, 189, 0.5);
+  border: 0;
+  width: 47px;
+  height: 47px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  margin-right: 15px;
+  border-radius: 10px;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-button.p-component.OpeningHierarchy {
+  background-image: url(../../../images/buttons/hierarchy.svg);
+  background-size: 24px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent;
+  border: 0;
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 35px;
+  left: 12px;
+}
+
+@media (max-width: 799px) {
+  .p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-button.p-component.OpeningHierarchy {
+    left: 4px;
+  }
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-button.p-component.OpeningHierarchy:hover, .p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-button.p-component.OpeningHierarchy:focus {
+  background-color: transparent;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-button.p-component .p-button-label {
+  display: none;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .display-flex {
+  flex: 1;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .display-flex .p-field.w50 {
+  width: 50%;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .display-flex .p-field.w50:last-child {
+  margin-right: 10px;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-field label {
+  padding-bottom: 5px;
+}
+
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-field select,
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-field .p-dropdown,
+.p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-field input {
+  height: 47px;
+  min-width: inherit;
+}
+
+.p-dialog .p-dialog-content h2 {
+  font-size: 16px;
+  line-height: 20px;
+  color: rgba(32, 25, 97, 0.7);
+  padding-bottom: 15px;
+}
+
+.p-dialog .p-dialog-content hr {
+  border-top: 1px solid #e3def7;
+  margin: 0px 0px 15px 0px;
+}
+
+.p-dialog .p-dialog-content .btn-back {
+  border: 0;
+  font-size: 14px;
+  line-height: 18px;
+  background-color: transparent;
+  color: #201961;
+  position: absolute;
+  top: 0;
+  right: 15px;
+}
+
+.p-dialog .p-dialog-content .btn-back::before {
+  content: "";
+  /* background-image: url(../../images/select.svg); */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 9px;
+  background-color: transparent;
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  top: 12px;
+  right: 5px;
+  z-index: 1;
+  transform: rotate(-90deg);
+  transition: all 0.3s ease;
+}
+
+.p-dialog .p-dialog-content .btn-back:hover, .p-dialog .p-dialog-content .btn-back:focus {
+  text-decoration: none;
+  color: #201961;
+  background-color: transparent;
+  box-shadow: 0;
+}
+
+.p-dialog .p-dialog-content .btn-back:hover::before, .p-dialog .p-dialog-content .btn-back:focus::before {
+  right: 0px;
+}
+
+.p-dialog .p-dialog-content .search-row-inner {
+  padding: 20px 0px;
+}
+
+.p-dialog .p-dialog-footer {
+  border-radius: 0px 0px 35px 14px;
+}
+
+@media (max-width: 799px) {
+  .p-dialog .p-dialog-footer {
+    padding-top: 15px;
+  }
+}
+
+@media (max-width: 730px) {
+  .p-dialog .p-dialog-footer {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+.p-dialog .p-button {
+  transition: all 0.3s ease;
+}
+
+.p-dialog .p-button.btn-underline {
+  border: 0;
+  font-size: 14px;
+  line-height: 18px;
+  text-decoration: underline;
+  background-color: transparent;
+  color: #201961;
+}
+
+.p-dialog .p-button.btn-underline:hover, .p-dialog .p-button.btn-underline:focus {
+  text-decoration: none;
+  background-color: transparent;
+  color: #201961;
+}
+
+.p-dialog .p-button.btn-border {
+  border: 0;
+  min-width: 112px;
+  min-height: 40px;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 400;
+  border-radius: 34px;
+  background-color: transparent;
+  border: 1px solid #a7abbd;
+  color: rgba(32, 25, 97, 0.6);
+  margin: 0;
+}
+
+@media (max-width: 460px) {
+  .p-dialog .p-button.btn-border {
+    min-width: 72px;
+  }
+}
+
+.p-dialog .p-button.btn-border.orange {
+  border: 1px solid #f68340;
+  color: #f68340;
+  font-weight: 600;
+}
+
+.p-dialog .p-button.btn-border.orange:hover, .p-dialog .p-button.btn-border.orange:focus {
+  color: #f68340;
+  border: 1px solid #f68340;
+}
+
+.p-dialog .p-button.btn-border:hover, .p-dialog .p-button.btn-border:focus {
+  background-color: transparent;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+  color: rgba(32, 25, 97, 0.6);
+  border: 1px solid #a7abbd;
+}
+
+.p-dialog .p-button.btn-gradient {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 34px;
+  border: 0;
+  min-width: 112px;
+  min-height: 40px;
+}
+
+@media (max-width: 460px) {
+  .p-dialog .p-button.btn-gradient {
+    min-width: 72px;
+  }
+}
+
+.p-dialog .p-button.btn-gradient .p-button-label {
+  font-size: 14px;
+  line-height: 18px;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.p-dialog .p-button.btn-gradient.orange {
+  background: transparent linear-gradient(180deg, #feb557 0%, #f68340 100%) 0% 0% no-repeat padding-box;
+}
+
+.p-dialog .p-button.btn-gradient.orange:hover, .p-dialog .p-button.btn-gradient.orange:focus {
+  background: transparent linear-gradient(180deg, #f68340 0%, #feb557 100%) 0% 0% no-repeat padding-box;
+}
+
+.p-dialog .p-button.btn-gradient.red {
+  background: transparent linear-gradient(180deg, #f68340 0%, #ff0000 100%) 0% 0% no-repeat padding-box;
+}
+
+.p-dialog .p-button.btn-gradient.red:hover, .p-dialog .p-button.btn-gradient.red:focus {
+  background: transparent linear-gradient(180deg, #ff0000 0%, #f68340 100%) 0% 0% no-repeat padding-box;
+}
+
+.p-dialog .p-button.btn-before {
+  min-width: 148px;
+  min-height: 40px;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 400;
+  border-radius: 34px;
+  background-color: transparent;
+  border: 1px solid #a7abbd;
+  color: rgba(32, 25, 97, 0.6);
+  margin: 0;
+  text-align: left;
+  padding-left: 21px;
+  position: relative;
+}
+
+@media (max-width: 460px) {
+  .p-dialog .p-button.btn-before {
+    min-width: 72px;
+  }
+}
+
+.p-dialog .p-button.btn-before::before {
+  content: "";
+  /* background-image: url(../../images/buttons/microsoftexcel.svg); */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 23px;
+  background-color: transparent;
+  width: 23px;
+  height: 23px;
+  position: absolute;
+  top: 8px;
+  right: 14px;
+  z-index: 1;
+}
+
+@media (max-width: 460px) {
+  .p-dialog .p-button.btn-before::before {
+    width: 72px;
+    right: 0px;
+    left: 0;
     margin: 0 auto;
     top: -16px;
     right: 0;
@@ -1002,10 +1535,279 @@
   flex-direction: column;
   justify-content: center;
   text-align: center;
+  padding-bottom: 20px;
+}
+
+.p-dialog.dialogClass8 .p-dialog-content .p-fluid {
+  padding-bottom: 10px;
+}
+
+.p-dialog.dialogClass8 .p-dialog-content .p-fluid .p-fluid-item {
+  width: 100%;
+}
+
+.p-dialog.dialogClass9 {
+  min-height: 398px;
+  padding-bottom: 0;
+}
+
+.p-dialog.dialogClass9 .p-dialog-header {
+  padding: 12px 24px 8px 24px;
+}
+
+.p-dialog.dialogClass9 .p-dialog-header .p-dialog-title::before {
+  /* background-image: url(../../images/actions-icon9.svg); */
+  background-size: 25px;
+}
+
+.p-dialog.dialogClass9 .p-dialog-header .p-dialog-title::after {
+  background: transparent linear-gradient(180deg, #7160d5 0%, #667fd9 100%) 0% 0% no-repeat padding-box;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content h2 {
+  padding-bottom: 0;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .p-fluid {
+  display: block;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .search-row-inner {
+  padding: 11px 0px 20px 0px;
+}
+
+@media (max-width: 700px) {
+  .p-dialog.dialogClass9 .p-dialog-content .search-row-inner .btn-search-wite {
+    top: -31px;
+  }
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .search-row-inner .search-item .autocomplete-wrap {
+  width: 30%;
+}
+
+@media (max-width: 700px) {
+  .p-dialog.dialogClass9 .p-dialog-content .search-row-inner .search-item .autocomplete-wrap {
+    width: 100%;
+    padding-bottom: 23px;
+  }
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .search-row-inner .search-item .autocomplete-wrap .p-float-label > label {
+  font-size: 14px;
+  font-family: "Heebo", sans-serif;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .search-row-inner .search-item .autocomplete-wrap .p-float-label input:focus ~ label,
+.p-dialog.dialogClass9 .p-dialog-content .search-row-inner .search-item .autocomplete-wrap .p-float-label input.p-filled ~ label,
+.p-dialog.dialogClass9 .p-dialog-content .search-row-inner .search-item .autocomplete-wrap .p-float-label textarea:focus ~ label,
+.p-dialog.dialogClass9 .p-dialog-content .search-row-inner .search-item .autocomplete-wrap .p-float-label textarea.p-filled ~ label,
+.p-dialog.dialogClass9 .p-dialog-content .search-row-inner .search-item .autocomplete-wrap .p-float-label .p-inputwrapper-focus ~ label,
+.p-dialog.dialogClass9 .p-dialog-content .search-row-inner .search-item .autocomplete-wrap .p-float-label .p-inputwrapper-filled ~ label {
+  font-family: "Heebo", sans-serif;
+  right: 0;
+  font-size: 11px;
+}
+
+@media (max-width: 700px) {
+  .p-dialog.dialogClass9 .p-dialog-content .search-row-inner .search-item .autocomplete-wrap .p-float-label input:focus ~ label,
+  .p-dialog.dialogClass9 .p-dialog-content .search-row-inner .search-item .autocomplete-wrap .p-float-label input.p-filled ~ label,
+  .p-dialog.dialogClass9 .p-dialog-content .search-row-inner .search-item .autocomplete-wrap .p-float-label textarea:focus ~ label,
+  .p-dialog.dialogClass9 .p-dialog-content .search-row-inner .search-item .autocomplete-wrap .p-float-label textarea.p-filled ~ label,
+  .p-dialog.dialogClass9 .p-dialog-content .search-row-inner .search-item .autocomplete-wrap .p-float-label .p-inputwrapper-focus ~ label,
+  .p-dialog.dialogClass9 .p-dialog-content .search-row-inner .search-item .autocomplete-wrap .p-float-label .p-inputwrapper-filled ~ label {
+    right: 0rem;
+  }
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card {
+  padding-bottom: 20px;
+  display: flex;
+  white-space: nowrap;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree {
+  border: 0;
+  background: #f7f7f7;
+  color: #495057;
+  padding: 16px;
+  border-radius: 3px;
+  flex: 1;
+}
+
+@media (max-width: 599px) {
+  .p-dialog.dialogClass9 .p-dialog-content .card .p-tree {
+    padding: 16px 0px;
+  }
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container {
+  position: relative;
+  z-index: 1;
+  display: contents;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode {
+  position: relative;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode::after {
+  content: "";
+  border-right: 2px dotted rgba(146, 148, 149, 0.56);
+  background-color: transparent;
+  width: 1px;
+  height: calc(100% - 48px);
+  position: absolute;
+  top: 3px;
+  right: 22px;
+  z-index: 0;
+}
+
+@media (max-width: 599px) {
+  .p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode::after {
+    right: 6px;
+  }
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode.hideCheckbox .p-treenode-content .p-treenode-label .p-field-checkbox {
+  display: none;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode.showCheckbox .p-treenode-content .p-treenode-label {
+  padding-right: 12px;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode.showCheckbox .p-treenode-content .p-treenode-label::before {
+  display: none;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode.showCheckbox .p-treenode-content .p-treenode-label p.title {
+  display: none;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode.showCheckbox .p-treenode-content .p-treenode-label .p-field-checkbox {
+  display: block;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode.showCheckbox .p-treenode-content .p-treenode-label .p-field-checkbox .p-checkbox {
+  margin-right: 0;
+  margin-left: 10px;
+  max-width: max-content;
+  padding-top: 4px;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode.showCheckbox .p-treenode-content .p-treenode-label .p-field-checkbox .p-checkbox .p-checkbox-box {
+  border: 2px solid #a7abbd;
+  background: #ffffff;
+  width: 14px;
+  height: 14px;
+  color: #495057;
+  border-radius: 3px;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode.showCheckbox .p-treenode-content .p-treenode-label .p-field-checkbox .p-checkbox .p-checkbox-box .pi-check:before {
+  font-size: 9px;
+  padding-bottom: 5px;
+  display: inline-block;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode.showCheckbox .p-treenode-content .p-treenode-label .p-field-checkbox .p-checkbox .p-checkbox-box.p-highlight {
+  border-color: #201961;
+  background: #201961;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode.showCheckbox .p-treenode-content .p-treenode-label .p-field-checkbox label {
+  font-size: 14px;
+  line-height: 18px;
+}
+
+@media (max-width: 374px) {
+  .p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode.showCheckbox .p-treenode-content .p-treenode-label .p-field-checkbox label {
+    font-size: 12px;
+    line-height: 14px;
+  }
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode .p-treenode-content {
+  border-radius: 8px;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+  height: 47px;
+  box-shadow: 0 11px 10px rgba(129, 124, 157, 0.1);
+  background: transparent linear-gradient(180deg, #3bbb9e 0%, #00aabf 100%) 0% 0% no-repeat padding-box;
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 18px;
+  font-family: "Heebo", sans-serif;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode .p-treenode-content.orange {
+  background-color: #f5ded1;
+  border: 1px solid #f6d5c2;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode .p-treenode-content.orange:hover {
+  background-color: #f5ded1;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode .p-treenode-content.orange .p-treenode-label {
+  padding: 0px 11px 0px 10px;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode .p-treenode-content.orange .p-treenode-label p.number {
+  background-color: rgba(255, 255, 255, 0.4);
+  color: #f68340;
+  padding: 0px 10px 0px 10px;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode .p-treenode-content.orange .p-treenode-label p.number::before {
+  display: none;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode .p-treenode-content .p-treenode-label {
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0px 50px 0px 50px;
+}
+
+@media (max-width: 599px) {
+  .p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode .p-treenode-content .p-treenode-label {
+    padding: 0px 50px 0px 29px;
+  }
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode .p-treenode-content .p-treenode-label::before {
+  content: "";
+  /* background-image: url(../../images/icon-label1.svg); */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 32px;
+  background-color: transparent;
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  top: 8px;
+  right: 11px;
+  z-index: 1;
+  border-radius: 50%;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content .card .p-tree .p-tree-container .p-treenode .p-treenode-content .p-treenode-label p {
+  color: #ffffff;
+  font-size: 14px;
+  line-height: 18px;
+  position: relative;
+  display: flex;
   align-items: center;
 }
 
 .p-fluid-item .hierarchyPerfix {
   position: absolute;
   top: 33px;
-  left: 10px; }
+  left: 10px; 
+}
+}

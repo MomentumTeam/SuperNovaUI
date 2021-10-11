@@ -23,6 +23,7 @@ const CreateOGForm = forwardRef(({ setIsActionDone }, ref) => {
 
   const { errors } = formState;
 
+
   const onSubmit = async (data) => {
     const { newHierarchy, parentHierarchy, approvers, comments } = data;
 
@@ -33,12 +34,15 @@ const CreateOGForm = forwardRef(({ setIsActionDone }, ref) => {
     }
 
     const req = {
+      status: 'SUBMITTED',
       commanders: approvers,
       kartoffelParams: {
         name: newHierarchy,
         parent: parentHierarchy.id,
-        source: "oneTree",
+        source: 'oneTree',
       },
+      kartoffelStatus: { status: 'STAGE_UNKNOWN' },
+      adStatus: { status: 'STAGE_UNKNOWN' },
       adParams: {
         ouDisplayName: parentHierarchy.name,
         ouName: parentHierarchy.name,
@@ -61,18 +65,19 @@ const CreateOGForm = forwardRef(({ setIsActionDone }, ref) => {
   );
 
   return (
-    <div className="p-fluid">
-      <div className="p-fluid-item p-fluid-item-flex1">
-        <Hierarchy setValue={setValue} name="parentHierarchy" errors={errors} />
+    <div className='p-fluid'>
+      <div className='p-fluid-item p-fluid-item-flex1'>
+        <Hierarchy setValue={setValue} name='parentHierarchy' errors={errors} labelText={'היררכיית אב'} />
       </div>
-      <div className="p-fluid-item">
-        <div className="p-field">
-          <label>
-            <span className="required-field">*</span>שם היררכיה חדשה
+      <div className='p-fluid-item'>
+        <div className='p-field'>
+          <label htmlFor='2021'>
+            <span className='required-field'>*</span>שם היררכיה חדשה
           </label>
           <InputText
-            {...register("newHierarchy")}
-            type="text"
+            {...register('newHierarchy')}
+            id='2021'
+            type='text'
             required
             placeholder="שם היררכיה חדשה"
           />
@@ -83,22 +88,19 @@ const CreateOGForm = forwardRef(({ setIsActionDone }, ref) => {
           </label>
         </div>
       </div>
-      <div className="p-fluid-item">
+      <div className='p-fluid-item'>
         <Approver
           setValue={setValue}
-          name="approvers"
-          errors={errors}
+          name='approvers'
+          defaultApprovers={[]}
           multiple={true}
+          errors={errors}
         />
       </div>
-      <div className="p-fluid-item p-fluid-item-flex1">
-        <div className="p-field">
-          <label>הערות</label>
-          <InputTextarea
-            {...register("comments")}
-            type="text"
-            placeholder="הערות"
-          />
+      <div className='p-fluid-item p-fluid-item-flex1'>
+        <div className='p-field'>
+          <label htmlFor='2023'>הערות</label>
+          <InputTextarea {...register('comments')} id='2023' type='text' placeholder='הערות' />
         </div>
       </div>
     </div>
