@@ -6,7 +6,7 @@ import { classNames } from "primereact/utils";
 import { ContainerRoleList } from "./FullHierarchyContainerRoleList";
 import { FullHierarchyInformationFooter } from "./FullHierarchyInformationFooter";
 import { getLabel, disabledInputStyle } from "../../Fields/InputCommon";
-import { getHierarchy } from '../../../utils/hierarchy';
+import { getHierarchy } from "../../../utils/hierarchy";
 import { HierarchyDelete } from "./HierarchyDelete";
 
 import "../../../assets/css/local/general/buttons.css";
@@ -21,7 +21,9 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit }) => {
     setIsDeleteModalOpen(true);
   };
 
-  const closeDeleteModal = () => {setIsDeleteModalOpen(false)};
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
 
   useEffect(() => {
     const { hierarchyReadOnly, hierarchyName } = getHierarchy(hierarchy.hierarchy);
@@ -48,6 +50,7 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit }) => {
             setIsEdit={setIsEdit}
             form={form}
             openDeleteModal={openDeleteModal}
+            
           />
         }
       >
@@ -55,23 +58,24 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit }) => {
           <div className="p-fluid-item p-fluid-item-flex1">
             <div className="p-field">
               {getLabel({ isEdit, canEdit: true, labelName: "היררכיה" })}
-              <div className="textWithPrefix p-inputgroup">
-                <InputText
-                  type="text"
-                  disabled={!isEdit}
-                  style={isEdit ? {} : disabledInputStyle}
-                  placeholder={form.name}
-                  onChange={(e) => {
-                    let tempForm = { ...form };
-                    tempForm.name = e.target.value;
-                    setForm(tempForm);
-                  }}
-                  value={form.name}
-                  keyfilter={/^[\w\s\u0590-\u05FF]+$/}
-                />
-                <span id="perfixSlash">/</span>
-                <span className="textPrefix p-inputgroup-addon">{form.hierarchyPrefix}</span>
-              </div>
+              <InputText
+                id="hierarchyInput"
+                type="text"
+                disabled={!isEdit}
+                style={isEdit ? {} : disabledInputStyle}
+                placeholder={form.name}
+                onChange={(e) => {
+                  let tempForm = { ...form };
+                  tempForm.name = e.target.value;
+                  setForm(tempForm);
+                }}
+                value={form.name}
+                keyfilter={/^[\w\s\u0590-\u05FF]+$/}
+              />
+              <label
+                htmlFor="hierarchyInput"
+                style={{ paddingTop: "3px" }}
+              >{`${form.hierarchyPrefix}/${form.name}`}</label>
             </div>
           </div>
 
@@ -83,7 +87,7 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit }) => {
                 type="text"
                 disabled
                 style={disabledInputStyle}
-                placeholder={hierarchy.directRoles? hierarchy.directRoles.length: 0}
+                placeholder={hierarchy.directRoles ? hierarchy.directRoles.length : 0}
               />
             </div>
           </div>

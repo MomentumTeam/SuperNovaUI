@@ -2,29 +2,32 @@ import React, { useState, useEffect } from "react";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { classNames } from "primereact/utils";
+import { AutoComplete } from "primereact/autocomplete";
 
 import "../../../assets/css/local/general/buttons.css";
 import "../../../assets/css/local/components/modal-item.css";
 
-import { FullRoleInformationFooter } from './FullRoleInformationFooter';
-import { USER_CLEARANCE } from '../../../constants';
+import { FullRoleInformationFooter } from "./FullRoleInformationFooter";
+import { USER_CLEARANCE } from "../../../constants";
 import { getLabel, disabledInputStyle } from "../../Fields/InputCommon";
-import { InputDropdown } from '../../Fields/InputDropdown';
-import { InputTextField } from '../../Fields/InputText';
-import { InputCalanderField } from '../../Fields/InputCalander';
-import { getEntityByRoleId } from '../../../service/KartoffelService';
+import { InputDropdown } from "../../Fields/InputDropdown";
+import { InputTextField } from "../../Fields/InputText";
+import { InputCalanderField } from "../../Fields/InputCalander";
+import { getEntityByRoleId, getRole } from "../../../service/KartoffelService";
 
 const FullRoleInformation = ({ role, isOpen, closeModal, edit }) => {
   const [isEdit, setIsEdit] = useState(edit);
   const [form, setForm] = useState(role);
   const [entity, setEntity] = useState({});
+  const [results, setResults] = useState([]);
+  const [selected, setSelected] = useState([]);
 
   useEffect(async () => {
     const entity = await getEntityByRoleId(role.roleId);
     setEntity(entity);
   }, [role]);
 
-  useEffect(async() => {
+  useEffect(async () => {
     setForm(role);
   }, [isEdit]);
 
@@ -53,19 +56,32 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit }) => {
                 <p>{entity ? "לא פנוי" : "פנוי"}</p>
               </div>
               {getLabel({ labelName: "שם תפקיד", canEdit: true, isEdit: isEdit })}
-              <InputText
-                id="2011"
-                type="text"
+              <AutoComplete
+                value={selected}
                 disabled={!isEdit}
                 style={isEdit ? {} : disabledInputStyle}
-                placeholder={role.jobTitle}
-                onChange={(e) => {
-                  let tempForm = { ...form };
-                  tempForm.jobTitle = e.target.value;
-                  setForm(tempForm);
+                completeMethod={async (e) => {
+                  // const searchResults = await getOGByHierarchy(e);
+                  // setResults(searchResults);
                 }}
-                value={form.jobTitle}
+                onChange={(e) => {
+                  setSelected(e.value);
+                }}
               />
+
+              {/* // <InputText
+              //   id="2011"
+              //   type="text"
+              //   disabled={!isEdit}
+              //   style={isEdit ? {} : disabledInputStyle}
+              //   placeholder={role.jobTitle}
+              //   onChange={(e) => {
+              //     let tempForm = { ...form };
+              //     tempForm.jobTitle = e.target.value;
+              //     setForm(tempForm);
+              //   }}
+              //   value={form.jobTitle}
+              // /> */}
             </div>
           </div>
           <div className="p-fluid-item padR">
@@ -78,8 +94,6 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit }) => {
           {InputDropdown({
             fieldName: "clearance",
             displayName: "סיווג התפקיד",
-            canEdit: true,
-            isEdit: isEdit,
             item: role,
             form: form,
             setForm: setForm,

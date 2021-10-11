@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "primereact/button";
 import { toJS } from "mobx";
 
@@ -8,7 +8,13 @@ import { renameOGRequest } from "../../../service/AppliesService";
 
 const FullHierarchyInformationFooter = ({ isEdit, closeFullDetailsModal, setIsEdit, form, openDeleteModal }) => {
   const { userStore } = useStores();
+  const [isChanged, setIsChanged] = useState(false);
+
   const connectedUser = toJS(userStore.user);
+
+  useEffect(() => {
+    form.oldName === form.name ? setIsChanged(false) : setIsChanged(true);
+  }, [form, isEdit]);
 
   const saveForm = async () => {
     let tempForm = { ...form };
@@ -49,6 +55,7 @@ const FullHierarchyInformationFooter = ({ isEdit, closeFullDetailsModal, setIsEd
           <Button
             label={isEdit ? "שליחת בקשה" : "סגור"}
             className="btn-orange-gradient"
+            disabled={isEdit ? (isChanged ? false : true) : false}
             onClick={isEdit ? saveForm : closeFullDetailsModal}
           />
         </div>

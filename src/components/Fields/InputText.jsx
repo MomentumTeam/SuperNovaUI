@@ -12,8 +12,8 @@ const InputTextField = ({
   isEdit = false,
   canEdit = false,
   type = "text",
-  keyFilter = "alpha",
-  additionalClass =""
+  keyFilter,
+  additionalClass = "",
 }) => {
   const disabled = !canEdit || !isEdit;
 
@@ -24,7 +24,7 @@ const InputTextField = ({
         <InputText
           id="2011"
           type={type}
-          keyfilter={keyFilter}
+          keyfilter={keyFilter ? keyFilter : /^[a-z\u0590-\u05fe\s]+$/i}
           disabled={disabled}
           style={disabled ? disabledInputStyle : {}}
           placeholder={item[fieldName]}

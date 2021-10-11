@@ -24,6 +24,8 @@ const Entities = observer(() => {
     let append;
     let getNewData = true;
     let getPage = event.restore ? firstPage : page;
+    console.log(event);
+    console.log("tablesStore.isSearch", tablesStore);
 
     if (tabId && userStore.user) {
       const userOGId = userStore.user.directGroup;
@@ -34,7 +36,7 @@ const Entities = observer(() => {
         setFirst(event.first);
       }
 
-      if (getNewData) {
+      if (getNewData && !tablesStore.isSearch) {
         setIsLoading(true);
 
         try {
@@ -54,6 +56,7 @@ const Entities = observer(() => {
             default:
               break;
           }
+          console.log("tablesStore.isSearch", tablesStore.isSearch);
 
           setPage(getPage + 1);
         } catch (error) {
@@ -74,8 +77,11 @@ const Entities = observer(() => {
     const firstData = async () => {
       // Get table's data
       setFirst(0);
+      tablesStore.setSearch(false);
+
       await setData({ restore: true });
     };
+    console.log("tablesStore.isSearch", tablesStore);
 
     firstData();
   }, [tabId, userStore, tablesStore]);

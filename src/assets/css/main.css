@@ -7,7 +7,8 @@
   color: #201961;
 }
 
-.btn-underline:hover, .btn-underline:focus {
+.btn-underline:hover,
+.btn-underline:focus {
   text-decoration: none;
 }
 
@@ -27,7 +28,8 @@
   min-height: 40px;
 }
 
-.btn-green-gradient:hover, .btn-green-gradient:focus,
+.btn-green-gradient:hover,
+.btn-green-gradient:focus,
 .p-button.p-component.btn-green-gradient:hover,
 .p-button.p-component.btn-green-gradient:focus {
   background: transparent linear-gradient(180deg, #00aabf 0%, #3bbb9e 100%) 0% 0% no-repeat padding-box;
@@ -48,7 +50,8 @@
   min-height: 40px;
 }
 
-.btn-orange-gradient:hover, .btn-orange-gradient:focus {
+.btn-orange-gradient:hover,
+.btn-orange-gradient:focus {
   background: transparent linear-gradient(180deg, #f68340 0%, #feb557 100%) 0% 0% no-repeat padding-box;
 }
 
@@ -63,7 +66,8 @@
   border-radius: 10px;
 }
 
-.btn:hover, .btn:focus {
+.btn:hover,
+.btn:focus {
   box-shadow: 0 0 0 0.2rem #a6d5fa;
 }
 
@@ -75,7 +79,8 @@
   border-radius: 0px;
 }
 
-.btn-change-view-chart:hover, .btn-change-view-chart:focus {
+.btn-change-view-chart:hover,
+.btn-change-view-chart:focus {
   background-image: url(../images/buttons/change-view-chart-blue.svg);
   box-shadow: 0;
   border-radius: 10px;
@@ -88,7 +93,8 @@
   background-position: bottom;
 }
 
-.btn-humburger:hover, .btn-humburger:focus {
+.btn-humburger:hover,
+.btn-humburger:focus {
   box-shadow: 0 0 0 0.2rem #eeeff0;
 }
 
@@ -110,7 +116,8 @@
   display: none;
 }
 
-.moreBtnwrap .p-button.p-component.more-btn:hover, .moreBtnwrap .p-button.p-component.more-btn:focus {
+.moreBtnwrap .p-button.p-component.more-btn:hover,
+.moreBtnwrap .p-button.p-component.more-btn:focus {
   background: inherit;
   background-color: transparent;
   background-image: url(../images/buttons/more-btn-hover.svg);
@@ -158,7 +165,8 @@
   background-size: 33px;
 }
 
-.btn-notification:hover, .btn-notification:focus {
+.btn-notification:hover,
+.btn-notification:focus {
   box-shadow: 0 0 0 0.2rem #eeeff0;
 }
 
@@ -215,7 +223,8 @@
   border: 0;
 }
 
-.logout-btn-wrap:hover, .logout-btn-wrap:focus {
+.logout-btn-wrap:hover,
+.logout-btn-wrap:focus {
   background: transparent linear-gradient(180deg, #f68340 0%, #feb557 100%) 0% 0% no-repeat padding-box;
 }
 
@@ -291,7 +300,8 @@ legend {
   align-items: center;
 }
 
-.input-unit-wrap .input-unit-regular input:hover, .input-unit-wrap .input-unit-regular input:focus,
+.input-unit-wrap .input-unit-regular input:hover,
+.input-unit-wrap .input-unit-regular input:focus,
 .input-unit-wrap .input-unit-regular textarea:hover,
 .input-unit-wrap .input-unit-regular textarea:focus,
 .input-unit-wrap .input-unit-regular select:hover,
@@ -441,7 +451,8 @@ legend {
   align-items: center;
 }
 
-.p-fluid .p-field textarea:hover, .p-fluid .p-field textarea:focus,
+.p-fluid .p-field textarea:hover,
+.p-fluid .p-field textarea:focus,
 .p-fluid .p-field select:hover,
 .p-fluid .p-field select:focus,
 .p-fluid .p-field .p-dropdown:hover,
@@ -468,7 +479,8 @@ legend {
   cursor: none;
 }
 
-.p-fluid .p-field textarea:disabled:hover, .p-fluid .p-field textarea:disabled:focus,
+.p-fluid .p-field textarea:disabled:hover,
+.p-fluid .p-field textarea:disabled:focus,
 .p-fluid .p-field select:disabled:hover,
 .p-fluid .p-field select:disabled:focus,
 .p-fluid .p-field .p-dropdown:disabled:hover,
@@ -545,7 +557,8 @@ legend {
   resize: none;
 }
 
-.p-fluid .p-field .p-inputtextarea:hover, .p-fluid .p-field .p-inputtextarea:focus {
+.p-fluid .p-field .p-inputtextarea:hover,
+.p-fluid .p-field .p-inputtextarea:focus {
   border: 1px solid #5b7184;
   box-shadow: 0 0 0 0.2rem #a6d5fa;
 }
@@ -634,7 +647,8 @@ legend {
 .search-row-inner .search-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
+
   width: 100%;
 }
 
@@ -685,7 +699,8 @@ legend {
   align-items: center;
 }
 
-.search-row-inner .search-item .autocomplete-wrap .p-inputwrapper input:hover, .search-row-inner .search-item .autocomplete-wrap .p-inputwrapper input:focus {
+.search-row-inner .search-item .autocomplete-wrap .p-inputwrapper input:hover,
+.search-row-inner .search-item .autocomplete-wrap .p-inputwrapper input:focus {
   border: 1px solid #5b7184;
 }
 
@@ -729,11 +744,17 @@ legend {
   border: 0px;
 }
 
-.search-row-inner .search-item .autocomplete-wrap .p-autocomplete input:hover, .search-row-inner .search-item .autocomplete-wrap .p-autocomplete input:focus {
+.search-row-inner .search-item .autocomplete-wrap .p-autocomplete input:hover,
+.search-row-inner .search-item .autocomplete-wrap .p-autocomplete input:focus {
   border: 0px;
 }
 
-.search-row-inner .search-item .autocomplete-wrap .p-autocomplete .p-autocomplete-multiple-container .p-autocomplete-input-token {
+.search-row-inner
+  .search-item
+  .autocomplete-wrap
+  .p-autocomplete
+  .p-autocomplete-multiple-container
+  .p-autocomplete-input-token {
   padding: 0;
 }
 
@@ -755,11 +776,17 @@ legend {
   align-items: center;
 }
 
-.search-row-inner .search-item .autocomplete-wrap .p-autocomplete .p-autocomplete-multiple-container:hover, .search-row-inner .search-item .autocomplete-wrap .p-autocomplete .p-autocomplete-multiple-container:focus {
+.search-row-inner .search-item .autocomplete-wrap .p-autocomplete .p-autocomplete-multiple-container:hover,
+.search-row-inner .search-item .autocomplete-wrap .p-autocomplete .p-autocomplete-multiple-container:focus {
   border: 1px solid #5b7184;
 }
 
-.search-row-inner .search-item .autocomplete-wrap .p-autocomplete .p-autocomplete-multiple-container .p-autocomplete-token {
+.search-row-inner
+  .search-item
+  .autocomplete-wrap
+  .p-autocomplete
+  .p-autocomplete-multiple-container
+  .p-autocomplete-token {
   margin-top: 4px;
 }
 
@@ -773,7 +800,8 @@ legend {
   background-color: #f7f7f7;
 }
 
-.search-row-inner.style2 .autocomplete-wrap .p-inputwrapper input:hover, .search-row-inner.style2 .autocomplete-wrap .p-inputwrapper input:focus {
+.search-row-inner.style2 .autocomplete-wrap .p-inputwrapper input:hover,
+.search-row-inner.style2 .autocomplete-wrap .p-inputwrapper input:focus {
   border: 1px solid #5b7184;
 }
 
@@ -965,7 +993,8 @@ main .main-wrap .main-inner-wrap {
   background: rgba(1, 169, 190, 0.8) !important;
 }
 
-.p-scrolltop.p-link:hover, .p-scrolltop.p-link:focus {
+.p-scrolltop.p-link:hover,
+.p-scrolltop.p-link:focus {
   background: #01a9be !important;
 }
 

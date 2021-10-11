@@ -8,7 +8,7 @@ import { FullEntityInformationFooter } from "./FullEntityInformationFooter";
 import { CanSeeUserClearance } from "../../../utils/entites";
 import { InputTextField } from "../../Fields/InputText";
 import { InputCalanderField } from "../../Fields/InputCalander";
-import { InputDropdown } from '../../Fields/InputDropdown';
+import { InputDropdown } from "../../Fields/InputDropdown";
 import { USER_CLEARANCE, USER_NO_PICTURE } from "../../../constants";
 
 import "../../../assets/css/local/general/buttons.css";
@@ -19,14 +19,18 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit 
   const [userData, setUserData] = useState(user);
   const [form, setForm] = useState(user);
 
-  useEffect(async () => {
-    if (user.id && (user.picture === USER_NO_PICTURE || user.picture === undefined)) {
-      // TODO: api for get entity picture by id (and not just for me)
-      let tempUser = { ...user };
-      const pic = await getPictureByEntityId();
-      tempUser.picture = pic.image;
-      setUserData(tempUser);
+  useEffect(() => {
+    async function getUserPic() {
+      if (user.id && (user.picture === USER_NO_PICTURE || user.picture === undefined)) {
+        // TODO: api for get entity picture by id (and not just for me)
+        let tempUser = { ...user };
+        const pic = await getPictureByEntityId();
+        tempUser.picture = pic.image;
+        setUserData(tempUser);
+      }
     }
+
+    getUserPic();
   }, [user]);
 
   useEffect(() => {
@@ -43,7 +47,7 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit 
       footer={
         <FullEntityInformationFooter
           isEdit={isEdit}
-          user={userData}
+          user={user}
           closeFullDetailsModal={closeFullDetailsModal}
           setIsEdit={setIsEdit}
           form={form}
@@ -103,7 +107,7 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit 
               form: form,
               setForm: setForm,
               type: "num",
-              keyfilter: "num",
+              keyFilter: "num",
             })}
           {userData.rank &&
             InputTextField({
@@ -161,7 +165,7 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit 
               displayName: "טלפון",
               canEdit: true,
               type: "num",
-              keyfilter: "num",
+              keyFilter: "num",
               isEdit: isEdit,
               item: userData,
               form: form,

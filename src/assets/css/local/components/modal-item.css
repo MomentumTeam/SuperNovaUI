@@ -1004,3 +1004,8 @@
   text-align: center;
   align-items: center;
 }
+
+.p-fluid-item .hierarchyPerfix {
+  position: absolute;
+  top: 33px;
+  left: 10px; }

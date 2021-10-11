@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, observable } from 'mobx';
+import { action, makeAutoObservable, observable } from "mobx";
 import {
   getMyRequests,
   getRequestById,
@@ -20,8 +20,8 @@ import {
   updateApproverDecision,
   changeRoleHierarchyRequest,
   changeRoleHierarchyBulkRequest,
-  createRoleBulkRequest
-} from '../service/AppliesService';
+  createRoleBulkRequest,
+} from "../service/AppliesService";
 
 export default class AppliesStore {
   applies = [];
@@ -50,6 +50,8 @@ export default class AppliesStore {
       disconectRoleFromEntityApply: action,
       updateApplyDecision: action,
     });
+
+    this.getAppliesByPerosn("bbbbbbbbbbbbbbbbbbbbbbbb", "SUBMITTER", "ID", 1, 10);
   }
 
   // GET
@@ -70,13 +72,7 @@ export default class AppliesStore {
   }
 
   async getAppliesByPerosn(id, personType, personInfoType, from, to) {
-    const myApplies = await getRequestsByPerson(
-      id,
-      personType,
-      personInfoType,
-      from,
-      to
-    );
+    const myApplies = await getRequestsByPerson(id, personType, personInfoType, from, to);
 
     this.myApplies = myApplies.requests;
   }
@@ -87,11 +83,7 @@ export default class AppliesStore {
   }
 
   async searchAppliesBySubmitterDisplayName(displayName, from, to) {
-    const myApplies = await searchRequestsBySubmitterDisplayName(
-      displayName,
-      from,
-      to
-    );
+    const myApplies = await searchRequestsBySubmitterDisplayName(displayName, from, to);
     // this.applies = myApplies.requests;
   }
 
@@ -108,9 +100,7 @@ export default class AppliesStore {
   }
 
   async assignRoleToEntityApply(applyProperties) {
-    const newAssignRoleToEntityApply = await assignRoleToEntityRequest(
-      applyProperties
-    );
+    const newAssignRoleToEntityApply = await assignRoleToEntityRequest(applyProperties);
     this.myApplies.unshift(newAssignRoleToEntityApply);
   }
 
@@ -150,29 +140,23 @@ export default class AppliesStore {
   }
 
   async disconectRoleFromEntityApply(applyProperties) {
-    const newDisconectRoleFromEntityApply =
-      await disconectRoleFromEntityRequest(applyProperties);
+    const newDisconectRoleFromEntityApply = await disconectRoleFromEntityRequest(applyProperties);
     this.myApplies.unshift(newDisconectRoleFromEntityApply);
   }
 
-
   async createRoleBulk(applyProperties) {
-    const createRoleBulkApply =
-      await createRoleBulkRequest(applyProperties);
+    const createRoleBulkApply = await createRoleBulkRequest(applyProperties);
     this.myApplies.unshift(createRoleBulkApply);
   }
 
-
   // PUT
   async changeRoleHierarchy(applyProperties) {
-    const changeRoleHierarchyApply =
-      await changeRoleHierarchyRequest(applyProperties);
+    const changeRoleHierarchyApply = await changeRoleHierarchyRequest(applyProperties);
     this.myApplies.unshift(changeRoleHierarchyApply);
   }
 
   async changeRoleHierarchyBulk(applyProperties) {
-    const changeRoleHierarchyBulkApply =
-      await changeRoleHierarchyBulkRequest(applyProperties);
+    const changeRoleHierarchyBulkApply = await changeRoleHierarchyBulkRequest(applyProperties);
     this.myApplies.unshift(changeRoleHierarchyBulkApply);
   }
 

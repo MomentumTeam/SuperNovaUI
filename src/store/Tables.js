@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, observable } from "mobx";
+import { action, makeAutoObservable, observable, runInAction } from "mobx";
 import {
   getEntitiesUnderOG,
   getRolesUnderOG,
@@ -9,18 +9,22 @@ import {
   getEntityByIdentifier,
   getRoleByRoleId,
   searchOG,
+  getRolesByHierarchy,
 } from "../service/KartoffelService";
 
 export default class TablesStore {
   entities = [];
   roles = [];
   groups = [];
+  isSearch = false;
 
   constructor() {
     makeAutoObservable(this, {
       entities: observable,
       roles: observable,
       groups: observable,
+      isSearch: observable,
+
       loadEntitiesUnderOG: action,
       loadRolesUnderOG: action,
       loadOGChildren: action,
@@ -31,7 +35,12 @@ export default class TablesStore {
       getHierarchyByHierarchy: action,
       getHierarchyByRoleId: action,
       getRolesByRoleId: action,
+      setSearch: action,
     });
+  }
+
+  setSearch(isSearch) {
+    this.isSearch = isSearch;
   }
 
   async loadEntitiesUnderOG(id, page, pageSize, append = false) {
@@ -62,7 +71,6 @@ export default class TablesStore {
       filteredResults = await searchEntitiesByFullName(query);
       filteredResults = filteredResults.entities;
     }
-
     return filteredResults;
   }
 
@@ -76,6 +84,7 @@ export default class TablesStore {
       filteredResults = await getEntitiesByHierarchy(query);
       filteredResults = filteredResults.entities;
     }
+
     return filteredResults;
   }
 
@@ -89,6 +98,7 @@ export default class TablesStore {
       filteredResults = await getEntityByRoleId(query);
       filteredResults = [filteredResults];
     }
+
     return filteredResults;
   }
 
@@ -101,6 +111,7 @@ export default class TablesStore {
     } else {
       filteredResults = await searchOG(query);
     }
+
     return filteredResults;
   }
 
@@ -117,6 +128,7 @@ export default class TablesStore {
         filteredResults = await searchOG(role.hierarchy);
       }
     }
+
     return filteredResults;
   }
 
@@ -130,6 +142,7 @@ export default class TablesStore {
       filteredResults = await getRoleByRoleId(query);
       filteredResults = [filteredResults];
     }
+
     return filteredResults;
   }
 
@@ -140,9 +153,10 @@ export default class TablesStore {
     if (!query.trim().length) {
       filteredResults = [];
     } else {
-      filteredResults = await getRoles(query);
+      filteredResults = await getRolesByHierarchy(query);
       filteredResults = [filteredResults];
     }
+
     return filteredResults;
   }
 }

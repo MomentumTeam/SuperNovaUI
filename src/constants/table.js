@@ -1,4 +1,4 @@
-import { USER_TYPE } from '.';
+import { USER_TYPE } from ".";
 import { useStores } from "../context/use-stores";
 
 export const TableTypes = {
@@ -96,12 +96,15 @@ export const TableSearch = (tableType) => {
     roles: [
       {
         searchField: "roleId",
-        searchDisplayName: "חיפוש לפי תפקיד",
+        searchDisplayName: 'שם/מ"א/ת"ז',
         searchFunc: tablesStore.getRolesByRoleId,
+      },
+      {
+        searchField: "roleId",
+        searchDisplayName: "היררכיה",
+        searchFunc: tablesStore.getRolesByHierarchy,
       },
     ],
   };
-  return searchFields[tableType]? searchFields[tableType]: [];
+  return searchFields[tableType] ? searchFields[tableType] : [];
 };
-
-
