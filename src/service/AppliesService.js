@@ -35,15 +35,9 @@ export const getAllRequests = async (approvementStatus, from, to) => {
   return response.data;
 };
 
-export const getRequestsByPerson = async (
-  identifier,
-  personType,
-  personInfoType,
-  from,
-  to
-) => {
+export const getRequestsByPerson = async (id,personType,personInfoType, from, to) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/person/${identifier}`,
+    `${apiBaseUrl}/api/requests/person/${id}`,
     {
       params: {
         personType,
@@ -85,11 +79,19 @@ export const searchRequestsBySubmitterDisplayName = async (
   return response.data;
 };
 
+export const isJobTitleAlreadyTakenRequest = async (jobTitle, directGroup) => {
+  const response = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/kartoffel/roles/job/taken?jobTitle=${jobTitle}&directGroup=${directGroup}`,
+  );
+
+  return response.data;
+}
+
 //POST
 
 export const createRoleRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/requests/roleRequest`,
+    `${apiBaseUrl}/api/requests/request/role`,
     applyProperties
   );
 
@@ -107,7 +109,7 @@ export const assignRoleToEntityRequest = async (applyProperties) => {
 
 export const createOGRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/requests/ogRequest`,
+    `${apiBaseUrl}/api/requests/request/og`,
     applyProperties
   );
 
@@ -116,7 +118,7 @@ export const createOGRequest = async (applyProperties) => {
 
 export const createNewApproverRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/requests/newApproverRequest`,
+    `${apiBaseUrl}/api/requests/request/approver`,
     applyProperties
   );
 
@@ -125,7 +127,7 @@ export const createNewApproverRequest = async (applyProperties) => {
 
 export const createEntityRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/requests/entityRequest`,
+    `${apiBaseUrl}/api/requests/request/entity`,
     applyProperties
   );
 
@@ -185,6 +187,25 @@ export const disconectRoleFromEntityRequest = async (applyProperties) => {
   return response.data;
 };
 
+export const uploadBulkFile = async (file) => {
+  const response = await axiosApiInstance.post(
+    `${apiBaseUrl}/api/bulk/upload`,
+    file, { headers: { 'Content-Type': 'multipart/form-data' } }
+  );
+
+  return response.data;
+};
+
+export const createRoleBulkRequest = async (data) => {
+  const response = await axiosApiInstance.post(
+    `${apiBaseUrl}/api/bulk/request/role`,
+    data
+  );
+
+  return response.data;
+};
+
+
 // PUT
 
 export const updateApproverDecision = async (
@@ -200,6 +221,24 @@ export const updateApproverDecision = async (
         approverType: approverType,
       },
     }
+  );
+
+  return response.data;
+};
+
+export const changeRoleHierarchyRequest = async (data) => {
+  const response = await axiosApiInstance.put(
+    `${apiBaseUrl}/api/requests/request/role/og`,
+    data
+  );
+
+  return response.data;
+};
+
+export const changeRoleHierarchyBulkRequest = async (data) => {
+  const response = await axiosApiInstance.put(
+    `${apiBaseUrl}/api/bulk/request/role/hierarchy`,
+    data
   );
 
   return response.data;
