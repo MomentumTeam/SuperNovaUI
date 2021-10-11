@@ -25,7 +25,7 @@ const Dashboard = observer(() => {
       case 5:
         userType = {
           type: USER_TYPE.ADMIN,
-          tag: USER_TYPE_TAG.ADMIN
+          tag: USER_TYPE_TAG.ADMIN,
         };
         break;
       case 2:
@@ -42,9 +42,9 @@ const Dashboard = observer(() => {
         break;
       case 3:
         userType = {
-            type: USER_TYPE.COMMANDER,
-            tag: USER_TYPE_TAG.APPROVER,
-          };
+          type: USER_TYPE.COMMANDER,
+          tag: USER_TYPE_TAG.APPROVER,
+        };
         break;
       case 6:
         userType = { type: USER_TYPE.BULK };
@@ -58,14 +58,14 @@ const Dashboard = observer(() => {
 
   useEffect(() => {
     if (userStore.user) {
-      if (userType.type===USER_TYPE_TAG.COMMANDER) {
+      if (userType.type === USER_TYPE_TAG.COMMANDER) {
         // appliesStore.getCommanderApplies();
       } else {
         // appliesStore.loadApplies();
         treeStore.loadTreeByEntity(userStore.user);
       }
     }
-  }, [userStore.user, appliesStore, treeStore]);
+  }, [userStore.user, appliesStore, treeStore, userType.type]);
 
   const openFullDetailsModal = () => {
     setIsFullUserInfoModalOpen(true);
@@ -77,9 +77,10 @@ const Dashboard = observer(() => {
 
   return (
     <>
-      <div className="main-inner-item main-inner-item2">
-        <div className="main-inner-item2-content">
-          <div className="display-flex title-wrap">
+      {console.log(user)}
+      <div className='main-inner-item main-inner-item2'>
+        <div className='main-inner-item2-content'>
+          <div className='display-flex title-wrap'>
             <h2>פרטים אישיים</h2>
           </div>
           <UserProfileCard
@@ -94,13 +95,14 @@ const Dashboard = observer(() => {
             isOpen={isFullUserInfoModalOpen}
             closeFullDetailsModal={closeFullDetailsModal}
           />
-          <div className="content-unit-wrap">
+
+          <div className='content-unit-wrap'>
             {userType.APPROVER ? (
               <ApprovalTable applies={applies} />
             ) : (
-              <div className="content-unit-inner content-unit-inner-before">
-                <div className="search-row">
-                  <div className="search-row-inner">
+              <div className='content-unit-inner content-unit-inner-before'>
+                <div className='search-row'>
+                  <div className='search-row-inner'>
                     <SearchBox
                       loadDataByEntity={async (entity) => {
                         await treeStore.loadTreeByEntity(entity);
@@ -111,7 +113,7 @@ const Dashboard = observer(() => {
                     />
                   </div>
                 </div>
-                <div className="chart-wrap">
+                <div className='chart-wrap'>
                   <HierarchyTree data={toJS(treeStore.tree)} />
                 </div>
               </div>

@@ -1,18 +1,38 @@
 import blankProfilePic from '../../assets/images/blankProfile.png';
 import '../../assets/css/local/pages/dashboard.css';
 
-const UserProfileCard = ({ user, userPicture,userType, openFullDetailsModal }) => (
+const NOTICE_ROLES = ['COMMANDER', 'SECURITY', 'SUPER_SECURITY'];
+
+const UserProfileCard = ({
+  user,
+  userPicture,
+  userType,
+  openFullDetailsModal,
+}) => (
   <div className='personal-information-wrap'>
     <div className='display-flex personal-information-inner'>
-      {userType.tag &&
-          <div className="confirms">
-              <h3>{userType.tag}</h3>
+      {userType.tag && (
+        <div className='confirms'>
+          <h3>{userType.tag}</h3>
+        </div>
+      )}
+
+      {NOTICE_ROLES.some((role) => user.types.includes(role)) ? (
+        <div className='noticeRibbon'>
+          <div className='noticeText'>
+            גורם
+            <br />
+            מאשר
           </div>
-      }
+        </div>
+      ) : (
+        <></>
+      )}
+
       <div className='personal-information-item'>
         <div className='userpic-wrap'>
           <img
-            style={{borderRadius: '50%'}}
+            style={{ borderRadius: '50%' }}
             src={
               user && userPicture
                 ? `data:image/jpeg;base64,${userPicture}`
