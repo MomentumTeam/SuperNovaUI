@@ -79,7 +79,6 @@ const CreateOGForm = forwardRef(({ setIsActionDone }, ref) => {
             id='2021'
             type='text'
             required
-            placeholder="שם היררכיה חדשה"
           />
           <label>
             {errors.newHierarchy && (
