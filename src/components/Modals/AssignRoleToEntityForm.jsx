@@ -199,7 +199,7 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true, setIsActionDone }, 
               setValue('userRole', e.value.jobTitle);
             }}
             onChange={(e) => {
-              setValue('userName', e.value?.displayName);
+              setValue('userName', e.value.displayName ? e.value.displayName : e.value);
             }}
             required
           />
