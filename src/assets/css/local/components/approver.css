@@ -1,0 +1,8 @@
+.approver-selection-multiple > ul {
+    display: inline-table !important;
+    vertical-align: middle;   
+}
+
+.disabled {
+    background-color:#faf8fd;
+}

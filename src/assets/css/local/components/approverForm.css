@@ -1,0 +1,11 @@
+#approverForm-userName > input {
+    padding-left: 5vh;
+}
+
+.approver-fillMe {
+    z-index: 1;
+}
+
+.disabled {
+    background-color:#faf8fd !important;
+}
