@@ -35,9 +35,23 @@ export const getAllRequests = async (approvementStatus, from, to) => {
   return response.data;
 };
 
-export const getCommanderApplyRequests = async (from, to) => {
+export const getMyApproveRequests = async (from, to) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/requests/approve/my`,
+    {
+      params: {
+        from,
+        to,
+      },
+    },
+  );
+
+  return response.data;
+};
+
+export const getAllApproveRequests = async (from, to) => {
+  const response = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/requests/approve/all`,
     {
       params: {
         from,

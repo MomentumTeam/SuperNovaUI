@@ -5,7 +5,8 @@ import {
   getAllRequests,
   getRequestsByPerson,
   getRequestBySerialNumber,
-  getCommanderApplyRequests,
+  getMyApproveRequests,
+  getAllApproveRequests,
   searchRequestsBySubmitterDisplayName,
   createRoleRequest,
   assignRoleToEntityRequest,
@@ -70,8 +71,13 @@ export default class AppliesStore {
     // this.applies = myApplies.requests;
   }
 
-  async getCommanderApplies() {
-    const myApplies = await getCommanderApplyRequests();
+  async getMyApproveRequests() {
+    const myApplies = await getMyApproveRequests();
+    this.applies = myApplies.requests;
+  }
+
+  async getAllApproveRequests() {
+    const myApplies = await getAllApproveRequests();
     this.applies = myApplies.requests;
   }
 
