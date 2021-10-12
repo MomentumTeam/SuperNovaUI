@@ -14,9 +14,9 @@ export const getMyNotifications = async (rangeStart, rangeEnd) => {
 };
 
 export const markAsRead = async (notificationIds) => {
-  const response = await axiosApiInstance.post(
+  const response = await axiosApiInstance.put(
     `${apiBaseUrl}/api/notifications/markAsRead`,
-    { notificationIds: notificationIds }
+    { notificationIds }
   );
   return response.data;
 };
