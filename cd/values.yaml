@@ -10,6 +10,9 @@ images:
   tag: "latest"
 
 service:
+  ports:
+  - name: http
+    port: "80"
 
 config:
   configmaps:
