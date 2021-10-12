@@ -15,7 +15,7 @@ const routeGenerator = (routes) => {
             path={route.path}
             component={route.component}
             exact
-          />
+          />,
         );
         break;
       default:
@@ -23,7 +23,7 @@ const routeGenerator = (routes) => {
           <ProtectedRouteWrapper
             path={route.path}
             component={() => <route.component {...route.componentParams} />}
-          />
+          />,
         );
         break;
     }
@@ -36,13 +36,13 @@ const AppRouter = () => {
 
   if (!userStore.user) {
     userStore.setUserInfo();
-    appliesStore.getAppliesByPerosn(
-      'bbbbbbbbbbbbbbbbbbbbbbbb',
-      'SUBMITTER',
-      'ID',
-      1,
-      20
-    );
+    //appliesStore.getAppliesByPerosn(
+    //  'bbbbbbbbbbbbbbbbbbbbbbbb',
+    //  'SUBMITTER',
+    //  'ID',
+    //  1,
+    //  20
+    //);
   }
 
   return (
