@@ -17,7 +17,7 @@ const Dashboard = observer(() => {
 
   const user = toJS(userStore.user);
   const userPicture = toJS(userStore.userPicture);
-  const applies = toJS(appliesStore.myApplies);
+  const applies = toJS(appliesStore.applies);
   let userType;
 
   user?.types.forEach((type) => {

@@ -36,13 +36,13 @@ const AppRouter = () => {
 
   if (!userStore.user) {
     userStore.setUserInfo();
-    //appliesStore.getAppliesByPerosn(
-    //  'bbbbbbbbbbbbbbbbbbbbbbbb',
-    //  'SUBMITTER',
-    //  'ID',
-    //  1,
-    //  20
-    //);
+    // appliesStore.getAppliesByPerosn(
+    //   'bbbbbbbbbbbbbbbbbbbbbbbb',
+    //   'SUBMITTER',
+    //   'ID',
+    //   1,
+    //   20,
+    // );
   }
 
   return (
