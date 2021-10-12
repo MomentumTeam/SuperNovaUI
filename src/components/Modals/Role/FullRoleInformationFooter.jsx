@@ -5,13 +5,13 @@ import { toJS } from "mobx";
 import { useStores } from "../../../context/use-stores";
 import { canEditRole } from "../../../utils/roles";
 
-const FullRoleInformationFooter = ({ isEdit, role, closeModal, setIsEdit, form }) => {
+const FullRoleInformationFooter = ({ isEdit, role, closeModal, setIsEdit, form, actionPopup }) => {
   const [isChanged, setIsChanged] = useState(false);
   const { userStore, appliesStore } = useStores();
   const connectedUser = toJS(userStore.user);
 
   const roleNameIsTheSame = form.jobTitle.length <= 0 || role.jobTitle === form.jobTitle;
-  
+
   useEffect(() => {
     roleNameIsTheSame ? setIsChanged(false) : setIsChanged(true);
   }, [role, form, isEdit]);
@@ -31,11 +31,14 @@ const FullRoleInformationFooter = ({ isEdit, role, closeModal, setIsEdit, form }
         jobTitle: tempForm.jobTitle,
       };
 
-      // TODO: edit role classification
-      const res = await appliesStore.renameRoleApply({ kartoffelParams, adParams });
+      try {
+        const res = await appliesStore.renameRoleApply({ kartoffelParams, adParams });
+        actionPopup();
+        closeModal();
+      } catch (error) {
+        actionPopup(error);
+      }
     }
-
-    // TODO: DO SOMETHING AND TRY AND CATCH
   };
 
   return (

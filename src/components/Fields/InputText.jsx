@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { InputText } from "primereact/inputtext";
 
 import { getLabel, disabledInputStyle } from "./InputCommon";
@@ -7,42 +7,46 @@ const InputTextField = ({
   fieldName,
   displayName,
   item,
-  form,
-  setForm,
+  setForm = null,
   isEdit = false,
   canEdit = false,
   type = "text",
-  keyFilter,
+  keyFilter = null,
   additionalClass = "",
-  errorMsg = "error",
+  validator = null,
+  errors = {},
+  changeErrors = null,
 }) => {
   const disabled = !canEdit || !isEdit;
+  const [value, setValue] = useState("");
+
+  useEffect(() => {
+    setValue("");
+  }, [isEdit]);
 
   return (
     <div className={`p-fluid-item ${additionalClass}`}>
       <div className="p-field">
         {getLabel({ canEdit, isEdit, labelName: displayName })}
+
         <InputText
           id="2011"
-          className={errorMsg !== null ? "p-invalid" : ""}
+          className={errors[fieldName] === undefined || errors[fieldName] === null ? "" : "p-invalid"}
           type={type}
-          keyfilter={keyFilter ? keyFilter : /^[a-z\u0590-\u05fe\s]+$/i}
+          keyfilter={keyFilter}
           disabled={disabled}
           style={disabled ? disabledInputStyle : {}}
           placeholder={item[fieldName]}
           onChange={(e) => {
-            let tempForm = { ...form };
-            tempForm[fieldName] = e.target.value;
-            setForm(tempForm);
+            const errormsg = e.target.value === "" ? null : validator ? validator(e.target.value) : null;
+            errormsg ? changeErrors(fieldName, true, errormsg) : changeErrors(fieldName, false);
+            setValue(e.target.value);
+            setForm(fieldName, e.target.value);
           }}
-          value={form[fieldName]}
+          value={value}
         />
 
-        {errorMsg !== null && (
-          <small className="p-error p-d-block">
-            {errorMsg}
-          </small>
-        )}
+        {errors[fieldName] !== null && <small className="p-error p-d-block">{errors[fieldName]}</small>}
       </div>
     </div>
   );

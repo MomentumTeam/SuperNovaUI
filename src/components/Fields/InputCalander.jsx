@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { Calendar } from "primereact/calendar";
 
 import { getLabel, disabledInputStyle } from "./InputCommon";
 
-const InputCalanderField = ({ fieldName, displayName, canEdit, isEdit, item, form, setForm, additionalClass = "" }) => {
+const InputCalanderField = ({
+  fieldName,
+  displayName,
+  canEdit,
+  isEdit,
+  item,
+  setForm = null,
+  additionalClass = "",
+}) => {
   const disabled = !canEdit || !isEdit;
+  const [value, setValue] = useState("");
 
   return (
     <div className={`p-fluid-item ${additionalClass}`}>
@@ -16,11 +25,10 @@ const InputCalanderField = ({ fieldName, displayName, canEdit, isEdit, item, for
           style={(disabled ? disabledInputStyle : {}, { border: "none" })}
           placeholder={new Date(item[fieldName]).toDateString()}
           onChange={(e) => {
-            let tempForm = { ...form };
-            tempForm[fieldName] = e.target.value;
-            setForm(tempForm);
+            setValue(e.target.value);
+            setForm(fieldName, e.target.value);
           }}
-          value={form[fieldName]}
+          value={value}
         />
       </div>
     </div>

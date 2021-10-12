@@ -15,7 +15,7 @@ import { InputTextField } from "../../Fields/InputText";
 import { InputCalanderField } from "../../Fields/InputCalander";
 import { getEntityByRoleId, getRole } from "../../../service/KartoffelService";
 
-const FullRoleInformation = ({ role, isOpen, closeModal, edit }) => {
+const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) => {
   const [isEdit, setIsEdit] = useState(edit);
   const [form, setForm] = useState(role);
   const [entity, setEntity] = useState({});
@@ -46,6 +46,7 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit }) => {
             closeModal={closeModal}
             setIsEdit={setIsEdit}
             form={form}
+            actionPopup={actionPopup}
           />
         }
       >

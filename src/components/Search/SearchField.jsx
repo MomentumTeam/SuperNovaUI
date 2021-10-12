@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { AutoComplete } from "primereact/autocomplete";
 import { EVENT_KEY_UP_CODE_ENTER } from "../../constants/general";
 import { useStores } from "../../context/use-stores";
+import { TableDataContext } from "../../pages/Entities/index";
 
-const SearchField = ({ searchFunc, searchField, searchDisplayName, setTable, isSetTable }) => {
+const SearchField = ({ searchFunc, searchField, searchDisplayName, isSetTable }) => {
+  const { tableDispatch } = useContext(TableDataContext);
+
   const [results, setResults] = useState([]);
   const [selected, setSelected] = useState([]);
   const { tablesStore } = useStores();
@@ -18,7 +21,7 @@ const SearchField = ({ searchFunc, searchField, searchDisplayName, setTable, isS
 
   useEffect(() => {
     if (isSetTable && results.length > 0) {
-      setTable(results);
+      tableDispatch({ type: "searchResult", results });
     }
   }, [isSetTable]);
 
@@ -31,20 +34,21 @@ const SearchField = ({ searchFunc, searchField, searchDisplayName, setTable, isS
             suggestions={results}
             completeMethod={async (e) => {
               const searchResults = await searchFunc(e);
-              tablesStore.setSearch(true);
               setResults(searchResults);
             }}
             field={searchField}
-            onChange={(e) => {
+            onChange={async (e) => {
               setSelected(e.value);
 
               if (e.originalEvent.type === "click") {
-                setTable([e.value]);
+                await tableDispatch({ type: "searchResult", results: [e.value] });
+                tablesStore.setSearch(true);
               }
             }}
-            onKeyUp={(e) => {
+            onKeyUp={async (e) => {
               if (e.code === EVENT_KEY_UP_CODE_ENTER) {
-                setTable(results);
+                await tableDispatch({ type: "searchResult", results });
+                tablesStore.setSearch(true);
               }
             }}
           />

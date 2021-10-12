@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { toJS } from "mobx";
 import { useStores } from "../../context/use-stores";
 
@@ -7,12 +6,16 @@ import { USER_TYPE } from "../../constants";
 import { canEditEntity } from "../../utils/entites";
 import { canEditRole } from "../../utils/roles";
 import { canEditHierarchy } from "../../utils/hierarchy";
+import { useContext } from "react";
+import { TableContext } from ".";
 
-const TableActions = ({ selectedItem, tableType, setActionType, openActionModal }) => {
+// TODO: change to reducer
+const TableActions = ({ setActionType, openActionModal }) => {
+  const { selectedItem, tableType } = useContext(TableContext);
   const { userStore } = useStores();
-  const user = toJS(userStore.user);
 
   let actions = [];
+  const user = toJS(userStore.user);
   const tableActions = TableActionsTypes[tableType];
 
   const viewAction = {
@@ -46,9 +49,9 @@ const TableActions = ({ selectedItem, tableType, setActionType, openActionModal 
     // Add edit action
     if (tableActions.edit) {
       if (
-        (tableType === TableNames.entities && canEditEntity(selectedItem, user)) ||
-        (tableType === TableNames.roles && canEditRole(selectedItem, user)) ||
-        (tableType === TableNames.hierarchy && canEditHierarchy(user))
+        (tableType === TableNames.entities.tab && canEditEntity(selectedItem, user)) ||
+        (tableType === TableNames.roles.tab && canEditRole(selectedItem, user)) ||
+        (tableType === TableNames.hierarchy.tab && canEditHierarchy(user))
       ) {
         actions.push(editAction);
       }

@@ -27,9 +27,9 @@ export const TableTypes = {
 };
 
 export const TableNames = {
-  entities: "entities",
-  hierarchy: "hierarchy",
-  roles: "roles",
+  entities: { tab: "entities", tableName: "רשימת משתמשים" },
+  hierarchy: { tab: "hierarchy", tableName: "רשימת היררכיה" },
+  roles: { tab: "roles", tableName: "רשימת תפקידים" },
 };
 
 export const tableActionsEnum = {
@@ -51,7 +51,7 @@ export const TableActionsTypes = {
   hierarchy: {
     view: tableActionsEnum.VIEW_HIERARCHY,
     edit: tableActionsEnum.EDIT_HIERARCHY,
-    // delete: tableActionsEnum.DELETE_HIERARCHY,
+    delete: tableActionsEnum.DELETE_HIERARCHY,
   },
   roles: {
     view: tableActionsEnum.VIEW_ROLE,

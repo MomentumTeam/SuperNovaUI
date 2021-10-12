@@ -1,5 +1,4 @@
-import * as Yup from "yup";
-import React, { useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { Dialog } from "primereact/dialog";
 import { classNames } from "primereact/utils";
 
@@ -10,15 +9,39 @@ import { CanSeeUserClearance } from "../../../utils/entites";
 import { InputTextField } from "../../Fields/InputText";
 import { InputCalanderField } from "../../Fields/InputCalander";
 import { InputDropdown } from "../../Fields/InputDropdown";
-import { PHONE_REG_EXP, USER_CLEARANCE, USER_NO_PICTURE } from "../../../constants";
+import { USER_CLEARANCE, USER_NO_PICTURE } from "../../../constants";
+import { validateName, validatePhoneNumber } from "../../../utils/validators";
 
 import "../../../assets/css/local/general/buttons.css";
 import "../../../assets/css/local/components/modal-item.css";
 
-const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit }) => {
+export const FullEntityInformationModalContext = createContext(null);
+
+const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit, actionPopup }) => {
   const [isEdit, setIsEdit] = useState(edit);
   const [userData, setUserData] = useState(user);
-  const [form, setForm] = useState(user);
+  const [form, setForm] = useState({});
+  const [errors, setErrors] = useState({});
+
+  const changeErrors = (fieldName, isError, error = null) => {
+    let tempErrors = { ...errors };
+    if (isError) {
+      tempErrors[fieldName] = error;
+    } else {
+      delete tempErrors[fieldName];
+    }
+    setErrors(tempErrors);
+  };
+
+  const changeForm = (fieldName, value) => {
+    let tempForm = { ...form };
+    if (value !== "") {
+      tempForm[fieldName] = value;
+    } else {
+      delete tempForm[fieldName];
+    }
+    setForm(tempForm);
+  };
 
   useEffect(() => {
     async function getUserPic() {
@@ -35,179 +58,152 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit 
   }, [user]);
 
   useEffect(() => {
-    setForm(user);
+    setForm({});
+    setErrors({});
   }, [isEdit]);
 
   return (
-    <Dialog
-      className={classNames("dialogClass7")}
-      header={isEdit ? "עריכת משתמש/ת" : "פרטי משתמש/ת"}
-      visible={isOpen}
-      style={{ borderRadius: "30px" }}
-      onHide={closeFullDetailsModal}
-      footer={
-        <FullEntityInformationFooter
-          isEdit={isEdit}
-          user={user}
-          closeFullDetailsModal={closeFullDetailsModal}
-          setIsEdit={setIsEdit}
-          form={form}
-        />
-      }
+    <FullEntityInformationModalContext.Provider
+      value={{ form, isEdit, setIsEdit, actionPopup, user, closeFullDetailsModal, errors, changeErrors }}
     >
-      <div>
-        <div className="userpic-wrap">
-          <img
-            style={{ borderRadius: "50%", width: "142px" }}
-            src={
-              userData && userData.picture !== USER_NO_PICTURE
-                ? `data:image/jpeg;base64,${userData.picture}`
-                : blankProfilePic
-            }
-            alt="userpic"
-          />
-        </div>
-        <div className="p-fluid">
-          {InputTextField({
-            fieldName: "firstName",
-            displayName: "שם פרטי",
-            canEdit: true,
-            isEdit: isEdit,
-            item: userData,
-            form: form,
-            setForm: setForm,
-          })}
-          {InputTextField({
-            fieldName: "lastName",
-            displayName: "שם משפחה",
-            canEdit: true,
-            isEdit: isEdit,
-            item: userData,
-            form: form,
-            setForm: setForm,
-          })}
-          {userData.personalNumber &&
-            InputTextField({
-              fieldName: "personalNumber",
-              displayName: 'מ"א',
-              canEdit: false,
-              isEdit: isEdit,
+      <Dialog
+        className={classNames("dialogClass7")}
+        header={isEdit ? "עריכת משתמש/ת" : "פרטי משתמש/ת"}
+        visible={isOpen}
+        style={{ borderRadius: "30px" }}
+        onHide={closeFullDetailsModal}
+        footer={<FullEntityInformationFooter />}
+      >
+        <div>
+          <div className="userpic-wrap">
+            <img
+              style={{ borderRadius: "50%", width: "142px" }}
+              src={
+                userData && userData.picture !== USER_NO_PICTURE
+                  ? `data:image/jpeg;base64,${userData.picture}`
+                  : blankProfilePic
+              }
+              alt="userpic"
+            />
+          </div>
+          <div className="p-fluid">
+            {InputTextField({
+              fieldName: "firstName",
+              displayName: "שם פרטי",
               item: userData,
-              form: form,
-              setForm: setForm,
-              type: "num",
-              keyFilter: "num",
+              canEdit: true,
+              isEdit: isEdit,
+              setForm: changeForm,
+              validator: validateName,
+              errors: errors,
+              changeErrors: changeErrors,
             })}
-          {userData.identityCard &&
-            InputTextField({
+            {InputTextField({
+              fieldName: "lastName",
+              displayName: "שם משפחה",
+              item: userData,
+              canEdit: true,
+              isEdit: isEdit,
+              errors: errors,
+              setForm: changeForm,
+              validator: validateName,
+              changeErrors: changeErrors,
+            })}
+            {userData.personalNumber &&
+              InputTextField({
+                fieldName: "personalNumber",
+                displayName: 'מ"א',
+                item: userData,
+              })}
+
+            {InputTextField({
               fieldName: "identityCard",
               displayName: 'ת"ז',
-              canEdit: true,
-              isEdit: isEdit,
-              item: userData,
-              form: form,
-              setForm: setForm,
               type: "num",
               keyFilter: "num",
-            })}
-          {userData.rank &&
-            InputTextField({
-              fieldName: "rank",
-              displayName: "דרגה",
-              canEdit: false,
-              isEdit: isEdit,
               item: userData,
-              form: form,
-              setForm: setForm,
-            })}
-          {userData.hierarchy &&
-            InputTextField({
-              fieldName: "hierarchy",
-              displayName: "היררכיה",
-              canEdit: false,
-              isEdit: isEdit,
-              item: userData,
-              form: form,
-              setForm: setForm,
-            })}
-          {userData.mail &&
-            InputTextField({
-              fieldName: "mail",
-              displayName: "מייל",
-              canEdit: false,
-              isEdit: isEdit,
-              item: userData,
-              form: form,
-              setForm: setForm,
-            })}
-          {userData.jobTitle &&
-            InputTextField({
-              fieldName: "jobTitle",
-              displayName: "תפקיד",
-              canEdit: false,
-              isEdit: isEdit,
-              item: userData,
-              form: form,
-              setForm: setForm,
-            })}
-          {userData.address &&
-            InputTextField({
-              fieldName: "address",
-              displayName: "כתובת",
-              canEdit: false,
-              isEdit: isEdit,
-              item: userData,
-              form: form,
-              setForm: setForm,
-            })}
-          {userData?.phone &&
-            InputTextField({
-              fieldName: "phone",
-              displayName: "טלפון",
-              canEdit: true,
-              type: "num",
-              keyFilter: PHONE_REG_EXP,
-              isEdit: isEdit,
-              item: userData,
-              form: form,
-              setForm: setForm,
-            })}
-
-          {userData.birthDate &&
-            InputCalanderField({
-              fieldName: "birthDate",
-              displayName: "תאריך לידה",
-              canEdit: false,
-              isEdit: isEdit,
-              item: userData,
-              form: form,
-              setForm: setForm,
-            })}
-          {userData.dischargeDay &&
-            InputCalanderField({
-              fieldName: "dischargeDay",
-              displayName: 'תק"ש',
-              canEdit: false,
-              isEdit: isEdit,
-              item: userData,
-              form: form,
-              setForm: setForm,
-            })}
-
-          {CanSeeUserClearance() &&
-            InputDropdown({
-              fieldName: "clearance",
-              displayName: "סיווג",
               canEdit: true,
               isEdit: isEdit,
-              item: userData,
-              form: form,
-              setForm: setForm,
-              options: USER_CLEARANCE,
+              errors: errors,
+              setForm: changeForm,
+              changeErrors: changeErrors,
             })}
+
+            {userData.rank &&
+              InputTextField({
+                fieldName: "rank",
+                displayName: "דרגה",
+                item: userData,
+              })}
+
+            {userData.hierarchy &&
+              InputTextField({
+                fieldName: "hierarchy",
+                displayName: "היררכיה",
+                item: userData,
+              })}
+
+            {userData.mail &&
+              InputTextField({
+                fieldName: "mail",
+                displayName: "מייל",
+                item: userData,
+              })}
+
+            {userData.jobTitle &&
+              InputTextField({
+                fieldName: "jobTitle",
+                displayName: "תפקיד",
+                item: userData,
+              })}
+            {userData.address &&
+              InputTextField({
+                fieldName: "address",
+                displayName: "כתובת",
+                item: userData,
+              })}
+
+            {userData?.phone &&
+              InputTextField({
+                fieldName: "phone",
+                displayName: "טלפון",
+                type: "num",
+                item: userData,
+                canEdit: true,
+                isEdit: isEdit,
+                errors: errors,
+                setForm: changeForm,
+                validator: validatePhoneNumber,
+                changeErrors: changeErrors,
+              })}
+
+            {userData.birthDate &&
+              InputCalanderField({
+                fieldName: "birthDate",
+                displayName: "תאריך לידה",
+                item: userData,
+              })}
+            {userData.dischargeDay &&
+              InputCalanderField({
+                fieldName: "dischargeDay",
+                displayName: 'תק"ש',
+                item: userData,
+              })}
+
+            {CanSeeUserClearance() &&
+              InputDropdown({
+                fieldName: "clearance",
+                displayName: "סיווג",
+                canEdit: true,
+                isEdit: isEdit,
+                item: userData,
+                options: USER_CLEARANCE,
+                setForm: changeForm,
+              })}
+          </div>
         </div>
-      </div>
-    </Dialog>
+      </Dialog>
+    </FullEntityInformationModalContext.Provider>
   );
 };
 

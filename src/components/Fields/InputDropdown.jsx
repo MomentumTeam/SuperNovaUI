@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Dropdown } from "primereact/dropdown";
 
 import { getLabel, disabledInputStyle } from "./InputCommon";
 
-const InputDropdown = ({ fieldName, displayName, canEdit, isEdit, item, form, setForm, options, additionalClass="" }) => {
+const InputDropdown = ({ fieldName, displayName, canEdit, isEdit, item, setForm, options, additionalClass = "" }) => {
   const disabled = !canEdit || !isEdit;
+  const [value, setValue] = useState("");
 
   return (
     <div className={`p-fluid-item ${additionalClass}`}>
@@ -17,11 +18,10 @@ const InputDropdown = ({ fieldName, displayName, canEdit, isEdit, item, form, se
           style={disabled ? disabledInputStyle : {}}
           placeholder={item[fieldName]}
           onChange={(e) => {
-            let tempForm = { ...form };
-            tempForm[fieldName] = e.target.value;
-            setForm(tempForm);
+            setValue(e.target.value);
+            setForm(fieldName, e.target.value);
           }}
-          value={form[fieldName]}
+          value={value}
         />
       </div>
     </div>

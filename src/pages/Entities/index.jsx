@@ -1,110 +1,43 @@
-import { useEffect, useState } from "react";
-import { observer } from "mobx-react";
+import React, { createContext, useReducer, useState } from "react";
 
-import "../../assets/css/local/pages/listUsersPage.min.css";
+import Entities from "./Entity";
+import { firstPage } from "../../constants/api";
+import { TableNames } from "../../constants/table";
 
-import Table from "../../components/Table";
-import Header from "./Header";
-import SearchEntity from "./SearchEntity";
-import AddEntity from "./AddEntity";
-import Footer from "./Footer";
-import { firstPage, itemsInPage, pageSize } from "../../constants/api";
-import { useStores } from "../../context/use-stores";
+export const TableDataContext = createContext(null);
 
-const Entities = observer(() => {
-  const { tablesStore, userStore } = useStores();
+export const TableDataRecuder = (state, action) => {
+  switch (action.type) {
+    case "searchResult":
+      return { isLoading: false, tableData: action.results, page: firstPage };
+    case "restore":
+      return { isLoading: false, tableData: [], page: firstPage };
+    case "loading":
+      return { ...state, isLoading: true };
+    case "failedLoading":
+      return { ...state, isLoading: false };
+    case TableNames.entities.tab:
+    case TableNames.roles.tab:
+    case TableNames.hierarchy.tab:
+      return { isLoading: false, tableData: action.results, page: state.page++ };
+    default:
+      break;
+  }
+};
 
-  const [tabId, setTabId] = useState("entities");
-  const [tableData, setTableData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [page, setPage] = useState(0);
-  const [first, setFirst] = useState(0);
-
-  const setData = async (event) => {
-    let append;
-    let getNewData = true;
-    let getPage = event.restore ? firstPage : page;
-    console.log(event);
-    console.log("tablesStore.isSearch", tablesStore);
-
-    if (tabId && userStore.user) {
-      const userOGId = userStore.user.directGroup;
-
-      if (event.first !== undefined) {
-        append = true;
-        if (first >= event.first || tableData.length / (event.page + 1) > itemsInPage) getNewData = false;
-        setFirst(event.first);
-      }
-
-      if (getNewData && !tablesStore.isSearch) {
-        setIsLoading(true);
-
-        try {
-          switch (tabId) {
-            case "entities":
-              await tablesStore.loadEntitiesUnderOG(userOGId, getPage, pageSize, append);
-              setTableData(tablesStore.entities);
-              break;
-            case "roles":
-              await tablesStore.loadRolesUnderOG(userOGId, getPage, pageSize, append);
-              setTableData(tablesStore.roles);
-              break;
-            case "hierarchy":
-              await tablesStore.loadOGChildren(userOGId, getPage, pageSize, append);
-              setTableData(tablesStore.groups);
-              break;
-            default:
-              break;
-          }
-          console.log("tablesStore.isSearch", tablesStore.isSearch);
-
-          setPage(getPage + 1);
-        } catch (error) {
-          // TODO: popup error
-          console.log(error);
-        }
-
-        setIsLoading(false);
-      }
-    }
-  };
-
-  useEffect(() => {
-    userStore.fetchUserNotifications(userStore.user?.id);
-  }, [userStore]);
-
-  useEffect(() => {
-    const firstData = async () => {
-      // Get table's data
-      setFirst(0);
-      tablesStore.setSearch(false);
-
-      await setData({ restore: true });
-    };
-    console.log("tablesStore.isSearch", tablesStore);
-
-    firstData();
-  }, [tabId, userStore, tablesStore]);
+const TableEntity = () => {
+  const [tabId, setTabId] = useState(TableNames.entities.tab);
+  const [tableState, tableDispatch] = useReducer(TableDataRecuder, {
+    tableData: [],
+    isLoading: false,
+    page: 0,
+  });
 
   return (
-    <>
-      <div className="main-inner-item main-inner-item2 main-inner-item2-table">
-        <div className="main-inner-item2-content">
-          <Header setTab={setTabId} selectedTab={tabId} />
-          <div className="content-unit-wrap">
-            <div className="content-unit-inner">
-              <div className="display-flex search-row-wrap-flex">
-                <SearchEntity setTableData={setTableData} tableType={tabId} />
-                <AddEntity />
-              </div>
-              <Table data={tableData} tableType={tabId} isLoading={isLoading} onScroll={setData} first={first} />
-              <Footer />
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+    <TableDataContext.Provider value={{ tableState, tableDispatch, tabId, setTabId }}>
+      <Entities />
+    </TableDataContext.Provider>
   );
-});
+};
 
-export default Entities;
+export default TableEntity;

@@ -1,7 +1,7 @@
 import SearchBox from "../../components/Search/SearchBox";
-import { TableSearch } from '../../constants/table';
+import { TableSearch } from "../../constants/table";
 
-const SearchEntity = ({ setTableData, tableType }) => {
+const SearchEntity = ({ tableType }) => {
   const searchFields = TableSearch(tableType);
   return (
     <div className="search-row">
@@ -9,7 +9,7 @@ const SearchEntity = ({ setTableData, tableType }) => {
         <button className="btn btn-change-view-chart" title="Change View to Chart" type="button">
           <span className="for-screnReader">Change View to Chart</span>
         </button>
-        <SearchBox setTableData={setTableData} searchFields={searchFields}/>
+        <SearchBox searchFields={searchFields} />
 
         {/* <button className="btn-underline" type="button" title="חיפוש מורחב">
           חיפוש מורחב

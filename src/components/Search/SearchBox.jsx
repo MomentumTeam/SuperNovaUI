@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SearchField } from "./SearchField";
 
-const SearchBox = ({ setTableData, searchFields }) => {
+const SearchBox = ({ searchFields }) => {
   const [isSetTable, setIsSetTable] = useState(false);
 
   return (
@@ -13,7 +13,6 @@ const SearchBox = ({ setTableData, searchFields }) => {
               searchFunc={async (e) => await searchField.searchFunc(e)}
               searchField={searchField.searchField}
               searchDisplayName={searchField.searchDisplayName}
-              setTable={setTableData}
               isSetTable={isSetTable}
               setIsSetTable={setIsSetTable}
             />

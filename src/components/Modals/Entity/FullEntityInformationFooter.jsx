@@ -1,23 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button } from "primereact/button";
 import { toJS } from "mobx";
 
+import datesUtil from "../../../utils/dates";
 import { useStores } from "../../../context/use-stores";
 import { canEditEntity, getSamAccountName } from "../../../utils/entites";
-import datesUtil from "../../../utils/dates";
+import { FullEntityInformationModalContext } from "./FullEntityInformationModal";
 
-const FullEntityInformationFooter = ({ isEdit, user, closeFullDetailsModal, setIsEdit, form }) => {
+const FullEntityInformationFooter = () => {
+  const { isEdit, user, closeFullDetailsModal, setIsEdit, form, actionPopup, errors } = useContext(
+    FullEntityInformationModalContext
+  );
   const { userStore, appliesStore } = useStores();
-  const [isChanged, setIsChanged] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
   const connectedUser = toJS(userStore.user);
 
   useEffect(() => {
-    JSON.stringify(form) === JSON.stringify(user) ? setIsChanged(false) : setIsChanged(true);
+    Object.keys(errors).length === 0 && Object.keys(form).length > 0 ? setDisabled(false) : setDisabled(true);
   }, [form, user, isEdit]);
 
   const saveForm = async () => {
-    let tempForm = { ...form };
+    let tempForm = { ...user, ...form };
     tempForm.fullName = `${tempForm.firstName} ${tempForm.lastName}`;
 
     const kartoffelParams = {
@@ -35,15 +39,21 @@ const FullEntityInformationFooter = ({ isEdit, user, closeFullDetailsModal, setI
 
     const samAccountName = getSamAccountName(tempForm);
 
-    const res = await appliesStore.editEntityApply({
-      kartoffelParams,
-      adParams: {
-        samAccountName: samAccountName,
-        firstName: tempForm.firstName,
-        lastName: tempForm.lastName,
-        fullName: tempForm.fullName,
-      },
-    });
+    try {
+      const res = await appliesStore.editEntityApply({
+        kartoffelParams,
+        adParams: {
+          samAccountName: samAccountName,
+          firstName: tempForm.firstName,
+          lastName: tempForm.lastName,
+          fullName: tempForm.fullName,
+        },
+      });
+      actionPopup();
+      closeFullDetailsModal();
+    } catch (error) {
+      actionPopup(error);
+    }
 
     // TODO: DO SOMETHING AND TRY AND CATCH
   };
@@ -59,7 +69,7 @@ const FullEntityInformationFooter = ({ isEdit, user, closeFullDetailsModal, setI
           />
           <Button
             label={isEdit ? "שליחת בקשה" : "סגור"}
-            disabled={isEdit ? (isChanged ? false : true) : false}
+            disabled={isEdit ? disabled : false}
             className="btn-orange-gradient"
             onClick={() => {
               if (isEdit) saveForm();
