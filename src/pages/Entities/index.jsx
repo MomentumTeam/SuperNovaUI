@@ -3,59 +3,59 @@ import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 import '../../assets/css/local/pages/listUsersPage.min.css';
 import Table from '../../components/Table';
-import { useStores } from '../../hooks/use-stores';
-import Header   from './Header';
+import { useStores } from '../../context/use-stores';
+import Header from './Header';
 import SearchEntity from './SearchEntity';
 import AddEntity from './AddEntity';
 import Footer from './Footer';
 
 const Entities = observer(() => {
-    const { entityStore, userStore } = useStores();
+    const { tablesStore, userStore } = useStores();
     const [ tabId, setTabId ] = useState('entities');
 
     useEffect(() => {
-        userStore.fetchUserNotifications(userStore.user?.id);
-    }, [userStore])
+        userStore.fetchUserNotifications();
+    }, [userStore]);
 
     useEffect(() => {
-        if(tabId && userStore.user) {
+        if (tabId && userStore.user) {
             const userOGId = userStore.user.directGroup;
             
             switch(tabId) {
                 case('entities'):
-                    entityStore.loadEntitiesUnderOG(userOGId);
+                tablesStore.loadEntitiesUnderOG(userOGId);
                     break;
                 case('roles'):
-                    entityStore.loadRolesUnderOG(userOGId);
+                tablesStore.loadRolesUnderOG(userOGId);
                     break;
                 case('hierarchy'):
-                    entityStore.loadChildrenOfOG(userOGId);
+                tablesStore.loadOGChildren(userOGId);
                     break;
                 default:
                     break;
             }
         }
-    }, [tabId, userStore, entityStore])
+    }, [tabId, userStore, tablesStore])
 
     return (
         <>
-            <div className="main-inner-item main-inner-item2 main-inner-item2-table">
-                <div className="main-inner-item2-content">
+            <div className='main-inner-item main-inner-item2 main-inner-item2-table'>
+                <div className='main-inner-item2-content'>
                     <Header setTab={setTabId} selectedTab={tabId} />
                     <div className="content-unit-wrap">
                         <div className="content-unit-inner">
                             <div className="display-flex search-row-wrap-flex">
-                                <SearchEntity data={toJS(entityStore.entities)} />
+                                <SearchEntity data={toJS(tablesStore.entities)} />
                                 <AddEntity />
                             </div>
-                            <Table data={toJS(entityStore.entities)} tableType={tabId} />
+                            <Table data={toJS(tablesStore.entities)} tableType={tabId} />
                             <Footer />
                         </div>
                     </div>
                 </div>
             </div>
-    </>
-  );
+        </>
+    );
 });
 
 export default Entities;

@@ -1,79 +1,70 @@
-import React, { useState,useImperativeHandle,forwardRef } from 'react';
-import { useForm } from "react-hook-form";
-import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { InputTextarea } from 'primereact/inputtextarea';
+import React, {
+  useState,
+  useImperativeHandle,
+  forwardRef,
+  useMemo,
+  createRef,
+} from "react";
+import { Accordion, AccordionTab } from "primereact/accordion";
+import { useStores } from "../../context/use-stores";
+import { toJS } from "mobx";
+import RenameBulkOGForm from "./RenameBulkOGForm";
+import RenameSingleOGForm from "./RenameSingleOGForm";
+import { USER_TYPE } from "../../constants";
+import "../../assets/css/local/components/rename-og-form.css";
 
-const states = [
-  { name: 'מספר1', code: 'מספר1' },
-  { name: 'מספר2', value: 'מספר2' },
-  { name: 'מספר3', code: 'מספר3' },
-  { name: 'מספר4', code: 'מספר4' },
-  { name: 'מספר5', code: 'מספר5' },
-];
+const RenameOGForm = forwardRef(({ setIsActionDone }, ref) => {
+  const { userStore } = useStores();
+  const [activeIndex, setActiveIndex] = useState(0);
+  const formRefs = useMemo(() => ({ 0: createRef(), 1: createRef() }), []);
+  const isBulkPermitted = toJS(userStore.user)?.type?.includes(USER_TYPE.BULK);
 
-const EditOGForm = forwardRef((props, ref) => {
-  const { register, handleSubmit } = useForm();
+  useImperativeHandle(
+    ref,
+    () => ({
+      handleSubmit: formRefs[activeIndex].current.handleSubmit,
+    }),
+    [activeIndex, formRefs]
+  );
 
-  const onSubmit = (data) => {
-    console.log(data)
-  }
+  // TODO: remove !
+  return !isBulkPermitted ? (
+    <Accordion
+      expandIcon="pi pi-chevron-left"
+      style={{ marginBottom: "20px" }}
+      activeIndex={activeIndex}
+      onTabChange={({ index }) => {
+        setActiveIndex((currentIndex) => {
+          if (index !== null) {
+            return index;
+          } else {
+            return currentIndex === 0 ? 1 : 0;
+          }
+        });
+      }}
+    >
+      <AccordionTab header="שינוי היררכיה לתפקיד">
+        <RenameSingleOGForm
+          ref={formRefs[0]}
+          showJob={false}
+          setIsActionDone={setIsActionDone}
+        />
+      </AccordionTab>
+      <AccordionTab header="הגשת בקשה מרובה">
+        <RenameBulkOGForm
+          ref={formRefs[1]}
+          showJob={false}
+          setIsActionDone={setIsActionDone}
+        />
+      </AccordionTab>
+    </Accordion>
+  ) : (
+    <RenameSingleOGForm
+      ref={formRefs[0]}
+      showJob={false}
+      setIsActionDone={setIsActionDone}
+    />
+  );
+});
 
-  useImperativeHandle(ref, () => ({
-    handleSubmit:handleSubmit(onSubmit)
-  }), []);
-
-
-    return (
-        <div className="p-fluid">
-        <div className="p-fluid-item p-fluid-item-flex1">
-            <div className="p-field">
-                <label htmlFor="2020"> <span className="required-field">*</span>שם תפקיד</label>
-                <InputText {...register("rolName")} id="2020" type="text" required placeholder="שם תפקיד" />
-            </div>
-        </div>
-        <div className="p-fluid-item-flex p-fluid-item">
-            <div className="p-field">
-                <label htmlFor="2021"><span className="required-field">*</span>היררכיה</label>
-                <InputText  {...register("hierarchy")} id="2021" type="text" required placeholder="Select" placeholder="היררכיה" />
-            </div>
-            <Button className="pi pi-plus" type="button" label="Submit" />
-        </div>
-        <div className="p-fluid-item-flex p-fluid-item">
-            <div className="p-field">
-                <label htmlFor="2022"><span className="required-field">*</span>גורם מאשר</label>
-                <Dropdown {...register("approve")} inputId="2022" required  options={states}  placeholder="גורם מאשר" optionLabel="name" />
-            </div>
-            <Button className="pi pi-plus" type="button" label="Submit" />
-        </div>
-        <div className="p-fluid-item">
-            <button className="btn-underline" type="button" title="עבורי">עבורי</button>
-            <div className="p-field">
-                <label htmlFor="2023"><span className="required-field">*</span>משתמש בתפקיד</label>
-                <InputText {...register("rolId")} id="2023" type="text" required placeholder="משתמש בתפקיד" />
-            </div>
-        </div>
-        <div className="p-fluid-item">
-            <div className="p-field">
-                <label htmlFor="2024"><span className="required-field">*</span>מ"א</label>
-                <InputText id="2024" type="text" required placeholder="מ''א" />
-            </div>
-        </div>
-        <div className="p-fluid-item">
-            <div className="p-field">
-                <label htmlFor="2025"><span className="required-field">*</span>פרטי תפקיד / תיאור</label>
-                <InputTextarea {...register("roldetails")} id="2025" type="text" required placeholder="פרטי תפקיד / תיאור" rows="4" />
-            </div>
-        </div>
-        <div className="p-fluid-item">
-            <div className="p-field">
-                <label htmlFor="2026">הערות</label>
-                <InputTextarea {...register("comments")} id="2026" type="text" placeholder="הערות" rows="4" />
-            </div>
-        </div>
-    </div>
-    );
-})
-
-export default EditOGForm;
+export default RenameOGForm;

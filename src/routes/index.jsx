@@ -1,49 +1,54 @@
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
-
-import MainLayout from '../layouts/Main';
-import Dashboard from '../pages/Dashboard';
-import ListUsersPage from '../pages/Entities';
+import appRoutes from '../constants/routes';
 import NotFound from '../pages/NotFound';
-import ProtectedRoute from './ProtectedRoute';
-import { useQuery } from '../hooks/use-query';
-import { useStores } from '../hooks/use-stores';
+import ProtectedRouteWrapper from './ProtectedRouteWrapper';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { useStores } from '../context/use-stores';
 
-const RouteMainLayoutWrapper = ({ component: Component, ...rest }) => {
-  return (
-    <ProtectedRoute>
-      <Route
-        {...rest}
-        render={(props) => (
-          <MainLayout {...props}>
-            <Component {...props} />
-          </MainLayout>
-        )}
-      />
-    </ProtectedRoute>
-  );
+let routePaths = [];
+
+const routeGenerator = (routes) => {
+  routes.map((route) => {
+    switch (route.path) {
+      case '/':
+        routePaths.push(
+          <ProtectedRouteWrapper
+            path={route.path}
+            component={route.component}
+            exact
+          />
+        );
+        break;
+      default:
+        routePaths.push(
+          <ProtectedRouteWrapper
+            path={route.path}
+            component={() => <route.component {...route.componentParams} />}
+          />
+        );
+        break;
+    }
+  });
 };
+routeGenerator(appRoutes);
 
 const AppRouter = () => {
-  const { token, id } = useQuery();
-  const { userStore } = useStores();
-  if (!userStore.user && token) {
-    localStorage.setItem('token', token);
-    localStorage.setItem('id', id);
-    userStore.fetchUserInfo(id);
-  } else if (localStorage.getItem('id')) {
-    const id = localStorage.getItem('id');
-    userStore.fetchUserInfo(id);
+  const { userStore, appliesStore } = useStores();
+
+  if (!userStore.user) {
+    userStore.setUserInfo();
+    appliesStore.getAppliesByPerosn(
+      'bbbbbbbbbbbbbbbbbbbbbbbb',
+      'SUBMITTER',
+      'ID',
+      1,
+      20
+    );
   }
 
   return (
     <BrowserRouter>
       <Switch>
-        <RouteMainLayoutWrapper path='/' component={Dashboard} exact />
-        <RouteMainLayoutWrapper
-          path='/listUsersPage'
-          component={ListUsersPage}
-          exact
-        />
+        {routePaths}
         <Route component={NotFound} />
       </Switch>
     </BrowserRouter>

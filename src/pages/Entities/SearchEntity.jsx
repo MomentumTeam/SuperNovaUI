@@ -1,8 +1,8 @@
-import SearchBox from "../../components/SearchBox";
-import { useStores } from "../../hooks/use-stores";
+import SearchBox from '../../components/SearchBox';
+import { useStores } from '../../context/use-stores';
 
 const SearchEntity = ({ data }) => {
-  const { entityStore } = useStores();
+  const { tablesStore } = useStores();
 
   return (
     <div className="search-row">
@@ -17,10 +17,10 @@ const SearchEntity = ({ data }) => {
         <SearchBox
           data={data}
           loadDataByEntity={async (entity) => {
-            await entityStore.loadEntitiesByEntity(entity);
+            await tablesStore.loadEntitiesByEntity(entity);
           }}
           loadDataByOG={async (entity) => {
-            await entityStore.loadEntitiesByOG(entity);
+            await tablesStore.loadEntitiesByOG(entity);
           }}
         />
         <button className="btn-underline" type="button" title="חיפוש מורחב">
