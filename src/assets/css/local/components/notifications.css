@@ -1,0 +1,9 @@
+.p-scrollpanel-bar {
+  right: 0px !important;
+  background: grey !important;
+}
+
+.notification-header .p-dialog-title::before {
+  background-image: url(../../../images/buttons/notification.png) !important;
+  background-size: 25px !important;
+}
