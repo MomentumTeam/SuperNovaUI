@@ -1,12 +1,12 @@
-import React, { useImperativeHandle, forwardRef } from "react";
-import { useForm } from "react-hook-form";
-import { InputText } from "primereact/inputtext";
-import { InputTextarea } from "primereact/inputtextarea";
-import { useStores } from "../../context/use-stores";
-import Hierarchy from "./Hierarchy";
-import Approver from "./Approver";
-import * as Yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+import React, { useImperativeHandle, forwardRef } from 'react';
+import { useForm } from 'react-hook-form';
+import { InputText } from 'primereact/inputtext';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { useStores } from '../../context/use-stores';
+import Hierarchy from './Hierarchy';
+import Approver from './Approver';
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 const validationSchema = Yup.object().shape({
   newHierarchy: Yup.string().required(),
@@ -23,7 +23,6 @@ const CreateOGForm = forwardRef(({ setIsActionDone }, ref) => {
 
   const { errors } = formState;
 
-
   const onSubmit = async (data) => {
     const { newHierarchy, parentHierarchy, approvers, comments } = data;
 
@@ -34,22 +33,19 @@ const CreateOGForm = forwardRef(({ setIsActionDone }, ref) => {
     }
 
     const req = {
-      status: 'SUBMITTED',
+      // status: 'SUBMITTED',
       commanders: approvers,
       kartoffelParams: {
         name: newHierarchy,
         parent: parentHierarchy.id,
         source: 'oneTree',
       },
-      kartoffelStatus: { status: 'STAGE_UNKNOWN' },
-      adStatus: { status: 'STAGE_UNKNOWN' },
       adParams: {
         ouDisplayName: parentHierarchy.name,
         ouName: parentHierarchy.name,
         name: newHierarchy,
       },
       comments,
-      due: Date.now(),
     };
 
     await appliesStore.createOGApply(req);
@@ -67,7 +63,12 @@ const CreateOGForm = forwardRef(({ setIsActionDone }, ref) => {
   return (
     <div className='p-fluid'>
       <div className='p-fluid-item p-fluid-item-flex1'>
-        <Hierarchy setValue={setValue} name='parentHierarchy' errors={errors} labelText={'היררכיית אב'} />
+        <Hierarchy
+          setValue={setValue}
+          name='parentHierarchy'
+          errors={errors}
+          labelText={'היררכיית אב'}
+        />
       </div>
       <div className='p-fluid-item'>
         <div className='p-field'>
@@ -82,7 +83,7 @@ const CreateOGForm = forwardRef(({ setIsActionDone }, ref) => {
           />
           <label>
             {errors.newHierarchy && (
-              <small style={{ color: "red" }}>יש למלא ערך</small>
+              <small style={{ color: 'red' }}>יש למלא ערך</small>
             )}
           </label>
         </div>
@@ -99,7 +100,12 @@ const CreateOGForm = forwardRef(({ setIsActionDone }, ref) => {
       <div className='p-fluid-item p-fluid-item-flex1'>
         <div className='p-field'>
           <label htmlFor='2023'>הערות</label>
-          <InputTextarea {...register('comments')} id='2023' type='text' placeholder='הערות' />
+          <InputTextarea
+            {...register('comments')}
+            id='2023'
+            type='text'
+            placeholder='הערות'
+          />
         </div>
       </div>
     </div>
