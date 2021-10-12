@@ -108,7 +108,24 @@
 }
 
 .p-dialog .p-dialog-content::-webkit-scrollbar-thumb {
-  background: #e1e0e2;
+  background: #d6d6d6;
+  border-radius: 30px;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content::-webkit-scrollbar:horizontal {
+  height: 8px;
+  background-color: #e4e5e6;
+  border-radius: 30px;
+  background-clip: padding-box;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content::-webkit-scrollbar-thumb:horizontal {
+  background: #d6d6d6;
+  border-radius: 30px;
+}
+
+.p-dialog.dialogClass9 .p-dialog-content::-webkit-scrollbar-track:horizontal {
+  background-color: #e4e5e6;
   border-radius: 30px;
 }
 
@@ -288,7 +305,7 @@
 }
 
 .p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-button.p-component.OpeningHierarchy {
-  /* background-image: url(../../images/buttons/hierarchy.svg); */
+  background-image: url(../../../images/buttons/hierarchy.svg);
   background-size: 24px;
   background-repeat: no-repeat;
   background-position: center;
@@ -935,6 +952,8 @@
 
 .p-dialog.dialogClass9 .p-dialog-content .card {
   padding-bottom: 20px;
+  display: flex;
+  white-space: nowrap;
 }
 
 .p-dialog.dialogClass9 .p-dialog-content .card .p-tree {
@@ -943,6 +962,7 @@
   color: #495057;
   padding: 16px;
   border-radius: 3px;
+  flex: 1;
 }
 
 @media (max-width: 599px) {
