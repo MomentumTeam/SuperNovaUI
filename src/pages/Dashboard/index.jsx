@@ -64,7 +64,7 @@ const Dashboard = observer(() => {
   useEffect(() => {
     if (userStore.user) {
       if (userType.type === USER_TYPE.COMMANDER) {
-        appliesStore.getCommanderApplies();
+        appliesStore.getMyApproveRequests();
       } else {
         // appliesStore.loadApplies();
         treeStore.loadTreeByEntity(userStore.user);
