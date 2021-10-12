@@ -1,0 +1,25 @@
+name: "supernovaui"
+# If you want to overide the full name you can include the 'fullnameOverride' value
+#fullname:
+replicaCount: 1
+
+images:
+  PullSecrets:
+    name: momentumacr
+  repository: momentumacr.azurecr.io/supernovaui
+  tag: "latest"
+
+service:
+
+config:
+  configmaps:
+      name: momentum-configmap
+
+ingress:
+  enabled: true
+  hosts:
+  - host: momentum.branch-yesodot.org
+    paths:
+      - path: /
+        service: supernovaui
+        port: 80
