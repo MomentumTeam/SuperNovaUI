@@ -1,6 +1,6 @@
 import { action, makeAutoObservable, observable } from 'mobx';
 import { getPictureByEntityId } from '../service/UserService';
-import { getMyNotifications } from '../service/NotificationService';
+import { getMyNotifications, markAsRead } from '../service/NotificationService';
 import { Base64 } from 'js-base64';
 import { tokenName } from '../constants/api';
 import cookies from 'js-cookie';
@@ -48,6 +48,13 @@ export default class UserStore {
     async fetchUserNotifications() {
         const userNotifications = await getMyNotifications();
         this.userNotifications = userNotifications.notifications;
+    }
+
+    async markNotificationsAsRead(ids) {
+        if(await markAsRead(ids).success) {
+            const userNotifications = await getMyNotifications();
+            this.userNotifications = userNotifications.filter((notification) => !ids.includes(notification.id));
+        }
     }
 
     async loadUsers() {
