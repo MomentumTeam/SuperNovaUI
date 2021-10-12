@@ -51,12 +51,12 @@ export const TableActionsTypes = {
   hierarchy: {
     view: tableActionsEnum.VIEW_HIERARCHY,
     edit: tableActionsEnum.EDIT_HIERARCHY,
-    delete: tableActionsEnum.DELETE_HIERARCHY,
+    // delete: tableActionsEnum.DELETE_HIERARCHY,
   },
   roles: {
     view: tableActionsEnum.VIEW_ROLE,
     edit: tableActionsEnum.EDIT_ROLE,
-    delete: tableActionsEnum.DELETE_ROLE,
+    // delete: tableActionsEnum.DELETE_ROLE,
   },
 };
 

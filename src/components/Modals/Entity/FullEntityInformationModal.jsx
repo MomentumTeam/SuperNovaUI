@@ -1,3 +1,4 @@
+import * as Yup from "yup";
 import React, { useEffect, useState } from "react";
 import { Dialog } from "primereact/dialog";
 import { classNames } from "primereact/utils";
@@ -9,7 +10,7 @@ import { CanSeeUserClearance } from "../../../utils/entites";
 import { InputTextField } from "../../Fields/InputText";
 import { InputCalanderField } from "../../Fields/InputCalander";
 import { InputDropdown } from "../../Fields/InputDropdown";
-import { USER_CLEARANCE, USER_NO_PICTURE } from "../../../constants";
+import { PHONE_REG_EXP, USER_CLEARANCE, USER_NO_PICTURE } from "../../../constants";
 
 import "../../../assets/css/local/general/buttons.css";
 import "../../../assets/css/local/components/modal-item.css";
@@ -165,7 +166,7 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit 
               displayName: "טלפון",
               canEdit: true,
               type: "num",
-              keyFilter: "num",
+              keyFilter: PHONE_REG_EXP,
               isEdit: isEdit,
               item: userData,
               form: form,

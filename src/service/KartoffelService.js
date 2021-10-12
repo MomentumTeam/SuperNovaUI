@@ -24,16 +24,22 @@ export const getOGById = async (id) => {
   return response.data;
 };
 
-export const getOGChildren = async ({ id, page, pageSize }) => {
-  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/groups/${id}/children`, {
-    params: {
-      pageSize,
-      page,
-    },
-  });
+export const getOGChildren = async ({ id, page, pageSize, direct = false}) => {
+  // If id not specified, using the Aman group children
+  const response = await axiosApiInstance.get(
+    id ? `${apiBaseUrl}/api/kartoffel/groups/${id}/children` : `${apiBaseUrl}/api/kartoffel/groups/children`,
+    {
+      params: {
+        direct,
+        pageSize,
+        page,
+      },
+    }
+  );
 
   return response.data.groups;
 };
+
 
 // ROLES
 export const getRoleByRoleId = async (roleId) => {
@@ -84,23 +90,6 @@ export const getEntitiesByHierarchy = async (hierarchy) => {
 
   return response.data;
 }
-
-export const getOGChildren = async (id, direct=false) => {
-
-  // If id not specified, using the Aman group children
-
-  const response = await axiosApiInstance.get(
-    id ?
-    `${apiBaseUrl}/api/kartoffel/groups/${id}/children`
-    :
-    `${apiBaseUrl}/api/kartoffel/groups/children`,
-    {
-      ...(direct ? { params: { direct } } : {})
-    }
-  );
-
-  return response.data;
-};
 
 export const getEntitiesUnderOG = async ({ id, direct, page, pageSize }) => {
   const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/entities/groups/${id}`, {

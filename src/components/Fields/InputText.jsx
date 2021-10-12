@@ -14,6 +14,7 @@ const InputTextField = ({
   type = "text",
   keyFilter,
   additionalClass = "",
+  errorMsg = "error",
 }) => {
   const disabled = !canEdit || !isEdit;
 
@@ -23,6 +24,7 @@ const InputTextField = ({
         {getLabel({ canEdit, isEdit, labelName: displayName })}
         <InputText
           id="2011"
+          className={errorMsg !== null ? "p-invalid" : ""}
           type={type}
           keyfilter={keyFilter ? keyFilter : /^[a-z\u0590-\u05fe\s]+$/i}
           disabled={disabled}
@@ -35,6 +37,12 @@ const InputTextField = ({
           }}
           value={form[fieldName]}
         />
+
+        {errorMsg !== null && (
+          <small className="p-error p-d-block">
+            {errorMsg}
+          </small>
+        )}
       </div>
     </div>
   );
