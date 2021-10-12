@@ -63,8 +63,8 @@ const Dashboard = observer(() => {
 
   useEffect(() => {
     if (userStore.user) {
-      if (userType.type === USER_TYPE_TAG.COMMANDER) {
-        // appliesStore.getCommanderApplies();
+      if (userType.type === USER_TYPE.COMMANDER) {
+        appliesStore.getCommanderApplies();
       } else {
         // appliesStore.loadApplies();
         treeStore.loadTreeByEntity(userStore.user);

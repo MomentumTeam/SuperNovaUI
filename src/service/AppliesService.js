@@ -16,7 +16,7 @@ export const getMyRequests = async (from, to) => {
 
 export const getRequestById = async (id) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/${id}`
+    `${apiBaseUrl}/api/requests/${id}`,
   );
 
   return response.data;
@@ -30,12 +30,32 @@ export const getAllRequests = async (approvementStatus, from, to) => {
         from,
         to,
       },
-    }
+    },
   );
   return response.data;
 };
 
-export const getRequestsByPerson = async (id,personType,personInfoType, from, to) => {
+export const getCommanderApplyRequests = async (from, to) => {
+  const response = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/requests/approve/my`,
+    {
+      params: {
+        from,
+        to,
+      },
+    },
+  );
+
+  return response.data;
+};
+
+export const getRequestsByPerson = async (
+  id,
+  personType,
+  personInfoType,
+  from,
+  to,
+) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/requests/person/${id}`,
     {
@@ -45,7 +65,7 @@ export const getRequestsByPerson = async (id,personType,personInfoType, from, to
         from,
         to,
       },
-    }
+    },
   );
 
   return response.data;
@@ -53,7 +73,7 @@ export const getRequestsByPerson = async (id,personType,personInfoType, from, to
 
 export const getRequestBySerialNumber = async (serialNumber) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/serialNumber/${serialNumber}`
+    `${apiBaseUrl}/api/requests/serialNumber/${serialNumber}`,
   );
 
   return response.data;
@@ -63,7 +83,7 @@ export const searchRequestsBySubmitterDisplayName = async (
   displayName,
   personType,
   from,
-  to
+  to,
 ) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/requests/displayName/${displayName}`,
@@ -73,7 +93,7 @@ export const searchRequestsBySubmitterDisplayName = async (
         from,
         to,
       },
-    }
+    },
   );
 
   return response.data;
@@ -85,14 +105,14 @@ export const isJobTitleAlreadyTakenRequest = async (jobTitle, directGroup) => {
   );
 
   return response.data;
-}
+};
 
 //POST
 
 export const createRoleRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/requests/request/role`,
-    applyProperties
+    applyProperties,
   );
 
   return response.data;
@@ -101,7 +121,7 @@ export const createRoleRequest = async (applyProperties) => {
 export const assignRoleToEntityRequest = async (applyProperties) => {
   const response = await axiosApiInstance.put(
     `${apiBaseUrl}/api/requests/request/entity/role`,
-    applyProperties
+    applyProperties,
   );
 
   return response.data;
@@ -110,7 +130,7 @@ export const assignRoleToEntityRequest = async (applyProperties) => {
 export const createOGRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/requests/request/og`,
-    applyProperties
+    applyProperties,
   );
 
   return response.data;
@@ -119,7 +139,7 @@ export const createOGRequest = async (applyProperties) => {
 export const createNewApproverRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/requests/request/approver`,
-    applyProperties
+    applyProperties,
   );
 
   return response.data;
@@ -128,7 +148,7 @@ export const createNewApproverRequest = async (applyProperties) => {
 export const createEntityRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/requests/request/entity`,
-    applyProperties
+    applyProperties,
   );
 
   return response.data;
@@ -136,7 +156,7 @@ export const createEntityRequest = async (applyProperties) => {
 export const renameOGRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/requests/renameOGRequest`,
-    applyProperties
+    applyProperties,
   );
 
   return response.data;
@@ -145,7 +165,7 @@ export const renameOGRequest = async (applyProperties) => {
 export const renameRoleRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/requests/renameRoleRequest`,
-    applyProperties
+    applyProperties,
   );
 
   return response.data;
@@ -154,7 +174,7 @@ export const renameRoleRequest = async (applyProperties) => {
 export const editEntityRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/requests/editEntityRequest`,
-    applyProperties
+    applyProperties,
   );
 
   return response.data;
@@ -163,7 +183,7 @@ export const editEntityRequest = async (applyProperties) => {
 export const deleteRoleRequest = async (applyProperties) => {
   const response = await axiosApiInstance.delete(
     `${apiBaseUrl}/api/requests/deleteRoleRequest`,
-    applyProperties
+    applyProperties,
   );
 
   return response.data;
@@ -172,7 +192,7 @@ export const deleteRoleRequest = async (applyProperties) => {
 export const deleteOGRequest = async (applyProperties) => {
   const response = await axiosApiInstance.delete(
     `${apiBaseUrl}/api/requests/deleteOGRequest`,
-    applyProperties
+    applyProperties,
   );
 
   return response.data;
@@ -181,7 +201,7 @@ export const deleteOGRequest = async (applyProperties) => {
 export const disconectRoleFromEntityRequest = async (applyProperties) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/requests/disconectRoleFromEntityRequest`,
-    applyProperties
+    applyProperties,
   );
 
   return response.data;
@@ -190,7 +210,8 @@ export const disconectRoleFromEntityRequest = async (applyProperties) => {
 export const uploadBulkFile = async (file) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/bulk/upload`,
-    file, { headers: { 'Content-Type': 'multipart/form-data' } }
+    file,
+    { headers: { 'Content-Type': 'multipart/form-data' } },
   );
 
   return response.data;
@@ -199,19 +220,18 @@ export const uploadBulkFile = async (file) => {
 export const createRoleBulkRequest = async (data) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/bulk/request/role`,
-    data
+    data,
   );
 
   return response.data;
 };
-
 
 // PUT
 
 export const updateApproverDecision = async (
   id,
   approverDecision,
-  approverType
+  approverType,
 ) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/requests/approverDecision/${id}`,
@@ -220,7 +240,7 @@ export const updateApproverDecision = async (
         approverDecision: approverDecision,
         approverType: approverType,
       },
-    }
+    },
   );
 
   return response.data;
@@ -229,7 +249,7 @@ export const updateApproverDecision = async (
 export const changeRoleHierarchyRequest = async (data) => {
   const response = await axiosApiInstance.put(
     `${apiBaseUrl}/api/requests/request/role/og`,
-    data
+    data,
   );
 
   return response.data;
@@ -238,7 +258,7 @@ export const changeRoleHierarchyRequest = async (data) => {
 export const changeRoleHierarchyBulkRequest = async (data) => {
   const response = await axiosApiInstance.put(
     `${apiBaseUrl}/api/bulk/request/role/hierarchy`,
-    data
+    data,
   );
 
   return response.data;
