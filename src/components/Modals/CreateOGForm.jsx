@@ -41,8 +41,6 @@ const CreateOGForm = forwardRef(({ setIsActionDone }, ref) => {
         parent: parentHierarchy.id,
         source: 'oneTree',
       },
-      kartoffelStatus: { status: 'STAGE_UNKNOWN' },
-      adStatus: { status: 'STAGE_UNKNOWN' },
       adParams: {
         ouDisplayName: parentHierarchy.name,
         ouName: parentHierarchy.name,
