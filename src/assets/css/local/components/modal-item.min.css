@@ -1,6 +1,66 @@
 * {
   font-family: 'Heebo', sans-serif;
 }
+
+/* for showing the right icons inside of a Dialog(form) */
+.p-dialog.dialogClass1 .p-dialog-header .p-dialog-title::before {
+  background-image: url(../../../images/actions-icon1.svg);
+  background-size: 16px;
+}
+.p-dialog.dialogClass1 .p-dialog-header .p-dialog-title::after {
+  background: transparent linear-gradient(180deg, #90ccff 0%, #6486da 100%) 0%
+    0% no-repeat padding-box;
+}
+.p-dialog.dialogClass2 .p-dialog-header .p-dialog-title::before {
+  background-image: url(../../../images/actions-icon2.svg);
+  background-size: 25px;
+}
+.p-dialog.dialogClass2 .p-dialog-header .p-dialog-title::after {
+  background: transparent linear-gradient(180deg, #ffbb5a 0%, #f57c3d 100%) 0%
+    0% no-repeat padding-box;
+}
+.p-dialog.dialogClass3 .p-dialog-header .p-dialog-title::before {
+  background-image: url(../../../images/actions-icon3.svg);
+  background-size: 23px;
+}
+.p-dialog.dialogClass3 .p-dialog-header .p-dialog-title::after {
+  background: transparent linear-gradient(180deg, #957eff 0%, #7e57e5 100%) 0%
+    0% no-repeat padding-box;
+}
+.p-dialog.dialogClass4 .p-dialog-header .p-dialog-title::before {
+  background-image: url(../../../images/actions-icon4.svg);
+  background-size: 23px;
+}
+.p-dialog.dialogClass4 .p-dialog-header .p-dialog-title::after {
+  background: transparent linear-gradient(180deg, #3cb699 0%, #01a9be 100%) 0%
+    0% no-repeat padding-box;
+}
+.p-dialog.dialogClass5 .p-dialog-header .p-dialog-title::before {
+  background-image: url(../../../images/actions-icon5.svg);
+  background-size: 27px;
+}
+.p-dialog.dialogClass5 .p-dialog-header .p-dialog-title::after {
+  background: transparent linear-gradient(180deg, #dccdfe 0%, #9c93ca 100%) 0%
+    0% no-repeat padding-box;
+}
+.p-dialog.dialogClass5
+  .p-dialog-content
+  .p-fluid
+  .p-fluid-item
+  .p-button.p-component.OpeningHierarchy {
+  left: 4px;
+}
+.p-dialog.dialogClass6 .p-dialog-header .p-dialog-title::before {
+  background-image: url(../../../images/actions-icon6.svg);
+  background-size: 26px;
+}
+.p-dialog.dialogClass6 .p-dialog-header .p-dialog-title::after {
+  background: transparent linear-gradient(180deg, #f590cd 0%, #ff74ba 100%) 0%
+    0% no-repeat padding-box;
+}
+/*  */
+
+
 .p-dialog {
   border-radius: 14px;
   width: 688px;
@@ -22,14 +82,6 @@
     padding-left: 15px;
     padding-right: 15px;
   }
-}
-.p-dialog .p-dialog-header .p-dialog-title {
-  position: relative;
-  color: #201961;
-  font-weight: 700;
-  font-size: 20px;
-  padding-right: 60px;
-  padding-top: 40px;
 }
 .p-dialog .p-dialog-header .p-dialog-title::before {
   content: '';

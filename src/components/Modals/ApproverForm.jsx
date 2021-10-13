@@ -22,7 +22,7 @@ const approverTypes = [
   { label: 'גורם מאשר יחב"ם', value: 'SECURITY' },
   { label: 'גורם מאשר בטח"ם', value: 'SUPER_SECURITY' },
   { label: 'הרשאת בקשה מרובה', value: 'BULK' },
-  { label: 'משתמש על', value: 'ADMIN' },
+  { label: 'מחשוב יחידתי', value: 'ADMIN' },
 ];
 
 const validationSchema = Yup.object().shape({

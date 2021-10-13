@@ -41,7 +41,7 @@ const actions = [
     className: 'btn-actions btn-actions4',
     actionName: 'משתמש חדש',
     displayResponsive: false,
-    dialogClass: 'dialogClass3',
+    dialogClass: 'dialogClass4',
     modalName: CreateEntityForm,
   }, //disconnect false
   {
