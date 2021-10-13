@@ -7,13 +7,15 @@ import { useStores } from '../../context/use-stores';
 import Header from '../Entities/Header';
 import SearchRequest from './SearchRequest';
 import AddEntity from '../Entities/AddEntity';
+import ApprovalTable from '../../components/ApprovalTable'
 import Footer from '../Entities/Footer';
 import Notifications from '../../components/Notifications';
 
 const MyRequests = observer(() => {
-    const { tablesStore, userStore } = useStores();
+    const { tablesStore, userStore, appliesStore } = useStores();
     const [ tabId, setTabId ] = useState('entities');
     const notifications = toJS(userStore.userNotifications);
+    const applies = toJS(appliesStore.myApplies);
 
     useEffect(() => {
         userStore.fetchUserNotifications(userStore.user?.id);
@@ -56,7 +58,7 @@ const MyRequests = observer(() => {
                             <div className="display-flex search-row-wrap-flex">
                                 <SearchRequest data={toJS(tablesStore.entities)} />
                             </div>
-                            <Table data={toJS(tablesStore.entities)} tableType={tabId} />
+                            <ApprovalTable applies={applies} />
                             <Footer />
                         </div>
                     </div>
