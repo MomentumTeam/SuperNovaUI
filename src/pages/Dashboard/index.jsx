@@ -101,7 +101,14 @@ const Dashboard = observer(() => {
           />
           <div className='content-unit-wrap'>
             {userType.tag === USER_TYPE_TAG.APPROVER ? (
-              <ApprovalTable applies={applies} />
+              <>
+                <div className='display-flex title-wrap'>
+                  <h2>בקשות לאישורי</h2>
+                  <h3>{applies.length} סה"כ</h3>
+                  {console.log(applies)}
+                </div>
+                <ApprovalTable applies={applies} />
+              </>
             ) : (
               <div className='content-unit-inner content-unit-inner-before'>
                 <div className='search-row'>
