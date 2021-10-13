@@ -3,19 +3,14 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { classNames } from 'primereact/utils';
 import { STATUSES, TYPES } from '../constants/applies';
+import {
+  getFormattedDate,
+  processApprovalTableData,
+  exportToExcel,
+} from '../utils/approvalTables';
 // import MoreItem from '../components/more-item';
 
 import '../assets/css/local/general/table.min.css';
-
-const getFormattedDate = (timestamp) => {
-  const newDate = new Date(parseInt(timestamp));
-
-  const dd = String(newDate.getDate()).padStart(2, '0');
-  const mm = String(newDate.getMonth() + 1).padStart(2, '0'); //January is 0!
-  const yyyy = newDate.getFullYear();
-
-  return dd + '/' + mm + '/' + yyyy;
-};
 
 class Table extends React.Component {
   requestTypeBodyTemplate(rowData) {
@@ -99,6 +94,11 @@ class Table extends React.Component {
     );
   }
 
+  async excelExport(applies) {
+    const approvalData = processApprovalTableData(applies);
+    exportToExcel(approvalData);
+  }
+
   render() {
     return (
       <div className='table-wrapper'>
@@ -108,19 +108,19 @@ class Table extends React.Component {
               <Column selectionMode='multiple' style={{ width: '3em' }} />
 
               <Column
-                field='firstName'
+                field='reqType'
                 header='סוג בקשה'
                 body={this.requestTypeBodyTemplate}
                 sortable
               ></Column>
               <Column
-                field='lastName'
+                field='requester'
                 header='שם מבקש'
                 body={this.requesterNameBodyTemplate}
                 sortable
               ></Column>
               <Column
-                field='idNum'
+                field='reqDate'
                 header='ת׳ בקשה'
                 body={this.requestDateBodyTemplate}
                 sortable
@@ -132,18 +132,29 @@ class Table extends React.Component {
                 sortable
               ></Column>
               <Column
-                field='user'
+                field='reason'
                 header='סיבה'
                 body={this.requestReasonBodyTemplate}
                 sortable
               ></Column>
               <Column
-                field='unity'
+                field='status'
                 header='סטטוס'
                 body={this.requestStatusBodyTemplate}
                 sortable
               ></Column>
             </DataTable>
+
+            <div className='display-flex inner-flex'>
+              <button
+                className='btn btn-export'
+                title='Export'
+                type='button'
+                onClick={() => this.excelExport(this.props.applies)}
+              >
+                <span className='for-screnReader'>Export</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
