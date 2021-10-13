@@ -6,7 +6,9 @@ import Unit from "./Unit";
 import Approver from "./Approver";
 import { useStores } from "../../context/use-stores";
 import * as Yup from "yup";
-import { apiBaseUrl } from "../../constants";
+import cookies from "js-cookie";
+import { apiBaseUrl, tokenName } from "../../constants/api";
+import Downloader from "js-file-downloader";
 import FormData from "form-data";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { uploadBulkFile } from "../../service/AppliesService";
@@ -96,7 +98,11 @@ const RenameBulkOGForm = forwardRef(({ setIsActionDone }, ref) => {
               style={{ paddingTop: "10px" }}
               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             />
-            <label>{errors.bulkFile && <small style={{ color: "red" }}>יש להעלות קובץ</small>}</label>
+            <label>
+              {errors.bulkFile && (
+                <small style={{ color: "red" }}>יש להעלות קובץ</small>
+              )}
+            </label>
           </span>
         </div>
       </div>
@@ -104,14 +110,28 @@ const RenameBulkOGForm = forwardRef(({ setIsActionDone }, ref) => {
         className="p-fluid-item-flex p-fluid-item"
         style={{ alignItems: "center" }}
       >
-        {/* TODO: bring good excel example route */}
-        <a
-          href={`${apiBaseUrl}/api/bulk/request/example?bulkType=0`}
-          style={{ textDecoration: "underline" }}
-          download="exampleFile"
+        <button
+          style={{
+            textDecoration: "underline",
+            background: "none",
+            border: "none",
+            color: "#069",
+          }}
+          onClick={() => {
+            new Downloader({
+              url: `${apiBaseUrl}/api/bulk/request/example?bulkType=0`,
+              filename: "createRoleBulkExample.xlsx",
+              headers: [
+                {
+                  name: "Authorization",
+                  value: `Bearer ${cookies.get(tokenName)}`,
+                },
+              ],
+            });
+          }}
         >
           להורדת הפורמט לחץ כאן
-        </a>
+        </button>
       </div>
       <div className="p-fluid-item-flex p-fluid-item">
         <Approver
