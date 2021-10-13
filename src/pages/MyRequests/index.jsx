@@ -7,7 +7,7 @@ import { useStores } from '../../context/use-stores';
 import Header from '../Entities/Header';
 import SearchRequest from './SearchRequest';
 import AddEntity from '../Entities/AddEntity';
-import ApprovalTable from '../../components/ApprovalTable'
+import ApprovalTable from './MyRequestsTable'
 import Footer from '../Entities/Footer';
 import Notifications from '../../components/Notifications';
 
