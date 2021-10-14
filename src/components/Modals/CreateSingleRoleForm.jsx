@@ -39,13 +39,12 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
 
   useEffect(() => {
     if (requestObject) {
-      console.log(requestObject);
-      // TODO: add isTafkidan
       setValue('comments', requestObject.comments);
       setValue('clearance', requestObject.kartoffelParams.clearance);
       setValue('roleName', requestObject.kartoffelParams.jobTitle);
       setValue('unit', requestObject.kartoffelParams.unit); // TODO: translate unit id to unit
       setValue('hierarchy', { name: requestObject.adParams.ouDisplayName });
+      setValue('isTafkidan', !!requestObject.kartoffelParams.roleEntityType);
     }
   }, []);
 
@@ -62,7 +61,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
       clearance,
       unit,
       roleName,
-      isTafkidan, // TODO: check
+      isTafkidan,
     } = data;
     const req = {
       commanders: approvers,
@@ -74,6 +73,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
         type: "domainUser",
         unit: unit.id,
         clearance,
+        roleEntityType: isTafkidan ? 'goalUser' : undefined,
       },
       adParams: {
         ouDisplayName: hierarchy.name,
