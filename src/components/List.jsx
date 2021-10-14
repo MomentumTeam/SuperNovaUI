@@ -19,7 +19,7 @@ const List = ({ list }) => {
                     </td>
                     <td>
                         <div className="td-inner td-inner-btn">
-                            <button className={'btn-status ' + (status === STATUSES.SENT ? 'btn-sent' : ' btn-rejected')} type="button" title={status}>
+                            <button className={'btn-status ' + (status === STATUSES.SENT ? 'btn-sent' : ' btn-rejected')} type="button">
                                 {STATUSES[status]}
                             </button>
                         </div>

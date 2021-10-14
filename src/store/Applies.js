@@ -55,7 +55,7 @@ export default class AppliesStore {
   // GET
 
   async loadMyApplies(from, to) {
-    const myApplies = await getMyRequests(1, 6);
+    const myApplies = await getMyRequests(from, to);
     this.myApplies = myApplies.requests;
   }
 

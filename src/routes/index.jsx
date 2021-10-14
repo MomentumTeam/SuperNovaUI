@@ -36,13 +36,7 @@ const AppRouter = () => {
 
   if (!userStore.user) {
     userStore.setUserInfo();
-    appliesStore.getAppliesByPerosn(
-      '5e5688324203fc40043591aa',
-      'SUBMITTER',
-      'ID',
-      1,
-      20
-    );
+    appliesStore.loadMyApplies(1,50);
   }
 
   return (
