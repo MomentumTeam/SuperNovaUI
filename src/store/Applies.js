@@ -19,7 +19,8 @@ import {
   disconectRoleFromEntityRequest,
   updateApproverDecision,
   changeRoleHierarchyRequest,
-  changeRoleHierarchyBulkRequest
+  changeRoleHierarchyBulkRequest,
+  createRoleBulkRequest
 } from '../service/AppliesService';
 
 export default class AppliesStore {
@@ -130,7 +131,7 @@ export default class AppliesStore {
 
   async renameRoleApply(applyProperties) {
     const newRenameRoleApply = await renameRoleRequest(applyProperties);
-    this.applies.push(newRenameRoleApply);
+    this.myApplies.unshift(newRenameRoleApply);
   }
 
   async editEntityApply(applyProperties) {
@@ -154,17 +155,25 @@ export default class AppliesStore {
     this.myApplies.unshift(newDisconectRoleFromEntityApply);
   }
 
+
+  async createRoleBulk(applyProperties) {
+    const createRoleBulkApply =
+      await createRoleBulkRequest(applyProperties);
+    this.myApplies.unshift(createRoleBulkApply);
+  }
+
+
   // PUT
   async changeRoleHierarchy(applyProperties) {
     const changeRoleHierarchyApply =
       await changeRoleHierarchyRequest(applyProperties);
-    this.applies.push(changeRoleHierarchyApply);
+    this.myApplies.unshift(changeRoleHierarchyApply);
   }
 
   async changeRoleHierarchyBulk(applyProperties) {
     const changeRoleHierarchyBulkApply =
       await changeRoleHierarchyBulkRequest(applyProperties);
-    this.applies.push(changeRoleHierarchyBulkApply);
+    this.myApplies.unshift(changeRoleHierarchyBulkApply);
   }
 
   async updateApplyDecision(applyProperties) {

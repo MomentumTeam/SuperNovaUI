@@ -2,16 +2,16 @@ import { toJS } from 'mobx';
 import { useEffect } from 'react';
 
 import { useStores } from '../../context/use-stores';
-import Norifications from '../../components/Notifications';
+import Norifications from '../../components/Notifications/Notifications';
 
 import '../../assets/css/main.css';
 
 const Header = ({ setTab, selectedTab }) => {
     const { userStore } = useStores();
-    const notifications = toJS(userStore.userNotifications);
+    const notifications = toJS(userStore.userUnreadNotifications);
 
     useEffect(() => {
-        userStore.fetchUserNotifications(userStore.user?.id);
+        userStore.fetchUserNotifications();
     }, [userStore]);
 
     return (

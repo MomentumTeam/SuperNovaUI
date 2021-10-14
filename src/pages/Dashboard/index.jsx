@@ -33,6 +33,7 @@ const Dashboard = observer(() => {
   user.types = [8];
   user?.types.forEach((type) => {
     switch (type) {
+      case 'ADMIN':
       case 5:
       case 'ADMIN':
         userType = {
@@ -40,6 +41,7 @@ const Dashboard = observer(() => {
           tag: USER_TYPE_TAG.ADMIN,
         };
         break;
+      case 'SUPER_SECURITY':
       case 2:
       case 'SUPER_SECURITY':
         userType = {
@@ -47,6 +49,7 @@ const Dashboard = observer(() => {
           tag: USER_TYPE_TAG.SECURITY_APPROVER,
         };
         break;
+      case 'SECURITY':
       case 1:
       case 'SECURITY':
         userType = {
@@ -54,6 +57,7 @@ const Dashboard = observer(() => {
           tag: USER_TYPE_TAG.SECURITY_APPROVER,
         };
         break;
+      case 'COMMANDER':
       case 3:
       case 'COMMANDER':
         userType = {
@@ -61,6 +65,7 @@ const Dashboard = observer(() => {
           tag: USER_TYPE_TAG.APPROVER,
         };
         break;
+      case "BULK":
       case 6:
       case 'BULK':
         userType = { type: USER_TYPE.BULK };
@@ -114,9 +119,7 @@ const Dashboard = observer(() => {
             closeFullDetailsModal={closeFullDetailsModal}
           />
           <div className="content-unit-wrap">
-            {userType.type === USER_TYPE.ADMIN ||
-            userType.type === USER_TYPE.SUPER_SECURITY ||
-            userType.type === USER_TYPE.SECURITY ? (
+            {userType.tag === USER_TYPE_TAG.APPROVER ? (
               <ApprovalTable applies={applies} />
             ) : (
               <div className="content-unit-inner content-unit-inner-before">

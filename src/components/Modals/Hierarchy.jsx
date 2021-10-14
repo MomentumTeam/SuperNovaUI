@@ -3,13 +3,15 @@ import ModalHierarchy from '../ModalHierarchy';
 import { searchOG } from '../../service/KartoffelService';
 import { AutoComplete } from 'primereact/autocomplete';
 
-const Hierarchy = ({ setValue, name, onOrgSelected, value, labelText= 'היררכיה' }) => {
+
+const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText = 'היררכיה', errors }) => {
   const [ogSuggestions, setOgSuggestions] = useState([]);
-  const [selectedOg, setSelectedOg] = useState(null);
+  const [selectedOg, setSelectedOg] = useState(ogValue);
 
   useEffect(() => {
-    setSelectedOg(value);
-  }, [value]);
+    setSelectedOg(ogValue);
+  }, [ogValue]);
+
 
   const searchOg = async (event) => {
     const result = await searchOG(event.query);
@@ -18,19 +20,16 @@ const Hierarchy = ({ setValue, name, onOrgSelected, value, labelText= 'הירר�
 
   return (
     <>
-      {/* <ModalHierarchy /> */}
-      <div className='p-field'>
-        <label htmlFor='2020'>
-          {' '}
-          <span className='required-field'>*</span>{labelText}
-        </label>
+      <div className="p-field">
+        <label htmlFor="2020"><span className="required-field">*</span>{labelText}</label>
         <AutoComplete
+          disabled={disabled || false}
           value={selectedOg}
           suggestions={ogSuggestions}
           completeMethod={searchOg}
-          id='2020'
-          type='text'
-          field='name'
+          id="2020"
+          type="text"
+          field="name"
           onSelect={(e) => {
             if (onOrgSelected) {
               onOrgSelected(e.value);
@@ -41,11 +40,25 @@ const Hierarchy = ({ setValue, name, onOrgSelected, value, labelText= 'הירר�
             setValue(name, e.value);
           }}
           required
-          // placeholder='היררכיה'
+          forceSelection
+          placeholder="היררכיה"
         />
+        <label htmlFor='2020'>
+          {' '}
+          {errors?.hierarchy && <small style={{ color: "red" }}>יש למלא ערך</small>}
+        </label>
       </div>
+      {
+        (!disabled || true) &&
+        <ModalHierarchy onSelectHierarchy={(hierarchySelected) => {
+          setSelectedOg(hierarchySelected.name);
+          setValue(name, hierarchySelected);
+        }}
+        />
+      }
     </>
-  );
-};
+  )
+}
+
 
 export default Hierarchy;
