@@ -1,10 +1,15 @@
 import React from "react";
 import { InputText } from "primereact/inputtext";
+import "../assets/css/local/components/modal-item.min.css";
+import ApproverSection from "./ApproverSection";
 
 // TODO: add progress bar
-// TODO: add approver decision section
 
-const PreviewRequestWrapper = ({ ModalComponent, request }) => {
+const PreviewRequestWrapper = ({
+  ModalComponent,
+  request,
+  setDialogVisiblity,
+}) => {
   return (
     <>
       <h2>פרטי מגיש הבקשה</h2>
@@ -44,6 +49,15 @@ const PreviewRequestWrapper = ({ ModalComponent, request }) => {
       <hr style={{ borderWidth: "1px" }} />
       <h2>פרטי הבקשה</h2>
       <ModalComponent onlyForView={true} requestObject={request} />
+      {
+        // TODO: show only to approvers
+        true && (
+          <ApproverSection
+            requestId={request.id}
+            setDialogVisiblity={setDialogVisiblity}
+          />
+        )
+      }
     </>
   );
 };

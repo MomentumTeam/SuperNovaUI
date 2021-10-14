@@ -38,7 +38,7 @@ const PreviewRequestsDialog = ({ request }) => {
     if (request.type) {
       // TODO: handle UNRECOGNIZED
       if (dialogParams[request.type]) {
-        setDialogContent(<PreviewRequestWrapper request={request} ModalComponent={dialogParams[request.type].component}/>);
+        setDialogContent(<PreviewRequestWrapper request={request} ModalComponent={dialogParams[request.type].component} setDialogVisiblity={setDialogVisiblity} />);
         setDialogVisiblity(true);
       };
     }
