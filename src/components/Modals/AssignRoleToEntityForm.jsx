@@ -1,4 +1,4 @@
-import React, { useState, useImperativeHandle, forwardRef } from 'react';
+import React, { useState, useImperativeHandle, forwardRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
@@ -20,6 +20,7 @@ import {
   getOGById,
   getEntityByIdentifier,
   getEntityByRoleId,
+  getEntityByMongoId
 } from '../../service/KartoffelService';
 
 // TODO: move to different file (restructe project files...)
@@ -33,7 +34,7 @@ const validationSchema = Yup.object().shape({
   comments: Yup.string().optional(),
 });
 
-const AssignRoleToEntityForm = forwardRef(({ showJob = true, setIsActionDone }, ref) => {
+const AssignRoleToEntityForm = forwardRef(({ showJob = true, setIsActionDone, onlyForView, requestObject }, ref) => {
   const { appliesStore, userStore } = useStores();
   const { register, handleSubmit, setValue, getValues, watch, formState } =
     useForm({
@@ -42,6 +43,31 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true, setIsActionDone }, 
   const [userSuggestions, setUserSuggestions] = useState([]);
   const [roles, setRoles] = useState([]);
   const { errors } = formState;
+
+  useEffect(() => {
+    const initializeValues = async () => {
+      console.log(requestObject);
+      setValue('userName', requestObject.adParams.fullName);
+      setValue('comments', requestObject.comments);
+      setValue('roleId', requestObject.adParams.newSAMAccountName);
+      const user = await getEntityByMongoId(requestObject.kartoffelParams.id);
+      setValue('user', user);
+      setValue('personalNumber', user.personalNumber || user.identityCard);
+      const role = await getRoleByRoleId(requestObject.adParams.newSAMAccountName);
+      setValue('hierarchy', role.hierarchy);
+      setValue('role', role);
+      setRoles([role]);
+      await handleRoleSelected(requestObject.adParams.newSAMAccountName);
+
+      // TODO: fix due
+      setValue('changeRoleAt', +requestObject.due)
+      console.log(watch('changeRoleAt'));
+    }
+
+      if (requestObject) {
+        initializeValues();
+    }
+  }, [])
 
   const onSubmit = async (data) => {
     try {
@@ -203,6 +229,7 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true, setIsActionDone }, 
               setValue('userName', e.value.displayName ? e.value.displayName : e.value);
             }}
             required
+            disabled={onlyForView}
           />
           <label htmlFor='2020'>
             {' '}
@@ -227,6 +254,7 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true, setIsActionDone }, 
                 onSearchUserById();
               }
             }}
+            disabled={onlyForView}
           />
           <label htmlFor='2021'>
             {' '}
@@ -253,6 +281,7 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true, setIsActionDone }, 
           name='hierarchy'
           onOrgSelected={handleOrgSelected}
           errors={errors}
+          disabled={onlyForView}
         />
       </div>
       {watch('currentRoleUser') && (
@@ -288,6 +317,7 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true, setIsActionDone }, 
                 setValue('roleId', e.value.digitalIdentityUniqueId);
                 handleRoleSelected(e.value.roleId);
               }}
+              disabled={onlyForView}
             />
             <label htmlFor='2021'>
               {' '}
@@ -308,6 +338,7 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true, setIsActionDone }, 
                   onRoleIdChanged();
                 }
               }}
+              disabled={onlyForView}
             />
             <label htmlFor='2021'>
               {' '}
@@ -316,7 +347,7 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true, setIsActionDone }, 
           </div>
         </div>
         <div className='p-fluid-item'>
-          <Approver setValue={setValue} name='approvers' multiple={true} />
+          <Approver setValue={setValue} name='approvers' multiple={true} defaultApprovers={requestObject?.commanders || []} disabled={onlyForView} />
         </div>
       </div>
       {watch('currentRoleUser') && (
@@ -343,6 +374,7 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true, setIsActionDone }, 
                 value={watch('changeRoleAt')}
                 onChange={(e) => setValue('changeRoleAt', e.target.value)}
                 placeholder='בצע החלפה בתאריך'
+                disabled={onlyForView}
               />
               <label htmlFor='2021'>
                 {' '}
@@ -360,6 +392,7 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true, setIsActionDone }, 
             id='2028'
             type='text'
             placeholder='הערות'
+            disabled={onlyForView}
           />
         </div>
       </div>

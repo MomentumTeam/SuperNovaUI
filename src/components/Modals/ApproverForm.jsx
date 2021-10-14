@@ -188,6 +188,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
               setValue('userName', e.value);
             }}
             required
+            disabled={onlyForView}
           />
           {errors.user && <small style={{ color: "red" }}>יש למלא ערך</small>}
         </div>
@@ -209,6 +210,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
                 onSearchUserByPersonalNumber();
               }
             }}
+            disabled={onlyForView}
           />
           {errors.user && <small style={{ color: "red" }}>יש למלא ערך</small>}
         </div>
