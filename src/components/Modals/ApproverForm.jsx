@@ -31,14 +31,14 @@ const validationSchema = Yup.object().shape({
   hierarchy: Yup.string().required(),
   approvers: Yup.array().min(1).required(),
   comments: Yup.string().optional(),
+  userName: Yup.string().required(),
 });
 
-const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionDone }, ref) => {
+const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }, ref) => {
   const { appliesStore, userStore } = useStores();
   const [approverType, setApproverType] = useState();
   const { register, handleSubmit, setValue, getValues, formState, watch } =
     useForm({
-      defaultValues: approverRequestObj,
       resolver: yupResolver(validationSchema),
     });
   const [userSuggestions, setUserSuggestions] = useState([]);
@@ -47,6 +47,14 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
   useEffect(() => {
     setValue('approverType', 'COMMANDER');
     setApproverType('COMMANDER');
+
+    if (requestObject) {
+      setValue('comments', requestObject.comments);
+      setValue('userName', requestObject.additionalParams.displayName);
+      setValue('hierarchy', requestObject.additionalParams.directGroup);
+      setValue('personalNumber', requestObject.additionalParams.personalNumber || requestObject.additionalParams.identityCard);
+      setApproverType(requestObject.additionalParams.type);
+    }
   }, []);
 
   const onSubmit = async (data) => {
@@ -56,6 +64,7 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
       hierarchy,
       approverType,
       comments,
+      userName
     } = data;
 
     console.log(errors);
@@ -70,15 +79,15 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
     const req = {
       status: 'SUBMITTED',
       commanders: approvers,
-      AdditionalParams: {
+      additionalParams: {
         entityId: user.id,
-        displayName: '',
+        displayName: userName,
         domainUsers: (user?.digitalIdentities || []).map(({ uniqueId, mail }) => uniqueId || mail),
         akaUnit: user.akaUnit,
-        hierarchy: hierarchy,
         personalNumber: user.personalNumber,
         identityCard: user.identityCard,
         type: approverType,
+        directGroup: hierarchy,
       },
       comments,
       due: Date.now(),
@@ -208,7 +217,7 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
         <Hierarchy disabled={true} setValue={setValue} name='hierarchy' ogValue={getValues('hierarchy')} errors={errors} />
       </div>
       <div className='p-fluid-item'>
-        <Approver disabled={onlyForView} setValue={setValue} name='approvers' defaultApprovers={approverRequestObj?.approvers || []} multiple={true} errors={errors} />
+        <Approver disabled={onlyForView} setValue={setValue} name='approvers' defaultApprovers={requestObject?.commanders || []} multiple={true} errors={errors} />
       </div>
       <div className='p-fluid-item p-fluid-item-flex1'>
         <div className='p-field'>

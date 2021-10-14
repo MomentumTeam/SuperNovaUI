@@ -43,7 +43,7 @@ const PreviewRequestWrapper = ({ ModalComponent, request }) => {
       </div>
       <hr style={{ borderWidth: "1px" }} />
       <h2>פרטי הבקשה</h2>
-      <ModalComponent onlyForView={true} defaultValues={request} />
+      <ModalComponent onlyForView={true} requestObject={request} />
     </>
   );
 };
