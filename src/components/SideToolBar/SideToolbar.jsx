@@ -1,18 +1,17 @@
 import { useEffect } from 'react';
 import { toJS } from 'mobx';
 import { useStores } from '../../context/use-stores';
-
 import Actions from './Actions';
 import List from '../List';
-import Notifications from '../Notifications';
+import Notifications from '../Notifications/Notifications';
 import '../../assets/css/local/components/aside.min.css';
 
 const SideToolbar = ({ recentApplies }) => {
     const { userStore } = useStores();
-    const notifications = toJS(userStore.userNotifications);
+    const notifications = toJS(userStore.userUnreadNotifications);
 
     useEffect(() => {
-        userStore.fetchUserNotifications(userStore.user?.id);
+        userStore.fetchUserNotifications();
     }, [userStore]);
 
     return (

@@ -28,7 +28,7 @@ const approverTypes = [
 const validationSchema = Yup.object().shape({
   approverType: Yup.string().required(),
   user: Yup.object().required(),
-  hierarchy: Yup.object().required(),
+  hierarchy: Yup.string().required(),
   approvers: Yup.array().min(1).required(),
   comments: Yup.string().optional(),
 });
@@ -57,6 +57,8 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
       approverType,
       comments,
     } = data;
+
+    console.log(errors);
 
     try {
       await validationSchema.validate(data);
