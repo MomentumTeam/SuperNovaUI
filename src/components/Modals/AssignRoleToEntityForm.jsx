@@ -205,6 +205,7 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true, setIsActionDone, on
           onClick={setCurrentUser}
           type='button'
           title='עבורי'
+          disabled={onlyForView}
         >
           עבורי
         </button>

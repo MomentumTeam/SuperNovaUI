@@ -169,6 +169,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
             onClick={setCurrentUser}
             type='button'
             title='עבורי'
+            disabled={onlyForView}
           >
             עבורי
           </button>
