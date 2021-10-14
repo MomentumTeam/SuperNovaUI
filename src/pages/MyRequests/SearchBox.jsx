@@ -1,5 +1,7 @@
-import { AutoComplete, Dropdown } from 'primereact/autocomplete';
+import { AutoComplete } from 'primereact/autocomplete';
+import { Dropdown } from 'primereact/dropdown';
 import { useState } from 'react';
+import { STATUSES } from '../../constants/applies';
 import {
   searchEntitiesByFullName,
   getEntityByIdentifier,
@@ -9,7 +11,7 @@ import {
 const SearchBox = ({ loadDataByEntity, loadDataByOG }) => {
   const [filteredEntities, setFilteredEntities] = useState([]);
   const [selectedEntity, setSelectedEntity] = useState([]);
-
+  const [selectedStatus, setSelectedStatus] = useState([]);
   const [filteredOGs, setFilteredOGs] = useState([]);
   const [selectedOG, setSelectedOG] = useState([]);
 
@@ -44,6 +46,18 @@ const SearchBox = ({ loadDataByEntity, loadDataByOG }) => {
     setFilteredOGs(filteredResults);
   };
 
+  const statuses = () => {
+    const arr = [];
+    for (const key in STATUSES) {
+      arr.push({ 
+        value: key,
+        label: STATUSES[key] 
+      });
+    }
+
+    return arr;
+  }
+
   return (
     <div className='search-item'>
       <div className='autocomplete-wrap'>
@@ -71,6 +85,27 @@ const SearchBox = ({ loadDataByEntity, loadDataByOG }) => {
         <div className='p-fluid'>
           <span className='p-float-label'>
             <AutoComplete
+              value={selectedEntity}
+              suggestions={filteredEntities}
+              completeMethod={searchEntity}
+              field='displayName'
+              onChange={(e) => {
+                setFilteredOGs([]);
+                setSelectedOG([]);
+                setSelectedEntity(e.value);
+                if (e.originalEvent.type === 'click') {
+                  loadDataByEntity(selectedEntity);
+                }
+              }}
+            />
+            <label htmlFor='autocomplete'>גורם מבקש</label>
+          </span>
+        </div>
+      </div>
+      <div className='autocomplete-wrap'>
+        <div className='p-fluid'>
+          <span className='p-float-label'>
+            <AutoComplete
               value={selectedOG}
               suggestions={filteredOGs}
               completeMethod={searchHierarchy}
@@ -91,19 +126,10 @@ const SearchBox = ({ loadDataByEntity, loadDataByOG }) => {
       <div className='autocomplete-wrap'>
         <div className='p-fluid'>
           <span className='p-float-label'>
-            <AutoComplete
-              value={selectedEntity}
-              suggestions={filteredEntities}
-              completeMethod={searchEntity}
-              field='displayName'
-              onChange={(e) => {
-                setFilteredOGs([]);
-                setSelectedOG([]);
-                setSelectedEntity(e.value);
-                if (e.originalEvent.type === 'click') {
-                  loadDataByEntity(selectedEntity);
-                }
-              }}
+            <Dropdown 
+              value={selectedStatus}
+              options={statuses()}
+              onChange={(e) => setSelectedStatus(e.value)}
             />
             <label htmlFor='autocomplete3'>סטטוס</label>
           </span>

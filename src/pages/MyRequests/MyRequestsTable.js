@@ -2,7 +2,7 @@ import React from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { classNames } from 'primereact/utils';
-import { TYPES, STATUSES } from '../../constants';
+import { TYPES, STATUSES } from '../../constants/applies';
 // import MoreItem from '../components/more-item';
 
 import '../../assets/css/local/general/table.min.css';
@@ -81,7 +81,7 @@ class Table extends React.Component {
                             >
                             <Column selectionMode="multiple" style={{ width: '3em' }} />
                             <Column field="firstName" header="סוג בקשה" body={this.firstNameBodyTemplate}></Column>
-                            <Column field="lastName" header="מספר סריאלי" body={this.lastNameBodyTemplate}></Column>
+                            <Column field="lastName" header="מספר סידורי" body={this.lastNameBodyTemplate}></Column>
                             <Column field="idNum" header='תאריך בקשה' body={this.idNumBodyTemplate}></Column>
                             {/* <Column field="role" header="היררכיה" body={this.roleBodyTemplate}></Column> */}
                             <Column field="user" header="סיבה" body={this.userBodyTemplate}></Column>
