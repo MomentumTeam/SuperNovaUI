@@ -417,9 +417,19 @@
 }
 
 .noticeRibbon .noticeText {
-  width: 50%;
+  width: 35%;
   position: absolute;
   bottom: 38px;
-  left: 5px;
+  left: 20px;
   text-align: center;
+}
+
+.tabletab {
+  padding-left: 25px;
+  cursor: pointer;
+}
+
+.tabletab.inactive {
+  color: #A7ABBD;
+  font-weight: 400;
 }

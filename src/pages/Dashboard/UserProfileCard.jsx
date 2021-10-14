@@ -1,8 +1,6 @@
 import blankProfilePic from '../../assets/images/blankProfile.png';
 import '../../assets/css/local/pages/dashboard.css';
 
-const NOTICE_ROLES = ['COMMANDER', 'SECURITY', 'SUPER_SECURITY'];
-
 const UserProfileCard = ({
   user,
   userPicture,
@@ -12,23 +10,10 @@ const UserProfileCard = ({
   <div className='personal-information-wrap'>
     <div className='display-flex personal-information-inner'>
       {userType.tag && (
-        <div className='confirms'>
-          <h3>{userType.tag}</h3>
-        </div>
-      )}
-
-      {NOTICE_ROLES.some((role) => user.types.includes(role)) ? (
         <div className='noticeRibbon'>
-          <div className='noticeText'>
-            גורם
-            <br />
-            מאשר
-          </div>
+          <div className='noticeText'>{userType.tag}</div>
         </div>
-      ) : (
-        <></>
       )}
-
       <div className='personal-information-item'>
         <div className='userpic-wrap'>
           <img

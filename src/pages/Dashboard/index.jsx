@@ -65,6 +65,8 @@ const Dashboard = observer(() => {
     if (userStore.user) {
       if (userType.type === USER_TYPE.COMMANDER) {
         appliesStore.getMyApproveRequests();
+      } else if (userType.tag === USER_TYPE_TAG.SECURITY_APPROVER) {
+        // appliesStore.getAllApproveRequests();
       } else {
         // appliesStore.loadApplies();
         treeStore.loadTreeByEntity(userStore.user);
@@ -100,14 +102,11 @@ const Dashboard = observer(() => {
             closeFullDetailsModal={closeFullDetailsModal}
           />
           <div className='content-unit-wrap'>
-            {userType.tag === USER_TYPE_TAG.APPROVER ? (
+            {[USER_TYPE_TAG.APPROVER, USER_TYPE_TAG.SECURITY_APPROVER].includes(
+              userType.tag,
+            ) ? (
               <>
-                <div className='display-flex title-wrap'>
-                  <h2>בקשות לאישורי</h2>
-                  <h3>{applies.length} סה"כ</h3>
-                  {console.log(applies)}
-                </div>
-                <ApprovalTable applies={applies} />
+                <ApprovalTable applies={applies} approveType={userType.tag} />
               </>
             ) : (
               <div className='content-unit-inner content-unit-inner-before'>
