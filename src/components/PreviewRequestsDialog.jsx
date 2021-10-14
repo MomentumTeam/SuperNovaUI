@@ -7,6 +7,8 @@ import CreateSingleRoleForm from "./Modals/CreateSingleRoleForm";
 import RenameSingleOGForm from "./Modals/RenameSingleOGForm";
 import CreateSpecialEntityForm from "./Modals/CreateSpecialEntityForm";
 import AssignRoleToEntityForm from "./Modals/AssignRoleToEntityForm";
+import CreateBulkRoleForm from "./Modals/CreateBulkRoleForm";
+import RenameBulkOGForm from "./Modals/RenameBulkOGForm";
 
 const PreviewRequestsDialog = ({ request }) => {
   const [isDialogVisible, setDialogVisiblity] = useState(false);
@@ -26,8 +28,8 @@ const PreviewRequestsDialog = ({ request }) => {
     DISCONNECT_ROLE: { footer: null, header: '' },
     ADD_APPROVER: { footer: null, header: 'פרטי בקשה גורם מאשר', component: ApproverForm },
     CHANGE_ROLE_HIERARCHY: { footer: null, header: 'פרטי בקשה שינוי היררכיה', component: RenameSingleOGForm  },
-    CREATE_ROLE_BULK: { footer: null, header: '' },
-    CHANGE_ROLE_HIERARCHY_BULK: { footer: null, header: '' },
+    CREATE_ROLE_BULK: { footer: null, header: 'פרטי בקשת תפקידים חדשים', component: CreateBulkRoleForm },
+    CHANGE_ROLE_HIERARCHY_BULK: { footer: null, header: 'פרטי בקשת שינוי היררכיות', component: RenameBulkOGForm },
     UNRECOGNIZED: { footer: null, header: '' },
   }
   
