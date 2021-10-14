@@ -46,14 +46,14 @@ const RenameBulkOGForm = forwardRef(({ setIsActionDone }, ref) => {
       commanders: approvers,
       kartoffelParams: {
         directGroup: hierarchy.id,
-        unit,
+        unit: unit.id,
       },
       adParams: {
         ouDisplayName: hierarchy.name,
       },
       excelFilePath: uploadFiles[0],
     };
-    await appliesStore.assignRoleToEntityApply(req);
+    await appliesStore.createRoleBulk(req);
     setIsActionDone(true);
   };
 

@@ -1,16 +1,22 @@
 import { useState, useEffect } from "react";
-import PreviewApproverRequest from "./Modals/PreviewApproverRequest";
 import { Dialog } from "primereact/dialog";
+import PreviewRequestWrapper from "./PreviewRequestWrapper";
+import ApproverForm from "./Modals/ApproverForm";
+import CreateOGForm from "./Modals/CreateOGForm";
+import CreateSingleRoleForm from "./Modals/CreateSingleRoleForm";
+import RenameSingleOGForm from "./Modals/RenameSingleOGForm";
+import CreateSpecialEntityForm from "./Modals/CreateSpecialEntityForm";
+import AssignRoleToEntityForm from "./Modals/AssignRoleToEntityForm";
 
 const PreviewRequestsDialog = ({ request }) => {
   const [isDialogVisible, setDialogVisiblity] = useState(false);
   const [dialogContent, setDialogContent] = useState(null);
 
   const dialogParams = {
-    CREATE_OG: { footer: null, header: '' },
-    CREATE_ROLE: { footer: null, header: '' },
-    ASSIGN_ROLE_TO_ENTITY: { footer: null, header: '' },
-    CREATE_ENTITY: { footer: null, header: '' },
+    CREATE_OG: { footer: null, header: 'פרטי בקשה יצירת היררכיה', component: CreateOGForm },
+    CREATE_ROLE: { footer: null, header: 'פרטי בקשה יצירת תפקיד', component: CreateSingleRoleForm },
+    ASSIGN_ROLE_TO_ENTITY: { footer: null, header: 'פרטי בקשה יצירת משתמש', component: AssignRoleToEntityForm },
+    CREATE_ENTITY: { footer: null, header: 'פרטי בקשה יצירת ישות', component: CreateSpecialEntityForm },
     RENAME_OG: { footer: null, header: '' },
     RENAME_ROLE: { footer: null, header: '' },
     EDIT_ENTITY: { footer: null, header: '' },
@@ -18,8 +24,8 @@ const PreviewRequestsDialog = ({ request }) => {
     DELETE_ROLE: { footer: null, header: '' },
     DELETE_ENTITY: { footer: null, header: '' },
     DISCONNECT_ROLE: { footer: null, header: '' },
-    ADD_APPROVER: { footer: null, header: 'פרטי בקשה גורם מאשר'},
-    CHANGE_ROLE_HIERARCHY: { footer: null, header: '' },
+    ADD_APPROVER: { footer: null, header: 'פרטי בקשה גורם מאשר', component: ApproverForm },
+    CHANGE_ROLE_HIERARCHY: { footer: null, header: 'פרטי בקשה שינוי היררכיה', component: RenameSingleOGForm  },
     CREATE_ROLE_BULK: { footer: null, header: '' },
     CHANGE_ROLE_HIERARCHY_BULK: { footer: null, header: '' },
     UNRECOGNIZED: { footer: null, header: '' },
@@ -28,17 +34,9 @@ const PreviewRequestsDialog = ({ request }) => {
 
   useEffect(() => {
     if (request.type) {
-      let newDialogContent = null;
-      switch (request.type) {
-        case "ADD_APPROVER":
-          newDialogContent = <PreviewApproverRequest request={request} />;
-          break;
-        default:
-          break;
-      }
-
-      if (newDialogContent) {
-        setDialogContent(newDialogContent);
+      // TODO: handle UNRECOGNIZED
+      if (dialogParams[request.type]) {
+        setDialogContent(<PreviewRequestWrapper request={request} ModalComponent={dialogParams[request.type].component}/>);
         setDialogVisiblity(true);
       };
     }

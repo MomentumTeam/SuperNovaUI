@@ -65,7 +65,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
   const setCurrentHierarchyFunction = async (name, value) => {
     setValue(name, value);
 
-    if (value.id) {
+    if (value?.id) {
       setRoles((await getRolesUnderOG(value.id)).roles);
     }
   };

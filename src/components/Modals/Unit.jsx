@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { searchUnits } from "../../service/KartoffelService";
 import { AutoComplete } from "primereact/autocomplete";
 
-const Unit = ({ setValue, name, onOrgSelected, value, errors }) => {
+const Unit = ({ setValue, name, onOrgSelected, value, errors, disabled }) => {
   const [unitSuggestions, setUnitSuggestions] = useState([]);
   const [selectedUnit, setSelectedUnit] = useState(null);
 
@@ -26,6 +26,7 @@ const Unit = ({ setValue, name, onOrgSelected, value, errors }) => {
         completeMethod={searchUnit}
         type="text"
         field="hierarchy"
+        disabled={disabled}
         onSelect={(e) => {
           if (onOrgSelected) {
             onOrgSelected(e.value);

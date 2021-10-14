@@ -14,12 +14,12 @@ const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2
 const validationSchema = Yup.object().shape({
     firstName: Yup.string().required(),
     lastName: Yup.string().required(),
-    identityNumber: Yup.number().required(),
+    identityNumber: Yup.string().required(),
     phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid').required(),
-    classification: Yup.number().required(),
+    classification: Yup.string().required(),
     approvers: Yup.array().min(1).required(),
     comments: Yup.string().optional(),
-    sex: Yup.number().optional().nullable()
+    sex: Yup.string().optional().nullable()
 });
 
 const CreateSpecialEntityForm = forwardRef(({ setIsActionDone }, ref) => {
