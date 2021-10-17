@@ -105,7 +105,7 @@ const Table = ({ applies, allApplies, approveType }) => {
         <span
           className={classNames('customer-badge', 'status-' + rowData.status)}
         >
-          {STATUSES[rowData.status]}
+          {rowData.securityApprovers[0]?.displayName}
         </span>
       </React.Fragment>
     );
@@ -126,20 +126,23 @@ const Table = ({ applies, allApplies, approveType }) => {
         </div>
       ) : (
         <div className='display-flex display-flex-start title-wrap'>
-          <h2
+          <div
             className={`tabletab ${selectedTab !== 'myreqs' ? 'inactive' : ''}`}
             onClick={() => setTab('myreqs')}
           >
-            בקשות לאישורי
-          </h2>
-          <h2
+            <h2>בקשות לאישורי</h2>
+            <h3 className='request-count-badge'>{applies.length}</h3>
+          </div>
+
+          <div
             className={`tabletab ${
               selectedTab !== 'allreqs' ? 'inactive' : ''
             }`}
             onClick={() => setTab('allreqs')}
           >
-            סל הבקשות
-          </h2>
+            <h2>סל הבקשות</h2>
+            <h3 className='request-count-badge'>{allApplies.length}</h3>
+          </div>
         </div>
       )}
       <div className='table-wrapper'>
