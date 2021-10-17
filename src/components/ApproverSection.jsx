@@ -70,7 +70,7 @@ const ApproverSection = ({ requestId, setDialogVisiblity }) => {
           />
         </div>
         <div>
-          <Button label="סגירה" className="btn-gradient" />
+          <Button label="סגירה" className="btn-gradient" onClick={() => setDialogVisiblity(false)}/>
         </div>
       </div>
     </>
