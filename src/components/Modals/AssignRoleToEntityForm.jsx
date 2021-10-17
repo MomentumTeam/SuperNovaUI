@@ -11,6 +11,7 @@ import { AutoComplete } from 'primereact/autocomplete';
 import { Calendar } from 'primereact/calendar';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import HorizontalLine from "../HorizontalLine";
 import '../../assets/css/local/components/calendar.css';
 
 import {
@@ -198,110 +199,119 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true, setIsActionDone, on
   const userRoleDisplay = userRole ? userRole.jobTitle : ' - ';
 
   return (
-    <div className='p-fluid'>
-      <div className='p-fluid-item-flex p-fluid-item'>
-        <button
-          className='btn-underline left19'
-          onClick={setCurrentUser}
-          type='button'
-          title='עבורי'
-          disabled={onlyForView}
-        >
-          עבורי
-        </button>
-        <div className='p-field'>
-          <label htmlFor='2020'>
-            {' '}
-            <span className='required-field'>*</span>שם משתמש
-          </label>
-          <AutoComplete
-            value={watch('userName')}
-            suggestions={userSuggestions}
-            completeMethod={onSearchUser}
-            id='2020'
-            type='text'
-            field='fullName'
-            onSelect={(e) => {
-              setValue('user', e.value);
-              setValue('personalNumber', e.value.personalNumber || e.value.identityCard);
-              setValue('userRole', e.value.jobTitle);
-            }}
-            onChange={(e) => {
-              setValue('userName', e.value.displayName ? e.value.displayName : e.value);
-            }}
-            required
-            disabled={onlyForView}
-          />
-          <label htmlFor='2020'>
-            {' '}
-            {errors.userName && <small style={{ color: "red" }}>יש למלא ערך</small>}
-          </label>
-        </div>
-      </div>
-      <div className='p-fluid-item-flex p-fluid-item'>
-        <div className='p-field'>
-          <label htmlFor='2021'>
-            {' '}
-            <span className='required-field'>*</span>מ"א/ת"ז
-          </label>
-          <InputText
-            {...register('personalNumber', { required: true })}
-            id='2021'
-            type='text'
-            required
-            onBlur={onSearchUserById}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                onSearchUserById();
-              }
-            }}
-            disabled={onlyForView}
-          />
-          <label htmlFor='2021'>
-            {' '}
-            {errors.personalNumber && <small style={{ color: "red" }}>יש למלא ערך</small>}
-          </label>
-        </div>
-      </div>
-      {showJob ? <div className='p-fluid-item' >
-        <div className='p-field p-field-blue'>
-          <label htmlFor='2022'>תפקיד</label>
-          <InputText
-            id='2022'
-            disabled
-            type='text'
-            placeholder='תפקיד'
-            value={userRoleDisplay}
-          />
-        </div>
-      </div> : null}
-      <div className='p-fluid-item-flex p-fluid-item'>
-        <Hierarchy
-          ogValue={watch('hierarchy')}
-          setValue={setValue}
-          name='hierarchy'
-          onOrgSelected={handleOrgSelected}
-          errors={errors}
-          disabled={onlyForView}
-        />
-      </div>
-      {watch('currentRoleUser') && (
+    <div className='p-fluid' style={{ flexDirection: 'column' }}>
+      <div style={{ display: 'flex' }}>
         <div className='p-fluid-item-flex p-fluid-item'>
-          <div
-            className={`p-field ${watch('currentRoleUser') ? 'p-field-red' : 'p-field-green'
-              }`}
+          <button
+            className='btn-underline left19'
+            onClick={setCurrentUser}
+            type='button'
+            title='עבורי'
+            disabled={onlyForView}
+            style={onlyForView && { display: 'none' }}
           >
-            <label htmlFor='2024'>סטטוס תפקיד</label>
-            <InputText
-              {...register('roleStatus')}
-              id='2024'
-              disabled
+            עבורי
+          </button>
+          <div className='p-field'>
+            <label htmlFor='2020'>
+              {' '}
+              <span className='required-field'>*</span>שם משתמש
+            </label>
+            <AutoComplete
+              value={watch('userName')}
+              suggestions={userSuggestions}
+              completeMethod={onSearchUser}
+              id='2020'
               type='text'
-              placeholder={watch('currentRoleUser') ? 'לא פנוי' : 'פנוי'}
+              field='fullName'
+              onSelect={(e) => {
+                setValue('user', e.value);
+                setValue('personalNumber', e.value.personalNumber || e.value.identityCard);
+                setValue('userRole', e.value.jobTitle);
+              }}
+              onChange={(e) => {
+                setValue('userName', e.value.displayName ? e.value.displayName : e.value);
+              }}
+              required
+              disabled={onlyForView}
             />
+            <label htmlFor='2020'>
+              {' '}
+              {errors.userName && <small style={{ color: "red" }}>יש למלא ערך</small>}
+            </label>
           </div>
         </div>
-      )}
+        <div className='p-fluid-item-flex p-fluid-item' style={{ marginLeft: '10px' }}>
+          <div className='p-field'>
+            <label htmlFor='2021'>
+              {' '}
+              <span className='required-field'>*</span>מ"א/ת"ז
+            </label>
+            <InputText
+              {...register('personalNumber', { required: true })}
+              id='2021'
+              type='text'
+              required
+              onBlur={onSearchUserById}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  onSearchUserById();
+                }
+              }}
+              disabled={onlyForView}
+            />
+            <label htmlFor='2021'>
+              {' '}
+              {errors.personalNumber && <small style={{ color: "red" }}>יש למלא ערך</small>}
+            </label>
+          </div>
+        </div>
+        {showJob ? <div className='p-fluid-item' >
+          <div className='p-field p-field-blue'>
+            <label htmlFor='2022'>תפקיד</label>
+            <InputText
+              id='2022'
+              disabled
+              type='text'
+              placeholder='תפקיד'
+              value={userRoleDisplay}
+            />
+          </div>
+        </div> : null}
+      </div>
+      <HorizontalLine />
+      <div className="display-flex title-wrap" style={{ width: "inherit" }}>
+        <h2>מעבר לתפקיד</h2>
+      </div>
+      <div style={{ display: 'flex' }}>
+        <div className='p-fluid-item-flex p-fluid-item'>
+          <Hierarchy
+            ogValue={watch('hierarchy')}
+            setValue={setValue}
+            name='hierarchy'
+            onOrgSelected={handleOrgSelected}
+            errors={errors}
+            disabled={onlyForView}
+          />
+        </div>
+        {watch('currentRoleUser') && (
+          <div className='p-fluid-item-flex p-fluid-item'>
+            <div
+              className={`p-field ${watch('currentRoleUser') ? 'p-field-red' : 'p-field-green'
+                }`}
+            >
+              <label htmlFor='2024'>סטטוס תפקיד</label>
+              <InputText
+                {...register('roleStatus')}
+                id='2024'
+                disabled
+                type='text'
+                placeholder={watch('currentRoleUser') ? 'לא פנוי' : 'פנוי'}
+              />
+            </div>
+          </div>
+        )}
+      </div>
       <div className='row3flex'>
         <div className='p-fluid-item '>
           <div className='p-field p-field-blue'>

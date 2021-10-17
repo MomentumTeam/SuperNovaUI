@@ -12,6 +12,7 @@ import {
   getRolesUnderOG,
   getRoleByRoleId,
 } from "../../service/KartoffelService";
+import HorizontalLine from "../HorizontalLine";
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
@@ -166,12 +167,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
           <label>{errors.identifier && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
         </div>
       </div>
-      <hr
-        style={{
-          height: 5,
-          width: "inherit",
-        }}
-      />
+      <HorizontalLine />
       <div className="display-flex title-wrap" style={{ width: "inherit" }}>
         <h2>היררכיה חדשה</h2>
       </div>
