@@ -14,7 +14,7 @@ const Entities = observer(() => {
     const [ tabId, setTabId ] = useState('entities');
 
     useEffect(() => {
-        userStore.fetchUserNotifications(userStore.user?.id);
+        userStore.fetchUserNotifications();
     }, [userStore]);
 
     useEffect(() => {
