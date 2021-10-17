@@ -14,8 +14,10 @@ import {
 
 import '../assets/css/local/general/table.min.css';
 
-class Table extends React.Component {
-  requestTypeBodyTemplate(rowData) {
+const Table = ({ applies, approveType }) => {
+  const [selectedTab, setTab] = useState(0);
+
+  const requestTypeBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
         <span className='p-column-title'>סוג בקשה</span>
@@ -29,9 +31,9 @@ class Table extends React.Component {
         </span>
       </React.Fragment>
     );
-  }
+  };
 
-  requesterNameBodyTemplate(rowData) {
+  const requesterNameBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
         <span className='p-column-title'>שם מבקש</span>
@@ -42,9 +44,9 @@ class Table extends React.Component {
         </span>
       </React.Fragment>
     );
-  }
+  };
 
-  requestDateBodyTemplate(rowData) {
+  const requestDateBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
         <span className='p-column-title'>ת׳ בקשה</span>
@@ -55,9 +57,9 @@ class Table extends React.Component {
         </span>
       </React.Fragment>
     );
-  }
+  };
 
-  requestHierarchyBodyTemplate(rowData) {
+  const requestHierarchyBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
         <span className='p-column-title'>היררכיה</span>
@@ -68,9 +70,9 @@ class Table extends React.Component {
         </span>
       </React.Fragment>
     );
-  }
+  };
 
-  requestReasonBodyTemplate(rowData) {
+  const requestReasonBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
         <span className='p-column-title'>סיבה</span>
@@ -81,9 +83,9 @@ class Table extends React.Component {
         </span>
       </React.Fragment>
     );
-  }
+  };
 
-  requestStatusBodyTemplate(rowData) {
+  const requestStatusBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
         <span className='p-column-title'>סטטוס</span>
@@ -94,89 +96,99 @@ class Table extends React.Component {
         </span>
       </React.Fragment>
     );
-  }
+  };
 
-  async excelExport(applies) {
+  const excelExport = async (applies) => {
     const approvalData = processApprovalTableData(applies);
     exportToExcel(approvalData);
-  }
+  };
 
-  render() {
-    return (
-      <>
-        {!this.props.approveType === USER_TYPE_TAG.APPROVER ? (
-          <div className='display-flex title-wrap'>
-            <h2>בקשות לאישורי</h2>
-            <h3>{this.props.applies.length} סה"כ</h3>
-            {console.log(this.props.applies)}
-          </div>
-        ) : (
-          <div className='display-flex display-flex-start title-wrap'>
-            <h2 className={'tabletab'}>בקשות לאישורי</h2>
-            <h2 className={'tabletab'}>סל הבקשות</h2>
-            {console.log(this.props.applies)}
-          </div>
-        )}
-        <div className='table-wrapper'>
-          <div className='tableStyle'>
-            <div className='card'>
-              <DataTable value={this.props.applies} scrollable lazy>
-                <Column selectionMode='multiple' style={{ width: '3em' }} />
+  return (
+    <>
+      {!approveType === USER_TYPE_TAG.APPROVER ? (
+        <div className='display-flex title-wrap'>
+          <h2>בקשות לאישורי</h2>
+          <h3>{applies.length} סה"כ</h3>
+          {console.log(applies)}
+        </div>
+      ) : (
+        <div className='display-flex display-flex-start title-wrap'>
+          <h2
+            className={'tabletab'}
+            style={{ color: selectedTab === 'myreqs' && '#201961' }}
+            onClick={() => setTab('myreqs')}
+          >
+            בקשות לאישורי
+          </h2>
+          <h2
+            className={'tabletab'}
+            style={{ color: selectedTab === 'allreqs' && '#201961' }}
+            onClick={() => setTab('allreqs')}
+          >
+            סל הבקשות
+          </h2>
+          {console.log(applies)}
+        </div>
+      )}
+      <div className='table-wrapper'>
+        <div className='tableStyle'>
+          <div className='card'>
+            <DataTable value={applies} scrollable lazy>
+              <Column selectionMode='multiple' style={{ width: '3em' }} />
 
-                <Column
-                  field='reqType'
-                  header='סוג בקשה'
-                  body={this.requestTypeBodyTemplate}
-                  sortable
-                ></Column>
-                <Column
-                  field='requester'
-                  header='שם מבקש'
-                  body={this.requesterNameBodyTemplate}
-                  sortable
-                ></Column>
-                <Column
-                  field='reqDate'
-                  header='ת׳ בקשה'
-                  body={this.requestDateBodyTemplate}
-                  sortable
-                ></Column>
-                <Column
-                  field='role'
-                  header='היררכיה'
-                  body={this.requestHierarchyBodyTemplate}
-                  sortable
-                ></Column>
-                <Column
-                  field='reason'
-                  header='סיבה'
-                  body={this.requestReasonBodyTemplate}
-                  sortable
-                ></Column>
-                <Column
-                  field='status'
-                  header='סטטוס'
-                  body={this.requestStatusBodyTemplate}
-                  sortable
-                ></Column>
-              </DataTable>
+              <Column
+                field='reqType'
+                header='סוג בקשה'
+                body={requestTypeBodyTemplate}
+                sortable
+              ></Column>
+              <Column
+                field='requester'
+                header='שם מבקש'
+                body={requesterNameBodyTemplate}
+                sortable
+              ></Column>
+              <Column
+                field='reqDate'
+                header='ת׳ בקשה'
+                body={requestDateBodyTemplate}
+                sortable
+              ></Column>
+              <Column
+                field='role'
+                header='היררכיה'
+                body={requestHierarchyBodyTemplate}
+                sortable
+              ></Column>
+              <Column
+                field='reason'
+                header='סיבה'
+                body={requestReasonBodyTemplate}
+                sortable
+              ></Column>
+              <Column
+                field='status'
+                header='סטטוס'
+                body={requestStatusBodyTemplate}
+                sortable
+              ></Column>
+            </DataTable>
 
-              <div className='display-flex inner-flex'>
-                <button
-                  className='btn btn-export'
-                  title='Export'
-                  type='button'
-                  onClick={() => this.excelExport(this.props.applies)}
-                >
-                  <span className='for-screnReader'>Export</span>
-                </button>
-              </div>
+            <div className='display-flex inner-flex'>
+              <button
+                className='btn btn-export'
+                title='Export'
+                type='button'
+                onClick={() => excelExport(applies)}
+              >
+                <span className='for-screnReader'>Export</span>
+              </button>
             </div>
           </div>
         </div>
-      </>
-    );
-  }
-}
+      </div>
+    </>
+  );
+};
 
 export default Table;
