@@ -6,7 +6,6 @@ import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { InputTextarea } from "primereact/inputtextarea";
 import Hierarchy from "./Hierarchy";
-import Unit from "./Unit";
 import Approver from "./Approver";
 import { useStores } from "../../context/use-stores";
 import * as Yup from "yup";
@@ -19,7 +18,6 @@ const validationSchema = Yup.object().shape({
   approvers: Yup.array().min(1).required(),
   comments: Yup.string().optional(),
   clearance: Yup.string().required(),
-  unit: Yup.object().required(),
   roleName: Yup.string().required(),
   isTafkidan: Yup.boolean().default(false),
   isJobAlreadyTakenData: Yup.object()
@@ -42,7 +40,6 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
       setValue('comments', requestObject.comments);
       setValue('clearance', requestObject.kartoffelParams.clearance);
       setValue('roleName', requestObject.kartoffelParams.jobTitle);
-      setValue('unit', requestObject.kartoffelParams.unit); // TODO: translate unit id to unit
       setValue('hierarchy', { name: requestObject.adParams.ouDisplayName });
       setValue('isTafkidan', !!requestObject.kartoffelParams.roleEntityType);
     }
@@ -59,7 +56,6 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
       hierarchy,
       comments,
       clearance,
-      unit,
       roleName,
       isTafkidan,
     } = data;
@@ -71,7 +67,6 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
         isRoleAttachable: true,
         source: "oneTree",
         type: "domainUser",
-        unit: unit.id,
         clearance,
         roleEntityType: isTafkidan ? 'goalUser' : undefined,
       },
@@ -146,9 +141,6 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             </label>
           </span>
         </div>
-      </div>
-      <div className="p-fluid-item">
-        <Unit setValue={setValue} name="unit" errors={errors} value={watch('unit')} disabled={onlyForView} />
       </div>
       {watch("isJobAlreadyTakenData")?.isJobTitleAlreadyTaken && (
         <div

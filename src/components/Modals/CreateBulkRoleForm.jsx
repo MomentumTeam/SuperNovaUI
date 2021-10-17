@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import Hierarchy from "./Hierarchy";
 import BulkRowsPopup from "./BulkRowsPopup";
 import BulkFileArea from "./BulkFileArea";
-import Unit from "./Unit";
 import Approver from "./Approver";
 import { useStores } from "../../context/use-stores";
 import * as Yup from "yup";
@@ -37,14 +36,9 @@ const RenameBulkOGForm = forwardRef(
       const getBulkData = async () => {
         const data = await getCreateBulkRoleData(requestObject.id);
         setValue("hierarchy", data.request.adParams.ouDisplayName);
-
         setValue("rows", data.rows);
-        // TODO: get unit by id
-
-        console.log(data);
       };
       if (requestObject) {
-        console.log(requestObject);
         getBulkData();
       }
     }, []);
@@ -55,7 +49,7 @@ const RenameBulkOGForm = forwardRef(
       } catch (err) {
         throw new Error(err.errors);
       }
-      const { hierarchy, approvers, unit, bulkFile } = data;
+      const { hierarchy, approvers, bulkFile } = data;
 
       const formData = new FormData();
       formData.append("bulkFiles", bulkFile[0]);
@@ -65,7 +59,6 @@ const RenameBulkOGForm = forwardRef(
         commanders: approvers,
         kartoffelParams: {
           directGroup: hierarchy.id,
-          unit: unit.id,
         },
         adParams: {
           ouDisplayName: hierarchy.name,
@@ -85,7 +78,7 @@ const RenameBulkOGForm = forwardRef(
     );
 
     return (
-      <div className="p-fluid">
+      <div className="p-fluid" style={{ display: 'flex', flexDirection: 'column' }}>
         <div className="p-fluid-item-flex p-fluid-item">
           <div className="p-field">
             <Hierarchy
@@ -94,16 +87,6 @@ const RenameBulkOGForm = forwardRef(
               labelText="היררכיה"
               errors={errors}
               ogValue={watch("hierarchy")}
-              disabled={onlyForView}
-            />
-          </div>
-        </div>
-        <div className="p-fluid-item">
-          <div className="p-field">
-            <Unit
-              setValue={setValue}
-              name="unit"
-              errors={errors}
               disabled={onlyForView}
             />
           </div>

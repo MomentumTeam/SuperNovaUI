@@ -6,7 +6,7 @@ import Downloader from "js-file-downloader";
 
 const BulkFileArea = ({ register, errors, downloadUrl, fileName }) => {
   return (
-    <div style={{ display: "contents" }}>
+    <div style={{ display: "flex" }}>
       <div className="p-fluid-item-flex p-fluid-item">
         <div className="p-field">
           <label htmlFor="1903">
