@@ -183,7 +183,9 @@ const Table = ({ applies, allApplies, approveType }) => {
                 className='btn btn-export'
                 title='Export'
                 type='button'
-                onClick={() => excelExport(applies)}
+                onClick={() =>
+                  excelExport(selectedTab === 'myreqs' ? applies : allApplies)
+                }
               >
                 <span className='for-screnReader'>Export</span>
               </button>
