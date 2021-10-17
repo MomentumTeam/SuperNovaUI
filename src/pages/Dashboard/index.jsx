@@ -18,6 +18,8 @@ const Dashboard = observer(() => {
   const user = toJS(userStore.user);
   const userPicture = toJS(userStore.userPicture);
   const applies = toJS(appliesStore.applies);
+  const allApplies = toJS(appliesStore.allApplies);
+
   let userType;
 
   user?.types.forEach((type) => {
@@ -65,6 +67,7 @@ const Dashboard = observer(() => {
     if (userStore.user) {
       if (userType.type === USER_TYPE.COMMANDER) {
         appliesStore.getMyApproveRequests();
+        appliesStore.getAllApproveRequests();
       } else {
         // appliesStore.loadApplies();
         treeStore.loadTreeByEntity(userStore.user);
@@ -104,7 +107,11 @@ const Dashboard = observer(() => {
               userType.tag,
             ) ? (
               <>
-                <ApprovalTable applies={applies} approveType={userType.tag} />
+                <ApprovalTable
+                  applies={applies}
+                  allApplies={allApplies}
+                  approveType={userType.tag}
+                />
               </>
             ) : (
               <div className='content-unit-inner content-unit-inner-before'>

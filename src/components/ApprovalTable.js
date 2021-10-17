@@ -14,7 +14,7 @@ import {
 
 import '../assets/css/local/general/table.min.css';
 
-const Table = ({ applies, approveType }) => {
+const Table = ({ applies, allApplies, approveType }) => {
   const [selectedTab, setTab] = useState('myreqs');
 
   const requestTypeBodyTemplate = (rowData) => {
@@ -133,7 +133,11 @@ const Table = ({ applies, approveType }) => {
       <div className='table-wrapper'>
         <div className='tableStyle'>
           <div className='card'>
-            <DataTable value={applies} scrollable lazy>
+            <DataTable
+              value={selectedTab === 'myreqs' ? applies : allApplies}
+              scrollable
+              lazy
+            >
               <Column selectionMode='multiple' style={{ width: '3em' }} />
 
               <Column

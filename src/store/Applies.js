@@ -77,8 +77,8 @@ export default class AppliesStore {
   }
 
   async getAllApproveRequests() {
-    const myApplies = await getAllApproveRequests();
-    this.applies = myApplies.requests;
+    const allApplies = await getAllApproveRequests();
+    this.allApplies = allApplies.requests;
   }
 
   async getAppliesByPerosn(id, personType, personInfoType, from, to) {
