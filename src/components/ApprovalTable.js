@@ -109,7 +109,6 @@ const Table = ({ applies, allApplies, approveType }) => {
         <div className='display-flex title-wrap'>
           <h2>בקשות לאישורי</h2>
           <h3>{applies.length} סה"כ</h3>
-          {console.log(applies)}
         </div>
       ) : (
         <div className='display-flex display-flex-start title-wrap'>
@@ -127,7 +126,6 @@ const Table = ({ applies, allApplies, approveType }) => {
           >
             סל הבקשות
           </h2>
-          {console.log(applies)}
         </div>
       )}
       <div className='table-wrapper'>
