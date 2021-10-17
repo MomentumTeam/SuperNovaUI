@@ -15,7 +15,7 @@ import {
 import '../assets/css/local/general/table.min.css';
 
 const Table = ({ applies, approveType }) => {
-  const [selectedTab, setTab] = useState(0);
+  const [selectedTab, setTab] = useState('myreqs');
 
   const requestTypeBodyTemplate = (rowData) => {
     return (
@@ -114,15 +114,15 @@ const Table = ({ applies, approveType }) => {
       ) : (
         <div className='display-flex display-flex-start title-wrap'>
           <h2
-            className={'tabletab'}
-            style={{ color: selectedTab === 'myreqs' && '#201961' }}
+            className={`tabletab ${selectedTab !== 'myreqs' ? 'inactive' : ''}`}
             onClick={() => setTab('myreqs')}
           >
             בקשות לאישורי
           </h2>
           <h2
-            className={'tabletab'}
-            style={{ color: selectedTab === 'allreqs' && '#201961' }}
+            className={`tabletab ${
+              selectedTab !== 'allreqs' ? 'inactive' : ''
+            }`}
             onClick={() => setTab('allreqs')}
           >
             סל הבקשות

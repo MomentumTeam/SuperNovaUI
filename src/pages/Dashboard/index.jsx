@@ -65,8 +65,6 @@ const Dashboard = observer(() => {
     if (userStore.user) {
       if (userType.type === USER_TYPE.COMMANDER) {
         appliesStore.getMyApproveRequests();
-      } else if (userType.tag === USER_TYPE_TAG.SECURITY_APPROVER) {
-        // appliesStore.getAllApproveRequests();
       } else {
         // appliesStore.loadApplies();
         treeStore.loadTreeByEntity(userStore.user);
