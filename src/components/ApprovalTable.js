@@ -98,6 +98,19 @@ const Table = ({ applies, allApplies, approveType }) => {
     );
   };
 
+  const requestHandlerBodyTemplate = (rowData) => {
+    return (
+      <React.Fragment>
+        <span className='p-column-title'>גורם מטפל</span>
+        <span
+          className={classNames('customer-badge', 'status-' + rowData.status)}
+        >
+          {STATUSES[rowData.status]}
+        </span>
+      </React.Fragment>
+    );
+  };
+
   const excelExport = async (applies) => {
     const approvalData = processApprovalTableData(applies);
     exportToExcel(approvalData);
@@ -105,6 +118,7 @@ const Table = ({ applies, allApplies, approveType }) => {
 
   return (
     <>
+      {console.log(allApplies)}
       {!approveType === USER_TYPE_TAG.APPROVER ? (
         <div className='display-flex title-wrap'>
           <h2>בקשות לאישורי</h2>
@@ -150,6 +164,14 @@ const Table = ({ applies, allApplies, approveType }) => {
                 body={requesterNameBodyTemplate}
                 sortable
               ></Column>
+              {selectedTab === 'allreqs' && (
+                <Column
+                  field='reqDate'
+                  header='גורם מטפל'
+                  body={requestHandlerBodyTemplate}
+                  sortable
+                ></Column>
+              )}
               <Column
                 field='reqDate'
                 header='ת׳ בקשה'
