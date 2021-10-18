@@ -97,6 +97,21 @@ export const isJobTitleAlreadyTakenRequest = async (jobTitle, directGroup) => {
   return response.data;
 }
 
+export const getCreateBulkRoleData = async (id) => {
+  const response = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/bulk/request/createRole/${id}`,
+  );
+
+  return response.data;
+}
+
+export const getBulkChangeRoleHierarchyData = async (id) => {
+  const response = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/bulk/request/changeRoleHierarchy/${id}`,
+  );
+
+  return response.data;
+}
 //POST
 
 export const createRoleRequest = async (applyProperties) => {

@@ -4,8 +4,7 @@ import {
   getUserTypeReq,
   searchApproverByDisplayNameReq,
   searchApproverByDomainUserReq,
-  updateCommanderDecisionReq,
-  updateSecurityDecisionReq,
+  updateDecisionReq,
 } from '../service/ApproverService';
 
 export default class ApproverStore {
@@ -18,8 +17,7 @@ export default class ApproverStore {
       getAllApprovers: action,
       searchApproverByDisplayName: action,
       searchApproverByDomainUser: action,
-      updateCommanderDecision: action,
-      updateSecurityDecision: action,
+      updateDecision: action,
     });
   }
 
@@ -47,11 +45,7 @@ export default class ApproverStore {
     return approvers;
   }
 
-  async updateCommanderDecision(requestId) {
-    const res = await updateCommanderDecisionReq(requestId);
-  }
-
-  async updateSecurityDecisionReq(requestId) {
-    const res = await updateSecurityDecisionReq(requestId);
+  async updateDecision(requestId) {
+    const res = await updateDecisionReq(requestId);
   }
 }
