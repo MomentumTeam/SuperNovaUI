@@ -7,7 +7,7 @@ import { Checkbox } from "primereact/checkbox";
 import { InputTextarea } from "primereact/inputtextarea";
 import Hierarchy from "./Hierarchy";
 import Unit from "./Unit";
-import Approver from "./Approver";
+import Approver from "../Fields/Approver";
 import { useStores } from "../../context/use-stores";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";

@@ -2,7 +2,7 @@ import React, { useImperativeHandle, forwardRef } from "react";
 import { useForm } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import Hierarchy from "./Hierarchy";
-import Approver from "./Approver";
+import Approver from "../Fields/Approver";
 import { useStores } from "../../context/use-stores";
 import * as Yup from "yup";
 import { apiBaseUrl } from "../../constants";

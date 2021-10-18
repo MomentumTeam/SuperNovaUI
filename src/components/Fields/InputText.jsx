@@ -1,24 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { InputText } from "primereact/inputtext";
 
 import { getLabel, disabledInputStyle } from "./InputCommon";
+import { InputFormContext } from './InputForm';
 
 const InputTextField = ({
   fieldName,
   displayName,
-  item,
-  setForm = null,
-  isEdit = false,
   canEdit = false,
   type = "text",
   keyFilter = null,
   additionalClass = "",
   validator = null,
-  errors = {},
-  changeErrors = null,
 }) => {
-  const disabled = !canEdit || !isEdit;
+  const { item, isEdit, changeForm, errors, changeErrors } = useContext(InputFormContext);
   const [value, setValue] = useState("");
+  const disabled = !canEdit || !isEdit;
+
 
   useEffect(() => {
     setValue("");
@@ -31,7 +29,9 @@ const InputTextField = ({
 
         <InputText
           id="2011"
-          className={errors[fieldName] === undefined || errors[fieldName] === null ? "" : "p-invalid"}
+          className={
+            errors === null || errors[fieldName] === undefined || errors[fieldName] === null ? "" : "p-invalid"
+          }
           type={type}
           keyfilter={keyFilter}
           disabled={disabled}
@@ -39,14 +39,14 @@ const InputTextField = ({
           placeholder={item[fieldName]}
           onChange={(e) => {
             const errormsg = e.target.value === "" ? null : validator ? validator(e.target.value) : null;
-            errormsg ? changeErrors(fieldName, true, errormsg) : changeErrors(fieldName, false);
+            errormsg ? changeErrors(fieldName, errormsg) : changeErrors(fieldName);
             setValue(e.target.value);
-            setForm(fieldName, e.target.value);
+            changeForm(fieldName, e.target.value);
           }}
           value={value}
         />
 
-        {errors[fieldName] !== null && <small className="p-error p-d-block">{errors[fieldName]}</small>}
+        {errors !== null && errors[fieldName] !== null && <small className="p-error p-d-block">{errors[fieldName]}</small>}
       </div>
     </div>
   );

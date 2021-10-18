@@ -1,38 +1,97 @@
+import * as Yup from "yup";
 import React, { useState, useEffect } from "react";
+import { useForm, FormProvider } from "react-hook-form";
 import { Dialog } from "primereact/dialog";
-import { InputText } from "primereact/inputtext";
 import { classNames } from "primereact/utils";
-import { AutoComplete } from "primereact/autocomplete";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import "../../../assets/css/local/general/buttons.css";
 import "../../../assets/css/local/components/modal-item.css";
 
+import Approver from "../../Fields/Approver";
+import { RoleField } from "../../Fields/Role";
+import { InputForm, InputTypes } from "../../Fields/InputForm";
+import { NAME_OG_EXP,USER_CLEARANCE } from "../../../constants";
+import { getEntityByRoleId } from "../../../service/KartoffelService";
 import { FullRoleInformationFooter } from "./FullRoleInformationFooter";
-import { USER_CLEARANCE } from "../../../constants";
-import { getLabel, disabledInputStyle } from "../../Fields/InputCommon";
-import { InputDropdown } from "../../Fields/InputDropdown";
-import { InputTextField } from "../../Fields/InputText";
-import { InputCalanderField } from "../../Fields/InputCalander";
-import { getEntityByRoleId, getRole } from "../../../service/KartoffelService";
 
 const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) => {
   const [isEdit, setIsEdit] = useState(edit);
-  const [form, setForm] = useState(role);
   const [entity, setEntity] = useState({});
-  const [results, setResults] = useState([]);
-  const [selected, setSelected] = useState([]);
+  const [isJobTitleFree, setIsJobTitleFree] = useState(true);
+
+  const validationSchema = Yup.object().shape({
+    approvers: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+    role: Yup.string()
+      .matches(NAME_OG_EXP, "תפקיד לא תקין")
+      .required("יש לבחור שם תפקיד")
+      .test({
+        name: "jobTitle-valid-check",
+        message: "תפקיד תפוס",
+        test: () => {
+          return !isJobTitleFree;
+        },
+      }),
+  });
+
+   const methods = useForm({
+     mode: "onBlur",
+     reValidateMode: "onChange",
+     defaultValues: { role: "" },
+     resolver: yupResolver(validationSchema),
+   });
+  const { errors } = methods.formState;
 
   useEffect(async () => {
-    const entity = await getEntityByRoleId(role.roleId);
-    setEntity(entity);
+    const entityRes = await getEntityByRoleId(role.roleId);
+    setEntity(entityRes);
   }, [role]);
 
-  useEffect(async () => {
-    setForm(role);
-  }, [isEdit]);
+  const formFields = [
+    {
+      fieldName: "hierarchy",
+      displayName: "היררכיה",
+      inputType: InputTypes.TEXT,
+      additionalClass: "padR",
+    },
+    {
+      fieldName: "clearance",
+      displayName: "סיווג התפקיד",
+      inputType: InputTypes.DROPDOWN,
+      options: USER_CLEARANCE,
+      additionalClass: "padL",
+    },
+    {
+      fieldName: "digitalIdentityUniqueId",
+      displayName: "יוזר",
+      inputType: InputTypes.TEXT,
+      additionalClass: "padR",
+    },
+    {
+      fieldName: "createdAt",
+      displayName: "תאריך עדכון",
+      inputType: InputTypes.CALANDER,
+      additionalClass: "padL",
+    },
+    {
+      fieldName: "unit",
+      displayName: "יחידה",
+      inputType: InputTypes.TEXT,
+      additionalClass: "padR",
+      force: true
+    },
+  ];
 
+   const userInRoleField = [
+     {
+       fieldName: "fullName",
+       displayName: "משתמש בתפקיד",
+       inputType: InputTypes.TEXT,
+       additionalClass: "padL",
+     },
+   ];
   return (
-    <>
+    <FormProvider {...methods}>
       <Dialog
         className={classNames("dialogClass1")}
         header={isEdit ? "עריכת תפקיד" : "פרטי תפקיד"}
@@ -45,110 +104,28 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
             isEdit={isEdit}
             closeModal={closeModal}
             setIsEdit={setIsEdit}
-            form={form}
             actionPopup={actionPopup}
           />
         }
       >
         <div className="p-fluid">
           <div className="p-fluid-item padL">
-            <div className="p-field  p-field-blue">
-              <div className={`status ${entity ? "" : "available"}`}>
-                <p>{entity ? "לא פנוי" : "פנוי"}</p>
-              </div>
-              {getLabel({ labelName: "שם תפקיד", canEdit: true, isEdit: isEdit })}
-              <AutoComplete
-                value={selected}
-                disabled={!isEdit}
-                style={isEdit ? {} : disabledInputStyle}
-                completeMethod={async (e) => {
-                  // const searchResults = await getOGByHierarchy(e);
-                  // setResults(searchResults);
-                }}
-                onChange={(e) => {
-                  setSelected(e.value);
-                }}
-              />
-
-              {/* // <InputText
-              //   id="2011"
-              //   type="text"
-              //   disabled={!isEdit}
-              //   style={isEdit ? {} : disabledInputStyle}
-              //   placeholder={role.jobTitle}
-              //   onChange={(e) => {
-              //     let tempForm = { ...form };
-              //     tempForm.jobTitle = e.target.value;
-              //     setForm(tempForm);
-              //   }}
-              //   value={form.jobTitle}
-              // /> */}
-            </div>
-          </div>
-          <div className="p-fluid-item padR">
-            <div className="p-field p-field-blue">
-              {getLabel({ labelName: "היררכיה" })}
-              <InputText id="2011" type="text" disabled style={disabledInputStyle} placeholder={role.hierarchy} />
+            <div className={`p-field  ${isEdit ? "p-field-edit" : "p-field-blue"}`}>
+              <RoleField isEdit={isEdit} role={role} setIsJobTitleFree={setIsJobTitleFree} />
             </div>
           </div>
 
-          {InputDropdown({
-            fieldName: "clearance",
-            displayName: "סיווג התפקיד",
-            item: role,
-            form: form,
-            setForm: setForm,
-            options: USER_CLEARANCE,
-            additionalClass: "padL",
-          })}
+          <InputForm fields={formFields} item={role} />
+          <InputForm fields={userInRoleField} item={entity} />
 
-          {InputTextField({
-            fieldName: "digitalIdentityUniqueId",
-            displayName: "יוזר",
-            item: role,
-            form: form,
-            setForm: setForm,
-            additionalClass: "padR",
-          })}
-
-          {InputTextField({
-            fieldName: "fullName",
-            displayName: "משתמש בתפקיד",
-            item: entity,
-            form: form,
-            setForm: setForm,
-            additionalClass: "padL",
-          })}
-
-          {InputTextField({
-            fieldName: "unit",
-            displayName: "יחידה",
-            item: role,
-            form: form,
-            setForm: setForm,
-            additionalClass: "padR",
-          })}
-
-          {InputCalanderField({
-            fieldName: "createdAt",
-            displayName: "תאריך יצירה",
-            item: role,
-            form: form,
-            setForm: setForm,
-            additionalClass: "padL",
-          })}
-
-          {InputCalanderField({
-            fieldName: "updatedAt",
-            displayName: "תאריך עדכון",
-            item: role,
-            form: form,
-            setForm: setForm,
-            additionalClass: "padR",
-          })}
+          {isEdit && (
+            <div className="p-fluid-item padR">
+              <Approver setValue={methods.setValue} name="approvers" multiple={true} errors={errors} trigger={methods.trigger} />
+            </div>
+          )}
         </div>
       </Dialog>
-    </>
+    </FormProvider>
   );
 };
 

@@ -1,61 +1,69 @@
 import React, { useEffect, useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { Button } from "primereact/button";
 import { toJS } from "mobx";
 
 import { useStores } from "../../../context/use-stores";
 import { canEditRole } from "../../../utils/roles";
 
-const FullRoleInformationFooter = ({ isEdit, role, closeModal, setIsEdit, form, actionPopup }) => {
-  const [isChanged, setIsChanged] = useState(false);
+const FullRoleInformationFooter = ({ isEdit, role, closeModal, setIsEdit, actionPopup }) => {
+  const [disabled, setDisabled] = useState(true);
+  const { formState, getValues, watch, reset, clearErrors } = useFormContext();
   const { userStore, appliesStore } = useStores();
+  const { errors } = formState;
+  const watchFields = watch(["role", "approvers"]);
+
+  const newJobTitle = getValues("role");
   const connectedUser = toJS(userStore.user);
 
-  const roleNameIsTheSame = form.jobTitle.length <= 0 || role.jobTitle === form.jobTitle;
-
   useEffect(() => {
-    roleNameIsTheSame ? setIsChanged(false) : setIsChanged(true);
-  }, [role, form, isEdit]);
+    Object.keys(errors).length > 0 || !newJobTitle || role.jobTitle === newJobTitle
+      ? setDisabled(true)
+      : setDisabled(false);
+  }, [watchFields, isEdit]);
+
 
   const saveForm = async () => {
-    let tempForm = { ...form };
+    const kartoffelParams = {
+      roleId: role.roleId,
+      jobTitle: newJobTitle,
+    };
 
-    if (!roleNameIsTheSame) {
-      const kartoffelParams = {
-        roleId: tempForm.roleId,
-        jobTitle: tempForm.jobTitle,
-      };
+    // ASK: if this is correct
+    const adParams = {
+      samAccountName: role.digitalIdentityUniqueId,
+      jobTitle: newJobTitle,
+    };
 
-      // ASK: if this is correct
-      const adParams = {
-        samAccountName: tempForm.digitalIdentityUniqueId,
-        jobTitle: tempForm.jobTitle,
-      };
-
-      try {
-        const res = await appliesStore.renameRoleApply({ kartoffelParams, adParams });
-        actionPopup();
-        closeModal();
-      } catch (error) {
-        actionPopup(error);
-      }
+    try {
+      const res = await appliesStore.renameRoleApply({ kartoffelParams, adParams });
+      actionPopup();
+      closeModal();
+    } catch (error) {
+      actionPopup(error);
     }
   };
 
   return (
     <div className="display-flex">
-      <Button label="מחיקה" onClick={() => this.onChange(false)} className="p-button p-component btn-border" />
+      <div></div>
+      {/* <Button label="מחיקה" onClick={() => this.onChange(false)} className="p-button p-component btn-border" /> */}
       <div className="display-flex">
         {canEditRole(role, connectedUser) && (
           <Button
             label={isEdit ? "ביטול" : "עריכה"}
             className={isEdit ? "btn-underline" : "btn-border orange"}
-            onClick={() => setIsEdit(!isEdit)}
+            onClick={() => {
+              setIsEdit(!isEdit)
+              reset({ role: role.jobTitle, approvers: undefined });
+              clearErrors();
+            }}
           />
         )}
 
         <Button
           label={isEdit ? "שליחת בקשה" : "סגור"}
-          disabled={isEdit ? (isChanged ? false : true) : false}
+          disabled={isEdit ? disabled : false}
           className="btn-orange-gradient"
           onClick={isEdit ? saveForm : closeModal}
         />

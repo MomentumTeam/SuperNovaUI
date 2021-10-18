@@ -7,7 +7,7 @@ import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useStores } from '../../context/use-stores';
 import {PHONE_REG_EXP} from '../../constants';
-import Approver from './Approver';
+import Approver from '../Fields/Approver';
 
 
 const validationSchema = Yup.object().shape({

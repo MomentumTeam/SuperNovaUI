@@ -1,62 +1,76 @@
 import React, { useEffect, useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { Button } from "primereact/button";
 import { toJS } from "mobx";
 
 import { useStores } from "../../../context/use-stores";
-import { canEditHierarchy } from "../../../utils/hierarchy";
+import { canEditHierarchy, getHierarchy } from "../../../utils/hierarchy";
 import { renameOGRequest } from "../../../service/AppliesService";
 
-const FullHierarchyInformationFooter = ({ isEdit, closeFullDetailsModal, setIsEdit, form, openDeleteModal }) => {
+const FullHierarchyInformationFooter = ({ isEdit, closeModal, setIsEdit, openDeleteModal, hierarchy, actionPopup }) => {
+  const { formState, getValues, watch, reset } = useFormContext();
   const { userStore } = useStores();
-  const [isChanged, setIsChanged] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
+  const { errors } = formState;
+  const watchFields = watch(["hierarchyName", "approvers"]);
+  const { hierarchyReadOnly, hierarchyName } = getHierarchy(hierarchy.hierarchy);
+  const newHierarchyName = getValues("hierarchyName");
   const connectedUser = toJS(userStore.user);
 
   useEffect(() => {
-    form.oldName === form.name ? setIsChanged(false) : setIsChanged(true);
-  }, [form, isEdit]);
+    Object.keys(errors).length > 0 || hierarchyName === newHierarchyName || newHierarchyName === undefined
+      ? setDisabled(true)
+      : setDisabled(false);
+  }, [watchFields, isEdit]);
 
   const saveForm = async () => {
-    let tempForm = { ...form };
-
     const kartoffelParams = {
-      id: tempForm.id,
-      name: tempForm.name,
+      id: hierarchy.id,
+      name: newHierarchyName,
     };
 
     // ASK: if this is correct
     const adParams = {
-      ouDisplayName: `${tempForm.hierarchyPrefix}/${tempForm.name}`,
-      oldOuName: tempForm.oldName,
-      newOuName: tempForm.name,
+      ouDisplayName: `${hierarchyReadOnly}/${newHierarchyName}`,
+      oldOuName: hierarchyName,
+      newOuName: newHierarchyName,
     };
 
-    const res = await renameOGRequest({
-      kartoffelParams,
-      adParams,
-    });
-
-    // TODO: DO SOMETHING AND TRY AND CATCH
+    try {
+      const res = await renameOGRequest({
+        kartoffelParams,
+        adParams,
+      });
+      actionPopup();
+      closeModal();
+    } catch (error) {
+      actionPopup(error);
+    }
   };
 
   return (
     <>
       <div className="display-flex">
-        <Button label="מחיקה" onClick={openDeleteModal} className="p-button p-component btn-border" />
+        <div></div>
+        {/* <Button label="מחיקה" onClick={openDeleteModal} className="p-button p-component btn-border" /> */}
         <div className="display-flex">
           {canEditHierarchy(connectedUser) && (
             <Button
               label={isEdit ? "ביטול" : "עריכה"}
               className={isEdit ? "btn-underline" : "btn-border orange"}
-              onClick={() => setIsEdit(!isEdit)}
+              onClick={() => {
+                setIsEdit(!isEdit);
+                reset({ hierarchyName: hierarchyName });
+              }}
             />
           )}
 
           <Button
             label={isEdit ? "שליחת בקשה" : "סגור"}
             className="btn-orange-gradient"
-            disabled={isEdit ? (isChanged ? false : true) : false}
-            onClick={isEdit ? saveForm : closeFullDetailsModal}
+            disabled={isEdit ? disabled : false}
+            onClick={isEdit ? saveForm : closeModal}
           />
         </div>
       </div>

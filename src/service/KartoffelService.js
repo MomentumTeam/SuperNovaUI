@@ -13,9 +13,11 @@ export const searchOG = async (nameAndHierarchy) => {
 };
 
 export const getOGByHierarchy = async (hierarchy) => {
-  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/groups/${hierarchy}/hierarchy`);
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/groups/hierarchy`, {
+    params: { hierarchy },
+  });
 
-  return response.data.groups;
+  return response.data;
 };
 
 export const getOGById = async (id) => {
@@ -70,6 +72,16 @@ export const getRolesByHierarchy = async ({ hierarchy, direct, page, pageSize })
   });
 
   return response.data.roles;
+};
+
+export const getIsJobTitleAlreadyTaken = async (jobTitle, directGroup) => {
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/roles/job/taken`, {
+    params: {
+      jobTitle,
+      directGroup,
+    },
+  });
+  return response.data;
 };
 
 // Entities
