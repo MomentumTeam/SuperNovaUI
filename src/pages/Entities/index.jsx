@@ -5,6 +5,9 @@ import { firstPage } from "../../constants/api";
 import { TableNames } from "../../constants/table";
 
 export const TableDataContext = createContext(null);
+    useEffect(() => {
+        userStore.fetchUserNotifications();
+    }, [userStore]);
 
 export const TableDataRecuder = (state, action) => {
   switch (action.type) {

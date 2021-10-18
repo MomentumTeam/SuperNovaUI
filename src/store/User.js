@@ -9,11 +9,12 @@ export default class UserStore {
     user = null;
     users = null;
     userNotifications = [];
+    userUnreadNotifications = [];
 
     constructor() {
         makeAutoObservable(this, {
             user: observable,
-            userNotifications: observable,
+            userUnreadNotifications: observable,
             fetchUserInfo: action,
             fetchUserNotifications: action,
             loadUsers: action,
@@ -47,15 +48,13 @@ export default class UserStore {
 
 
     async fetchUserNotifications() {
-        const userNotifications = await getMyNotifications();
-        this.userNotifications = userNotifications.notifications;
+        const userUnreadNotifications = await getMyNotifications(false);
+        this.userUnreadNotifications.replace(userUnreadNotifications.notifications);
     }
 
     async markNotificationsAsRead(ids) {
-        if(await markAsRead(ids).success) {
-            const userNotifications = await getMyNotifications();
-            this.userNotifications = userNotifications.filter((notification) => !ids.includes(notification.id));
-        }
+        await markAsRead(ids);
+        this.userUnreadNotifications.clear();
     }
 
     async loadUsers() {

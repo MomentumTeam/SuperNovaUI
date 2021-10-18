@@ -13,6 +13,7 @@
     "formik": "^2.2.9",
     "js-base64": "^3.7.2",
     "js-cookie": "^3.0.1",
+    "js-file-downloader": "^1.1.22",
     "lottie-web": "^5.7.11",
     "mobx": "^6.3.2",
     "mobx-react": "^7.2.0",

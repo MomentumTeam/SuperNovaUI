@@ -51,35 +51,10 @@ export const getAllApproversReq = async (type) => {
   return allCommanderApprovers.data;
 };
 
-export const updateCommanderDecisionReq = async (
+export const updateDecisionReq = async (
   requestId,
   approverDecision
 ) => {
-  const response = await axiosApiInstance.put(
-    `${apiBaseUrl}/api/approvers/commanderDecision/${requestId}`,
-    { approverDecision: approverDecision }
-  );
-  return response.data;
-};
-
-export const updateSecurityDecisionReq = async (
-  requestId,
-  approverDecision
-) => {
-  const response = await axiosApiInstance.put(
-    `${apiBaseUrl}/api/approvers/securityDecision/${requestId}`,
-    { approverDecision: approverDecision }
-  );
-  return response.data;
-};
-
-export const updateSuperSecurityDecisionReq = async (
-  requestId,
-  approverDecision
-) => {
-  const response = await axiosApiInstance.put(
-    `${apiBaseUrl}/api/approvers/superSecurityDecision/${requestId}`,
-    { approverDecision: approverDecision }
-  );
+  const response = await axiosApiInstance.put(`${apiBaseUrl}/api/approvers/decision/${requestId}`, approverDecision);
   return response.data;
 };

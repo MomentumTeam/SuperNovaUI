@@ -1,13 +1,14 @@
 import axiosApiInstance from '../config/axios';
 import { apiBaseUrl } from '../constants/api';
 
-export const getMyNotifications = async (rangeStart, rangeEnd) => {
+export const getMyNotifications = async (read, rangeStart, rangeEnd) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/notifications`,
     {
       params: {
-        rangeStart,
-        rangeEnd,
+        from: rangeStart,
+        to: rangeEnd,
+        read,
       }
     });
   return response.data;
