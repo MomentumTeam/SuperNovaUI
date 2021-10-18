@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
@@ -24,17 +23,6 @@ class ModalHierarchy extends React.Component {
             selectedHierarchy: null,
             visible: false,
         };
-
-        this.onClick = this.onClick.bind(this);
-        this.onHide = this.onHide.bind(this);
-
-        this.searchCountry = this.searchCountry.bind(this);
-        // this.countryservice = new CountryService(); 
-        this.items = Array.from({ length: 100000 }).map((_, i) => ({ label: `Item #${i}`, value: i }));
-    }
-
-    componentDidMount() {
-        getCountries().then(data => this.setState({ countries: data }));
     }
 
     toggleModalVisibility = (visible) => {
@@ -71,7 +59,7 @@ class ModalHierarchy extends React.Component {
     render() {
         return (
             <div>
-                <Button title="פתיחת היררכיה" className="OpeningHierarchy" type="button" label="פתיחת היררכיה" onClick={() => this.toggleModalVisibility(true)} />
+                <Button title="פתיחת היררכיה" className="OpeningHierarchy" type="button" label="פתיחת היררכיה" onClick={() => this.toggleModalVisibility(true)} style={ this.props.disabled && { display: 'none' }} />
 
                 <Dialog className="dialogClass9" header="היררכיה" visible={this.state.visible} footer={this.renderFooter()} onHide={() => this.toggleModalVisibility(false)}>
                     <div>
