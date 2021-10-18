@@ -11,14 +11,14 @@ import Approver from '../Fields/Approver';
 
 
 const validationSchema = Yup.object().shape({
-    firstName: Yup.string().required(),
-    lastName: Yup.string().required(),
-    identityNumber: Yup.string().required(),
-    phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid').required(),
-    classification: Yup.string().required(),
-    approvers: Yup.array().min(1).required(),
-    comments: Yup.string().optional(),
-    sex: Yup.string().optional().nullable()
+  firstName: Yup.string().required(),
+  lastName: Yup.string().required(),
+  identityNumber: Yup.string().required(),
+  phone: Yup.string().matches(PHONE_REG_EXP, "Phone number is not valid").required(),
+  classification: Yup.string().required(),
+  approvers: Yup.array().min(1).required(),
+  comments: Yup.string().optional(),
+  sex: Yup.string().optional().nullable(),
 });
 
 const CreateSpecialEntityForm = forwardRef(({ setIsActionDone, onlyForView, requestObject }, ref) => {

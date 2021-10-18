@@ -1,14 +1,12 @@
-import React, { createContext, useReducer, useState } from "react";
+import React, { createContext, useReducer, useState, useEffect } from "react";
 
 import Entities from "./Entity";
 import { firstPage } from "../../constants/api";
 import { TableNames } from "../../constants/table";
+import { useStores } from '../../context/use-stores';
 
 export const TableDataContext = createContext(null);
-    useEffect(() => {
-        userStore.fetchUserNotifications();
-    }, [userStore]);
-
+ 
 export const TableDataRecuder = (state, action) => {
   switch (action.type) {
     case "searchResult":
@@ -29,12 +27,17 @@ export const TableDataRecuder = (state, action) => {
 };
 
 const TableEntity = () => {
+  const {userStore} = useStores();
   const [tabId, setTabId] = useState(TableNames.entities.tab);
   const [tableState, tableDispatch] = useReducer(TableDataRecuder, {
     tableData: [],
     isLoading: false,
     page: 0,
   });
+
+  useEffect(() => {
+    userStore.fetchUserNotifications();
+  }, [userStore]);
 
   return (
     <TableDataContext.Provider value={{ tableState, tableDispatch, tabId, setTabId }}>

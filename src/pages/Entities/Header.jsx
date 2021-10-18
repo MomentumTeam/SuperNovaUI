@@ -1,8 +1,9 @@
-import { toJS } from "mobx";
 import { useEffect } from "react";
 
+import { TableNames } from "../../constants/table";
 import { useStores } from '../../context/use-stores';
 import Norifications from '../../components/Notifications/Notifications';
+import { toJS } from "mobx";
 
 import "../../assets/css/main.css";
 
