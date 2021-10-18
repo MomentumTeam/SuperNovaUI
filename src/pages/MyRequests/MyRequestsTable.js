@@ -78,7 +78,7 @@ class Table extends React.Component {
                         <DataTable value={this.props.applies}
                             scrollable
                             lazy
-                            >
+                        >
                             <Column selectionMode="multiple" style={{ width: '3em' }} />
                             <Column field="firstName" header="סוג בקשה" body={this.firstNameBodyTemplate}></Column>
                             <Column field="lastName" header="מספר סידורי" body={this.lastNameBodyTemplate}></Column>

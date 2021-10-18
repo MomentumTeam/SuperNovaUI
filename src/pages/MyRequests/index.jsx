@@ -2,12 +2,9 @@ import { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 import '../../assets/css/local/pages/listUsersPage.min.css';
-import Table from '../../components/Table';
 import { useStores } from '../../context/use-stores';
-import Header from '../Entities/Header';
 import SearchRequest from './SearchRequest';
-import AddEntity from '../Entities/AddEntity';
-import ApprovalTable from './MyRequestsTable'
+import MyRequestsTable from './MyRequestsTable'
 import Footer from '../Entities/Footer';
 import Notifications from '../../components/Notifications';
 
@@ -58,7 +55,7 @@ const MyRequests = observer(() => {
                             <div className="display-flex search-row-wrap-flex">
                                 <SearchRequest data={toJS(tablesStore.entities)} />
                             </div>
-                            <ApprovalTable applies={applies} />
+                            <MyRequestsTable applies={applies} />
                             <Footer />
                         </div>
                     </div>

@@ -1,19 +1,22 @@
 import { AutoComplete } from 'primereact/autocomplete';
 import { Dropdown } from 'primereact/dropdown';
 import { useState } from 'react';
-import { STATUSES } from '../../constants/applies';
+import { STATUSES, TYPES } from '../../constants/applies';
 import {
   searchEntitiesByFullName,
   getEntityByIdentifier,
   searchOG,
 } from '../../service/SearchService';
+import { useStores } from '../../context/use-stores';
 
 const SearchBox = ({ loadDataByEntity, loadDataByOG }) => {
   const [filteredEntities, setFilteredEntities] = useState([]);
   const [selectedEntity, setSelectedEntity] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState([]);
+  const [selectedRequestType, setSelectedRequestType] = useState([]);
   const [filteredOGs, setFilteredOGs] = useState([]);
   const [selectedOG, setSelectedOG] = useState([]);
+  const { appliesStore } = useStores();
 
   const searchEntity = async (event) => {
     let filteredResults;
@@ -58,47 +61,29 @@ const SearchBox = ({ loadDataByEntity, loadDataByOG }) => {
     return arr;
   }
 
+  const requestTypes = () => {
+    const arr = [];
+    for (const key in TYPES) {
+      arr.push({ 
+        value: key,
+        label: TYPES[key] 
+      });
+    }
+
+    return arr;
+  }
+
   return (
     <div className='search-item'>
       <div className='autocomplete-wrap'>
         <div className='p-fluid'>
           <span className='p-float-label'>
-            <AutoComplete
-              value={selectedEntity}
-              suggestions={filteredEntities}
-              completeMethod={searchEntity}
-              field='displayName'
-              onChange={(e) => {
-                setFilteredOGs([]);
-                setSelectedOG([]);
-                setSelectedEntity(e.value);
-                if (e.originalEvent.type === 'click') {
-                  loadDataByEntity(selectedEntity);
-                }
-              }}
+            <Dropdown
+              value={selectedRequestType}
+              options={requestTypes()}
+              onChange={e => setSelectedRequestType(e.value)}
             />
             <label htmlFor='autocomplete'>סוג בקשה </label>
-          </span>
-        </div>
-      </div>
-      <div className='autocomplete-wrap'>
-        <div className='p-fluid'>
-          <span className='p-float-label'>
-            <AutoComplete
-              value={selectedEntity}
-              suggestions={filteredEntities}
-              completeMethod={searchEntity}
-              field='displayName'
-              onChange={(e) => {
-                setFilteredOGs([]);
-                setSelectedOG([]);
-                setSelectedEntity(e.value);
-                if (e.originalEvent.type === 'click') {
-                  loadDataByEntity(selectedEntity);
-                }
-              }}
-            />
-            <label htmlFor='autocomplete'>גורם מבקש</label>
           </span>
         </div>
       </div>
@@ -135,7 +120,7 @@ const SearchBox = ({ loadDataByEntity, loadDataByOG }) => {
           </span>
         </div>
       </div>
-      <button className='btn btn-search-wite' title='Print' type='button'>
+      <button className='btn btn-search-wite' title='Print' type='button' onClick={async()=>await appliesStore.searchByStatus(selectedStatus)}>
         <span className='for-screnReader'>Print</span>
       </button>
     </div>
