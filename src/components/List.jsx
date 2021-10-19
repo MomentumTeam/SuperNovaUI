@@ -20,7 +20,7 @@ const List = ({ list }) => {
     <table className="tableStyle">
       <tbody>
         {list.map((request, index) => (
-          <tr key={request.id}>
+          <tr key={request.id} onClick={() => onClick(request, index)} style={{ cursor: 'pointer' }}>
             <td>
               <div className="td-inner">
                 {datesUtil.formattedDate(Number(request.createdAt))}
@@ -32,7 +32,6 @@ const List = ({ list }) => {
             <td>
               <div className="td-inner td-inner-btn">
                 <button
-                  onClick={() => onClick(request, index)}
                   className={
                     "btn-status " +
                     (request.status === STATUSES.SENT
