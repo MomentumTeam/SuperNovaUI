@@ -1,15 +1,16 @@
-import { observer } from 'mobx-react';
-import { toJS } from 'mobx';
-import { useState, useEffect } from 'react';
-import SearchBox from '../../components/SearchBox';
-import HierarchyTree from '../../components/HierarchyTree';
-import SideToolbar from '../../components/SideToolBar/SideToolbar';
-import ApprovalTable from '../../components/ApprovalTable';
-import '../../assets/css/local/pages/dashboard.min.css';
-import UserProfileCard from './UserProfileCard';
-import { useStores } from '../../context/use-stores';
-import { USER_TYPE, USER_TYPE_TAG } from '../../constants';
-import FullUserInformationModal from '../../components/Modals/FullUserInformationModal';
+import { observer } from "mobx-react";
+import { toJS } from "mobx";
+import { useState, useEffect } from "react";
+import SearchBox from "../../components/SearchBox";
+import HierarchyTree from "../../components/HierarchyTree";
+import SideToolbar from "../../components/SideToolBar/SideToolbar";
+import ApprovalTable from "../../components/ApprovalTable";
+import "../../assets/css/local/pages/dashboard.min.css";
+import UserProfileCard from "./UserProfileCard";
+import { useStores } from "../../context/use-stores";
+import { USER_TYPE, USER_TYPE_TAG } from "../../constants";
+import FullUserInformationModal from "../../components/Modals/FullUserInformationModal";
+import DecorAnimation from "../../components/decor-animation";
 
 const Dashboard = observer(() => {
   const { userStore, appliesStore, treeStore } = useStores();
@@ -127,7 +128,8 @@ const Dashboard = observer(() => {
                     />
                   </div>
                 </div>
-                <div className='chart-wrap'>
+                <div className="chart-wrap">
+                  <DecorAnimation />
                   <HierarchyTree data={toJS(treeStore.tree)} />
                 </div>
               </div>

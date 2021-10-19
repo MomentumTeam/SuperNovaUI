@@ -1,9 +1,9 @@
 export const transformNode = (node) => {
   return {
-    label: node.name,
+    label: node.label,
+    expanded: true,
     children: !node.children
       ? []
       : node.children.map((child) => transformNode(child)),
-    expanded: false,
   };
 };

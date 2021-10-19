@@ -108,7 +108,7 @@
 }
 
 .p-dialog .p-dialog-content::-webkit-scrollbar-thumb {
-  background: #d6d6d6;
+  background: #9b9b9b;
   border-radius: 30px;
 }
 
@@ -522,6 +522,14 @@
 
 .p-dialog .p-button.btn-gradient.red:hover, .p-dialog .p-button.btn-gradient.red:focus {
   background: transparent linear-gradient(180deg, #ff0000 0%, #f68340 100%) 0% 0% no-repeat padding-box;
+}
+
+.p-dialog .p-button.btn-gradient.green {
+  background: transparent linear-gradient(180deg, #69a508 0%, #75b60e 100%) 0% 0% no-repeat padding-box;
+}
+
+.p-dialog .p-button.btn-gradient.green:hover, .p-dialog .p-button.btn-gradient.green:focus {
+  background: transparent linear-gradient(180deg, #69a508 0%, #75b60e 100%) 0% 0% no-repeat padding-box;
 }
 
 .p-dialog .p-button.btn-before {

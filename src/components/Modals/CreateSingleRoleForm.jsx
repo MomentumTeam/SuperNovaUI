@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, forwardRef } from "react";
+import React, { useImperativeHandle, forwardRef,useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
@@ -6,7 +6,6 @@ import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { InputTextarea } from "primereact/inputtextarea";
 import Hierarchy from "./Hierarchy";
-import Unit from "./Unit";
 import Approver from "./Approver";
 import { useStores } from "../../context/use-stores";
 import * as Yup from "yup";
@@ -19,7 +18,6 @@ const validationSchema = Yup.object().shape({
   approvers: Yup.array().min(1).required(),
   comments: Yup.string().optional(),
   clearance: Yup.string().required(),
-  unit: Yup.object().required(),
   roleName: Yup.string().required(),
   isTafkidan: Yup.boolean().default(false),
   isJobAlreadyTakenData: Yup.object()
@@ -29,13 +27,23 @@ const validationSchema = Yup.object().shape({
     .required(),
 });
 
-const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
+const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestObject }, ref) => {
   const { appliesStore } = useStores();
 
   const { register, handleSubmit, setValue, watch, formState } = useForm({
     resolver: yupResolver(validationSchema),
   });
   const { errors } = formState;
+
+  useEffect(() => {
+    if (requestObject) {
+      setValue('comments', requestObject.comments);
+      setValue('clearance', requestObject.kartoffelParams.clearance);
+      setValue('roleName', requestObject.kartoffelParams.jobTitle);
+      setValue('hierarchy', { name: requestObject.adParams.ouDisplayName });
+      setValue('isTafkidan', !!requestObject.kartoffelParams.roleEntityType);
+    }
+  }, []);
 
   const onSubmit = async (data) => {
     try {
@@ -48,9 +56,8 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
       hierarchy,
       comments,
       clearance,
-      unit,
       roleName,
-      isTafkidan, // TODO: check
+      isTafkidan,
     } = data;
     const req = {
       commanders: approvers,
@@ -60,8 +67,8 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
         isRoleAttachable: true,
         source: "oneTree",
         type: "domainUser",
-        unit: unit.id,
         clearance,
+        roleEntityType: isTafkidan ? 'goalUser' : undefined,
       },
       adParams: {
         ouDisplayName: hierarchy.name,
@@ -111,7 +118,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
       </div>
       <div className="p-fluid-item p-fluid-item-flex1">
         <div className="p-field">
-          <Hierarchy setValue={setValue} name="hierarchy" errors={errors} />
+          <Hierarchy setValue={setValue} name="hierarchy" errors={errors} ogValue={watch('hierarchy')} disabled={onlyForView} />
         </div>
       </div>
       <div className="p-fluid-item p-fluid-item">
@@ -125,7 +132,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
                 ? "תפוס"
                 : "פנוי"}
             </i>
-            <InputText {...register("roleName")} onChange={onRoleNameChange} />
+            <InputText {...register("roleName")} onChange={onRoleNameChange} disabled={onlyForView} />
             <label>{errors.roleName && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
             <label>
               {errors.isJobAlreadyTakenData && (
@@ -134,9 +141,6 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
             </label>
           </span>
         </div>
-      </div>
-      <div className="p-fluid-item">
-        <Unit setValue={setValue} name="unit" errors={errors} />
       </div>
       {watch("isJobAlreadyTakenData")?.isJobTitleAlreadyTaken && (
         <div
@@ -169,6 +173,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
             placeholder="סיווג תפקיד"
             {...register("clearance")}
             value={watch("clearance")}
+            disabled={onlyForView}
           />
           <label>{errors.clearance && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
         </div>
@@ -179,6 +184,8 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
           name="approvers"
           multiple={true}
           errors={errors}
+          defaultApprovers={requestObject?.commanders || []}
+          disabled={onlyForView}
         />
       </div>
       <div className="p-field-checkbox" style={{ marginBottom: "10px" }}>
@@ -187,6 +194,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
           {...register("isTafkidan")}
           onChange={(e) => setValue("isTafkidan", e.checked)}
           checked={watch("isTafkidan")}
+          disabled={onlyForView}
         />
         <label>התפקיד נפתח עבור משתמש תפקידן (מילואים / חמ"ל)</label>
       </div>
@@ -199,6 +207,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
             {...register("comments")}
             type="text"
             autoResize="false"
+            disabled={onlyForView}
           />
           <label>{errors.comments && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
         </div>
