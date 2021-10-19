@@ -118,7 +118,6 @@ const Table = ({ applies, allApplies, approveType }) => {
 
   return (
     <>
-      {console.log(allApplies)}
       {!approveType === USER_TYPE_TAG.APPROVER ? (
         <div className='display-flex title-wrap'>
           <h2>בקשות לאישורי</h2>

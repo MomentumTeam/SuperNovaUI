@@ -4,7 +4,7 @@ import { apiBaseUrl } from '../constants/api';
 //GET
 
 export const getMyRequests = async (from, to) => {
-  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests`, {
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/my`, {
     params: {
       from,
       to,

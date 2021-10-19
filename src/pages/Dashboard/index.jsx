@@ -20,7 +20,7 @@ const Dashboard = observer(() => {
 
   const user = toJS(userStore.user);
   const userPicture = toJS(userStore.userPicture);
-  const applies = toJS(appliesStore.applies);
+  const myApplies = toJS(appliesStore.myApplies);
   const allApplies = toJS(appliesStore.allApplies);
 
   let userType;
@@ -110,7 +110,7 @@ const Dashboard = observer(() => {
             ) ? (
               <>
                 <ApprovalTable
-                  applies={applies}
+                  applies={myApplies}
                   allApplies={allApplies}
                   approveType={userType.tag}
                 />
@@ -138,7 +138,7 @@ const Dashboard = observer(() => {
           </div>
         </div>
       </div>
-      <SideToolbar recentApplies={applies} />
+      <SideToolbar recentApplies={myApplies} />
     </>
   );
 });
