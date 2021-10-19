@@ -42,7 +42,7 @@ const PreviewApproverRequest = ({ request }) => {
     </div>
       <hr style={{ borderWidth: "1px" }} />
       <h2>פרטי הבקשה</h2>
-      <ApproverForm onlyForView={true} approverRequestObj={request} />
+      <ApproverForm onlyForView={true} requestObject={request} />
     </>
   );
 };

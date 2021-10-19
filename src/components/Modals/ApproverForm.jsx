@@ -238,9 +238,4 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
   );
 });
 
-ApproverForm.defaultProps = {
-  onlyForView: false,
-  approverRequestObj: {}
-}
-
 export default ApproverForm;
