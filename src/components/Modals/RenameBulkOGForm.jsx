@@ -1,14 +1,18 @@
-import React, { useImperativeHandle, forwardRef } from "react";
+import React, { useImperativeHandle, forwardRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { InputText } from "primereact/inputtext";
 import Hierarchy from "./Hierarchy";
+import BulkFileArea from "./BulkFileArea";
+import BulkRowsPopup from "./BulkRowsPopup";
 import Approver from "./Approver";
 import { useStores } from "../../context/use-stores";
 import * as Yup from "yup";
-import { apiBaseUrl } from "../../constants";
+import { apiBaseUrl } from "../../constants/api";
 import FormData from "form-data";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { uploadBulkFile } from "../../service/AppliesService";
+import {
+  uploadBulkFile,
+  getBulkChangeRoleHierarchyData,
+} from "../../service/AppliesService";
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
@@ -17,114 +21,123 @@ const validationSchema = Yup.object().shape({
   bulkFile: Yup.mixed()
     .test("fileSize", (value) => !!value)
     .required(),
-  });
-
-const RenameBulkOGForm = forwardRef(({ setIsActionDone }, ref) => {
-  const { appliesStore } = useStores();
-  const { register, handleSubmit, setValue, formState } = useForm({
-    resolver: yupResolver(validationSchema),
-  });
-
-  const { errors } = formState;
-
-  const onSubmit = async (data) => {
-    try {
-      await validationSchema.validate(data);
-    } catch (err) {
-      throw new Error(err.errors);
-    }
-    const { hierarchy, approvers, bulkFile } = data;
-
-    const formData = new FormData();
-    formData.append("bulkFiles", bulkFile[0]);
-    const { uploadFiles } = await uploadBulkFile(formData);
-
-    const req = {
-      commanders: approvers,
-      kartoffelParams: {
-        directGroup: hierarchy.id,
-      },
-      adParams: {
-        ouDisplayName: hierarchy.name,
-      },
-      excelFilePath: uploadFiles[0],
-    };
-    await appliesStore.changeRoleHierarchyBulk(req);
-    setIsActionDone(true);
-  };
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      handleSubmit: handleSubmit(onSubmit),
-    }),
-    []
-  );
-
-  return (
-    <div className="p-fluid">
-      <div className="p-fluid-item-flex p-fluid-item">
-        <div className="p-field">
-          <Hierarchy
-            setValue={setValue}
-            name="currentHierarchy"
-            labelText="היררכיה נוכחית"
-            errors={errors}
-          />
-        </div>
-      </div>
-      <div className="p-fluid-item-flex p-fluid-item">
-        <div className="p-field">
-          <Hierarchy
-            setValue={setValue}
-            name="hierarchy"
-            labelText="היררכיה חדשה"
-            errors={errors}
-          />
-        </div>
-      </div>
-      <div className="p-fluid-item-flex p-fluid-item">
-        <div className="p-field">
-          <label>
-            <span className="required-field">*</span>העלאת קובץ
-          </label>
-          <span className="p-input-icon-left">
-            <i className="pi pi-file-excel" />
-            <InputText
-              {...register("bulkFile")}
-              type="file"
-              required
-              placeholder="קובץ"
-              style={{ paddingTop: "10px" }}
-              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            />
-            <label>{errors.bulkFile && <small style={{ color: "red" }}>יש להעלות קובץ</small>}</label>
-          </span>
-        </div>
-      </div>
-      <div
-        className="p-fluid-item-flex p-fluid-item"
-        style={{ alignItems: "center" }}
-      >
-        {/* TODO: bring good excel example route */}
-        <a
-          href={`${apiBaseUrl}/api/bulk/request/example?bulkType=1`}
-          style={{ textDecoration: "underline" }}
-          download="exampleFile"
-        >
-          להורדת הפורמט לחץ כאן
-        </a>
-      </div>
-      <div className="p-fluid-item-flex p-fluid-item">
-        <Approver
-          setValue={setValue}
-          name="approvers"
-          multiple={true}
-          errors={errors}
-        />
-      </div>
-    </div>
-  );
 });
+
+const RenameBulkOGForm = forwardRef(
+  ({ setIsActionDone, requestObject, onlyForView }, ref) => {
+    const { appliesStore } = useStores();
+    const { register, handleSubmit, setValue, formState, watch } = useForm({
+      resolver: yupResolver(validationSchema),
+    });
+
+    const { errors } = formState;
+
+    useEffect(() => {
+      const getBulkData = async () => {
+        const data = await getBulkChangeRoleHierarchyData(requestObject.id);
+        setValue("hierarchy", data.request.adParams.ouDisplayName);
+
+        setValue("rows", data.rows);
+
+        console.log(data);
+      };
+      if (requestObject) {
+        console.log(requestObject);
+        getBulkData();
+      }
+    }, []);
+
+    const onSubmit = async (data) => {
+      try {
+        await validationSchema.validate(data);
+      } catch (err) {
+        throw new Error(err.errors);
+      }
+      const { hierarchy, approvers, bulkFile } = data;
+
+      const formData = new FormData();
+      formData.append("bulkFiles", bulkFile[0]);
+      const { uploadFiles } = await uploadBulkFile(formData);
+
+      const req = {
+        commanders: approvers,
+        kartoffelParams: {
+          directGroup: hierarchy.id,
+        },
+        adParams: {
+          ouDisplayName: hierarchy.name,
+        },
+        excelFilePath: uploadFiles[0],
+      };
+      await appliesStore.changeRoleHierarchyBulk(req);
+      setIsActionDone(true);
+    };
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        handleSubmit: handleSubmit(onSubmit),
+      }),
+      []
+    );
+
+    return (
+      <div className="p-fluid">
+        <div className="p-fluid-item-flex p-fluid-item">
+          <div className="p-field">
+            <Hierarchy
+              setValue={setValue}
+              name="currentHierarchy"
+              labelText="היררכיה נוכחית"
+              errors={errors}
+              disabled={onlyForView}
+            />
+          </div>
+        </div>
+        <div className="p-fluid-item-flex p-fluid-item">
+          <div className="p-field">
+            <Hierarchy
+              setValue={setValue}
+              name="hierarchy"
+              labelText="היררכיה חדשה"
+              errors={errors}
+              ogValue={watch("hierarchy")}
+              disabled={onlyForView}
+            />
+          </div>
+        </div>
+        {!requestObject && (
+          <BulkFileArea
+            register={register}
+            errors={errors}
+            downloadUrl={`${apiBaseUrl}/api/bulk/request/example?bulkType=1`}
+            fileName="renameOGBulkExample.xlsx"
+          />
+        )}
+        {!!requestObject && (
+          <BulkRowsPopup
+            rows={watch("rows")}
+            columns={[
+              { field: "rowNumber" },
+              { field: "currentJobTitle", header: "תפקיד נוכחי" },
+              { field: "newJobTitle", header: "תפקיד חדש" },
+              { field: "roleId", header: "מזהה תפקיד" },
+            ]}
+          />
+        )}
+        <div className="p-fluid-item-flex p-fluid-item">
+          <Approver
+            setValue={setValue}
+            name="approvers"
+            multiple={true}
+            errors={errors}
+            defaultApprovers={requestObject?.approvers || []}
+            disabled={onlyForView}
+          />
+        </div>
+      </div>
+    );
+  }
+);
 
 export default RenameBulkOGForm;
