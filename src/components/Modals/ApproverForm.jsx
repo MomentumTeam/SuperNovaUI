@@ -4,7 +4,7 @@ import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { InputTextarea } from 'primereact/inputtextarea';
 import Hierarchy from './Hierarchy';
-import Approver from './Approver';
+import Approver from '../Fields/Approver';
 import { AutoComplete } from 'primereact/autocomplete';
 import '../../assets/css/local/components/approverForm.css'
 // import { assignRoleToEntityRequest } from '../../service/AppliesService';

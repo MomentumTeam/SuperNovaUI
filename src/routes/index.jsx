@@ -2,7 +2,6 @@ import appRoutes from '../constants/routes';
 import NotFound from '../pages/NotFound';
 import ProtectedRouteWrapper from './ProtectedRouteWrapper';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { useStores } from '../context/use-stores';
 
 let routePaths = [];
 
@@ -32,19 +31,6 @@ const routeGenerator = (routes) => {
 routeGenerator(appRoutes);
 
 const AppRouter = () => {
-  const { userStore, appliesStore } = useStores();
-
-  if (!userStore.user) {
-    userStore.setUserInfo();
-    // appliesStore.getAppliesByPerosn(
-    //   'bbbbbbbbbbbbbbbbbbbbbbbb',
-    //   'SUBMITTER',
-    //   'ID',
-    //   1,
-    //   20,
-    // );
-  }
-
   return (
     <BrowserRouter>
       <Switch>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { AutoComplete } from 'primereact/autocomplete';
-import { getCountries } from '../service/CountryService';
+import { getCountries } from '../../service/CountryService';
 
 class Search extends React.Component {
 

@@ -6,20 +6,19 @@ import { Dropdown } from 'primereact/dropdown';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useStores } from '../../context/use-stores';
-import Approver from './Approver';
+import {PHONE_REG_EXP} from '../../constants';
+import Approver from '../Fields/Approver';
 
-
-const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
 const validationSchema = Yup.object().shape({
-    firstName: Yup.string().required(),
-    lastName: Yup.string().required(),
-    identityNumber: Yup.string().required(),
-    phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid').required(),
-    classification: Yup.string().required(),
-    approvers: Yup.array().min(1).required(),
-    comments: Yup.string().optional(),
-    sex: Yup.string().optional().nullable()
+  firstName: Yup.string().required(),
+  lastName: Yup.string().required(),
+  identityNumber: Yup.string().required(),
+  phone: Yup.string().matches(PHONE_REG_EXP, "Phone number is not valid").required(),
+  classification: Yup.string().required(),
+  approvers: Yup.array().min(1).required(),
+  comments: Yup.string().optional(),
+  sex: Yup.string().optional().nullable(),
 });
 
 const CreateSpecialEntityForm = forwardRef(({ setIsActionDone, onlyForView, requestObject }, ref) => {

@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, observable } from 'mobx';
+import { action, makeAutoObservable, observable } from "mobx";
 import {
   getMyRequests,
   getRequestById,
@@ -53,6 +53,8 @@ export default class AppliesStore {
       disconectRoleFromEntityApply: action,
       updateApplyDecision: action,
     });
+
+    this.getAppliesByPerosn("bbbbbbbbbbbbbbbbbbbbbbbb", "SUBMITTER", "ID", 1, 10);
   }
 
   // GET
@@ -165,8 +167,7 @@ export default class AppliesStore {
   }
 
   async disconectRoleFromEntityApply(applyProperties) {
-    const newDisconectRoleFromEntityApply =
-      await disconectRoleFromEntityRequest(applyProperties);
+    const newDisconectRoleFromEntityApply = await disconectRoleFromEntityRequest(applyProperties);
     this.myApplies.unshift(newDisconectRoleFromEntityApply);
   }
 

@@ -1,59 +1,71 @@
-import { useRef } from 'react';
-import { Menu } from 'primereact/menu';
-import { Button } from 'primereact/button';
-import { Toast } from 'primereact/toast';
+import { toJS } from "mobx";
+import { useStores } from "../../context/use-stores";
 
-const TableActions = () => {
-  const toast = useRef(null);
-  const menu = useRef(null);
+import { TableActionsTypes, TableNames } from "../../constants/table";
+import { USER_TYPE } from "../../constants";
+import { canEditEntity } from "../../utils/entites";
+import { canEditRole } from "../../utils/roles";
+import { canEditHierarchy } from "../../utils/hierarchy";
+import { useContext } from "react";
+import { TableContext } from ".";
 
-  const actions = [
-    {
-      label: 'צפייה',
-      command: () => {
-        toast.current.show({
-          severity: 'success',
-          summary: 'צפייה',
-          detail: 'Data Viewing',
-          life: 3000,
-        });
-      },
-    },
-    {
-      label: 'עריכת תפקיד',
-      command: () => {
-        toast.current.show({
-          severity: 'success',
-          summary: 'עריכת תפקיד',
-          detail: 'Data Editing a role',
-          life: 3000,
-        });
-      },
-    },
-    {
-      label: 'מחיקה',
-      command: () => {
-        toast.current.show({
-          severity: 'success',
-          summary: 'מחיקה',
-          detail: 'Data Request permission',
-          life: 3000,
-        });
-      },
-    },
-  ];
+// TODO: change to reducer
+const TableActions = ({ setActionType, openActionModal }) => {
+  const { selectedItem, tableType } = useContext(TableContext);
+  const { userStore } = useStores();
 
-  const openMenu = (event) => {
-    menu.current.toggle(event);
+  let actions = [];
+  const user = toJS(userStore.user);
+  const tableActions = TableActionsTypes[tableType];
+
+  const viewAction = {
+    label: "צפייה",
+    command: () => {
+      setActionType(tableActions.view);
+      openActionModal();
+    },
   };
 
-  return (
-    <div className='moreBtnwrap'>
-      <Toast ref={toast}></Toast>
-      <Menu model={actions} popup ref={menu} />
-      <Button className='btn more-btn' onClick={openMenu} />
-    </div>
-  );
+  const editAction = {
+    label: "עריכה",
+    command: () => {
+      setActionType(tableActions.edit);
+      openActionModal();
+    },
+  };
+
+  const deleteAction = {
+    label: "מחיקה",
+    command: () => {
+      setActionType(tableActions.delete);
+      openActionModal();
+    },
+  };
+
+  if (tableActions) {
+    // Add view action
+    if (tableActions.view) actions.push(viewAction);
+
+    // Add edit action
+    if (tableActions.edit) {
+      if (
+        (tableType === TableNames.entities.tab && canEditEntity(selectedItem, user)) ||
+        (tableType === TableNames.roles.tab && canEditRole(selectedItem, user)) ||
+        (tableType === TableNames.hierarchy.tab && canEditHierarchy(user))
+      ) {
+        actions.push(editAction);
+      }
+    }
+
+    // Add delete action
+    if (tableActions.delete) {
+      if (user.types.includes(USER_TYPE.COMMANDER)) {
+        actions.push(deleteAction);
+      }
+    }
+
+    return actions;
+  }
 };
 
-export default TableActions;
+export { TableActions };

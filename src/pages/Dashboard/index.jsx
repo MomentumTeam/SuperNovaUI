@@ -1,15 +1,17 @@
-import { observer } from "mobx-react";
-import { toJS } from "mobx";
-import { useState, useEffect } from "react";
-import SearchBox from "../../components/SearchBox";
-import HierarchyTree from "../../components/HierarchyTree";
-import SideToolbar from "../../components/SideToolBar/SideToolbar";
-import ApprovalTable from "../../components/ApprovalTable";
-import "../../assets/css/local/pages/dashboard.min.css";
-import UserProfileCard from "./UserProfileCard";
-import { useStores } from "../../context/use-stores";
-import { USER_TYPE, USER_TYPE_TAG } from "../../constants";
-import FullUserInformationModal from "../../components/Modals/FullUserInformationModal";
+import { observer } from 'mobx-react';
+import { toJS } from 'mobx';
+import { useState, useEffect } from 'react';
+
+import '../../assets/css/local/pages/dashboard.min.css';
+
+import { useStores } from '../../context/use-stores';
+import { USER_TYPE, USER_TYPE_TAG, USER_NO_PICTURE } from "../../constants/user";
+import SearchBox from '../../components/Search/SearchBox';
+import HierarchyTree from '../../components/HierarchyTree';
+import SideToolbar from '../../components/SideToolBar/SideToolbar';
+import ApprovalTable from '../../components/ApprovalTable';
+import UserProfileCard from './UserProfileCard';
+import FullEntityInformationModal from "../../components/Modals/Entity/FullEntityInformationModal";
 import DecorAnimation from "../../components/decor-animation";
 
 const Dashboard = observer(() => {
@@ -97,9 +99,8 @@ const Dashboard = observer(() => {
             userType={userType}
             openFullDetailsModal={openFullDetailsModal}
           />
-          <FullUserInformationModal
+          <FullEntityInformationModal
             user={user}
-            userPicture={userPicture}
             isOpen={isFullUserInfoModalOpen}
             closeFullDetailsModal={closeFullDetailsModal}
           />
