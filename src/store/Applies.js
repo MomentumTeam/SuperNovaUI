@@ -28,7 +28,8 @@ import {
 export default class AppliesStore {
   applies = [];
   myApplies = [];
-
+  allApplies = [];
+  
   constructor() {
     makeAutoObservable(this, {
       myApplies: observable,
@@ -77,7 +78,9 @@ export default class AppliesStore {
   }
 
   async getAllApproveRequests() {
+    console.log('getAllApproveRequests')
     const allApplies = await getAllApproveRequests();
+    console.log('allApplies', allApplies.requests)
     this.allApplies = allApplies.requests;
   }
 

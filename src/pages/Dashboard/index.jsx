@@ -65,7 +65,7 @@ const Dashboard = observer(() => {
 
   useEffect(() => {
     if (userStore.user) {
-      if (userType.type === USER_TYPE.COMMANDER) {
+      if (userStore.user.types.includes(USER_TYPE.COMMANDER) ) {
         appliesStore.getMyApproveRequests();
         appliesStore.getAllApproveRequests();
       } else {
