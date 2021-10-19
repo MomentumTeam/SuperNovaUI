@@ -7,6 +7,7 @@ import cookies from 'js-cookie';
 
 export default class UserStore {
     user = null;
+    userPicture = null;
     users = null;
     userNotifications = [];
     userUnreadNotifications = [];
@@ -63,6 +64,6 @@ export default class UserStore {
 
     async getMyPicture() {
         const myPicture = await getPictureByEntityId();
-        this.user.picture = myPicture.image;
+        this.userPicture = myPicture.image;
     }
 }

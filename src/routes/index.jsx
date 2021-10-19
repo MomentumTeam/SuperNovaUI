@@ -14,7 +14,7 @@ const routeGenerator = (routes) => {
             path={route.path}
             component={route.component}
             exact
-          />
+          />,
         );
         break;
       default:
@@ -22,7 +22,7 @@ const routeGenerator = (routes) => {
           <ProtectedRouteWrapper
             path={route.path}
             component={() => <route.component {...route.componentParams} />}
-          />
+          />,
         );
         break;
     }

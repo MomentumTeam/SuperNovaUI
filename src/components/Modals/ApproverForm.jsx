@@ -239,7 +239,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
 });
 
 ApproverForm.defaultProps = {
-  onlyForView: false,
+  onlyForView: undefined,
   approverRequestObj: {}
 }
 

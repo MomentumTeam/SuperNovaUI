@@ -25,6 +25,6 @@ export default class TreeStore {
 
   async loadTreeByOG(rootId) {
     const tree = await getTree(rootId);
-    this.tree = tree;
+    this.tree = {tree};
   }
 }

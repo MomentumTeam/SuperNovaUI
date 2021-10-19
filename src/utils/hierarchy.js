@@ -2,9 +2,11 @@ import { USER_TYPE } from "../constants";
 
 export const transformNode = (node) => {
   return {
-    label: node.name,
-    children: !node.children ? [] : node.children.map((child) => transformNode(child)),
-    expanded: false,
+    label: node.label,
+    expanded: true,
+    children: !node.children
+      ? []
+      : node.children.map((child) => transformNode(child)),
   };
 };
 

@@ -12,14 +12,17 @@ import SideToolbar from '../../components/SideToolBar/SideToolbar';
 import ApprovalTable from '../../components/ApprovalTable';
 import UserProfileCard from './UserProfileCard';
 import FullEntityInformationModal from "../../components/Modals/Entity/FullEntityInformationModal";
+import DecorAnimation from "../../components/decor-animation";
 
 const Dashboard = observer(() => {
   const { userStore, appliesStore, treeStore } = useStores();
   const [isFullUserInfoModalOpen, setIsFullUserInfoModalOpen] = useState(false);
 
   const user = toJS(userStore.user);
-  const userPicture = user && user.picture ? user.picture : USER_NO_PICTURE;
-  const applies = toJS(appliesStore.myApplies);
+  const userPicture = toJS(userStore.userPicture);
+  const applies = toJS(appliesStore.applies);
+  const allApplies = toJS(appliesStore.allApplies);
+
   let userType;
 
   user?.types.forEach((type) => {
@@ -52,7 +55,7 @@ const Dashboard = observer(() => {
           tag: USER_TYPE_TAG.APPROVER,
         };
         break;
-      case "BULK":
+      case 'BULK':
       case 6:
         userType = { type: USER_TYPE.BULK };
         break;
@@ -65,14 +68,15 @@ const Dashboard = observer(() => {
 
   useEffect(() => {
     if (userStore.user) {
-      if (userType.type === USER_TYPE_TAG.COMMANDER) {
-        // appliesStore.getCommanderApplies();
+      if (userStore.user.types.includes(USER_TYPE.COMMANDER) ) {
+        appliesStore.getMyApproveRequests();
+        appliesStore.getAllApproveRequests();
       } else {
         // appliesStore.loadApplies();
         treeStore.loadTreeByEntity(userStore.user);
       }
     }
-  }, [userStore.user, appliesStore, treeStore]);
+  }, [userStore.user, appliesStore, treeStore, userType.type]);
 
   const openFullDetailsModal = () => {
     setIsFullUserInfoModalOpen(true);
@@ -84,9 +88,9 @@ const Dashboard = observer(() => {
 
   return (
     <>
-      <div className="main-inner-item main-inner-item2">
-        <div className="main-inner-item2-content">
-          <div className="display-flex title-wrap">
+      <div className='main-inner-item main-inner-item2'>
+        <div className='main-inner-item2-content'>
+          <div className='display-flex title-wrap'>
             <h2>פרטים אישיים</h2>
           </div>
           <UserProfileCard
@@ -100,13 +104,21 @@ const Dashboard = observer(() => {
             isOpen={isFullUserInfoModalOpen}
             closeFullDetailsModal={closeFullDetailsModal}
           />
-          <div className="content-unit-wrap">
-            {userType.tag === USER_TYPE_TAG.APPROVER ? (
-              <ApprovalTable applies={applies} />
+          <div className='content-unit-wrap'>
+            {[USER_TYPE_TAG.APPROVER, USER_TYPE_TAG.SECURITY_APPROVER].includes(
+              userType.tag,
+            ) ? (
+              <>
+                <ApprovalTable
+                  applies={applies}
+                  allApplies={allApplies}
+                  approveType={userType.tag}
+                />
+              </>
             ) : (
-              <div className="content-unit-inner content-unit-inner-before">
-                <div className="search-row">
-                  <div className="search-row-inner">
+              <div className='content-unit-inner content-unit-inner-before'>
+                <div className='search-row'>
+                  <div className='search-row-inner'>
                     <SearchBox
                       loadDataByEntity={async (entity) => {
                         await treeStore.loadTreeByEntity(entity);
@@ -118,6 +130,7 @@ const Dashboard = observer(() => {
                   </div>
                 </div>
                 <div className="chart-wrap">
+                  <DecorAnimation />
                   <HierarchyTree data={toJS(treeStore.tree)} />
                 </div>
               </div>
