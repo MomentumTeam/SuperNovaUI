@@ -1,20 +1,25 @@
 import { STATUSES, TYPES } from "../constants";
 import datesUtil from "../utils/dates";
 import { useState } from "react";
-import PreviewRequestsDialog from "./PreviewRequestsDialog";
+import PreviewRequestsDialog from "./Modals/PreviewRequestsDialog";
 
 const List = ({ list }) => {
 
   const [dialogRequest, setDialogRequest] = useState({});
+  const [dialogRequestIndex, setDialogRequestIndex] = useState({});
+  const [isDialogVisible, setDialogVisiblity] = useState(false);
 
-  const onClick = (request) => {
+  const onClick = (request, index) => {
+    console.log(request, index);
     setDialogRequest(request);
+    setDialogRequestIndex(index);
+    setDialogVisiblity(true);
   };
 
   return (
     <table className="tableStyle">
       <tbody>
-        {list.map((request) => (
+        {list.map((request, index) => (
           <tr key={request.id}>
             <td>
               <div className="td-inner">
@@ -27,7 +32,7 @@ const List = ({ list }) => {
             <td>
               <div className="td-inner td-inner-btn">
                 <button
-                  onClick={() => onClick(request)}
+                  onClick={() => onClick(request, index)}
                   className={
                     "btn-status " +
                     (request.status === STATUSES.SENT
@@ -44,7 +49,7 @@ const List = ({ list }) => {
           </tr>
         ))}
       </tbody>
-      <PreviewRequestsDialog request={dialogRequest} />
+      <PreviewRequestsDialog isDialogVisible={isDialogVisible} setDialogVisiblity={setDialogVisiblity} requests={list} index={dialogRequestIndex} request={dialogRequest} />
     </table>
   );
 };

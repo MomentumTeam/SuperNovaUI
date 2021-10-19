@@ -1,12 +1,13 @@
 import React from 'react';
 import { InputText } from 'primereact/inputtext';
 import ApproverForm from './ApproverForm';
-
+import RequestFlowChart from '../RequestFlowChart';
 
 const PreviewApproverRequest = ({ request }) => {
   console.log(request);
   return (
     <>
+    <RequestFlowChart request={request} />
     <h2>פרטי מגיש הבקשה</h2>
     <div className='p-fluid'>
       <div className='p-fluid-item'>
