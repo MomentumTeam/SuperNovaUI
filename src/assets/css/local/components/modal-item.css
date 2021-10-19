@@ -9,6 +9,10 @@
   background-color: #ffffff;
 }
 
+.p-dialog.previewRequest {
+  width: 725px
+}
+
 @media (max-width: 730px) {
   .p-dialog {
     width: 90%;
