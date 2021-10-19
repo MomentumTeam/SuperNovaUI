@@ -4,6 +4,7 @@ import img2 from '../assets/images/icon-arrow-right.svg';
 import img3 from '../assets/images/icon-arrow-left.svg';
 import img4 from '../assets/images/buttons/icon-check.svg';
 import img5 from '../assets/images/icon-time.svg';
+import img6 from '../assets/images/buttons/close.svg';
 
 export const OverlayWrapper = styled.div`
   position: fixed;
@@ -327,16 +328,18 @@ export const ModalContent = styled.div`
                       }
                     }
 
-                    .DECISION_UNKNOWN .UNRECOGNIZED {
-                        background-image: url(${img4});
+                    &.DECISION_UNKNOWN .UNRECOGNIZED {
+                        background-image: url(${img4}) !important;
                     }
 
-                    .APPROVED {
-                        background-image: url(${img3});
+                    &.APPROVED {
+                        background-image: url(${img3}) !important;
                     }
                     
-                    .DENIED {
-                        background-image: url(${img2});
+                    &.DENIED::before {
+                        background-image: url(${img6}) !important;
+                        background-color: red;
+                        top: -5px !important;
                     }
 
                     &::before {
@@ -380,7 +383,7 @@ export const ModalContent = styled.div`
                             background-repeat: no-repeat;
                             background-position: center;
                             background-size: 17px;
-                            top: -6px;
+                            top: -5px;
                         }
                     }
                     .tooltip {

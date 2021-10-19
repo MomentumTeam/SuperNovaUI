@@ -10,7 +10,6 @@ const List = ({ list }) => {
   const [isDialogVisible, setDialogVisiblity] = useState(false);
 
   const onClick = (request, index) => {
-    console.log(request, index);
     setDialogRequest(request);
     setDialogRequestIndex(index);
     setDialogVisiblity(true);

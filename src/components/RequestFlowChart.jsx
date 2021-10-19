@@ -119,9 +119,7 @@ class RequestFlowChart extends React.Component {
                 ) : null}
                 {this.request?.needSuperSecurityDecision ? (
                   <li
-                    className={`process ${
-                      DECISIONS[this.request?.superSecurityDecision?.decision]
-                    }`}
+                    className={`process ${DECISIONS[this.request?.superSecurityDecision?.decision]}`}
                   >
                     גורם מאשר ב"מ 2
                     {this.tooltipContent(
