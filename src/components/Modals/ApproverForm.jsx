@@ -217,7 +217,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
         </div>
       </div>
       <div className='p-fluid-item'>
-        <Hierarchy disabled={false} setValue={setValue} name='hierarchy' ogValue={getValues('hierarchy')} errors={errors} />
+        <Hierarchy disabled={true} setValue={setValue} name='hierarchy' ogValue={getValues('hierarchy')} errors={errors} />
       </div>
       <div className='p-fluid-item'>
         <Approver disabled={onlyForView} setValue={setValue} name='approvers' defaultApprovers={requestObject?.commanders || []} multiple={true} errors={errors} />
