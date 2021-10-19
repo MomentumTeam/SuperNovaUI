@@ -9,3 +9,7 @@
 .disabled {
     background-color:#faf8fd !important;
 }
+
+.approverType .p-dropdown-label.p-inputtext {
+    background-color: inherit !important;
+}
