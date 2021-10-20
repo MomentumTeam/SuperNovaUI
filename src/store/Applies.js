@@ -140,6 +140,7 @@ export default class AppliesStore {
   }
 
   async renameOGApply(applyProperties) {
+    console.log('applyProperties', applyProperties)
     const newRenameOGApply = await renameOGRequest(applyProperties);
     this.myApplies.unshift(newRenameOGApply);
   }

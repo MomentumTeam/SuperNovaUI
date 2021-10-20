@@ -5,11 +5,10 @@ import { toJS } from "mobx";
 
 import { useStores } from "../../../context/use-stores";
 import { canEditHierarchy, getHierarchy } from "../../../utils/hierarchy";
-import { renameOGRequest } from "../../../service/AppliesService";
 
 const FullHierarchyInformationFooter = ({ isEdit, closeModal, setIsEdit, openDeleteModal, hierarchy, actionPopup }) => {
   const { formState, getValues, watch, reset } = useFormContext();
-  const { userStore } = useStores();
+  const { userStore,appliesStore } = useStores();
   const [disabled, setDisabled] = useState(false);
 
   const { errors } = formState;
@@ -38,7 +37,7 @@ const FullHierarchyInformationFooter = ({ isEdit, closeModal, setIsEdit, openDel
     };
 
     try {
-      const res = await renameOGRequest({
+      const res = await appliesStore.renameOGApply({
         kartoffelParams,
         adParams,
       });
