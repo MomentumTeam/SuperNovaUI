@@ -2,7 +2,6 @@ import appRoutes from '../constants/routes';
 import NotFound from '../pages/NotFound';
 import ProtectedRouteWrapper from './ProtectedRouteWrapper';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { useStores } from '../context/use-stores';
 
 let routePaths = [];
 
@@ -15,7 +14,7 @@ const routeGenerator = (routes) => {
             path={route.path}
             component={route.component}
             exact
-          />
+          />,
         );
         break;
       default:
@@ -23,7 +22,7 @@ const routeGenerator = (routes) => {
           <ProtectedRouteWrapper
             path={route.path}
             component={() => <route.component {...route.componentParams} />}
-          />
+          />,
         );
         break;
     }
@@ -32,13 +31,6 @@ const routeGenerator = (routes) => {
 routeGenerator(appRoutes);
 
 const AppRouter = () => {
-  const { userStore, appliesStore } = useStores();
-
-  if (!userStore.user) {
-    userStore.setUserInfo();
-    appliesStore.loadMyApplies(1,50);
-  }
-
   return (
     <BrowserRouter>
       <Switch>
