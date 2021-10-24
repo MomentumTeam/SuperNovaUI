@@ -1,10 +1,10 @@
-import React, { useState, useImperativeHandle, forwardRef } from "react";
+import React, { useState, useImperativeHandle, forwardRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
 import Hierarchy from "./Hierarchy";
-import Approver from "./Approver";
+import Approver from "../Fields/Approver";
 import { useStores } from "../../context/use-stores";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -12,16 +12,18 @@ import {
   getRolesUnderOG,
   getRoleByRoleId,
 } from "../../service/KartoffelService";
+import HorizontalLine from "../HorizontalLine";
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
   hierarchy: Yup.object().required(),
+  role: Yup.object().required(),
   approvers: Yup.array().min(1).required(),
   comments: Yup.string().optional(),
   identifier: Yup.string().email().required(),
 });
 
-const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
+const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestObject }, ref) => {
   const { appliesStore } = useStores();
   const [hierarchyByIdentifier, setHierarchyByIdentifier] = useState(null);
 
@@ -31,19 +33,39 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
   const [roles, setRoles] = useState([]);
   const { errors } = formState;
 
+
+  useEffect(() => {
+    const initializeValues = async () => {
+      setValue('comments', requestObject.comments);
+      setValue('identifier', requestObject.kartoffelParams.roleId);
+      setValue('hierarchy', requestObject.adParams.ouDisplayName);
+      const role = await getRoleByRoleId(requestObject.kartoffelParams.roleId);
+      console.log(role);
+      setHierarchyByIdentifier(role.hierarchy);
+      setValue('role', role);
+      setRoles([role]);
+    }
+
+    if (requestObject) {
+      console.log(requestObject);
+      initializeValues();
+    }
+  }, []);
+
   const onSubmit = async (data) => {
     try {
       await validationSchema.validate(data);
     } catch (err) {
       throw new Error(err.errors);
     }
-    const { identifier, approvers, hierarchy, comments } = data;
+    const { identifier, approvers, hierarchy, comments, role } = data;
     const req = {
       comments: comments,
       commanders: approvers,
       kartoffelParams: {
         roleId: identifier,
         directGroup: hierarchy.id,
+        jobTitle: role.jobTitle,
       },
       adParams: {
         samAccountName: identifier,
@@ -65,7 +87,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
   const setCurrentHierarchyFunction = async (name, value) => {
     setValue(name, value);
 
-    if (value.id) {
+    if (value?.id) {
       setRoles((await getRolesUnderOG(value.id)).roles);
     }
   };
@@ -103,8 +125,9 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
           <Hierarchy
             setValue={setCurrentHierarchyFunction}
             name="currentHierarchy"
-            value={hierarchyByIdentifier}
+            ogValue={hierarchyByIdentifier}
             errors={errors}
+            disabled={onlyForView}
           />
         </div>
       </div>
@@ -123,6 +146,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
               setValue("role", e.target.value);
             }}
             value={watch("role")}
+            disabled={onlyForView}
           />
           {errors.role && <small style={{ color: "red" }}>יש למלא ערך</small>}
         </div>
@@ -138,22 +162,18 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
             type="text"
             required
             placeholder="מזהה תפקיד"
+            disabled={onlyForView}
           />
           <label>{errors.identifier && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
         </div>
       </div>
-      <hr
-        style={{
-          height: 5,
-          width: "inherit",
-        }}
-      />
+      <HorizontalLine />
       <div className="display-flex title-wrap" style={{ width: "inherit" }}>
         <h2>היררכיה חדשה</h2>
       </div>
       <div className="p-fluid-item-flex p-fluid-item">
         <div className="p-field">
-          <Hierarchy setValue={setValue} name="hierarchy" errors={errors} />
+          <Hierarchy setValue={setValue} name="hierarchy" errors={errors} ogValue={watch('hierarchy')} disabled={onlyForView} />
         </div>
       </div>
       <div className="p-fluid-item">
@@ -162,6 +182,8 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
           name="approvers"
           multiple={true}
           errors={errors}
+          defaultApprovers={requestObject?.commanders || []}
+          disabled={onlyForView}
         />
       </div>
       <div className="p-fluid-item p-fluid-item-flex1">
@@ -173,6 +195,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone }, ref) => {
             {...register("comments")}
             type="text"
             autoResize="false"
+            disabled={onlyForView}
           />
         </div>
       </div>

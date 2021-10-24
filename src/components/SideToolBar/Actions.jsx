@@ -39,9 +39,9 @@ const actions = [
   {
     id: 4,
     className: 'btn-actions btn-actions4',
-    actionName: 'הוספת משתמש',
+    actionName: 'משתמש חדש',
     displayResponsive: false,
-    dialogClass: 'dialogClass3',
+    dialogClass: 'dialogClass4',
     modalName: CreateEntityForm,
   }, //disconnect false
   {

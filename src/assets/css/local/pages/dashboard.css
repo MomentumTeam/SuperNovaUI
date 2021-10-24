@@ -80,6 +80,7 @@
   border-radius: 30px;
   padding: 30px 38px 20px 38px;
   position: relative;
+  overflow: hidden;
 }
 
 .personal-information-wrap .personal-information-inner .confirms h3 {
@@ -104,13 +105,13 @@
 
 @media (max-width: 1630px) {
   .main-inner-item2 .main-inner-item2-content .personal-information-wrap .personal-information-inner {
-    padding: 20px 15px 20px 15px;
+    padding: 20px 30px 20px 30px;
   }
 }
 
 @media (max-width: 1440px) {
   .main-inner-item2 .main-inner-item2-content .personal-information-wrap .personal-information-inner {
-    padding: 40px 15px 20px 15px;
+    padding: 40px 30px 20px 30px;
   }
 }
 
@@ -400,4 +401,49 @@
   .main-inner-item2 .main-inner-item2-content .content-unit-wrap .content-unit-inner.content-unit-inner-before::before {
     display: none;
   }
+}
+
+.noticeRibbon {
+  background: transparent linear-gradient(180deg, #FEB557 0%, #F68340 100%) 0% 0% no-repeat padding-box;
+  position: absolute;
+  border-radius: 100%;
+  width: 180px;
+  height: 180px;
+  color: white;
+  font-weight: bold;
+  top: -90px;
+  right: -90px;
+  box-shadow: 0px 3px 6px rgb(0 0 0 / 20%);
+}
+
+.noticeRibbon .noticeText {
+  width: 35%;
+  position: absolute;
+  bottom: 38px;
+  left: 20px;
+  text-align: center;
+}
+
+.tabletab {
+  padding-left: 25px;
+  cursor: pointer;
+  display: flex;
+}
+
+.tabletab.inactive h2 {
+  color: #A7ABBD;
+  font-weight: 400;
+}
+
+.tabletab .request-count-badge {
+  background: #201961;
+  color: white;
+  border-radius: 50px;
+  padding: 2px 8px;
+  margin-right: 5px;
+}
+
+
+.tabletab.inactive .request-count-badge {
+  background: #A7ABBD;
 }

@@ -7,8 +7,9 @@ import cookies from 'js-cookie';
 
 export default class UserStore {
     user = null;
-    users = null;
     userPicture = null;
+    users = null;
+    userNotifications = [];
     userUnreadNotifications = [];
 
     constructor() {
@@ -20,6 +21,8 @@ export default class UserStore {
             loadUsers: action,
             getMyPicture: action,
         });
+
+        this.setUserInfo();
     }
 
     setUserInfo() {

@@ -74,6 +74,14 @@ $linkColor0: #2979f4;
                     &:last-child {
                         border-radius: 17px 0px 0px 17px;
                     }
+
+                    &.w-xl {
+                        width: 10em;
+                    }
+
+                    &.w-xxl {
+                        width: 13em;
+                    }
                     .p-column-title {
                         padding: 10px 10px 10px 4px;
                         min-width: inherit;
@@ -230,6 +238,17 @@ $linkColor0: #2979f4;
                         font-size: 14px;
                     }
 
+                    @media (max-width: 1023px) {
+                        &:last-child {
+                            position: relative !important;
+                            margin-right: -20px;
+                        }
+
+                        &:first-child {
+                            margin-top: 10px;
+                        }
+                    }
+
                     .p-column-title {
                         display: none;
                         @media (max-width: 1023px) {
@@ -243,11 +262,67 @@ $linkColor0: #2979f4;
                         }
                     }
                 }
+
+                &:nth-last-child(-n + 6) {
+                    .StyledHiddenArea {
+                        top: inherit;
+                        bottom: 0;
+                    }
+                }
             }
         }
     }
 }
 
+.tableStyle2 {
+    .p-datatable {
+        .p-datatable-thead tr th,
+        .p-datatable-tbody tr td {
+            &:nth-child(3) {
+                width: 11em;
+                @media (max-width: 1590px) {
+                    width: auto;
+                }
+
+                @media (max-width: 1279px) {
+                    width: 11em;
+                }
+                @media (max-width: 1023px) {
+                    width: auto;
+                }
+            }
+
+            &:nth-child(5) {
+                width: 15em;
+                @media (max-width: 1590px) {
+                    width: auto;
+                }
+
+                @media (max-width: 1279px) {
+                    width: 15em;
+                }
+
+                @media (max-width: 1023px) {
+                    width: auto;
+                }
+            }
+
+            &:nth-child(6) {
+                width: 14em;
+                @media (max-width: 1590px) {
+                    width: auto;
+                }
+
+                @media (max-width: 1279px) {
+                    width: 14em;
+                }
+                @media (max-width: 1023px) {
+                    width: auto;
+                }
+            }
+        }
+    }
+}
 .p-component-overlay {
     background-color: rgba(255, 255, 255, 0.6);
     transition-duration: 0.2s;

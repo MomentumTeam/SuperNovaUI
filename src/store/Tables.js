@@ -1,46 +1,162 @@
-import { action, makeAutoObservable, observable } from 'mobx';
+import { action, makeAutoObservable, observable, runInAction } from "mobx";
 import {
   getEntitiesUnderOG,
   getRolesUnderOG,
   getOGChildren,
-} from '../service/KartoffelService';
+  getEntitiesByHierarchy,
+  getEntityByRoleId,
+  searchEntitiesByFullName,
+  getEntityByIdentifier,
+  getRoleByRoleId,
+  searchOG,
+  getRolesByHierarchy,
+} from "../service/KartoffelService";
 
 export default class TablesStore {
   entities = [];
   roles = [];
   groups = [];
+  isSearch = false;
 
   constructor() {
     makeAutoObservable(this, {
       entities: observable,
       roles: observable,
       groups: observable,
-      loadEntityByEntity: action,
+      isSearch: observable,
+
       loadEntitiesUnderOG: action,
       loadRolesUnderOG: action,
       loadOGChildren: action,
+
+      getEntitiesByEntity: action,
+      getEntitiesByHierarchy: action,
+      getEntitiesByRoleId: action,
+      getHierarchyByHierarchy: action,
+      getHierarchyByRoleId: action,
+      getRolesByRoleId: action,
+      setSearch: action,
     });
   }
 
-  async loadEntitiesByEntity(entity) {
-    this.entities = entity;
+  setSearch(isSearch) {
+    this.isSearch = isSearch;
   }
 
-  async loadEntitiesUnderOG(rootId) {
-    const entities = await getEntitiesUnderOG(rootId);
-
-    this.entities = entities;
+  async loadEntitiesUnderOG(id, page, pageSize, append = false) {
+    const entities = await getEntitiesUnderOG({ id, page, pageSize });
+    this.entities = append ? [...this.entities, ...entities] : entities;
   }
 
-  async loadRolesUnderOG(rootId) {
-    const roles = await getRolesUnderOG(rootId);
-
-    this.roles = roles;
+  async loadRolesUnderOG(id, page, pageSize, append = false) {
+    const roles = await getRolesUnderOG({ id, page, pageSize });
+    this.roles = append ? [...this.roles, ...roles] : roles;
   }
 
-  async loadOGChildren(rootId) {
-    const groups = await getOGChildren(rootId);
+  async loadOGChildren(id, page, pageSize, append = false) {
+    const groups = await getOGChildren({ id, page, pageSize });
+    this.groups = append ? [...this.groups, ...groups] : groups;
+  }
 
-    this.groups = groups;
+  async getEntitiesByEntity(event) {
+    let filteredResults;
+    const { query } = event;
+
+    if (!query.trim().length) {
+      filteredResults = [];
+    } else if (query.match("[0-9]+") && query.length >= 6) {
+      filteredResults = await getEntityByIdentifier(query);
+      filteredResults = [filteredResults];
+    } else {
+      filteredResults = await searchEntitiesByFullName(query);
+      filteredResults = filteredResults.entities;
+    }
+    return filteredResults;
+  }
+
+  async getEntitiesByHierarchy(event) {
+    let filteredResults;
+    const { query } = event;
+
+    if (!query.trim().length) {
+      filteredResults = [];
+    } else {
+      filteredResults = await getEntitiesByHierarchy(query);
+      filteredResults = filteredResults.entities;
+    }
+
+    return filteredResults;
+  }
+
+  async getEntitiesByRoleId(event) {
+    let filteredResults;
+    const { query } = event;
+
+    if (!query.trim().length) {
+      filteredResults = [];
+    } else {
+      filteredResults = await getEntityByRoleId(query);
+      filteredResults = [filteredResults];
+    }
+
+    return filteredResults;
+  }
+
+  async getHierarchyByHierarchy(event) {
+    let filteredResults;
+    const { query } = event;
+
+    if (!query.trim().length) {
+      filteredResults = [];
+    } else {
+      filteredResults = await searchOG(query);
+    }
+
+    return filteredResults;
+  }
+
+  async getHierarchyByRoleId(event) {
+    let filteredResults;
+    const { query } = event;
+
+    if (!query.trim().length) {
+      filteredResults = [];
+    } else {
+      const role = await getRoleByRoleId(query);
+
+      if (role && role.hierarchy) {
+        filteredResults = await searchOG(role.hierarchy);
+      }
+    }
+
+    return filteredResults;
+  }
+
+  async getRolesByRoleId(event) {
+    let filteredResults;
+    const { query } = event;
+
+    if (!query.trim().length) {
+      filteredResults = [];
+    } else {
+      filteredResults = await getRoleByRoleId(query);
+      filteredResults = [filteredResults];
+    }
+
+    return filteredResults;
+  }
+
+  async getRolesByHierarchy(event) {
+    let filteredResults;
+    const { query } = event;
+
+    if (!query.trim().length) {
+      filteredResults = [];
+    } else {
+      filteredResults = await getRolesByHierarchy(query);
+      filteredResults = [filteredResults];
+    }
+
+    return filteredResults;
   }
 }

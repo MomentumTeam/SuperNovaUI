@@ -4,7 +4,7 @@ import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { InputTextarea } from 'primereact/inputtextarea';
 import Hierarchy from './Hierarchy';
-import Approver from './Approver';
+import Approver from '../Fields/Approver';
 import { AutoComplete } from 'primereact/autocomplete';
 import '../../assets/css/local/components/approverForm.css'
 // import { assignRoleToEntityRequest } from '../../service/AppliesService';
@@ -22,7 +22,7 @@ const approverTypes = [
   { label: 'גורם מאשר יחב"ם', value: 'SECURITY' },
   { label: 'גורם מאשר בטח"ם', value: 'SUPER_SECURITY' },
   { label: 'הרשאת בקשה מרובה', value: 'BULK' },
-  { label: 'משתמש על', value: 'ADMIN' },
+  { label: 'מחשוב יחידתי', value: 'ADMIN' },
 ];
 
 const validationSchema = Yup.object().shape({
@@ -31,14 +31,14 @@ const validationSchema = Yup.object().shape({
   hierarchy: Yup.string().required(),
   approvers: Yup.array().min(1).required(),
   comments: Yup.string().optional(),
+  userName: Yup.string().required(),
 });
 
-const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionDone }, ref) => {
+const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }, ref) => {
   const { appliesStore, userStore } = useStores();
   const [approverType, setApproverType] = useState();
   const { register, handleSubmit, setValue, getValues, formState, watch } =
     useForm({
-      defaultValues: approverRequestObj,
       resolver: yupResolver(validationSchema),
     });
   const [userSuggestions, setUserSuggestions] = useState([]);
@@ -47,6 +47,14 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
   useEffect(() => {
     setValue('approverType', 'COMMANDER');
     setApproverType('COMMANDER');
+
+    if (requestObject) {
+      setValue('comments', requestObject.comments);
+      setValue('userName', requestObject.additionalParams.displayName);
+      setValue('hierarchy', requestObject.additionalParams.directGroup);
+      setValue('personalNumber', requestObject.additionalParams.personalNumber || requestObject.additionalParams.identityCard);
+      setApproverType(requestObject.additionalParams.type);
+    }
   }, []);
 
   const onSubmit = async (data) => {
@@ -56,6 +64,7 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
       hierarchy,
       approverType,
       comments,
+      userName
     } = data;
 
     console.log(errors);
@@ -70,15 +79,15 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
     const req = {
       status: 'SUBMITTED',
       commanders: approvers,
-      AdditionalParams: {
+      additionalParams: {
         entityId: user.id,
-        displayName: '',
+        displayName: userName,
         domainUsers: (user?.digitalIdentities || []).map(({ uniqueId, mail }) => uniqueId || mail),
         akaUnit: user.akaUnit,
-        hierarchy: hierarchy,
         personalNumber: user.personalNumber,
         identityCard: user.identityCard,
         type: approverType,
+        directGroup: hierarchy,
       },
       comments,
       due: Date.now(),
@@ -140,7 +149,7 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
           <Dropdown
             {...register('approverType')}
             disabled={onlyForView}
-            className={`${onlyForView ? 'disabled' : ''}`}
+            className={`${onlyForView ? 'disabled' : ''} approverType`}
             value={approverType}
             inputId='2011'
             required
@@ -153,13 +162,14 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
         <div className='p-field'>
           <label htmlFor='2020'>
             {' '}
-            <span className='required-field'>*</span>שם משתמש
+            <span className='required-field'>*</span>שם מלא
           </label>
           <button
             className='btn-underline left19 approver-fillMe'
             onClick={setCurrentUser}
             type='button'
             title='עבורי'
+            style={onlyForView && { display: 'none' }}
           >
             עבורי
           </button>
@@ -179,6 +189,7 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
               setValue('userName', e.value);
             }}
             required
+            disabled={onlyForView}
           />
           {errors.user && <small style={{ color: "red" }}>יש למלא ערך</small>}
         </div>
@@ -200,6 +211,7 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
                 onSearchUserByPersonalNumber();
               }
             }}
+            disabled={onlyForView}
           />
           {errors.user && <small style={{ color: "red" }}>יש למלא ערך</small>}
         </div>
@@ -208,7 +220,7 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
         <Hierarchy disabled={true} setValue={setValue} name='hierarchy' ogValue={getValues('hierarchy')} errors={errors} />
       </div>
       <div className='p-fluid-item'>
-        <Approver disabled={onlyForView} setValue={setValue} name='approvers' defaultApprovers={approverRequestObj?.approvers || []} multiple={true} errors={errors} />
+        <Approver disabled={onlyForView} setValue={setValue} name='approvers' defaultApprovers={requestObject?.commanders || []} multiple={true} errors={errors} />
       </div>
       <div className='p-fluid-item p-fluid-item-flex1'>
         <div className='p-field'>
@@ -227,7 +239,7 @@ const ApproverForm = forwardRef(({ onlyForView, approverRequestObj, setIsActionD
 });
 
 ApproverForm.defaultProps = {
-  onlyForView: false,
+  onlyForView: undefined,
   approverRequestObj: {}
 }
 
