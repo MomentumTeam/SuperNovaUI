@@ -36,8 +36,8 @@ const AppRouter = () => {
   const { userStore } = useStores();
 
   useEffect(async () => {
-    userStore.fetchUserInfo();
-  });
+    await userStore.fetchUserInfo();
+  }, []);
 
   return (
     <BrowserRouter>

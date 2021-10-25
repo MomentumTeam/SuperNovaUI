@@ -33,7 +33,6 @@ export default class UserStore {
 
   async fetchUserInfo() {
     const kartoffelUser = await getUser();
-    console.log('this.user', { ...this.user, ...kartoffelUser })
     this.user = { ...this.user, ...kartoffelUser };
   }
 
