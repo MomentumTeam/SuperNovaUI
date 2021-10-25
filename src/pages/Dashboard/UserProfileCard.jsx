@@ -9,9 +9,9 @@ const UserProfileCard = ({
 }) => (
   <div className='personal-information-wrap'>
     <div className='display-flex personal-information-inner'>
-      {userType.tag && (
+      {userType?.tag && (
         <div className='noticeRibbon'>
-          <div className='noticeText'>{userType.tag}</div>
+          <div className='noticeText'>{userType?.tag}</div>
         </div>
       )}
       <div className='personal-information-item'>
