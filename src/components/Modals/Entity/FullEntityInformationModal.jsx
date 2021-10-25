@@ -43,7 +43,7 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit,
 
   useEffect(() => {
     async function getUserPic() {
-      if (user.id && (user.picture === USER_NO_PICTURE || user.picture === undefined)) {
+      if (user?.id && (user.picture === USER_NO_PICTURE || user.picture === undefined)) {
         // TODO: api for get entity picture by id (and not just for me)
         let tempUser = { ...user };
         const pic = await getPictureByEntityId();

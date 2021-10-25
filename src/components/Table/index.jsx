@@ -45,7 +45,7 @@ const Table = ({ data, tableType, isLoading, onScroll, first }) => {
   };
 
   const isAllowed = (col) => {
-    return col.secured === undefined || col.secured.some((allowedType) => user.types.includes(allowedType));
+    return col.secured === undefined || col.secured.some((allowedType) => user?.types.includes(allowedType));
   };
 
   useEffect(() => {

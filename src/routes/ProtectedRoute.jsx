@@ -3,12 +3,15 @@ import { toJS } from "mobx";
 
 import { apiBaseUrl } from '../constants/api';
 import { useStores } from "../context/use-stores";
+import { tokenName } from '../constants/api';
+import cookies from 'js-cookie';
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
     const { userStore } = useStores();
     const user = toJS(userStore.user);
+    const token = cookies.get(tokenName);
 
-    if (!user) {
+    if (!token) {
         window.location.replace(`${apiBaseUrl}/auth/login`);
     }
 
