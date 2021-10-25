@@ -110,10 +110,10 @@ class RequestFlowChart extends React.Component {
                       DECISIONS[this.request?.superSecurityDecision?.decision]
                     }`}
                   >
-                    גורם מאשר ב"מ
+                    גורם מאשר יחב"ם
                     {this.tooltipContent(
                       this.request?.securityDecision,
-                      'גורם מאשר ב"מ'
+                      'גורם מאשר יחב"ם'
                     )}
                   </li>
                 ) : null}
@@ -121,14 +121,14 @@ class RequestFlowChart extends React.Component {
                   <li
                     className={`process ${DECISIONS[this.request?.superSecurityDecision?.decision]}`}
                   >
-                    גורם מאשר ב"מ 2
+                    גורם מאשר בטח"ם
                     {this.tooltipContent(
                       this.request?.superSecurityDecision,
-                      '2 גורם מאשר ב"מ'
+                      'גורם מאשר בטח"ם'
                     )}
                   </li>
                 ) : null}
-                {this.isApproved() ? <li>אושר</li> : null}
+                {this.isApproved() ? <li>בוצע</li> : null}
               </ul>
               <p>
                 תאריך בקשה
