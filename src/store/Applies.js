@@ -5,6 +5,8 @@ import {
   getAllRequests,
   getRequestsByPerson,
   getRequestBySerialNumber,
+  getMyApproveRequests,
+  getAllApproveRequests,
   searchRequestsBySubmitterDisplayName,
   createRoleRequest,
   assignRoleToEntityRequest,
@@ -20,12 +22,13 @@ import {
   updateApproverDecision,
   changeRoleHierarchyRequest,
   changeRoleHierarchyBulkRequest,
-  createRoleBulkRequest
+  createRoleBulkRequest,
 } from '../service/AppliesService';
 
 export default class AppliesStore {
   applies = [];
   myApplies = [];
+  allApplies = [];
 
   constructor() {
     makeAutoObservable(this, {
@@ -50,12 +53,14 @@ export default class AppliesStore {
       disconectRoleFromEntityApply: action,
       updateApplyDecision: action,
     });
+
+    this.loadMyApplies(1, 20);
   }
 
   // GET
 
   async loadMyApplies(from, to) {
-    const myApplies = await getMyRequests(1, 6);
+    const myApplies = await getMyRequests(from, to);
     this.myApplies = myApplies.requests;
   }
 
@@ -69,6 +74,16 @@ export default class AppliesStore {
     // this.applies = myApplies.requests;
   }
 
+  async getMyApproveRequests() {
+    const myApplies = await getMyApproveRequests();
+    this.applies = myApplies.requests;
+  }
+
+  async getAllApproveRequests() {
+    const allApplies = await getAllApproveRequests();
+    this.allApplies = allApplies.requests;
+  }
+
   async getAppliesByPerosn(id, personType, personInfoType, from, to) {
     const myApplies = await getRequestsByPerson(
       id,
@@ -78,7 +93,7 @@ export default class AppliesStore {
       to
     );
 
-    this.myApplies = myApplies.requests;
+    // this.applies = myApplies.requests;
   }
 
   async getApplyBySerialNumber(serialNumber) {
@@ -155,24 +170,23 @@ export default class AppliesStore {
     this.myApplies.unshift(newDisconectRoleFromEntityApply);
   }
 
-
   async createRoleBulk(applyProperties) {
-    const createRoleBulkApply =
-      await createRoleBulkRequest(applyProperties);
+    const createRoleBulkApply = await createRoleBulkRequest(applyProperties);
     this.myApplies.unshift(createRoleBulkApply);
   }
 
-
   // PUT
   async changeRoleHierarchy(applyProperties) {
-    const changeRoleHierarchyApply =
-      await changeRoleHierarchyRequest(applyProperties);
+    const changeRoleHierarchyApply = await changeRoleHierarchyRequest(
+      applyProperties
+    );
     this.myApplies.unshift(changeRoleHierarchyApply);
   }
 
   async changeRoleHierarchyBulk(applyProperties) {
-    const changeRoleHierarchyBulkApply =
-      await changeRoleHierarchyBulkRequest(applyProperties);
+    const changeRoleHierarchyBulkApply = await changeRoleHierarchyBulkRequest(
+      applyProperties
+    );
     this.myApplies.unshift(changeRoleHierarchyBulkApply);
   }
 

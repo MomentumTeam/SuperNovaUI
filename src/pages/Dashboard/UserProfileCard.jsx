@@ -1,18 +1,23 @@
 import blankProfilePic from '../../assets/images/blankProfile.png';
 import '../../assets/css/local/pages/dashboard.css';
 
-const UserProfileCard = ({ user, userPicture,userType, openFullDetailsModal }) => (
+const UserProfileCard = ({
+  user,
+  userPicture,
+  userType,
+  openFullDetailsModal,
+}) => (
   <div className='personal-information-wrap'>
     <div className='display-flex personal-information-inner'>
-      {userType.tag &&
-          <div className="confirms">
-              <h3>{userType.tag}</h3>
-          </div>
-      }
+      {userType.tag && (
+        <div className='noticeRibbon'>
+          <div className='noticeText'>{userType.tag}</div>
+        </div>
+      )}
       <div className='personal-information-item'>
         <div className='userpic-wrap'>
           <img
-            style={{borderRadius: '50%'}}
+            style={{ borderRadius: '50%' }}
             src={
               user && userPicture
                 ? `data:image/jpeg;base64,${userPicture}`
