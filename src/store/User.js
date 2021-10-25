@@ -22,15 +22,19 @@ export default class UserStore {
       getMyPicture: action,
     });
 
-    this.setUserInfo();
+    this.getUserToken();
   }
 
-  async setUserInfo() {
+  async getUserToken() {
     const shragaUser = this.parseToken();
-    const kartoffelUser = await getUser();
-    this.user = { ...kartoffelUser, types: shragaUser.types };
-
+    this.user = shragaUser;
     this.getMyPicture();
+  }
+
+  async fetchUserInfo() {
+    const kartoffelUser = await getUser();
+    console.log('this.user', { ...this.user, ...kartoffelUser })
+    this.user = { ...this.user, ...kartoffelUser };
   }
 
   parseToken() {

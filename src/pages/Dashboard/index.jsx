@@ -131,13 +131,13 @@ const Dashboard = observer(() => {
           />
           <div className='content-unit-wrap'>
             {[USER_TYPE_TAG.APPROVER, USER_TYPE_TAG.SECURITY_APPROVER].includes(
-              userType?.tag
+              userType.tag
             ) ? (
               <>
                 <ApprovalTable
                   applies={myApplies}
                   allApplies={allApplies}
-                  approveType={userType?.tag}
+                  approveType={userType.tag}
                 />
               </>
             ) : (
