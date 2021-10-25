@@ -17,7 +17,7 @@ export const FullEntityInformationModalContext = createContext(null);
 
 const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit, actionPopup }) => {
   const [isEdit, setIsEdit] = useState(edit);
-  const [userData, setUserData] = useState(user);
+  const [userPic, setUserPic] = useState(undefined);
   const [form, setForm] = useState({});
   const [errors, setErrors] = useState({});
 
@@ -43,18 +43,18 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit,
 
   useEffect(() => {
     async function getUserPic() {
-      if (user.id && (user.picture === USER_NO_PICTURE || user.picture === undefined)) {
+      if (user && user.picture && (user.picture === USER_NO_PICTURE)) {
         // TODO: api for get entity picture by id (and not just for me)
-        let tempUser = { ...user };
         const pic = await getPictureByEntityId();
-        tempUser.picture = pic.image;
-        setUserData(tempUser);
+        setUserPic(pic.image);
+      } else {
+        setUserPic(user.picture);
       }
     }
 
     // When user changes, retrive new photo
     getUserPic();
-  }, [user]);
+  }, [user, isOpen]);
 
   useEffect(() => {
     // Init form and errors
@@ -160,11 +160,7 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit,
           <div className="userpic-wrap">
             <img
               style={{ borderRadius: "50%", width: "142px" }}
-              src={
-                userData && userData.picture !== USER_NO_PICTURE
-                  ? `data:image/jpeg;base64,${userData.picture}`
-                  : blankProfilePic
-              }
+              src={user && userPic !== USER_NO_PICTURE ? `data:image/jpeg;base64,${userPic}` : blankProfilePic}
               alt="userpic"
             />
           </div>

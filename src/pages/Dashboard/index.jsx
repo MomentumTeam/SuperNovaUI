@@ -9,7 +9,6 @@ import { useStores } from '../../context/use-stores';
 import {
   USER_TYPE,
   USER_TYPE_TAG,
-  USER_NO_PICTURE,
 } from '../../constants/user';
 import SearchBox from '../../components/Search/SearchBox';
 import HierarchyTree from '../../components/HierarchyTree';
@@ -25,7 +24,6 @@ const Dashboard = observer(() => {
   const toast = useRef(null);
 
   const user = toJS(userStore.user);
-  const userPicture = toJS(userStore.userPicture);
   const myApplies = toJS(appliesStore.myApplies);
   const allApplies = toJS(appliesStore.allApplies);
 
@@ -119,7 +117,6 @@ const Dashboard = observer(() => {
           </div>
           <UserProfileCard
             user={user}
-            userPicture={userPicture}
             userType={userType}
             openFullDetailsModal={openFullDetailsModal}
           />
