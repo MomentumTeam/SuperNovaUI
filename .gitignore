@@ -9,6 +9,12 @@ lerna-debug.log*
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
+
+node_modules
+
+
+
+
 # Runtime data
 pids
 *.pid
@@ -103,3 +109,8 @@ dist
 # TernJS port file
 .tern-port
 build/
+
+.vscode
+.metals
+#Allow
+!/node_modules/primereact/organizationchart/organizationchart.esm.js

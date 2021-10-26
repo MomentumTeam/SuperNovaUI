@@ -15,7 +15,7 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
 
   const searchOg = async (event) => {
     const result = await searchOG(event.query);
-    setOgSuggestions(result.groups);
+    setOgSuggestions(result);
   };
 
   return (
@@ -41,7 +41,6 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
           }}
           required
           forceSelection
-          placeholder="היררכיה"
         />
         <label htmlFor='2020'>
           {' '}

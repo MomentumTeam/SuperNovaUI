@@ -6,16 +6,20 @@ import PreviewRequestsDialog from "./PreviewRequestsDialog";
 const List = ({ list }) => {
 
   const [dialogRequest, setDialogRequest] = useState({});
+  const [dialogRequestIndex, setDialogRequestIndex] = useState({});
+  const [isDialogVisible, setDialogVisiblity] = useState(false);
 
-  const onClick = (request) => {
+  const onClick = (request, index) => {
     setDialogRequest(request);
+    setDialogRequestIndex(index);
+    setDialogVisiblity(true);
   };
 
   return (
     <table className="tableStyle">
       <tbody>
-        {list.map((request) => (
-          <tr key={request.id}>
+        {list.map((request, index) => (
+          <tr key={request.id} onClick={() => onClick(request, index)} style={{ cursor: 'pointer' }}>
             <td>
               <div className="td-inner">
                 {datesUtil.formattedDate(Number(request.createdAt))}
@@ -27,7 +31,6 @@ const List = ({ list }) => {
             <td>
               <div className="td-inner td-inner-btn">
                 <button
-                  onClick={() => onClick(request)}
                   className={
                     "btn-status " +
                     (request.status === STATUSES.SENT
@@ -44,7 +47,7 @@ const List = ({ list }) => {
           </tr>
         ))}
       </tbody>
-      <PreviewRequestsDialog request={dialogRequest} />
+      <PreviewRequestsDialog isDialogVisible={isDialogVisible} setDialogVisiblity={setDialogVisiblity} requests={list} index={dialogRequestIndex} request={dialogRequest} />
     </table>
   );
 };

@@ -3,7 +3,7 @@ import { searchApproverByDisplayNameReq } from '../../service/ApproverService';
 import { AutoComplete } from 'primereact/autocomplete';
 import '../../assets/css/local/components/approver.css';
 
-const Approver = ({ setValue, name, multiple, disabled, defaultApprovers, errors }) => {
+const Approver = ({ setValue, name, multiple, disabled, defaultApprovers, errors, trigger =null }) => {
   const [ApproverSuggestions, setApproverSuggestions] = useState([]);
   const [selectedApprover, setSelectedApprover] = useState(defaultApprovers);
 
@@ -43,17 +43,20 @@ const Approver = ({ setValue, name, multiple, disabled, defaultApprovers, errors
 
               setSelectedApprover(approvers);
               setValue(name, approvers);
+              if(trigger) trigger(name);
             }
 
             if (!multiple) {
               const { id, displayName, identityCard, personalNumber } = e.value;
               setSelectedApprover(displayName);
               setValue(name, { id, displayName, identityCard, personalNumber });
+              if (trigger) trigger(name);
+
             }
           }}
         />
         <label htmlFor="2020">
-          {errors?.approvers && <small style={{ color: "red" }}>יש למלא ערך</small>}
+          {errors?.approvers && <small style={{ color: "red" }}>{errors.approvers?.message? errors.approvers?.message: "יש למלא ערך"}</small>}
         </label>
       </div>
     </div>

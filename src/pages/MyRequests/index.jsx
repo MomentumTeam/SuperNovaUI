@@ -6,7 +6,7 @@ import { useStores } from '../../context/use-stores';
 import SearchRequest from './SearchRequest';
 import MyRequestsTable from './MyRequestsTable'
 import Footer from '../Entities/Footer';
-import Notifications from '../../components/Notifications';
+import Notifications from '../../components/Notifications/Notifications';
 
 const MyRequests = observer(() => {
     const { tablesStore, userStore, appliesStore } = useStores();

@@ -1,9 +1,9 @@
 import React, { useImperativeHandle, forwardRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Hierarchy from "./Hierarchy";
+import Approver from "../Fields/Approver";
 import BulkRowsPopup from "./BulkRowsPopup";
 import BulkFileArea from "./BulkFileArea";
-import Approver from "./Approver";
 import { useStores } from "../../context/use-stores";
 import * as Yup from "yup";
 import { apiBaseUrl } from "../../constants/api";

@@ -26,6 +26,10 @@ class DatesUtil {
   moment = (date) => {
     return moment(date, this.format);
   };
+
+  getTime = (date) => {
+    return new Date(date).getTime()
+  }
 }
 
 export default new DatesUtil();

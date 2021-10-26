@@ -6,7 +6,7 @@ import {
   searchEntitiesByFullName,
   getEntityByIdentifier,
   searchOG,
-} from '../../service/SearchService';
+} from '../../service/KartoffelService';
 import { useStores } from '../../context/use-stores';
 
 const SearchBox = ({ loadDataByEntity, loadDataByOG }) => {

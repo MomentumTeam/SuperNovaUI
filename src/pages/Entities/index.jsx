@@ -1,61 +1,49 @@
-import { useEffect, useState } from 'react';
-import { observer } from 'mobx-react';
-import { toJS } from 'mobx';
-import '../../assets/css/local/pages/listUsersPage.min.css';
-import Table from '../../components/Table';
+import React, { createContext, useReducer, useState, useEffect } from "react";
+
+import Entities from "./Entity";
+import { firstPage } from "../../constants/api";
+import { TableNames } from "../../constants/table";
 import { useStores } from '../../context/use-stores';
-import Header from './Header';
-import SearchEntity from './SearchEntity';
-import AddEntity from './AddEntity';
-import Footer from './Footer';
 
-const Entities = observer(() => {
-    const { tablesStore, userStore } = useStores();
-    const [ tabId, setTabId ] = useState('entities');
+export const TableDataContext = createContext(null);
+ 
+export const TableDataRecuder = (state, action) => {
+  switch (action.type) {
+    case "searchResult":
+      return { isLoading: false, tableData: action.results, page: firstPage };
+    case "restore":
+      return { isLoading: false, tableData: [], page: firstPage };
+    case "loading":
+      return { ...state, isLoading: true };
+    case "failedLoading":
+      return { ...state, isLoading: false };
+    case TableNames.entities.tab:
+    case TableNames.roles.tab:
+    case TableNames.hierarchy.tab:
+      return { isLoading: false, tableData: action.results, page: state.page++ };
+    default:
+      break;
+  }
+};
 
-    useEffect(() => {
-        userStore.fetchUserNotifications();
-    }, [userStore]);
+const TableEntity = () => {
+  const {userStore} = useStores();
+  const [tabId, setTabId] = useState(TableNames.entities.tab);
+  const [tableState, tableDispatch] = useReducer(TableDataRecuder, {
+    tableData: [],
+    isLoading: false,
+    page: 0,
+  });
 
-    useEffect(() => {
-        if (tabId && userStore.user) {
-            const userOGId = userStore.user.directGroup;
-            
-            switch(tabId) {
-                case('entities'):
-                tablesStore.loadEntitiesUnderOG(userOGId);
-                    break;
-                case('roles'):
-                tablesStore.loadRolesUnderOG(userOGId);
-                    break;
-                case('hierarchy'):
-                tablesStore.loadOGChildren(userOGId);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }, [tabId, userStore, tablesStore])
+  useEffect(() => {
+    userStore.fetchUserNotifications();
+  }, [userStore]);
 
-    return (
-        <>
-            <div className='main-inner-item main-inner-item2 main-inner-item2-table'>
-                <div className='main-inner-item2-content'>
-                    <Header setTab={setTabId} selectedTab={tabId} />
-                    <div className="content-unit-wrap">
-                        <div className="content-unit-inner">
-                            <div className="display-flex search-row-wrap-flex">
-                                <SearchEntity data={toJS(tablesStore.entities)} />
-                                <AddEntity />
-                            </div>
-                            <Table data={toJS(tablesStore.entities)} tableType={tabId} />
-                            <Footer />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </>
-    );
-});
+  return (
+    <TableDataContext.Provider value={{ tableState, tableDispatch, tabId, setTabId }}>
+      <Entities />
+    </TableDataContext.Provider>
+  );
+};
 
-export default Entities;
+export default TableEntity;
