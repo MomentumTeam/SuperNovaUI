@@ -28,7 +28,7 @@ const validationSchema = Yup.object().shape({
   identifier: Yup.string().email().required(),
 });
 
-const RenameSingleOGForm = forwardRef(
+const EditRoleForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject }, ref) => {
     const { appliesStore } = useStores();
     const [hierarchyByIdentifier, setHierarchyByIdentifier] = useState(null);
@@ -66,6 +66,7 @@ const RenameSingleOGForm = forwardRef(
         throw new Error(err.errors);
       }
       const { identifier, approvers, hierarchy, comments, role } = data;
+      const jobTitle = role.jobTitle;
       const req = {
         comments: comments,
         commanders: approvers,
@@ -99,35 +100,30 @@ const RenameSingleOGForm = forwardRef(
       }
     };
 
-    const initializeIdentifierDependencies = () => {
-      setValue('currentHierarchy', '');
-      setValue('role', '');
-      setRoles([]);
-      setHierarchyByIdentifier('');
-    };
-
-    const onIdentifierChange = async (e) => {
-      if (e.target.value) {
-        try {
-          const role = await getRoleByRoleId(e.target.value);
-          setValue('currentHierarchy', role.hierarchy);
-          setValue('role', role);
-          setRoles([role]);
-          setHierarchyByIdentifier(role.hierarchy);
-        } catch (e) {
-          initializeIdentifierDependencies();
-        }
-      } else {
-        initializeIdentifierDependencies();
-      }
-    };
-
     return (
       <div className='p-fluid'>
-        <div className='display-flex title-wrap' style={{ width: 'inherit' }}>
-          <h2>היררכיה נכחית</h2>
+        <div className='p-fluid-item p-fluid-item'>
+          <div className='p-field'>
+            <label htmlFor='2021'>
+              <span className='required-field'>*</span>שם תפקיד
+            </label>
+            <InputText
+              {...register('role')}
+              id='2021'
+              type='text'
+              required
+              value={watch('role.jobTitle')}
+              placeholder='שם תפקיד'
+              disabled={onlyForView}
+            />
+            <label>
+              {errors.newHierarchy && (
+                <small style={{ color: 'red' }}>יש למלא ערך</small>
+              )}
+            </label>
+          </div>
         </div>
-        <div className='p-fluid-item p-fluid-item-flex1'>
+        <div className='p-fluid-item p-fluid-item'>
           <div className='p-field'>
             <Hierarchy
               setValue={setCurrentHierarchyFunction}
@@ -138,36 +134,33 @@ const RenameSingleOGForm = forwardRef(
             />
           </div>
         </div>
-        <div className='p-fluid-item p-fluid-item'>
+        <div className='p-fluid-item-flex p-fluid-item'>
           <div className='p-field'>
             <label>
-              <span className='required-field'>*</span>תפקיד
+              <span className='required-field'>*</span>סיווג תפקיד
             </label>
             <Dropdown
-              options={roles}
-              optionLabel='jobTitle'
-              placeholder='תפקיד'
-              {...register('role')}
-              onChange={(e) => {
-                setValue('identifier', e.target.value.roleId);
-                setValue('role', e.target.value);
-              }}
-              value={watch('role')}
-              disabled={onlyForView}
+              options={['אדום', 'כחול', 'סגול']}
+              placeholder='סיווג תפקיד'
+              {...register('clearance')}
+              value={watch('clearance')}
+              //   disabled={onlyForView}
             />
-            {errors.role && <small style={{ color: 'red' }}>יש למלא ערך</small>}
+            <label>
+              {errors.clearance && (
+                <small style={{ color: 'red' }}>יש למלא ערך</small>
+              )}
+            </label>
           </div>
         </div>
         <div className='p-fluid-item-flex p-fluid-item'>
           <div className='p-field'>
             <label>
-              <span className='required-field'>*</span>מזהה תפקיד
+              <span className='required-field'></span>יוזר
             </label>
             <InputText
               {...register('identifier')}
-              onChange={onIdentifierChange}
               type='text'
-              required
               placeholder='מזהה תפקיד'
               disabled={onlyForView}
             />
@@ -178,47 +171,17 @@ const RenameSingleOGForm = forwardRef(
             </label>
           </div>
         </div>
-        <HorizontalLine />
-        <div className='display-flex title-wrap' style={{ width: 'inherit' }}>
-          <h2>היררכיה חדשה</h2>
-        </div>
-        <div className='p-fluid-item-flex p-fluid-item'>
-          <div className='p-field'>
-            <Hierarchy
-              setValue={setValue}
-              name='hierarchy'
-              errors={errors}
-              ogValue={watch('hierarchy')}
-              disabled={onlyForView}
-            />
-          </div>
-        </div>
-        <div className='p-fluid-item'>
-          <Approver
-            setValue={setValue}
-            name='approvers'
-            multiple={true}
-            errors={errors}
-            defaultApprovers={requestObject?.commanders || []}
-            disabled={onlyForView}
-          />
-        </div>
-        <div className='p-fluid-item p-fluid-item-flex1'>
-          <div className='p-field'>
-            <label>
-              <span></span>סיבת מעבר
-            </label>
-            <InputTextarea
-              {...register('comments')}
-              type='text'
-              autoResize='false'
-              disabled={onlyForView}
-            />
-          </div>
-        </div>
+        <Approver
+          setValue={setValue}
+          name='approvers'
+          defaultApprovers={requestObject?.commanders || []}
+          multiple={true}
+          errors={errors}
+          disabled={onlyForView}
+        />
       </div>
     );
   }
 );
 
-export default RenameSingleOGForm;
+export default EditRoleForm;
