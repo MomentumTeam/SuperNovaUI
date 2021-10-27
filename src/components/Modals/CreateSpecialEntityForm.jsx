@@ -98,6 +98,7 @@ const CreateSpecialEntityForm = forwardRef(
               <span className='required-field'>*</span>שם פרטי
               <InputText
                 {...register('firstName')}
+                keyfilter='alpha'
                 id='firstName'
                 type='text'
                 disabled={onlyForView}
@@ -117,6 +118,7 @@ const CreateSpecialEntityForm = forwardRef(
               <span className='required-field'>*</span>שם משפחה
               <InputText
                 {...register('lastName')}
+                keyfilter='alpha'
                 id='lastName'
                 type='text'
                 disabled={onlyForView}
@@ -136,6 +138,7 @@ const CreateSpecialEntityForm = forwardRef(
               <span className='required-field'>*</span>ת״ז
               <InputText
                 {...register('identityNumber')}
+                keyfilter='pint'
                 id='identityNumber'
                 type='text'
                 disabled={onlyForView}
@@ -155,6 +158,7 @@ const CreateSpecialEntityForm = forwardRef(
               <span className='required-field'>*</span>טלפון
               <InputText
                 {...register('phone')}
+                keyfilter='pint'
                 id='phone'
                 type='text'
                 disabled={onlyForView}
@@ -174,6 +178,7 @@ const CreateSpecialEntityForm = forwardRef(
               <span className='required-field'>*</span>סיווג המשתמש (מספר)
               <InputText
                 {...register('classification')}
+                keyfilter='pint'
                 id='classification'
                 type='text'
                 disabled={onlyForView}

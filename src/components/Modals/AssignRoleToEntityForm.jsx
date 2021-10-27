@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  useImperativeHandle,
-  forwardRef,
-  useEffect,
-} from 'react';
+import React, { useState, useImperativeHandle, forwardRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
@@ -16,7 +11,6 @@ import { AutoComplete } from 'primereact/autocomplete';
 import { Calendar } from 'primereact/calendar';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import HorizontalLine from '../HorizontalLine';
 import '../../assets/css/local/components/calendar.css';
 
 import {
@@ -26,7 +20,6 @@ import {
   getOGById,
   getEntityByIdentifier,
   getEntityByRoleId,
-  getEntityByMongoId,
 } from '../../service/KartoffelService';
 
 // TODO: move to different file (restructe project files...)
@@ -41,7 +34,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const AssignRoleToEntityForm = forwardRef(
-  ({ showJob = true, setIsActionDone, onlyForView, requestObject }, ref) => {
+  ({ showJob = true, setIsActionDone }, ref) => {
     const { appliesStore, userStore } = useStores();
     const { register, handleSubmit, setValue, getValues, watch, formState } =
       useForm({
@@ -50,33 +43,6 @@ const AssignRoleToEntityForm = forwardRef(
     const [userSuggestions, setUserSuggestions] = useState([]);
     const [roles, setRoles] = useState([]);
     const { errors } = formState;
-
-    useEffect(() => {
-      const initializeValues = async () => {
-        console.log(requestObject);
-        setValue('userName', requestObject.adParams.fullName);
-        setValue('comments', requestObject.comments);
-        setValue('roleId', requestObject.adParams.newSAMAccountName);
-        const user = await getEntityByMongoId(requestObject.kartoffelParams.id);
-        setValue('user', user);
-        setValue('personalNumber', user.personalNumber || user.identityCard);
-        const role = await getRoleByRoleId(
-          requestObject.adParams.newSAMAccountName
-        );
-        setValue('hierarchy', role.hierarchy);
-        setValue('role', role);
-        setRoles([role]);
-        await handleRoleSelected(requestObject.adParams.newSAMAccountName);
-
-        // TODO: fix due
-        setValue('changeRoleAt', +requestObject.due);
-        console.log(watch('changeRoleAt'));
-      };
-
-      if (requestObject) {
-        initializeValues();
-      }
-    }, []);
 
     const onSubmit = async (data) => {
       try {
@@ -106,413 +72,322 @@ const AssignRoleToEntityForm = forwardRef(
         comments,
         due: changeRoleAt ? new Date(changeRoleAt).getTime() : Date.now(),
       };
+      await appliesStore.assignRoleToEntityApply(req);
+      setIsActionDone(true);
+    };
 
-      useImperativeHandle(
-        ref,
-        () => ({
-          handleSubmit: handleSubmit(onSubmit),
-        }),
-        []
+    useImperativeHandle(
+      ref,
+      () => ({
+        handleSubmit: handleSubmit(onSubmit),
+      }),
+      []
+    );
+
+    const getUserRole = () => {
+      const user = watch('user');
+
+      if (!user) {
+        return null;
+      }
+
+      const relevantIdentity = user.digitalIdentities.find(
+        (identity) => identity.source === 'oneTree'
       );
 
-      const getUserRole = () => {
-        const user = watch('user');
+      if (relevantIdentity && relevantIdentity.role) {
+        return relevantIdentity.role;
+      }
 
-        if (!user) {
-          return null;
-        }
+      return null;
+    };
 
-        const relevantIdentity = user.digitalIdentities.find(
-          (identity) => identity.source === 'oneTree'
-        );
+    const setCurrentUser = () => {
+      const user = toJS(userStore.user);
+      setValue('user', user);
+      setValue('userName', user.displayName);
+      setValue('personalNumber', user.personalNumber || user.identityCard);
+    };
 
-        if (relevantIdentity && relevantIdentity.role) {
-          return relevantIdentity.role;
-        }
+    const onSearchUser = async (event) => {
+      const result = await searchEntitiesByFullName(event.query);
+      setUserSuggestions(result.entities || []);
+    };
 
-        return null;
-      };
+    const handleOrgSelected = async (org) => {
+      const result = await getRolesUnderOG(org.id);
+      setRoles(result.roles || []);
+    };
 
-      const setCurrentUser = () => {
-        const user = toJS(userStore.user);
+    const onSearchUserById = async () => {
+      const userId = getValues('personalNumber');
+
+      if (!userId) {
+        return;
+      }
+
+      const user = await getEntityByIdentifier(userId);
+
+      if (user) {
         setValue('user', user);
-        setValue('userName', user.displayName);
-        setValue('personalNumber', user.personalNumber || user.identityCard);
-      };
+        setValue('userName', user.fullName);
+        setValue('userRole', user.jobTitle);
+      }
+    };
 
-      const onSearchUser = async (event) => {
-        const result = await searchEntitiesByFullName(event.query);
-        setUserSuggestions(result.entities || []);
-      };
+    const handleRoleSelected = async (roleId) => {
+      const entity = await getEntityByRoleId(roleId);
 
-      const handleOrgSelected = async (org) => {
-        const result = await getRolesUnderOG(org.id);
-        setRoles(result.roles || []);
-      };
+      if (entity) {
+        setValue('currentRoleUser', entity.fullName);
+      }
+    };
 
-      const onSearchUserById = async () => {
-        const userId = getValues('personalNumber');
+    const onRoleIdChanged = async () => {
+      const roleId = getValues('roleId');
 
-        if (!userId) {
-          return;
-        }
+      if (!roleId) {
+        return;
+      }
 
-        const user = await getEntityByIdentifier(userId);
+      let role = roles.find((role) => role.digitalIdentityUniqueId === roleId);
 
-        if (user) {
-          setValue('user', user);
-          setValue('userName', user.fullName);
-          setValue('userRole', user.jobTitle);
-        }
-      };
+      if (!role) {
+        role = await getRoleByRoleId(roleId);
+      }
 
-      const handleRoleSelected = async (roleId) => {
-        const entity = await getEntityByRoleId(roleId);
+      let hierarchy = getValues('hierarchy');
 
-        if (entity) {
-          setValue('currentRoleUser', entity.fullName);
-        }
-      };
+      if (!hierarchy) {
+        hierarchy = await getOGById(role.directGroup);
+      }
 
-      const onRoleIdChanged = async () => {
-        const roleId = getValues('roleId');
+      setValue('hierarchy', hierarchy);
+      setRoles(Array.from(new Set([...roles, role])));
+      setValue('role', role);
 
-        if (!roleId) {
-          return;
-        }
+      handleRoleSelected(role.roleId);
+    };
 
-        let role = roles.find(
-          (role) => role.digitalIdentityUniqueId === roleId
-        );
+    const userRole = getUserRole();
+    const userRoleDisplay = userRole ? userRole.jobTitle : ' - ';
 
-        if (!role) {
-          role = await getRoleByRoleId(roleId);
-        }
-
-        let hierarchy = getValues('hierarchy');
-
-        if (!hierarchy) {
-          hierarchy = await getOGById(role.directGroup);
-        }
-
-        setValue('hierarchy', hierarchy);
-        setRoles(Array.from(new Set([...roles, role])));
-        setValue('role', role);
-
-        handleRoleSelected(role.roleId);
-      };
-
-      const userRole = getUserRole();
-      const userRoleDisplay = userRole ? userRole.jobTitle : ' - ';
-
-      return (
-        <div className='p-fluid' style={{ flexDirection: 'column' }}>
-          <div style={{ display: 'flex' }}>
-            <div className='p-fluid-item-flex p-fluid-item'>
-              <button
-                className='btn-underline left19'
-                onClick={setCurrentUser}
-                type='button'
-                title='עבורי'
-                disabled={onlyForView}
-                style={onlyForView && { display: 'none' }}
-              >
-                עבורי
-              </button>
-              <div className='p-field'>
-                <label htmlFor='2020'>
-                  {' '}
-                  <span className='required-field'>*</span>שם משתמש
-                </label>
-                <AutoComplete
-                  value={watch('userName')}
-                  suggestions={userSuggestions}
-                  completeMethod={onSearchUser}
-                  id='2020'
-                  type='text'
-                  field='fullName'
-                  onSelect={(e) => {
-                    setValue('user', e.value);
-                    setValue(
-                      'personalNumber',
-                      e.value.personalNumber || e.value.identityCard
-                    );
-                    setValue('userRole', e.value.jobTitle);
-                  }}
-                  onChange={(e) => {
-                    setValue(
-                      'userName',
-                      e.value.displayName ? e.value.displayName : e.value
-                    );
-                  }}
-                  required
-                  disabled={onlyForView}
-                />
-                <label htmlFor='2020'>
-                  {' '}
-                  {errors.userName && (
-                    <small style={{ color: 'red' }}>יש למלא ערך</small>
-                  )}
-                </label>
-              </div>
-            </div>
-            <div
-              className='p-fluid-item-flex p-fluid-item'
-              style={{ marginLeft: '10px' }}
-            >
-              <div className='p-field'>
-                <label htmlFor='2021'>
-                  {' '}
-                  <span className='required-field'>*</span>מ"א/ת"ז
-                </label>
-                <InputText
-                  {...register('personalNumber', { required: true })}
-                  id='2021'
-                  type='text'
-                  required
-                  onBlur={onSearchUserById}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      onSearchUserById();
-                    }
-                  }}
-                  disabled={onlyForView}
-                />
-                <label htmlFor='2021'>
-                  {' '}
-                  {errors.personalNumber && (
-                    <small style={{ color: 'red' }}>יש למלא ערך</small>
-                  )}
-                </label>
-              </div>
-            </div>
-            {showJob ? (
-              <div className='p-fluid-item'>
-                <div className='p-field p-field-blue'>
-                  <label htmlFor='2022'>תפקיד</label>
-                  <InputText
-                    id='2022'
-                    disabled
-                    type='text'
-                    placeholder='תפקיד'
-                    value={userRoleDisplay}
-                  />
-                </div>
-              </div>
-            ) : null}
+    return (
+      <div className='p-fluid'>
+        <div className='p-fluid-item-flex p-fluid-item'>
+          <button
+            className='btn-underline left19'
+            onClick={setCurrentUser}
+            type='button'
+            title='עבורי'
+          >
+            עבורי
+          </button>
+          <div className='p-field'>
+            <label htmlFor='2020'>
+              {' '}
+              <span className='required-field'>*</span>שם משתמש
+            </label>
+            <AutoComplete
+              value={watch('userName')}
+              suggestions={userSuggestions}
+              completeMethod={onSearchUser}
+              id='2020'
+              type='text'
+              field='fullName'
+              onSelect={(e) => {
+                setValue('user', e.value);
+                setValue(
+                  'personalNumber',
+                  e.value.personalNumber || e.value.identityCard
+                );
+                setValue('userRole', e.value.jobTitle);
+              }}
+              onChange={(e) => {
+                setValue(
+                  'userName',
+                  e.value.displayName ? e.value.displayName : e.value
+                );
+              }}
+              required
+            />
+            <label htmlFor='2020'>
+              {' '}
+              {errors.userName && (
+                <small style={{ color: 'red' }}>יש למלא ערך</small>
+              )}
+            </label>
           </div>
-          <HorizontalLine />
-          <div className='display-flex title-wrap' style={{ width: 'inherit' }}>
-            <h2>מעבר לתפקיד</h2>
+        </div>
+        <div className='p-fluid-item-flex p-fluid-item'>
+          <div className='p-field'>
+            <label htmlFor='2021'>
+              {' '}
+              <span className='required-field'>*</span>מ"א/ת"ז
+            </label>
+            <InputText
+              {...register('personalNumber', { required: true })}
+              id='2021'
+              type='text'
+              required
+              onBlur={onSearchUserById}
+              keyfilter='int'
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  onSearchUserById();
+                }
+              }}
+            />
+            <label htmlFor='2021'>
+              {' '}
+              {errors.personalNumber && (
+                <small style={{ color: 'red' }}>יש למלא ערך</small>
+              )}
+            </label>
           </div>
-          <div style={{ display: 'flex' }}>
-            <div className='p-fluid-item-flex p-fluid-item'>
-              <Hierarchy
-                ogValue={watch('hierarchy')}
-                setValue={setValue}
-                name='hierarchy'
-                onOrgSelected={handleOrgSelected}
-                errors={errors}
-                disabled={onlyForView}
+        </div>
+        {showJob ? (
+          <div className='p-fluid-item'>
+            <div className='p-field p-field-blue'>
+              <label htmlFor='2022'>תפקיד</label>
+              <InputText
+                id='2022'
+                disabled
+                type='text'
+                placeholder='תפקיד'
+                value={userRoleDisplay}
               />
             </div>
-            {watch('currentRoleUser') && (
-              <div className='p-fluid-item-flex p-fluid-item'>
-                <div
-                  className={`p-field ${
-                    watch('currentRoleUser') ? 'p-field-red' : 'p-field-green'
-                  }`}
-                >
-                  <label htmlFor='2024'>סטטוס תפקיד</label>
-                  <InputText
-                    {...register('roleStatus')}
-                    id='2024'
-                    disabled
-                    type='text'
-                    placeholder={watch('currentRoleUser') ? 'לא פנוי' : 'פנוי'}
-                  />
-                </div>
-              </div>
-            )}
           </div>
-          <div className='row3flex'>
-            <div className='p-fluid-item '>
-              <div className='p-field p-field-blue'>
-                <label htmlFor='2025'>שם תפקיד</label>
-                <Dropdown
-                  {...register('role')}
-                  inputId='2025'
-                  options={roles}
-                  placeholder='שם תפקיד'
-                  optionLabel='jobTitle'
-                  value={watch('role')}
-                  onChange={(e) => {
-                    setValue(
-                      'userName',
-                      e.value.displayName ? e.value.displayName : e.value
-                    );
-                  }}
-                  disabled={onlyForView}
-                />
-                <label htmlFor='2020'>
-                  {' '}
-                  {errors.userName && (
-                    <small style={{ color: 'red' }}>יש למלא ערך</small>
-                  )}
-                </label>
-              </div>
+        ) : null}
+        <div className='p-fluid-item-flex p-fluid-item'>
+          <Hierarchy
+            ogValue={watch('hierarchy')}
+            setValue={setValue}
+            name='hierarchy'
+            onOrgSelected={handleOrgSelected}
+            errors={errors}
+          />
+        </div>
+        {watch('currentRoleUser') && (
+          <div className='p-fluid-item-flex p-fluid-item'>
+            <div
+              className={`p-field ${
+                watch('currentRoleUser') ? 'p-field-red' : 'p-field-green'
+              }`}
+            >
+              <label htmlFor='2024'>סטטוס תפקיד</label>
+              <InputText
+                {...register('roleStatus')}
+                id='2024'
+                disabled
+                type='text'
+                placeholder={watch('currentRoleUser') ? 'לא פנוי' : 'פנוי'}
+              />
             </div>
-            <div className='p-fluid-item-flex p-fluid-item'>
+          </div>
+        )}
+        <div className='row3flex'>
+          <div className='p-fluid-item '>
+            <div className='p-field p-field-blue'>
+              <label htmlFor='2025'>שם תפקיד</label>
+              <Dropdown
+                {...register('role')}
+                inputId='2025'
+                options={roles}
+                placeholder='שם תפקיד'
+                optionLabel='jobTitle'
+                value={watch('role')}
+                onChange={(e) => {
+                  setValue('role', e.value);
+                  setValue('roleId', e.value.digitalIdentityUniqueId);
+                  handleRoleSelected(e.value.roleId);
+                }}
+              />
+              <label htmlFor='2021'>
+                {' '}
+                {errors.role && (
+                  <small style={{ color: 'red' }}>יש למלא ערך</small>
+                )}
+              </label>
+            </div>
+          </div>
+          <div className='p-fluid-item'>
+            <div className='p-field'>
+              <label htmlFor='2026'>מזהה תפקיד (T)</label>
+              <InputText
+                {...register('roleId')}
+                id='2026'
+                type='text'
+                keyfilter='pint'
+                onBlur={onRoleIdChanged}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    onRoleIdChanged();
+                  }
+                }}
+              />
+              <label htmlFor='2021'>
+                {' '}
+                {errors.roleId && (
+                  <small style={{ color: 'red' }}>יש למלא ערך</small>
+                )}
+              </label>
+            </div>
+          </div>
+          <div className='p-fluid-item'>
+            <Approver setValue={setValue} name='approvers' multiple={true} />
+          </div>
+        </div>
+        {watch('currentRoleUser') && (
+          <div className='row3flex'>
+            <div className='p-fluid-item' style={{ width: '68%' }}>
               <div className='p-field'>
-                <label htmlFor='2021'>
-                  {' '}
-                  <span className='required-field'>*</span>מ"א/ת"ז
-                </label>
+                <label htmlFor='2030'>מבצע תפקיד</label>
                 <InputText
-                  {...register('personalNumber', { required: true })}
-                  id='2021'
+                  {...register('currentRoleUser')}
+                  id='2030'
                   type='text'
-                  required
-                  onBlur={onSearchUserById}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      onSearchUserById();
-                    }
-                  }}
-                  disabled={onlyForView}
+                  disabled
+                  placeholder='מבצע תפקיד'
                 />
-                <label htmlFor='2021'>
-                  {' '}
-                  {errors.personalNumber && (
-                    <small style={{ color: 'red' }}>יש למלא ערך</small>
-                  )}
-                </label>
               </div>
             </div>
             <div className='p-fluid-item'>
-              <Approver
-                setValue={setValue}
-                name='approvers'
-                multiple={true}
-                defaultApprovers={requestObject?.commanders || []}
-                disabled={onlyForView}
-              />
+              <div className='p-field'>
+                <label htmlFor='2027'>בצע החלפה בתאריך</label>
+                <Calendar
+                  {...register('changeRoleAt')}
+                  id='2027'
+                  showTime
+                  dateFormat='dd/mm/yy'
+                  value={watch('changeRoleAt')}
+                  onChange={(e) => setValue('changeRoleAt', e.target.value)}
+                  placeholder='בצע החלפה בתאריך'
+                />
+                <label htmlFor='2021'>
+                  {' '}
+                  {errors.changeRoleAt && (
+                    <small style={{ color: 'red' }}>יש למלא ערך</small>
+                  )}
+                </label>
+              </div>
             </div>
           </div>
-          {watch('currentRoleUser') && (
-            <div className='row3flex'>
-              <div className='p-fluid-item' style={{ width: '68%' }}>
-                <div className='p-field'>
-                  <label htmlFor='2030'>מבצע תפקיד</label>
-                  <InputText
-                    id='2022'
-                    disabled
-                    type='text'
-                    placeholder='תפקיד'
-                    value={userRoleDisplay}
-                  />
-                </div>
-              </div>
-              ) : null}
-              <div className='p-fluid-item-flex p-fluid-item'>
-                <Hierarchy
-                  ogValue={watch('hierarchy')}
-                  setValue={setValue}
-                  name='hierarchy'
-                  onOrgSelected={handleOrgSelected}
-                  errors={errors}
-                />
-              </div>
-              {watch('currentRoleUser') && (
-                <div className='p-fluid-item-flex p-fluid-item'>
-                  <div
-                    className={`p-field ${
-                      watch('currentRoleUser') ? 'p-field-red' : 'p-field-green'
-                    }`}
-                  >
-                    <label htmlFor='2024'>סטטוס תפקיד</label>
-                    <InputText
-                      {...register('roleStatus')}
-                      id='2024'
-                      disabled
-                      type='text'
-                      placeholder={
-                        watch('currentRoleUser') ? 'לא פנוי' : 'פנוי'
-                      }
-                    />
-                  </div>
-                </div>
-              )}
-              <div className='row3flex'>
-                <div className='p-fluid-item '>
-                  <div className='p-field p-field-blue'>
-                    <label htmlFor='2025'>שם תפקיד</label>
-                    <Dropdown
-                      {...register('role')}
-                      inputId='2025'
-                      options={roles}
-                      placeholder='שם תפקיד'
-                      optionLabel='jobTitle'
-                      value={watch('role')}
-                      onChange={(e) => {
-                        setValue('role', e.value);
-                        setValue('roleId', e.value.digitalIdentityUniqueId);
-                        handleRoleSelected(e.value.roleId);
-                      }}
-                    />
-                    <label htmlFor='2021'>
-                      {' '}
-                      {errors.role && (
-                        <small style={{ color: 'red' }}>יש למלא ערך</small>
-                      )}
-                    </label>
-                  </div>
-                </div>
-                <div className='p-fluid-item'>
-                  <div className='p-field'>
-                    <label htmlFor='2027'>בצע החלפה בתאריך</label>
-                    <Calendar
-                      {...register('changeRoleAt')}
-                      id='2027'
-                      showTime
-                      value={watch('changeRoleAt')}
-                      onChange={(e) => setValue('changeRoleAt', e.target.value)}
-                      placeholder='בצע החלפה בתאריך'
-                      disabled={onlyForView}
-                    />
-                    <label htmlFor='2021'>
-                      {' '}
-                      {errors.roleId && (
-                        <small style={{ color: 'red' }}>יש למלא ערך</small>
-                      )}
-                    </label>
-                  </div>
-                </div>
-                <div className='p-fluid-item'>
-                  <Approver
-                    setValue={setValue}
-                    name='approvers'
-                    multiple={true}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-          <div className='p-fluid-item p-fluid-item-flex1'>
-            <div className='p-field'>
-              <label htmlFor='2028'>סיבת מעבר</label>
-              <InputTextarea
-                {...register('comments')}
-                id='2028'
-                type='text'
-                placeholder='הערות'
-                disabled={onlyForView}
-              />
-            </div>
+        )}
+        <div className='p-fluid-item p-fluid-item-flex1'>
+          <div className='p-field'>
+            <label htmlFor='2028'>סיבת מעבר</label>
+            <InputTextarea
+              {...register('comments')}
+              id='2028'
+              type='text'
+              placeholder='הערות'
+            />
           </div>
         </div>
-      );
-    };
+      </div>
+    );
   }
 );
 
