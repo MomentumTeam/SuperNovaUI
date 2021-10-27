@@ -1,7 +1,7 @@
 import { STATUSES, TYPES } from "../constants";
 import datesUtil from "../utils/dates";
 import { useState } from "react";
-import PreviewRequestsDialog from "./Modals/PreviewRequestsDialog";
+import PreviewRequestsDialog from "./PreviewRequestsDialog";
 
 const List = ({ list }) => {
 

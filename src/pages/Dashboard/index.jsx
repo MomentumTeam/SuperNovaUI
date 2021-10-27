@@ -100,7 +100,7 @@ const Dashboard = observer(() => {
         treeStore.loadTreeByEntity(userStore.user);
       }
     }
-  }, [userStore.user, appliesStore, treeStore, userType.type]);
+  }, [userStore.user, appliesStore, treeStore]);
 
   const openFullDetailsModal = () => {
     setIsFullUserInfoModalOpen(true);
