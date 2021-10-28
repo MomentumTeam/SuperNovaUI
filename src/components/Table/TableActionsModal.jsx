@@ -9,13 +9,15 @@ import { FullHierarchyInformation } from "../Modals/Hierarchy/FullHierarchyInfor
 import { FullRoleInformation } from "../Modals/Role/FullRoleInformation";
 import { HierarchyDelete } from "../Modals/Hierarchy/HierarchyDelete";
 
-import { TableAppliesActionsEnum } from '../../constants';
+import { TableAppliesActionsEnum } from "../../constants";
+import { PassRequestDialog } from "../Modals/Request/PassRequestDialog";
 import PreviewRequestsDialog from "../Modals/Request/PreviewRequestsDialog1";
 
 // TODO: change to reducer?
 const TableActionsModal = forwardRef((_, ref) => {
   const { selectedItem } = useContext(TableContext);
-  const { actionType, isActionModalOpen, closeActionModal, setIsActionModalOpen } = useContext(TableActionsContext);
+  const { actionType, isActionModalOpen, closeActionModal, setIsActionModalOpen, currEvent } =
+    useContext(TableActionsContext);
 
   const actionPopup = (error = null) => {
     if (error === null) {
@@ -120,6 +122,16 @@ const TableActionsModal = forwardRef((_, ref) => {
               request={selectedItem[0]}
             />
           );
+        case TableAppliesActionsEnum.PASS_APPLY:
+          return (
+            <PassRequestDialog
+              request={selectedItem[0]}
+              isDialogVisible={isActionModalOpen}
+              setDialogVisiblity={setIsActionModalOpen}
+              currEvent={currEvent}
+            />
+          );
+        case TableAppliesActionsEnum.TAKE_APPLY:
         default:
           ref.show({
             severity: "error",

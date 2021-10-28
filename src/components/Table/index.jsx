@@ -139,7 +139,9 @@ const Table = ({
                       />
                     )
                 )}
-                {!disableActions && <Column loadingBody={loadingText} body={TableActionsTemplate} />}
+                {!disableActions && (
+                  <Column loadingBody={loadingText} body={TableActionsTemplate} />
+                )}
               </DataTable>
             </div>
           </div>

@@ -47,3 +47,8 @@ export const getUserTag = (type) => {
 
   return userType;
 };
+
+export const getUserNameFromDisplayName = (displayName) => {
+  const name = displayName.split("/").pop();
+  return name;
+};

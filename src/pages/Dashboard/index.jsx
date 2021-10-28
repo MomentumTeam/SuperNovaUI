@@ -6,17 +6,13 @@ import { Toast } from 'primereact/toast';
 import '../../assets/css/local/pages/dashboard.min.css';
 
 import { useStores } from '../../context/use-stores';
-import {
-  USER_TYPE,
-  USER_TYPE_TAG,
-} from '../../constants/user';
 import SearchBox from '../../components/Search/SearchBox';
 import HierarchyTree from '../../components/HierarchyTree';
 import SideToolbar from '../../components/SideToolBar/SideToolbar';
 import UserProfileCard from './UserProfileCard';
 import FullEntityInformationModal from '../../components/Modals/Entity/FullEntityInformationModal';
 import DecorAnimation from '../../components/decor-animation';
-import { getUserTag, isUserCanSeeAllApproveApplies, isUserCanSeeMyApproveApplies, isUserHoldType } from '../../utils/user';
+import { getUserTag, isUserCanSeeAllApproveApplies, isUserCanSeeMyApproveApplies } from '../../utils/user';
 import { AppliesTable } from "../../components/AppliesTable";
 
 const Dashboard = observer(() => {

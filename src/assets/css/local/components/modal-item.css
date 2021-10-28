@@ -13,6 +13,11 @@
   width: 725px;
 }
 
+.p-dialog.dialogPass {
+min-height: unset!important;
+max-width: 300px;
+}
+
 @media (max-width: 730px) {
   .p-dialog {
     width: 90%;

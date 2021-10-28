@@ -3,6 +3,7 @@ import { ResponsibleFactorFieldTemplate } from '../components/AppliesTable/Respo
 import { StatusFieldTemplate } from '../components/AppliesTable/StatusFieldTemplate';
 import { TextFieldTemplate } from '../components/AppliesTable/TextFieldTemplate';
 import { getFormattedDate, getResponsibleFactor } from "../utils/applies";
+import { getUserNameFromDisplayName } from '../utils/user';
 
 export const STATUSES = {
   SUBMITTED: "הוגש",
@@ -41,7 +42,7 @@ export const TableNames = {
 export const TableTypes = (selectedTab, user) => {
   return [
     { field: "type", displayName: "סוג בקשה", enum: TYPES, sortable: true, default: "לא ידוע" },
-    { field: "submittedBy.displayName", displayName: "שם מבקש", sortable: true },
+    { field: "submittedBy.displayName", displayName: "שם מבקש", sortable: true, formatter: getUserNameFromDisplayName },
     {
       field: getResponsibleFactor(user),
       displayName: "גורם מטפל",

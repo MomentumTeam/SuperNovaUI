@@ -1,25 +1,28 @@
 import { Badge } from "primereact/badge";
-import { Tooltip } from "primereact/tooltip";
+
+import {getUserNameFromDisplayName} from '../../utils/user';
 
 const ResponsibleFactorFieldTemplate = (responsibles) => {
-  let displayNames = [];
+  let names = [];
   responsibles.map(
-    (responsibleType) => (displayNames = [...displayNames, ...responsibleType.map((person) => person.displayName)])
+    (responsibleType) =>
+      (names = [...names, ...responsibleType.map((person) => getUserNameFromDisplayName(person.displayName))])
   );
 
   const getFormatted = () => {
-    if (displayNames.length === 0) return "---";
-    if (displayNames.length === 1) return displayNames[0];
-    if (displayNames) return (
-      <div>
+    if (names.length === 0) return "---";
+    if (names.length === 1) return names[0];
+    if (names)
+      return (
+        <div>
           {/* TODO: change to classname */}
-        <span style={{ padding: "2px", display: "inline-block" }}>{displayNames[0]}</span>
-        <Badge
-          value={`${displayNames.length - 1}+`}
-          style={{ backgroundColor: "#A7ABBD", padding: "2px", display: "inline-block" }}
-        ></Badge>
-      </div>
-    );
+          <span style={{ padding: "2px", display: "inline-block" }}>{names[0]}</span>
+          <Badge
+            value={`${names.length - 1}+`}
+            style={{ backgroundColor: "#A7ABBD", padding: "2px", display: "inline-block" }}
+          ></Badge>
+        </div>
+      );
   };
   return <div>{getFormatted()}</div>;
 };

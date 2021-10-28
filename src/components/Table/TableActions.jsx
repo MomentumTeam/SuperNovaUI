@@ -12,7 +12,7 @@ import { TableContext } from ".";
 import { isUserHoldType } from "../../utils/user";
 
 // TODO: change to reducer
-const TableActions = ({ setActionType, openActionModal }) => {
+const TableActions = ({ setActionType, openActionModal, setEvent }) => {
   const { selectedItem, tableType } = useContext(TableContext);
   const { userStore } = useStores();
 
@@ -24,8 +24,9 @@ const TableActions = ({ setActionType, openActionModal }) => {
   const getAction = (labelName, action) => {
     return {
       label: labelName,
-      command: () => {
+      command: (e) => {
         setActionType(action);
+        setEvent(e);
         openActionModal();
       },
     }
