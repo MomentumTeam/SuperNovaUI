@@ -22,7 +22,7 @@ export const TableTypes = {
     { field: "jobTitle", displayName: "שם תפקיד" },
     { field: "hierarchy", displayName: "היררכיה" },
     { field: "clearance", displayName: "סיווג התפקיד" },
-    { field: "digitalIdentityUniqueId", displayName: "משתמש" },
+    { field: "digitalIdentityUniqueId", displayName: "מזהה תפקיד" },
   ],
 };
 
