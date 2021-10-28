@@ -13,10 +13,11 @@ import {
 import SearchBox from '../../components/Search/SearchBox';
 import HierarchyTree from '../../components/HierarchyTree';
 import SideToolbar from '../../components/SideToolBar/SideToolbar';
-import ApprovalTable from '../../components/ApprovalTable';
 import UserProfileCard from './UserProfileCard';
 import FullEntityInformationModal from '../../components/Modals/Entity/FullEntityInformationModal';
 import DecorAnimation from '../../components/decor-animation';
+import { getUserTag, isUserCanSeeAllApproveApplies, isUserCanSeeMyApproveApplies, isUserHoldType } from '../../utils/user';
+import { AppliesTable } from "../../components/AppliesTable";
 
 const Dashboard = observer(() => {
   const { userStore, appliesStore, treeStore } = useStores();
@@ -25,50 +26,11 @@ const Dashboard = observer(() => {
 
   const user = toJS(userStore.user);
   const myApplies = toJS(appliesStore.myApplies);
-  const allApplies = toJS(appliesStore.allApplies);
+  const approveMyApplies = toJS(appliesStore.approveMyApplies);
+  const approveAllApplies = toJS(appliesStore.approveAllApplies);
 
   let userType;
-
-  user?.types.forEach((type) => {
-    switch (type) {
-      case 'ADMIN':
-      case 5:
-        userType = {
-          type: USER_TYPE.ADMIN,
-          tag: USER_TYPE_TAG.ADMIN,
-        };
-        break;
-      case 'SUPER_SECURITY':
-      case 2:
-        userType = {
-          type: USER_TYPE.SUPER_SECURITY,
-          tag: USER_TYPE_TAG.SECURITY_APPROVER,
-        };
-        break;
-      case 'SECURITY':
-      case 1:
-        userType = {
-          type: USER_TYPE.SECURITY,
-          tag: USER_TYPE_TAG.SECURITY_APPROVER,
-        };
-        break;
-      case 'COMMANDER':
-      case 3:
-        userType = {
-          type: USER_TYPE.COMMANDER,
-          tag: USER_TYPE_TAG.APPROVER,
-        };
-        break;
-      case 'BULK':
-      case 6:
-        userType = { type: USER_TYPE.BULK };
-        break;
-
-      default:
-        userType = { type: USER_TYPE.SOLDIER };
-        break;
-    }
-  });
+  user?.types.map((type) => {userType = getUserTag(type)});
 
   const actionPopup = (error = null) => {
     if (error === null) {
@@ -90,13 +52,15 @@ const Dashboard = observer(() => {
 
   useEffect(() => {
     if (userStore.user) {
-      if (userStore.user.types.includes(USER_TYPE.COMMANDER)) {
-        appliesStore.getMyApproveRequests();
-        appliesStore.getAllApproveRequests();
-      } else {
-        // appliesStore.loadApplies();
-        treeStore.loadTreeByEntity(userStore.user);
+      if (isUserCanSeeMyApproveApplies(userStore.user)) {
+        appliesStore.getMyApproveRequests(1,100);
+      } 
+      if (isUserCanSeeAllApproveApplies(userStore.user)) {
+        appliesStore.getAllApproveRequests(1, 100);
       }
+    } else {
+      // appliesStore.loadApplies();
+      treeStore.loadTreeByEntity(userStore.user);
     }
   }, [userStore.user, appliesStore, treeStore]);
 
@@ -127,15 +91,9 @@ const Dashboard = observer(() => {
             actionPopup={actionPopup}
           />
           <div className='content-unit-wrap'>
-            {[USER_TYPE_TAG.APPROVER, USER_TYPE_TAG.SECURITY_APPROVER].includes(
-              userType.tag
-            ) ? (
+            {isUserCanSeeMyApproveApplies(user) ?  (
               <>
-                <ApprovalTable
-                  applies={myApplies}
-                  allApplies={allApplies}
-                  approveType={userType.tag}
-                />
+                <AppliesTable user={user} myApplies={approveMyApplies} allApplies={approveAllApplies}/>
               </>
             ) : (
               <div className='content-unit-inner content-unit-inner-before'>

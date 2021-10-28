@@ -2,7 +2,6 @@ import { action, makeAutoObservable, observable } from 'mobx';
 import {
   getMyRequests,
   getRequestById,
-  getAllRequests,
   getRequestsByPerson,
   getRequestBySerialNumber,
   getMyApproveRequests,
@@ -26,9 +25,9 @@ import {
 } from '../service/AppliesService';
 
 export default class AppliesStore {
-  applies = [];
   myApplies = [];
-  allApplies = [];
+  approveMyApplies = [];
+  approveAllApplies = [];
 
   constructor() {
     makeAutoObservable(this, {
@@ -60,13 +59,9 @@ export default class AppliesStore {
   // GET
 
   async loadMyApplies(from, to) {
+    // Requests that the user created
     const myApplies = await getMyRequests(from, to);
     this.myApplies = myApplies.requests;
-  }
-
-  async getAllApplies(approvementStatus, from, to) {
-    const myApplies = await getAllRequests(approvementStatus, from, to);
-    // this.applies = myApplies.requests;
   }
 
   async getApplyById(id) {
@@ -74,24 +69,22 @@ export default class AppliesStore {
     // this.applies = myApplies.requests;
   }
 
-  async getMyApproveRequests() {
-    const myApplies = await getMyApproveRequests();
-    this.applies = myApplies.requests;
+  async getMyApproveRequests(from = null, to = null) {
+    const myApplies = await getMyApproveRequests(from, to);
+    this.approveMyApplies = myApplies;
   }
 
-  async getAllApproveRequests() {
-    const allApplies = await getAllApproveRequests();
-    this.allApplies = allApplies.requests;
+  async getAllApproveRequests(from = null, to = null, append = false) {
+    const allApplies = await getAllApproveRequests(from, to);
+    if (append) {
+      this.approveAllApplies.requests = [...this.approveAllApplies.requests, ...allApplies.requests]; 
+    } else {
+      this.approveAllApplies = allApplies;
+    }
   }
 
   async getAppliesByPerosn(id, personType, personInfoType, from, to) {
-    const myApplies = await getRequestsByPerson(
-      id,
-      personType,
-      personInfoType,
-      from,
-      to
-    );
+    const myApplies = await getRequestsByPerson(id, personType, personInfoType, from, to);
 
     // this.applies = myApplies.requests;
   }
@@ -102,11 +95,7 @@ export default class AppliesStore {
   }
 
   async searchAppliesBySubmitterDisplayName(displayName, from, to) {
-    const myApplies = await searchRequestsBySubmitterDisplayName(
-      displayName,
-      from,
-      to
-    );
+    const myApplies = await searchRequestsBySubmitterDisplayName(displayName, from, to);
     // this.applies = myApplies.requests;
   }
 
@@ -123,9 +112,7 @@ export default class AppliesStore {
   }
 
   async assignRoleToEntityApply(applyProperties) {
-    const newAssignRoleToEntityApply = await assignRoleToEntityRequest(
-      applyProperties
-    );
+    const newAssignRoleToEntityApply = await assignRoleToEntityRequest(applyProperties);
     this.myApplies.unshift(newAssignRoleToEntityApply);
   }
 
@@ -140,7 +127,7 @@ export default class AppliesStore {
   }
 
   async renameOGApply(applyProperties) {
-    console.log('applyProperties', applyProperties)
+    console.log("applyProperties", applyProperties);
     const newRenameOGApply = await renameOGRequest(applyProperties);
     this.myApplies.unshift(newRenameOGApply);
   }
@@ -166,8 +153,7 @@ export default class AppliesStore {
   }
 
   async disconectRoleFromEntityApply(applyProperties) {
-    const newDisconectRoleFromEntityApply =
-      await disconectRoleFromEntityRequest(applyProperties);
+    const newDisconectRoleFromEntityApply = await disconectRoleFromEntityRequest(applyProperties);
     this.myApplies.unshift(newDisconectRoleFromEntityApply);
   }
 
@@ -178,16 +164,12 @@ export default class AppliesStore {
 
   // PUT
   async changeRoleHierarchy(applyProperties) {
-    const changeRoleHierarchyApply = await changeRoleHierarchyRequest(
-      applyProperties
-    );
+    const changeRoleHierarchyApply = await changeRoleHierarchyRequest(applyProperties);
     this.myApplies.unshift(changeRoleHierarchyApply);
   }
 
   async changeRoleHierarchyBulk(applyProperties) {
-    const changeRoleHierarchyBulkApply = await changeRoleHierarchyBulkRequest(
-      applyProperties
-    );
+    const changeRoleHierarchyBulkApply = await changeRoleHierarchyBulkRequest(applyProperties);
     this.myApplies.unshift(changeRoleHierarchyBulkApply);
   }
 

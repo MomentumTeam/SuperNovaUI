@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState, useRef, useMemo, createRef } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
-import CreateRoleForm from '../Modals/CreateRoleForm';
-import CreateOGForm from '../Modals/CreateOGForm';
-import RenameOGForm from '../Modals/RenameOGForm';
+import CreateRoleForm from '../Modals/Role/CreateRoleForm';
+import CreateOGForm from '../Modals/Hierarchy/CreateOGForm';
+import RenameOGForm from "../Modals/Hierarchy/RenameOGForm";
 import AssignRoleToEntityForm from '../Modals/AssignRoleToEntityForm';
-import CreateEntityForm from '../Modals/CreateEntityForm';
+import CreateEntityForm from '../Modals/Entity/CreateEntityForm';
 import { Toast } from 'primereact/toast';
 
 import '../../assets/css/local/components/modal-item.min.css';

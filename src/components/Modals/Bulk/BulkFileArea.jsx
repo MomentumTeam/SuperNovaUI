@@ -1,7 +1,7 @@
 import React from "react";
 import { InputText } from "primereact/inputtext";
 import cookies from "js-cookie";
-import { tokenName } from "../../constants/api";
+import { tokenName } from "../../../constants/api";
 import Downloader from "js-file-downloader";
 
 const BulkFileArea = ({ register, errors, downloadUrl, fileName }) => {

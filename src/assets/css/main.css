@@ -1,3 +1,9 @@
+.cut-text { 
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 .btn-underline {
   border: 0;
   font-size: 14px;

@@ -2,22 +2,21 @@ import React, {
   useState,
   useImperativeHandle,
   forwardRef,
-  useMemo,
   createRef,
+  useMemo,
 } from "react";
 import { Accordion, AccordionTab } from "primereact/accordion";
-import { useStores } from "../../context/use-stores";
-import { toJS } from "mobx";
-import RenameBulkOGForm from "./RenameBulkOGForm";
-import RenameSingleOGForm from "./RenameSingleOGForm";
-import { USER_TYPE } from "../../constants";
-import "../../assets/css/local/components/rename-og-form.css";
+import CreateBulkRoleForm from "../Bulk/CreateBulkRoleForm";
+import CreateSingleRoleForm from "../Role/CreateSingleRoleForm";
+import { useStores } from "../../../context/use-stores";
+import { USER_TYPE } from "../../../constants";
+import { isUserHoldType } from '../../../utils/user';
 
-const RenameOGForm = forwardRef(({ setIsActionDone }, ref) => {
+const CreateRoleForm = forwardRef(({ setIsActionDone }, ref) => {
   const { userStore } = useStores();
   const [activeIndex, setActiveIndex] = useState(0);
   const formRefs = useMemo(() => ({ 0: createRef(), 1: createRef() }), []);
-  const isBulkPermitted = toJS(userStore.user)?.type?.includes(USER_TYPE.BULK);
+  const isBulkPermitted = isUserHoldType(userStore.user, USER_TYPE.BULK);
 
   useImperativeHandle(
     ref,
@@ -43,15 +42,15 @@ const RenameOGForm = forwardRef(({ setIsActionDone }, ref) => {
         });
       }}
     >
-      <AccordionTab header="שינוי היררכיה לתפקיד">
-        <RenameSingleOGForm
+      <AccordionTab header="תפקיד חדש">
+        <CreateSingleRoleForm
           ref={formRefs[0]}
           showJob={false}
           setIsActionDone={setIsActionDone}
         />
       </AccordionTab>
-      <AccordionTab header="הגשת בקשה מרובה">
-        <RenameBulkOGForm
+      <AccordionTab header="תפקיד חדשים">
+        <CreateBulkRoleForm
           ref={formRefs[1]}
           showJob={false}
           setIsActionDone={setIsActionDone}
@@ -59,7 +58,7 @@ const RenameOGForm = forwardRef(({ setIsActionDone }, ref) => {
       </AccordionTab>
     </Accordion>
   ) : (
-    <RenameSingleOGForm
+    <CreateSingleRoleForm
       ref={formRefs[0]}
       showJob={false}
       setIsActionDone={setIsActionDone}
@@ -67,4 +66,4 @@ const RenameOGForm = forwardRef(({ setIsActionDone }, ref) => {
   );
 });
 
-export default RenameOGForm;
+export default CreateRoleForm;

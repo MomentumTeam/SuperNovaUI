@@ -8,7 +8,7 @@ import AddEntity from "./AddEntity";
 import { itemsInPage, pageSize } from "../../constants/api";
 import { useStores } from "../../context/use-stores";
 import { TableDataContext } from ".";
-import { TableNames } from "../../constants/table";
+import { TableNames, TableTypes } from "../../constants/table";
 
 import "../../assets/css/local/pages/listUsersPage.min.css";
 
@@ -89,8 +89,11 @@ const Entities = observer(() => {
               </div>
               <Table
                 data={tableState.tableData}
+                tableTypes={TableTypes[tabId]}
                 tableType={tabId}
                 isLoading={tableState.isLoading}
+                isPaginator={true}
+                isSelectedCol={true}
                 onScroll={setData}
                 first={first}
               />

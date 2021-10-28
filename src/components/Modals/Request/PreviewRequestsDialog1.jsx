@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
 import { Dialog } from "primereact/dialog";
 import PreviewRequestWrapper from "./PreviewRequestWrapper";
-import ApproverForm from "./Modals/ApproverForm";
-import CreateOGForm from "./Modals/CreateOGForm";
-import CreateSingleRoleForm from "./Modals/CreateSingleRoleForm";
-import RenameSingleOGForm from "./Modals/RenameSingleOGForm";
-import CreateSpecialEntityForm from "./Modals/CreateSpecialEntityForm";
-import AssignRoleToEntityForm from "./Modals/AssignRoleToEntityForm";
-import CreateBulkRoleForm from "./Modals/CreateBulkRoleForm";
-import RenameBulkOGForm from "./Modals/RenameBulkOGForm";
+import ApproverForm from "../ApproverForm";
+import CreateOGForm from "../Hierarchy/CreateOGForm";
+import CreateSingleRoleForm from "../Role/CreateSingleRoleForm";
+import RenameSingleOGForm from "../Hierarchy/RenameSingleOGForm";
+import CreateSpecialEntityForm from "../Entity/CreateSpecialEntityForm";
+import AssignRoleToEntityForm from "../AssignRoleToEntityForm";
+import CreateBulkRoleForm from "../Bulk/CreateBulkRoleForm";
+import RenameBulkOGForm from "../Bulk/RenameBulkOGForm";
 
-const PreviewRequestsDialog = ({ request }) => {
-  const [isDialogVisible, setDialogVisiblity] = useState(false);
+const PreviewRequestsDialog = ({ request, isDialogVisible, setDialogVisiblity }) => {
   const [dialogContent, setDialogContent] = useState(null);
 
   const dialogParams = {

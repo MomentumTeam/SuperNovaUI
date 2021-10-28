@@ -1,17 +1,21 @@
 import React, { useContext, forwardRef } from "react";
 
-import FullEntityInformationModal from "../Modals/Entity/FullEntityInformationModal";
+import { TableContext } from ".";
+import { TableActionsContext } from "./TableActionsMenu";
+
 import { tableActionsEnum } from "../../constants/table";
+import FullEntityInformationModal from "../Modals/Entity/FullEntityInformationModal";
 import { FullHierarchyInformation } from "../Modals/Hierarchy/FullHierarchyInformation";
 import { FullRoleInformation } from "../Modals/Role/FullRoleInformation";
 import { HierarchyDelete } from "../Modals/Hierarchy/HierarchyDelete";
-import { TableContext } from ".";
-import { TableActionsContext } from "./TableActionsMenu";
+
+import { TableAppliesActionsEnum } from '../../constants';
+import PreviewRequestsDialog from "../Modals/Request/PreviewRequestsDialog1";
 
 // TODO: change to reducer?
 const TableActionsModal = forwardRef((_, ref) => {
   const { selectedItem } = useContext(TableContext);
-  const { actionType, isActionModalOpen, closeActionModal } = useContext(TableActionsContext);
+  const { actionType, isActionModalOpen, closeActionModal, setIsActionModalOpen } = useContext(TableActionsContext);
 
   const actionPopup = (error = null) => {
     if (error === null) {
@@ -32,13 +36,13 @@ const TableActionsModal = forwardRef((_, ref) => {
   };
 
   const renderActionModal = () => {
-    if (selectedItem && actionType && isActionModalOpen) {
+    if (selectedItem[0] && actionType && isActionModalOpen) {
       switch (actionType) {
         // ENTITY
         case tableActionsEnum.VIEW_ENTITY:
           return (
             <FullEntityInformationModal
-              user={selectedItem}
+              user={selectedItem[0]}
               isOpen={isActionModalOpen}
               closeFullDetailsModal={closeActionModal}
               edit={false}
@@ -48,7 +52,7 @@ const TableActionsModal = forwardRef((_, ref) => {
         case tableActionsEnum.EDIT_ENTITY:
           return (
             <FullEntityInformationModal
-              user={selectedItem}
+              user={selectedItem[0]}
               isOpen={isActionModalOpen}
               closeFullDetailsModal={closeActionModal}
               edit={true}
@@ -60,7 +64,7 @@ const TableActionsModal = forwardRef((_, ref) => {
         case tableActionsEnum.VIEW_HIERARCHY:
           return (
             <FullHierarchyInformation
-              hierarchy={selectedItem}
+              hierarchy={selectedItem[0]}
               isOpen={isActionModalOpen}
               closeModal={closeActionModal}
               edit={false}
@@ -70,7 +74,7 @@ const TableActionsModal = forwardRef((_, ref) => {
         case tableActionsEnum.EDIT_HIERARCHY:
           return (
             <FullHierarchyInformation
-              hierarchy={selectedItem}
+              hierarchy={selectedItem[0]}
               isOpen={isActionModalOpen}
               closeModal={closeActionModal}
               edit={true}
@@ -80,7 +84,7 @@ const TableActionsModal = forwardRef((_, ref) => {
         case tableActionsEnum.DELETE_HIERARCHY:
           return (
             <HierarchyDelete
-              hierarchy={selectedItem}
+              hierarchy={selectedItem[0]}
               isOpen={isActionModalOpen}
               closeModal={closeActionModal}
               actionPopup={actionPopup}
@@ -91,7 +95,7 @@ const TableActionsModal = forwardRef((_, ref) => {
         case tableActionsEnum.VIEW_ROLE:
           return (
             <FullRoleInformation
-              role={selectedItem}
+              role={selectedItem[0]}
               isOpen={isActionModalOpen}
               closeModal={closeActionModal}
               edit={false}
@@ -101,11 +105,19 @@ const TableActionsModal = forwardRef((_, ref) => {
         case tableActionsEnum.EDIT_ROLE:
           return (
             <FullRoleInformation
-              role={selectedItem}
+              role={selectedItem[0]}
               isOpen={isActionModalOpen}
               closeModal={closeActionModal}
               edit={true}
               actionPopup={actionPopup}
+            />
+          );
+        case TableAppliesActionsEnum.VIEW_APPLY:
+          return (
+            <PreviewRequestsDialog
+              isDialogVisible={isActionModalOpen}
+              setDialogVisiblity={setIsActionModalOpen}
+              request={selectedItem[0]}
             />
           );
         default:

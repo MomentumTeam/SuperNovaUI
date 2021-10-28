@@ -1,7 +1,7 @@
 import React from "react";
 import { InputText } from "primereact/inputtext";
-import "../assets/css/local/components/modal-item.min.css";
-import ApproverSection from "./ApproverSection";
+import "../../../assets/css/local/components/modal-item.min.css";
+import ApproverSection from "../../ApproverSection";
 
 // TODO: add progress bar
 

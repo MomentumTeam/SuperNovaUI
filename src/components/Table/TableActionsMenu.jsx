@@ -25,7 +25,14 @@ const TableActionsMenu = forwardRef((_, ref) => {
   return (
     <>
       <TableActionsContext.Provider
-        value={{ actionType, setActionType, isActionModalOpen, openActionModal, closeActionModal }}
+        value={{
+          actionType,
+          setActionType,
+          isActionModalOpen,
+          openActionModal,
+          closeActionModal,
+          setIsActionModalOpen,
+        }}
       >
         <ContextMenu model={TableActions({ setActionType, openActionModal })} popup ref={ref} />
         <TableActionsModal ref={toast.current} />

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import PreviewApproverRequest from "./PreviewApproverRequest";
 import { Dialog } from "primereact/dialog";
+
+import PreviewApproverRequest from "../PreviewApproverRequest";
 
 const PreviewRequestsDialog = ({
   request,

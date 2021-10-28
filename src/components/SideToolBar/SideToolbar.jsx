@@ -5,6 +5,7 @@ import Actions from './Actions';
 import List from '../List';
 import Notifications from '../Notifications/Notifications';
 import '../../assets/css/local/components/aside.min.css';
+import { StatCount } from './StatCount';
 
 const SideToolbar = ({ recentApplies }) => {
   const { userStore } = useStores();
@@ -18,6 +19,7 @@ const SideToolbar = ({ recentApplies }) => {
     <div className='main-inner-item main-inner-item3'>
       <div className='main-inner-item3-content'>
         <Notifications notifications={notifications} />
+        <StatCount/>
         <div className='actions-inner-wrap'>
           <h2>פעולות</h2>
           <Actions />

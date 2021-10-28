@@ -22,21 +22,6 @@ export const getRequestById = async (id) => {
   return response.data;
 };
 
-export const getAllRequests = async (displayName, status, type, from, to) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/approve/all`,
-    {
-      params: {
-        displayName,
-        status,
-        type,
-        from,
-        to,
-      },
-    }
-  );
-  return response.data;
-};
 
 export const getMyApproveRequests = async (from, to) => {
   const response = await axiosApiInstance.get(
@@ -52,16 +37,16 @@ export const getMyApproveRequests = async (from, to) => {
   return response.data;
 };
 
-export const getAllApproveRequests = async (from, to) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/approve/all`,
-    {
-      params: {
-        from,
-        to,
-      },
-    }
-  );
+export const getAllApproveRequests = async (from, to, displayName = null, status = null, type = null) => {
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/approve/all`, {
+    params: {
+      from,
+      to,
+      displayName,
+      status,
+      type,
+    },
+  });
 
   return response.data;
 };
