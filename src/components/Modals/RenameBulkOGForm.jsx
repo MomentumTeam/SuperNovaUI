@@ -39,11 +39,9 @@ const RenameBulkOGForm = forwardRef(
 
         setValue("rows", data.rows);
 
-        console.log(data);
       };
       if (requestObject) {
-        console.log(requestObject);
-        getBulkData();
+         getBulkData();
       }
     }, []);
 

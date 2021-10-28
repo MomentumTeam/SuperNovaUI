@@ -6,7 +6,7 @@ export const TableTypes = {
     { field: "firstName", displayName: "שם פרטי" },
     { field: "lastName", displayName: "שם משפחה" },
     { field: "personalNumber", displayName: 'מ"א/ת"ז' },
-    { field: "clearance", displayName: "סיווג", secured: [USER_TYPE.COMMANDER, USER_TYPE.SUPER_SECURITY] },
+    { field: "clearance", displayName: "סיווג", secured: [USER_TYPE.SECURITY, USER_TYPE.SUPER_SECURITY] },
     { field: "jobTitle", displayName: "תפקיד" },
     { field: "displayName", displayName: "יוזר" },
     { field: "rank", displayName: "דרגה" },

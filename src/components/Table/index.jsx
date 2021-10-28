@@ -45,6 +45,7 @@ const Table = ({ data, tableType, isLoading, onScroll, first }) => {
   };
 
   const isAllowed = (col) => {
+    console.log('col', col)
     return col.secured === undefined || col.secured.some((allowedType) => user?.types.includes(allowedType));
   };
 
