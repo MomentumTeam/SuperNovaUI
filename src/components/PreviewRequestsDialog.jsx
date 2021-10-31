@@ -1,28 +1,68 @@
-import { useState, useEffect } from "react";
-import { Dialog } from "primereact/dialog";
-import PreviewRequestWrapper from "./PreviewRequestWrapper";
-import ApproverForm from "./Modals/ApproverForm";
-import CreateOGForm from "./Modals/CreateOGForm";
-import CreateSingleRoleForm from "./Modals/CreateSingleRoleForm";
-import RenameSingleOGForm from "./Modals/RenameSingleOGForm";
-import CreateSpecialEntityForm from "./Modals/CreateSpecialEntityForm";
-import AssignRoleToEntityForm from "./Modals/AssignRoleToEntityForm";
-import CreateBulkRoleForm from "./Modals/CreateBulkRoleForm";
-import RenameBulkOGForm from "./Modals/RenameBulkOGForm";
+import { useState, useEffect } from 'react';
+import { Dialog } from 'primereact/dialog';
+import PreviewRequestWrapper from './PreviewRequestWrapper';
+import ApproverForm from './Modals/ApproverForm';
+import CreateOGForm from './Modals/CreateOGForm';
+import CreateSingleRoleForm from './Modals/CreateSingleRoleForm';
+import RenameSingleOGForm from './Modals/RenameSingleOGForm';
+import CreateSpecialEntityForm from './Modals/CreateSpecialEntityForm';
+import AssignRoleToEntityForm from './Modals/AssignRoleToEntityForm';
+import CreateBulkRoleForm from './Modals/CreateBulkRoleForm';
+import RenameBulkOGForm from './Modals/RenameBulkOGForm';
 
 const PreviewRequestsDialog = ({ request }) => {
   const [isDialogVisible, setDialogVisiblity] = useState(false);
   const [dialogContent, setDialogContent] = useState(null);
 
   const dialogParams = {
-    CREATE_OG: { footer: null, header: 'פרטי בקשה ליצירת היררכיה חדשה', component: CreateOGForm, classDialog: 'dialogClass5' },
-    CREATE_ROLE: { footer: null, header: 'פרטי בקשה ליצירת תפקיד חדש', component: CreateSingleRoleForm, dialogClass: 'dialogClass1'  },
-    ASSIGN_ROLE_TO_ENTITY: { footer: null, header: 'פרטי בקשה לחיבור משתמש חדש לתפקיד', component: AssignRoleToEntityForm, dialogClass: 'dialogClass3'  },
-    CREATE_ENTITY: { footer: null, header: 'פרטי בקשה ליצירת משתמש מיוחד', component: CreateSpecialEntityForm, dialogClass: 'dialogClass3'  },
-    ADD_APPROVER: { footer: null, header: 'פרטי בקשה ליצירת גורם מאשר', component: ApproverForm, dialogClass: 'dialogClass6' },
-    CHANGE_ROLE_HIERARCHY: { footer: null, header: 'פרטי בקשה לשינוי היררכיה לתפקיד', component: RenameSingleOGForm, dialogClass: 'dialogClass2'   },
-    CREATE_ROLE_BULK: { footer: null, header: 'פרטי בקשה מרובה ליצירת תפקידים חדשים', component: CreateBulkRoleForm, dialogClass: 'dialogClass1'  },
-    CHANGE_ROLE_HIERARCHY_BULK: { footer: null, header: 'פרטי בקשה מרובה לשינוי היררכיה לתפקידים', component: RenameBulkOGForm, dialogClass: 'dialogClass2' },
+    CREATE_OG: {
+      footer: null,
+      header: 'פרטי בקשה ליצירת היררכיה חדשה',
+      component: CreateOGForm,
+      classDialog: 'dialogClass5',
+    },
+    CREATE_ROLE: {
+      footer: null,
+      header: 'פרטי בקשה ליצירת תפקיד חדש',
+      component: CreateSingleRoleForm,
+      dialogClass: 'dialogClass1',
+    },
+    ASSIGN_ROLE_TO_ENTITY: {
+      footer: null,
+      header: 'פרטי בקשה לחיבור משתמש חדש לתפקיד',
+      component: AssignRoleToEntityForm,
+      dialogClass: 'dialogClass3',
+    },
+    CREATE_ENTITY: {
+      footer: null,
+      header: 'פרטי בקשה ליצירת משתמש מיוחד',
+      component: CreateSpecialEntityForm,
+      dialogClass: 'dialogClass3',
+    },
+    ADD_APPROVER: {
+      footer: null,
+      header: 'פרטי בקשה ליצירת גורם מאשר',
+      component: ApproverForm,
+      dialogClass: 'dialogClass6',
+    },
+    CHANGE_ROLE_HIERARCHY: {
+      footer: null,
+      header: 'פרטי בקשה לשינוי היררכיה לתפקיד',
+      component: RenameSingleOGForm,
+      dialogClass: 'dialogClass2',
+    },
+    CREATE_ROLE_BULK: {
+      footer: null,
+      header: 'פרטי בקשה מרובה ליצירת תפקידים חדשים',
+      component: CreateBulkRoleForm,
+      dialogClass: 'dialogClass1',
+    },
+    CHANGE_ROLE_HIERARCHY_BULK: {
+      footer: null,
+      header: 'פרטי בקשה מרובה לשינוי היררכיה לתפקידים',
+      component: RenameBulkOGForm,
+      dialogClass: 'dialogClass2',
+    },
     // RENAME_OG: { footer: null, header: '' },
     // RENAME_ROLE: { footer: null, header: '' },
     // EDIT_ENTITY: { footer: null, header: '' },
@@ -31,22 +71,27 @@ const PreviewRequestsDialog = ({ request }) => {
     // DELETE_ENTITY: { footer: null, header: '' },
     // DISCONNECT_ROLE: { footer: null, header: '' },
     // UNRECOGNIZED: { footer: null, header: '' },
-  }
-  
+  };
 
   useEffect(() => {
     if (request.type) {
       // TODO: handle UNRECOGNIZED
       if (dialogParams[request.type]) {
-        setDialogContent(<PreviewRequestWrapper request={request} ModalComponent={dialogParams[request.type].component} setDialogVisiblity={setDialogVisiblity} />);
+        setDialogContent(
+          <PreviewRequestWrapper
+            request={request}
+            ModalComponent={dialogParams[request.type].component}
+            setDialogVisiblity={setDialogVisiblity}
+          />
+        );
         setDialogVisiblity(true);
-      };
+      }
     }
   }, [JSON.stringify(request)]);
 
   return (
     <Dialog
-        className={dialogParams[request.type]?.dialogClass || ''}
+      className={dialogParams[request.type]?.dialogClass || ''}
       header={dialogParams[request.type]?.header || ''}
       visible={isDialogVisible}
       onHide={() => setDialogVisiblity(false)}
