@@ -35,6 +35,7 @@ const FullEntityInformationFooter = () => {
       sex: tempForm.sex,
       birthdate: datesUtil.getTime(tempForm.birthDate),
       entityType: tempForm.entityType,
+      identityCard: tempForm.identityCard
     };
 
     const samAccountName = getSamAccountName(tempForm);

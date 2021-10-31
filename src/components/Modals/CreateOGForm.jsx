@@ -42,7 +42,7 @@ const CreateOGForm = forwardRef(({ setIsActionDone, onlyForView, requestObject, 
     }
 
     const req = {
-      status: 'SUBMITTED',
+      // status: 'SUBMITTED',
       commanders: approvers,
       kartoffelParams: {
         name: newHierarchy,
@@ -55,7 +55,6 @@ const CreateOGForm = forwardRef(({ setIsActionDone, onlyForView, requestObject, 
         name: newHierarchy,
       },
       comments,
-      due: Date.now(),
     };
 
     await appliesStore.createOGApply(req);
@@ -90,7 +89,7 @@ const CreateOGForm = forwardRef(({ setIsActionDone, onlyForView, requestObject, 
           />
           <label>
             {errors.newHierarchy && (
-              <small style={{ color: "red" }}>יש למלא ערך</small>
+              <small style={{ color: 'red' }}>יש למלא ערך</small>
             )}
           </label>
         </div>

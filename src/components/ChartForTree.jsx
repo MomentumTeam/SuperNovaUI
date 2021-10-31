@@ -31,8 +31,8 @@ class ChartForTree extends React.Component {
     }
 
     getDirectGroupChildren = async (groupId) => {
-        const response = await getOGChildren(groupId, true);
-        return response.groups;
+        const response = await getOGChildren({ id:groupId, direct:true});
+        return response;
     }
 
     mapGroupsToNodes = (groups) => {

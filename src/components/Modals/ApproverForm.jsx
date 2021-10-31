@@ -22,7 +22,7 @@ const approverTypes = [
   { label: 'גורם מאשר יחב"ם', value: 'SECURITY' },
   { label: 'גורם מאשר בטח"ם', value: 'SUPER_SECURITY' },
   { label: 'הרשאת בקשה מרובה', value: 'BULK' },
-  { label: 'משתמש על', value: 'ADMIN' },
+  { label: 'מחשוב יחידתי', value: 'ADMIN' },
 ];
 
 const validationSchema = Yup.object().shape({
@@ -162,7 +162,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
         <div className='p-field'>
           <label htmlFor='2020'>
             {' '}
-            <span className='required-field'>*</span>שם משתמש
+            <span className='required-field'>*</span>שם מלא
           </label>
           <button
             className='btn-underline left19 approver-fillMe'

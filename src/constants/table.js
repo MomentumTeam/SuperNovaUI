@@ -15,7 +15,7 @@ export const TableTypes = {
   ],
   hierarchy: [
     { field: "hierarchy", displayName: "היררכיה" },
-    { field: "id", displayName: "מפתח", hide: true },
+    { field: "id", displayName: "מזהה היררכיה", hide: true },
     { field: "directRoles", displayName: "מספר תפקידים" },
   ],
   roles: [

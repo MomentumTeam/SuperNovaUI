@@ -10,7 +10,7 @@ import Approver from "../Fields/Approver";
 import { useStores } from "../../context/use-stores";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { isJobTitleAlreadyTakenRequest } from "../../service/AppliesService";
+import { isJobTitleAlreadyTakenRequest } from "../../service/KartoffelService";
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({

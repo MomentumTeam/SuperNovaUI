@@ -1,5 +1,5 @@
 import '../../assets/css/local/components/menu.min.css';
-import logo from '../../assets/images/logo.png';
+import legoLogo from '../../assets/images/lego.png';
 import appRoutes from '../../constants/routes';
 import { NavLink } from 'react-router-dom';
 
@@ -23,16 +23,19 @@ const SideMenu = () => {
 
   return (
     <div className='main-inner-item main-inner-item-nav'>
+      <div className="logo-wrap">
+          <h1>
+            <img src={legoLogo} alt="Logo יסודות" />
+          </h1>
+        </div>
       <nav>
         <ul>{appRoutes.map((menuItem, i) => getNavButton(menuItem, i))}</ul>
       </nav>
       <div>
-        <div className='logo-wrap'>
-          <h1>
-            <img src={logo} alt='Logo יסודות' />
-          </h1>
+          <div className="logo-wrap2">
+            <div className="logo"></div>
+          </div>
         </div>
-      </div>
     </div>
   );
 };

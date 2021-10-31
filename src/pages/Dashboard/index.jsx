@@ -1,22 +1,28 @@
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { Toast } from 'primereact/toast';
 
 import '../../assets/css/local/pages/dashboard.min.css';
 
 import { useStores } from '../../context/use-stores';
-import { USER_TYPE, USER_TYPE_TAG, USER_NO_PICTURE } from "../../constants/user";
+import {
+  USER_TYPE,
+  USER_TYPE_TAG,
+  USER_NO_PICTURE,
+} from '../../constants/user';
 import SearchBox from '../../components/Search/SearchBox';
 import HierarchyTree from '../../components/HierarchyTree';
 import SideToolbar from '../../components/SideToolBar/SideToolbar';
 import ApprovalTable from '../../components/ApprovalTable';
 import UserProfileCard from './UserProfileCard';
-import FullEntityInformationModal from "../../components/Modals/Entity/FullEntityInformationModal";
-import DecorAnimation from "../../components/decor-animation";
+import FullEntityInformationModal from '../../components/Modals/Entity/FullEntityInformationModal';
+import DecorAnimation from '../../components/decor-animation';
 
 const Dashboard = observer(() => {
   const { userStore, appliesStore, treeStore } = useStores();
   const [isFullUserInfoModalOpen, setIsFullUserInfoModalOpen] = useState(false);
+  const toast = useRef(null);
 
   const user = toJS(userStore.user);
   const userPicture = toJS(userStore.userPicture);
@@ -66,9 +72,27 @@ const Dashboard = observer(() => {
     }
   });
 
+  const actionPopup = (error = null) => {
+    if (error === null) {
+      toast.current.show({
+        severity: 'success',
+        summary: 'Success Message',
+        detail: `Success`,
+        life: 3000,
+      });
+    } else {
+      toast.current.show({
+        severity: 'error',
+        summary: 'Error Message',
+        detail: error.message || `failed`,
+        life: 3000,
+      });
+    }
+  };
+
   useEffect(() => {
     if (userStore.user) {
-      if (userStore.user.types.includes(USER_TYPE.COMMANDER) ) {
+      if (userStore.user.types.includes(USER_TYPE.COMMANDER)) {
         appliesStore.getMyApproveRequests();
         appliesStore.getAllApproveRequests();
       } else {
@@ -76,7 +100,7 @@ const Dashboard = observer(() => {
         treeStore.loadTreeByEntity(userStore.user);
       }
     }
-  }, [userStore.user, appliesStore, treeStore, userType.type]);
+  }, [userStore.user, appliesStore, treeStore]);
 
   const openFullDetailsModal = () => {
     setIsFullUserInfoModalOpen(true);
@@ -103,10 +127,11 @@ const Dashboard = observer(() => {
             user={user}
             isOpen={isFullUserInfoModalOpen}
             closeFullDetailsModal={closeFullDetailsModal}
+            actionPopup={actionPopup}
           />
           <div className='content-unit-wrap'>
             {[USER_TYPE_TAG.APPROVER, USER_TYPE_TAG.SECURITY_APPROVER].includes(
-              userType.tag,
+              userType.tag
             ) ? (
               <>
                 <ApprovalTable
@@ -129,7 +154,7 @@ const Dashboard = observer(() => {
                     />
                   </div>
                 </div>
-                <div className="chart-wrap">
+                <div className='chart-wrap'>
                   <DecorAnimation />
                   <HierarchyTree data={toJS(treeStore.tree)} />
                 </div>
@@ -138,6 +163,7 @@ const Dashboard = observer(() => {
           </div>
         </div>
       </div>
+      <Toast ref={toast} />
       <SideToolbar recentApplies={myApplies} />
     </>
   );

@@ -91,7 +91,7 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit, actionP
 
           <div className="p-fluid-item">
             <div className="p-field">
-              {getLabel({ labelName: "מפתח" })}
+              {getLabel({ labelName: "מזהה היררכיה" })}
               <InputText id="2011" type="text" disabled style={disabledInputStyle} placeholder={hierarchy.id} />
             </div>
           </div>

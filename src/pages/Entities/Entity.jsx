@@ -40,14 +40,13 @@ const Entities = observer(() => {
   const setData = async (event) => {
     let append;
     let getNextPage = true;
-
     if (tabId && userStore.user) {
       if (event && event.first !== undefined) {
         append = true;
         setFirst(event.first);
         if (first >= event.first || tableState.tableData.length / (event.page + 1) > itemsInPage) getNextPage = false;
       }
-
+      
       if (getNextPage && !tablesStore.isSearch) {
         try {
           tableDispatch({ type: "loading" });
@@ -62,10 +61,6 @@ const Entities = observer(() => {
   };
 
   useEffect(() => {
-    userStore.fetchUserNotifications(userStore.user?.id);
-  }, [userStore]);
-
-  useEffect(() => {
     // Get table's data
     const firstData = async () => {
       setFirst(0);
@@ -73,9 +68,13 @@ const Entities = observer(() => {
       tableDispatch({ type: "restore" });
       await setData();
     };
-
     firstData();
-  }, [tabId, userStore, tablesStore]);
+  }, [tabId, userStore.user]);
+  
+  useEffect(() => {
+    userStore.fetchUserNotifications(userStore.user?.id);
+  }, [userStore.user]);
+
 
   return (
     <>
