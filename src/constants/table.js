@@ -77,7 +77,7 @@ export const TableSearch = (tableType) => {
       },
       {
         searchField: "displayName",
-        searchDisplayName: "חיפוש לפי תפקיד",
+        searchDisplayName: "חיפוש לפי מזהה תפקיד (T)",
         searchFunc: tablesStore.getEntitiesByRoleId,
       },
     ],
@@ -89,7 +89,7 @@ export const TableSearch = (tableType) => {
       },
       {
         searchField: "hierarchy",
-        searchDisplayName: "חיפוש לפי תפקיד",
+        searchDisplayName: "חיפוש לפי מזהה תפקיד (T)",
         searchFunc: tablesStore.getHierarchyByRoleId,
       },
     ],
