@@ -2,6 +2,8 @@ import React from 'react';
 import { InputText } from 'primereact/inputtext';
 import '../assets/css/local/components/modal-item.min.css';
 import ApproverSection from './ApproverSection';
+import RequestFlowChart from './RequestFlowChart';
+
 
 // TODO: add progress bar
 
@@ -12,6 +14,7 @@ const PreviewRequestWrapper = ({
 }) => {
   return (
     <>
+      <RequestFlowChart request={request} />
       <h2>פרטי מגיש הבקשה</h2>
       <div className='p-fluid'>
         <div className='p-fluid-item'>
@@ -52,7 +55,7 @@ const PreviewRequestWrapper = ({
       <h2>פרטי הבקשה</h2>
       <ModalComponent onlyForView={true} requestObject={request} />
       {
-        // TODO: show only to approvers
+        // TODO: show only to approvers and check if the component is not place in "My Requests" (maybe add prop var)
         true && (
           <ApproverSection
             requestId={request.id}

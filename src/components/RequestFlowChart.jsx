@@ -1,13 +1,12 @@
-import React from "react";
-import { DECISIONS, DECISIONS_TRANSLATE } from "../constants/decisions.js";
-import { ModalContent } from "./RequestFlowChart.styles.js";
+import React from 'react';
+import { DECISIONS, DECISIONS_TRANSLATE } from '../constants/decisions.js';
+import { ModalContent } from './RequestFlowChart.styles.js';
 
 class RequestFlowChart extends React.Component {
   constructor(props) {
     super(props);
     this.request = props?.request || {};
     this.state = {};
-    console.log(this.request, "dsadsa");
   }
 
   isStageApprover(stageDecision, mustHaveDecision) {
@@ -20,10 +19,10 @@ class RequestFlowChart extends React.Component {
   isApproved() {
     return (
       this.isStageApprover(
-        "needSuperSecurityDecision",
-        "superSecurityDecision"
+        'needSuperSecurityDecision',
+        'superSecurityDecision'
       ) &&
-      this.isStageApprover("needSecurityDecision", "securityApprovers") &&
+      this.isStageApprover('needSecurityDecision', 'securityApprovers') &&
       this.request?.commanderDecision?.decision === DECISIONS.APPROVED
     );
   }
@@ -39,32 +38,32 @@ class RequestFlowChart extends React.Component {
 
     if (true || decisionObj.decision !== DECISIONS.DECISION_UNKNOWN) {
       tooltip = (
-        <div className="tooltip">
-          <ul className="inner-list">
-            <li className="display-flex items-wrap">
-              <div className="item">
+        <div className='tooltip'>
+          <ul className='inner-list'>
+            <li className='display-flex items-wrap'>
+              <div className='item'>
                 <p>
                   <span>
-                    {creationDate && creationDate.toLocaleTimeString("en-GB")}
+                    {creationDate && creationDate.toLocaleTimeString('en-GB')}
                   </span>
-                  {creationDate && creationDate.toLocaleDateString("en-GB")}
+                  {creationDate && creationDate.toLocaleDateString('en-GB')}
                 </p>
               </div>
-              <div className="item">
+              <div className='item'>
                 <p>פתיחת בקשה</p>
               </div>
             </li>
-            <li className="display-flex items-wrap">
-              <div className="item">
+            <li className='display-flex items-wrap'>
+              <div className='item'>
                 <p>
-                  <span>{date && date.toLocaleTimeString("en-GB")}</span>
-                  {date && date.toLocaleDateString("en-GB")}
+                  <span>{date && date.toLocaleTimeString('en-GB')}</span>
+                  {date && date.toLocaleDateString('en-GB')}
                 </p>
               </div>
-              <div className="item">
+              <div className='item'>
                 <p>
-                  בקשה{" "}
-                  {DECISIONS_TRANSLATE[decisionObj.decision] || "עוד לא הוחלטה"}{" "}
+                  בקשה{' '}
+                  {DECISIONS_TRANSLATE[decisionObj.decision] || 'עוד לא הוחלטה'}{' '}
                   ע"י <br />
                   {sectionName}: <strong>{decisionObj.displayName}</strong>
                   <br />
@@ -83,15 +82,15 @@ class RequestFlowChart extends React.Component {
   render() {
     return (
       <ModalContent>
-        <div className="inner-wrap">
-          <div className="scroll-wrap">
-            <div className="display-flex top-row">
+        <div className='inner-wrap'>
+          <div className='scroll-wrap'>
+            <div className='display-flex top-row'>
               <p>
                 מס' בקשה
                 <br />
                 <strong>{this.request?.serialNumber}</strong>
               </p>
-              <ul className="list">
+              <ul className='list'>
                 <li>קבלת בקשה</li>
                 <li
                   className={`process ${
@@ -101,7 +100,7 @@ class RequestFlowChart extends React.Component {
                   גורם מאשר
                   {this.tooltipContent(
                     this.request?.commanderDecision,
-                    "גורם מאשר"
+                    'גורם מאשר'
                   )}
                 </li>
                 {this.request?.needSecurityDecision ? (
@@ -119,7 +118,9 @@ class RequestFlowChart extends React.Component {
                 ) : null}
                 {this.request?.needSuperSecurityDecision ? (
                   <li
-                    className={`process ${DECISIONS[this.request?.superSecurityDecision?.decision]}`}
+                    className={`process ${
+                      DECISIONS[this.request?.superSecurityDecision?.decision]
+                    }`}
                   >
                     גורם מאשר בטח"ם
                     {this.tooltipContent(
