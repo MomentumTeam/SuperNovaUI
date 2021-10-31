@@ -1,6 +1,6 @@
 export const STATUSES = {
   SUBMITTED: 'הוגש',
-  APPROVED_BY_COMMANDER : 'בתהליך',
+  APPROVED_BY_COMMANDER: 'בתהליך',
   APPROVED_BY_SECURITY: 'בתהליך',
   IN_PROGRESS: 'אושר',
   DECLINED: 'סורב',
@@ -26,3 +26,18 @@ export const TYPES = {
   CHANGE_ROLE_HIERARCHY_BULK: 'שינוי היררכיה לתפקידים',
   UNRECOGNIZED: 'לא ידוע',
 };
+
+export const ROLE_CLEARANCE = [
+  'בלמ"ס',
+  'בלמ"ס',
+  'שמור',
+  'סודי',
+  'סודי ביותר',
+  'לבן',
+  'אדום',
+  'סגול',
+  'סגול טאבו',
+  'סגול מצומצם',
+  'סמ"צ',
+  'כחול',
+];

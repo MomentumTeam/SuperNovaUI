@@ -11,6 +11,7 @@ import { useStores } from "../../context/use-stores";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { isJobTitleAlreadyTakenRequest } from "../../service/KartoffelService";
+import { ROLE_CLEARANCE } from "../../constants/applies";
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
@@ -169,7 +170,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             <span className="required-field">*</span>סיווג תפקיד
           </label>
           <Dropdown
-            options={["אדום", "כחול", "סגול"]}
+            options={ROLE_CLEARANCE}
             placeholder="סיווג תפקיד"
             {...register("clearance")}
             value={watch("clearance")}
