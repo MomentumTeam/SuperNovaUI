@@ -75,6 +75,8 @@ const Entity = ({ setValue, name }) => {
             onKeyUp={searchEntityByNumber}
             id='2013'
             type='text'
+            maxlength='9'
+            keyfilter='pint'
             required
             placeholder="מ''א"
           />

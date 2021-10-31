@@ -141,6 +141,7 @@ const CreateSpecialEntityForm = forwardRef(
                 keyfilter='pint'
                 id='identityNumber'
                 type='text'
+                maxlength='9'
                 disabled={onlyForView}
               />
               <label htmlFor='2020'>
@@ -161,6 +162,7 @@ const CreateSpecialEntityForm = forwardRef(
                 keyfilter='pint'
                 id='phone'
                 type='text'
+                maxlength='10'
                 disabled={onlyForView}
               />
               <label htmlFor='2020'>

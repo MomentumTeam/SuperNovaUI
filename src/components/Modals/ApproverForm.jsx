@@ -215,6 +215,7 @@ const ApproverForm = forwardRef(
               id='2021'
               type='text'
               required
+              maxlength='9'
               onBlur={onSearchUserByPersonalNumber}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {

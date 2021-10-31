@@ -230,6 +230,7 @@ const AssignRoleToEntityForm = forwardRef(
               id='2021'
               type='text'
               required
+              maxlength='9'
               onBlur={onSearchUserById}
               keyfilter='int'
               onKeyDown={(e) => {
@@ -319,7 +320,7 @@ const AssignRoleToEntityForm = forwardRef(
                 {...register('roleId')}
                 id='2026'
                 type='text'
-                keyfilter='pint'
+                keyfilter='alpha'
                 onBlur={onRoleIdChanged}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
