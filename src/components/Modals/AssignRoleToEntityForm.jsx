@@ -141,8 +141,8 @@ const AssignRoleToEntityForm = forwardRef(({ showJob = true, setIsActionDone, on
   };
 
   const handleOrgSelected = async (org) => {
-    const result = await getRolesUnderOG(org.id);
-    setRoles(result.roles || []);
+    const result = await getRolesUnderOG({id:org.id});
+    setRoles(result || []);
   };
 
   const onSearchUserById = async () => {

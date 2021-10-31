@@ -18,6 +18,7 @@ import ApprovalTable from '../../components/ApprovalTable';
 import UserProfileCard from './UserProfileCard';
 import FullEntityInformationModal from '../../components/Modals/Entity/FullEntityInformationModal';
 import DecorAnimation from '../../components/decor-animation';
+import { sortUserType } from '../../utils/userType';
 
 const Dashboard = observer(() => {
   const { userStore, appliesStore, treeStore } = useStores();
@@ -29,48 +30,7 @@ const Dashboard = observer(() => {
   const myApplies = toJS(appliesStore.myApplies);
   const allApplies = toJS(appliesStore.allApplies);
 
-  let userType;
-
-  user?.types.forEach((type) => {
-    switch (type) {
-      case 'ADMIN':
-      case 5:
-        userType = {
-          type: USER_TYPE.ADMIN,
-          tag: USER_TYPE_TAG.ADMIN,
-        };
-        break;
-      case 'SUPER_SECURITY':
-      case 2:
-        userType = {
-          type: USER_TYPE.SUPER_SECURITY,
-          tag: USER_TYPE_TAG.SECURITY_APPROVER,
-        };
-        break;
-      case 'SECURITY':
-      case 1:
-        userType = {
-          type: USER_TYPE.SECURITY,
-          tag: USER_TYPE_TAG.SECURITY_APPROVER,
-        };
-        break;
-      case 'COMMANDER':
-      case 3:
-        userType = {
-          type: USER_TYPE.COMMANDER,
-          tag: USER_TYPE_TAG.APPROVER,
-        };
-        break;
-      case 'BULK':
-      case 6:
-        userType = { type: USER_TYPE.BULK };
-        break;
-
-      default:
-        userType = { type: USER_TYPE.SOLDIER };
-        break;
-    }
-  });
+  const userType = sortUserType(user?.types);
 
   const actionPopup = (error = null) => {
     if (error === null) {
