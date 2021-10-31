@@ -58,8 +58,6 @@
   background: transparent linear-gradient(180deg, #f590cd 0%, #ff74ba 100%) 0%
     0% no-repeat padding-box;
 }
-/*  */
-
 
 .p-dialog {
   border-radius: 14px;
@@ -171,7 +169,7 @@
 .p-dialog .p-dialog-content .p-fluid .p-fluid-item .btn-underline {
   color: #5bbdfe;
   position: absolute;
-  top: 21px;
+  top: 24px;
   left: 16px;
   display: inline-block;
   background-color: #fff;
