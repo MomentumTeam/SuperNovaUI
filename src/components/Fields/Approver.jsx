@@ -3,7 +3,15 @@ import { searchApproverByDisplayNameReq } from '../../service/ApproverService';
 import { AutoComplete } from 'primereact/autocomplete';
 import '../../assets/css/local/components/approver.css';
 
-const Approver = ({ setValue, name, multiple, disabled, defaultApprovers, errors, trigger =null }) => {
+const Approver = ({
+  setValue,
+  name,
+  multiple,
+  disabled,
+  defaultApprovers,
+  errors,
+  trigger = null,
+}) => {
   const [ApproverSuggestions, setApproverSuggestions] = useState([]);
   const [selectedApprover, setSelectedApprover] = useState(defaultApprovers);
 
@@ -24,12 +32,19 @@ const Approver = ({ setValue, name, multiple, disabled, defaultApprovers, errors
         <AutoComplete
           disabled={disabled}
           id='2022'
-          className={`approver-selection-${multiple === true ? 'multiple' : 'single'} ${disabled ? 'disabled' : ''}`}
+          className={`approver-selection-${
+            multiple === true ? 'multiple' : 'single'
+          } ${disabled ? 'disabled' : ''}`}
           multiple={multiple}
           value={selectedApprover}
           suggestions={ApproverSuggestions}
           completeMethod={searchApprover}
           field='displayName'
+          onKeyPress={(e) => {
+            if (e.key >= '0' && e.key <= '9') {
+              e.preventDefault();
+            }
+          }}
           onChange={(e) => {
             if (multiple) {
               const approvers = e.value.map(
@@ -43,7 +58,7 @@ const Approver = ({ setValue, name, multiple, disabled, defaultApprovers, errors
 
               setSelectedApprover(approvers);
               setValue(name, approvers);
-              if(trigger) trigger(name);
+              if (trigger) trigger(name);
             }
 
             if (!multiple) {
@@ -51,12 +66,13 @@ const Approver = ({ setValue, name, multiple, disabled, defaultApprovers, errors
               setSelectedApprover(displayName);
               setValue(name, { id, displayName, identityCard, personalNumber });
               if (trigger) trigger(name);
-
             }
           }}
         />
-        <label htmlFor="2020">
-          {errors?.approvers && <small style={{ color: "red" }}>{errors.approvers?.message? errors.approvers?.message: "יש למלא ערך"}</small>}
+        <label htmlFor='2020'>
+          {errors?.approvers && (
+            <small style={{ color: 'red' }}>יש למלא ערך</small>
+          )}
         </label>
       </div>
     </div>
@@ -64,7 +80,7 @@ const Approver = ({ setValue, name, multiple, disabled, defaultApprovers, errors
 };
 
 Approver.defaultProps = {
-    disabled: false
-}
+  disabled: false,
+};
 
 export default Approver;
