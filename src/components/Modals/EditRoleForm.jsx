@@ -47,7 +47,7 @@ const EditRoleForm = forwardRef(
         const role = await getRoleByRoleId(
           requestObject.kartoffelParams.roleId
         );
-        console.log(role);
+        console.log('this is the role:', role);
         setHierarchyByIdentifier(role.hierarchy);
         setValue('role', role);
         setRoles([role]);
@@ -140,11 +140,11 @@ const EditRoleForm = forwardRef(
               <span className='required-field'>*</span>סיווג תפקיד
             </label>
             <Dropdown
-              options={['אדום', 'כחול', 'סגול']}
-              placeholder='סיווג תפקיד'
-              {...register('clearance')}
-              value={watch('clearance')}
-              //   disabled={onlyForView}
+              placeholder={watch('role.clearance')}
+              {...register('role')}
+              value={watch('role.clearance')}
+              optionLabel={watch('role.clearance')}
+              disabled={onlyForView}
             />
             <label>
               {errors.clearance && (
