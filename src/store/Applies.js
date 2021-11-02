@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, observable } from 'mobx';
+import { action, makeAutoObservable, observable } from "mobx";
 import {
   getMyRequests,
   getRequestById,
@@ -22,17 +22,22 @@ import {
   changeRoleHierarchyRequest,
   changeRoleHierarchyBulkRequest,
   createRoleBulkRequest,
-} from '../service/AppliesService';
+} from "../service/AppliesService";
 
 export default class AppliesStore {
   myApplies = [];
   approveMyApplies = [];
+  approveMyAppliesCount = 0;
   approveAllApplies = [];
+  approveAllAppliesCount = 0;
 
   constructor() {
     makeAutoObservable(this, {
       myApplies: observable,
-      applies: observable,
+      approveMyApplies: observable,
+      approveMyAppliesCount: observable,
+      approveAllApplies: observable,
+      approveAllAppliesCount: observable,
       loadMyApplies: action,
       getAllApplies: action,
       getAppliesByPerosn: action,
@@ -69,18 +74,56 @@ export default class AppliesStore {
     // this.applies = myApplies.requests;
   }
 
-  async getMyApproveRequests(from = null, to = null) {
-    const myApplies = await getMyApproveRequests(from, to);
-    this.approveMyApplies = myApplies;
+  async getMyApproveRequests({
+    from = null,
+    to = null,
+    displayName = null,
+    type = null,
+    status = null,
+    append = false,
+    saveToStore = true,
+  }) {
+    const myApplies = await getMyApproveRequests(from, to, displayName, status, type);
+
+    if (saveToStore) {
+      if (append) {
+        this.approveMyApplies.requests = [...this.approveMyApplies.requests, ...myApplies.requests];
+      } else {
+        this.approveMyApplies = myApplies;
+      }
+    }
+
+    if (displayName === null && type === null && status === null) {
+      this.approveMyAppliesCount = myApplies.totalCount;
+    }
+
+    return myApplies;
   }
 
-  async getAllApproveRequests(from = null, to = null, append = false) {
-    const allApplies = await getAllApproveRequests(from, to);
-    if (append) {
-      this.approveAllApplies.requests = [...this.approveAllApplies.requests, ...allApplies.requests]; 
-    } else {
-      this.approveAllApplies = allApplies;
+  async getAllApproveRequests({
+    from = null,
+    to = null,
+    displayName = null,
+    type = null,
+    status = null,
+    append = false,
+    saveToStore = true,
+  }) {
+    const allApplies = await getAllApproveRequests(from, to, displayName, status, type);
+
+    if (saveToStore) {
+      if (append) {
+        this.approveAllApplies.requests = [...this.approveAllApplies.requests, ...allApplies.requests];
+      } else {
+        this.approveAllApplies = allApplies;
+      }
     }
+
+    if (displayName === null && type === null && status === null) {
+      this.approveAllAppliesCount = allApplies.totalCount;
+    }
+
+    return allApplies;
   }
 
   async getAppliesByPerosn(id, personType, personInfoType, from, to) {

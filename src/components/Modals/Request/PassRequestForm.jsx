@@ -1,11 +1,11 @@
 import * as Yup from "yup";
-import { forwardRef,   useImperativeHandle } from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { InputTextarea } from "primereact/inputtextarea";
 
 import Approver from "../../Fields/Approver";
-
+import { Dropdown } from "primereact/dropdown";
 
 const validationSchema = Yup.object().shape({
   approvers: Yup.array().min(1).required(),
@@ -13,6 +13,8 @@ const validationSchema = Yup.object().shape({
 });
 
 const PassRequestForm = forwardRef(({ request }, ref) => {
+  const [approverType, setApproverType] = useState("");
+
   const { register, handleSubmit, setValue, getValues, watch, formState } = useForm({
     resolver: yupResolver(validationSchema),
   });
@@ -46,7 +48,6 @@ const PassRequestForm = forwardRef(({ request }, ref) => {
     // setIsActionDone(true);
   };
 
-
   useImperativeHandle(
     ref,
     () => ({
@@ -61,7 +62,17 @@ const PassRequestForm = forwardRef(({ request }, ref) => {
         <div className="p-fluid-item" style={{ width: "100%" }}>
           <div className="AutoCompleteWrap">
             <label htmlFor="12023">העבר לטיפול</label>
-            <Approver setValue={setValue} name="approvers" errors={errors} multiple={true} defaultApprovers={[]} />
+            <div className="display-flex p-field-item">
+              <Dropdown options={[]} placeholder="גורם מטפל" />
+              <Approver
+                setValue={setValue}
+                name="approvers"
+                errors={errors}
+                multiple={true}
+                defaultApprovers={[]}
+                type={approverType}
+              />
+            </div>
           </div>
         </div>
       </div>

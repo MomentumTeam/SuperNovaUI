@@ -15,20 +15,21 @@ import PreviewRequestsDialog from "../Modals/Request/PreviewRequestsDialog1";
 
 // TODO: change to reducer?
 const TableActionsModal = forwardRef((_, ref) => {
+  const {toastRef, contextMenuRef} = ref;
   const { selectedItem } = useContext(TableContext);
   const { actionType, isActionModalOpen, closeActionModal, setIsActionModalOpen, currEvent } =
     useContext(TableActionsContext);
 
   const actionPopup = (error = null) => {
     if (error === null) {
-      ref.show({
+      toastRef.show({
         severity: "success",
         summary: "Success Message",
         detail: `Success in action: ${actionType}`,
         life: 3000,
       });
     } else {
-      ref.show({
+      toastRef.show({
         severity: "error",
         summary: "Error Message",
         detail: error.message || `action: ${actionType} failed`,
@@ -115,11 +116,13 @@ const TableActionsModal = forwardRef((_, ref) => {
             />
           );
         case TableAppliesActionsEnum.VIEW_APPLY:
+        case TableAppliesActionsEnum.VIEW_MY_APPLY:
           return (
             <PreviewRequestsDialog
               isDialogVisible={isActionModalOpen}
               setDialogVisiblity={setIsActionModalOpen}
               request={selectedItem[0]}
+              isApprover={actionType === TableAppliesActionsEnum.VIEW_MY_APPLY}
             />
           );
         case TableAppliesActionsEnum.PASS_APPLY:
@@ -133,7 +136,7 @@ const TableActionsModal = forwardRef((_, ref) => {
           );
         case TableAppliesActionsEnum.TAKE_APPLY:
         default:
-          ref.show({
+          toastRef.show({
             severity: "error",
             summary: "פעולה לא ממומשת",
             detail: `פעולה זו לא ממומשת במערכת עדיין`,

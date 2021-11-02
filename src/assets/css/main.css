@@ -931,6 +931,11 @@ img {
   justify-content: space-between;
 }
 
+.display-flex.flex-wrap {
+  flex-wrap: wrap;
+  justify-content: space-around !important;
+}
+
 .display-flex.display-flex-center {
   justify-content: center;
 }
@@ -941,6 +946,7 @@ img {
 
 .display-flex.display-flex-start {
   justify-content: flex-start;
+  
 }
 
 .for-screnReader {
@@ -1016,4 +1022,12 @@ main .main-wrap .main-inner-wrap {
 
 .carousel .p-carousel .p-carousel-indicators {
   display: none;
+}
+
+.dropdown-options{ 
+ width: 230px;
+}
+.dropdown-options .p-dropdown-clear-icon {
+  position: initial !important;
+  margin-top: unset !important;
 }

@@ -1,4 +1,5 @@
 import { DateFieldTemplate } from '../components/AppliesTable/DateFieldTemplate';
+import { RequestorFieldTemplate } from '../components/AppliesTable/RequestorFieldTemplate';
 import { ResponsibleFactorFieldTemplate } from '../components/AppliesTable/ResponsibleFactorTemplate';
 import { StatusFieldTemplate } from '../components/AppliesTable/StatusFieldTemplate';
 import { TextFieldTemplate } from '../components/AppliesTable/TextFieldTemplate';
@@ -35,14 +36,14 @@ export const TYPES = {
 };
 
 export const TableNames = {
-  myreqs: { tab: "myreqs", tableName: "בקשות לאישורי", disableActions: true },
+  myreqs: { tab: "myreqs", tableName: "בקשות לאישורי" },
   allreqs: { tab: "allreqs", tableName: "סל הבקשות" },
 };
 
 export const TableTypes = (selectedTab, user) => {
   return [
     { field: "type", displayName: "סוג בקשה", enum: TYPES, sortable: true, default: "לא ידוע" },
-    { field: "submittedBy.displayName", displayName: "שם מבקש", sortable: true, formatter: getUserNameFromDisplayName },
+    { field: "submittedBy", displayName: "שם מבקש", sortable: true, template: RequestorFieldTemplate },
     {
       field: getResponsibleFactor(user),
       displayName: "גורם מטפל",
@@ -69,13 +70,14 @@ export const itemsPerRow = 50; // must be smaller than the page size
 
 export const TableAppliesActionsEnum = {
   VIEW_APPLY: "VIEW_APPLY",
+  VIEW_MY_APPLY: "VIEW_MY_APPLY",
   PASS_APPLY: "PASS_APPLY",
   TAKE_APPLY: "TAKE_APPLY",
 };
 
 export const TableAppliesActionsTypes = {
   myreqs: {
-    view: TableAppliesActionsEnum.VIEW_APPLY,
+    view: TableAppliesActionsEnum.VIEW_MY_APPLY,
     pass: TableAppliesActionsEnum.PASS_APPLY,
   },
   allreqs: {

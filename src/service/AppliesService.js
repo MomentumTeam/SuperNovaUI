@@ -23,16 +23,16 @@ export const getRequestById = async (id) => {
 };
 
 
-export const getMyApproveRequests = async (from, to) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/approve/my`,
-    {
-      params: {
-        from,
-        to,
-      },
-    }
-  );
+export const getMyApproveRequests = async (from, to, displayName = null, status = null, type = null) => {
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/approve/my`, {
+    params: {
+      from,
+      to,
+      displayName,
+      status,
+      type,
+    },
+  });
 
   return response.data;
 };

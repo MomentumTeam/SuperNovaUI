@@ -13,8 +13,7 @@ const TableActionsMenu = forwardRef((_, ref) => {
   const { selectedItem } = useContext(TableContext);
   const [isActionModalOpen, setIsActionModalOpen] = useState(false);
   const [actionType, setActionType] = useState(null);
-  const [currEvent, setEvent] = useState({});
-  
+  const [currEvent, setEvent] = useState({})
   const openActionModal = () => setIsActionModalOpen(true);
   const closeActionModal = () => setIsActionModalOpen(false);
 
@@ -37,7 +36,7 @@ const TableActionsMenu = forwardRef((_, ref) => {
         }}
       >
         <ContextMenu model={TableActions({ setActionType, openActionModal, setEvent })} popup ref={ref} />
-        <TableActionsModal ref={toast.current} />
+        <TableActionsModal ref={{toastRef: toast.current, contextMenuRef: ref}} />
         <Toast ref={toast} />
       </TableActionsContext.Provider>
     </>

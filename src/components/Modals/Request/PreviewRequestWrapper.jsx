@@ -9,6 +9,7 @@ const PreviewRequestWrapper = ({
   ModalComponent,
   request,
   setDialogVisiblity,
+  isApprover
 }) => {
   return (
     <>
@@ -19,12 +20,7 @@ const PreviewRequestWrapper = ({
             <label htmlFor="2020">
               <span className="required-field">*</span>שם משתמש
             </label>
-            <InputText
-              id="2022"
-              disabled={true}
-              value={request?.submittedBy?.displayName}
-              field="displayName"
-            />
+            <InputText id="2022" disabled={true} value={request?.submittedBy?.displayName} field="displayName" />
           </div>
         </div>
         <div className="p-fluid-item">
@@ -33,10 +29,7 @@ const PreviewRequestWrapper = ({
               <span className="required-field">*</span>מ"א/ת"ז
             </label>
             <InputText
-              value={
-                request?.submittedBy?.personalNumber ||
-                request?.submittedBy?.identityCard
-              }
+              value={request?.submittedBy?.personalNumber || request?.submittedBy?.identityCard}
               disabled={true}
               id="2013"
               type="text"
@@ -50,13 +43,7 @@ const PreviewRequestWrapper = ({
       <h2>פרטי הבקשה</h2>
       <ModalComponent onlyForView={true} requestObject={request} />
       {
-        // TODO: show only to approvers
-        true && (
-          <ApproverSection
-            requestId={request.id}
-            setDialogVisiblity={setDialogVisiblity}
-          />
-        )
+        isApprover && <ApproverSection requestId={request.id} setDialogVisiblity={setDialogVisiblity} />
       }
     </>
   );

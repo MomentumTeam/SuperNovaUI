@@ -10,7 +10,7 @@ import AssignRoleToEntityForm from "../AssignRoleToEntityForm";
 import CreateBulkRoleForm from "../Bulk/CreateBulkRoleForm";
 import RenameBulkOGForm from "../Bulk/RenameBulkOGForm";
 
-const PreviewRequestsDialog = ({ request, isDialogVisible, setDialogVisiblity }) => {
+const PreviewRequestsDialog = ({ request, isDialogVisible, setDialogVisiblity, isApprover = false }) => {
   const [dialogContent, setDialogContent] = useState(null);
 
   const dialogParams = {
@@ -37,7 +37,7 @@ const PreviewRequestsDialog = ({ request, isDialogVisible, setDialogVisiblity })
     if (request.type) {
       // TODO: handle UNRECOGNIZED
       if (dialogParams[request.type]) {
-        setDialogContent(<PreviewRequestWrapper request={request} ModalComponent={dialogParams[request.type].component} setDialogVisiblity={setDialogVisiblity} />);
+        setDialogContent(<PreviewRequestWrapper request={request} ModalComponent={dialogParams[request.type].component} setDialogVisiblity={setDialogVisiblity} isApprover={isApprover} />);
         setDialogVisiblity(true);
       };
     }

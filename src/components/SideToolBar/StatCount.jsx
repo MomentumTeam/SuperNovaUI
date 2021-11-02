@@ -13,13 +13,13 @@ const StatCount = () => {
     <div className="display-flex comments">
         <dl>
           <dt> בקשות לאישורי</dt>
-          <dd className="green">{appliesStore.approveMyApplies.totalCount || "-"}</dd>
+          <dd className="green">{appliesStore.approveMyAppliesCount || "-"}</dd>
         </dl>
      
       {isUserCanSeeAllApproveApplies(user) && (
         <dl>
           <dt> סל הבקשות</dt>
-          <dd>{appliesStore.approveAllApplies?.totalCount || "-"}</dd>
+          <dd>{appliesStore.approveAllAppliesCount || "-"}</dd>
         </dl>
       )}
     </div>

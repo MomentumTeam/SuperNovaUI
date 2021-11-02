@@ -3,14 +3,14 @@ import { searchApproverByDisplayNameReq } from '../../service/ApproverService';
 import { AutoComplete } from 'primereact/autocomplete';
 import '../../assets/css/local/components/approver.css';
 
-const Approver = ({ setValue, name, multiple, disabled, defaultApprovers, errors, trigger =null }) => {
+const Approver = ({ setValue, name, multiple, disabled, defaultApprovers, errors, trigger =null, type = "COMMANDER" }) => {
   const [ApproverSuggestions, setApproverSuggestions] = useState([]);
   const [selectedApprover, setSelectedApprover] = useState(defaultApprovers);
 
   const searchApprover = async (event) => {
     const result = await searchApproverByDisplayNameReq(
       event.query,
-      'COMMANDER'
+      type
     );
     setApproverSuggestions(result.approvers);
   };
