@@ -7,7 +7,6 @@ import React, {
 import { useForm } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
-import { InputTextarea } from 'primereact/inputtextarea';
 import Hierarchy from './Hierarchy';
 import Approver from '../Fields/Approver';
 import { useStores } from '../../context/use-stores';
@@ -26,6 +25,8 @@ const validationSchema = Yup.object().shape({
   approvers: Yup.array().min(1).required(),
   comments: Yup.string().optional(),
   identifier: Yup.string().email().required(),
+  jobTitle: Yup.string().required(),
+  clearance: Yup.number(),
 });
 
 const EditRoleForm = forwardRef(
@@ -41,7 +42,8 @@ const EditRoleForm = forwardRef(
 
     useEffect(() => {
       const initializeValues = async () => {
-        setValue('comments', requestObject.comments);
+        setValue('commanders', requestObject.commanders);
+        setValue('jobTitle', requestObject.kartoffelParams.jobTitle);
         setValue('identifier', requestObject.kartoffelParams.roleId);
         setValue('hierarchy', requestObject.adParams.ouDisplayName);
         const role = await getRoleByRoleId(
@@ -49,7 +51,10 @@ const EditRoleForm = forwardRef(
         );
         console.log('this is the role:', role);
         setHierarchyByIdentifier(role.hierarchy);
+
         setValue('role', role);
+        setValue('clearance', role.clearance);
+
         setRoles([role]);
       };
 
@@ -66,7 +71,6 @@ const EditRoleForm = forwardRef(
         throw new Error(err.errors);
       }
       const { identifier, approvers, hierarchy, comments, role } = data;
-      const jobTitle = role.jobTitle;
       const req = {
         comments: comments,
         commanders: approvers,
@@ -108,11 +112,11 @@ const EditRoleForm = forwardRef(
               <span className='required-field'>*</span>שם תפקיד
             </label>
             <InputText
-              {...register('role')}
+              {...register('jobTitle')}
               id='2021'
               type='text'
               required
-              value={watch('role.jobTitle')}
+              value={watch('jobTitle')}
               placeholder='שם תפקיד'
               disabled={onlyForView}
             />
@@ -140,10 +144,10 @@ const EditRoleForm = forwardRef(
               <span className='required-field'>*</span>סיווג תפקיד
             </label>
             <Dropdown
-              placeholder={watch('role.clearance')}
-              {...register('role')}
-              value={watch('role.clearance')}
-              optionLabel={watch('role.clearance')}
+              placeholder={watch('clearance')}
+              {...register('clearance')}
+              value={watch('clearance')}
+              optionLabel={watch('clearance')}
               disabled={onlyForView}
             />
             <label>
@@ -171,14 +175,16 @@ const EditRoleForm = forwardRef(
             </label>
           </div>
         </div>
-        <Approver
-          setValue={setValue}
-          name='approvers'
-          defaultApprovers={requestObject?.commanders || []}
-          multiple={true}
-          errors={errors}
-          disabled={onlyForView}
-        />
+        <div className='p-fluid-item'>
+          <Approver
+            setValue={setValue}
+            name='approvers'
+            multiple={true}
+            errors={errors}
+            defaultApprovers={requestObject?.commanders || []}
+            disabled={onlyForView}
+          />
+        </div>
       </div>
     );
   }
