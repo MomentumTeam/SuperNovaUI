@@ -28,7 +28,7 @@ const Toolbar = () => {
       {
         id: '4',
         className: 'btn-actions btn-actions4',
-        actionName: 'הוספת משתמש',
+        actionName: 'משתמש חדש',
       },
       {
         id: '5',

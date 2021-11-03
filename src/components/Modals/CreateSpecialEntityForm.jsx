@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useForm } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
@@ -6,28 +6,40 @@ import { Dropdown } from 'primereact/dropdown';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useStores } from '../../context/use-stores';
-import Approver from './Approver';
+import {PHONE_REG_EXP} from '../../constants';
+import Approver from '../Fields/Approver';
 
-
-const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
 const validationSchema = Yup.object().shape({
-    firstName: Yup.string().required(),
-    lastName: Yup.string().required(),
-    identityNumber: Yup.number().required(),
-    phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid').required(),
-    classification: Yup.number().required(),
-    approvers: Yup.array().min(1).required(),
-    comments: Yup.string().optional(),
-    sex: Yup.number().optional().nullable()
+  firstName: Yup.string().required(),
+  lastName: Yup.string().required(),
+  identityNumber: Yup.string().required(),
+  phone: Yup.string().matches(PHONE_REG_EXP, "Phone number is not valid").required(),
+  classification: Yup.string().required(),
+  approvers: Yup.array().min(1).required(),
+  comments: Yup.string().optional(),
+  sex: Yup.string().optional().nullable(),
 });
 
-const CreateSpecialEntityForm = forwardRef(({ setIsActionDone }, ref) => {
+const CreateSpecialEntityForm = forwardRef(({ setIsActionDone, onlyForView, requestObject }, ref) => {
     const { register, handleSubmit, watch, setValue, formState } = useForm({
         resolver: yupResolver(validationSchema)
     });
     const { errors } = formState;
     const { appliesStore } = useStores();
+
+    useEffect(() => {  
+        if (requestObject) {
+            console.log(requestObject);
+            setValue('comments', requestObject.comments);
+            setValue('firstName', requestObject.kartoffelParams.firstName);
+            setValue('lastName', requestObject.kartoffelParams.lastName);
+            setValue('identityNumber', requestObject.kartoffelParams.identityCard);
+            setValue('phone', requestObject.kartoffelParams.mobilePhone[0]);
+            setValue('classification', requestObject.kartoffelParams.clearance);
+            setValue('sex', requestObject.kartoffelParams.sex);
+        }
+      }, []);
 
     const onSubmit = async (data) => {
         try {
@@ -77,6 +89,7 @@ const CreateSpecialEntityForm = forwardRef(({ setIsActionDone }, ref) => {
                             {...register('firstName')}
                             id='firstName'
                             type='text'
+                            disabled={onlyForView}
                         />
                         <label htmlFor='2020'>
                             {' '}
@@ -93,6 +106,7 @@ const CreateSpecialEntityForm = forwardRef(({ setIsActionDone }, ref) => {
                             {...register('lastName')}
                             id='lastName'
                             type='text'
+                            disabled={onlyForView}
                         />
                         <label htmlFor='2020'>
                             {' '}
@@ -109,6 +123,7 @@ const CreateSpecialEntityForm = forwardRef(({ setIsActionDone }, ref) => {
                             {...register('identityNumber')}
                             id='identityNumber'
                             type='text'
+                            disabled={onlyForView}
                         />
                         <label htmlFor='2020'>
                             {' '}
@@ -125,6 +140,7 @@ const CreateSpecialEntityForm = forwardRef(({ setIsActionDone }, ref) => {
                             {...register('phone')}
                             id='phone'
                             type='text'
+                            disabled={onlyForView}
                         />
                         <label htmlFor='2020'>
                             {' '}
@@ -141,6 +157,7 @@ const CreateSpecialEntityForm = forwardRef(({ setIsActionDone }, ref) => {
                             {...register('classification')}
                             id='classification'
                             type='text'
+                            disabled={onlyForView}
                         />
                         <label htmlFor='2020'>
                             {' '}
@@ -161,6 +178,7 @@ const CreateSpecialEntityForm = forwardRef(({ setIsActionDone }, ref) => {
                                 { label: 'זכר', value: '1' },
                                 { label: 'נקבה', value: '2' }
                             ]}
+                            disabled={onlyForView}
                             placeholder='מגדר'
                             value={watch('sex')}
                             onChange={(e) => {
@@ -170,7 +188,7 @@ const CreateSpecialEntityForm = forwardRef(({ setIsActionDone }, ref) => {
                 </div>
             </div>
             <div className='p-fluid-item'>
-                <Approver setValue={setValue} name='approvers' multiple={true} />
+                <Approver setValue={setValue} name='approvers' multiple={true} defaultApprovers={requestObject?.commanders || []} disabled={onlyForView} />
             </div>
             <div className='p-fluid-item p-fluid-item-flex1'>
                 <div className='p-field'>
@@ -179,6 +197,7 @@ const CreateSpecialEntityForm = forwardRef(({ setIsActionDone }, ref) => {
                         {...register('comments')}
                         id='comments'
                         type='text'
+                        disabled={onlyForView}
                     />
                 </div>
             </div>

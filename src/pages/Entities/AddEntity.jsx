@@ -1,9 +1,9 @@
 const AddEntity = () => (
-  <button className='btn-add-user' title='הוספת משתמש' type='button'>
-    <div className='decoration'>
-      <div className='img'></div>
+  <button className="btn-add-user" title="משתמש חדש" type="button">
+    <div className="decoration">
+      <div className="img"></div>
     </div>
-    <p>הוספת משתמש</p>
+    <p>משתמש חדש</p>
   </button>
 );
 

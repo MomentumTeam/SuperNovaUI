@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import appRoutes from '../constants/routes';
 import NotFound from '../pages/NotFound';
 import ProtectedRouteWrapper from './ProtectedRouteWrapper';
@@ -32,18 +33,11 @@ const routeGenerator = (routes) => {
 routeGenerator(appRoutes);
 
 const AppRouter = () => {
-  const { userStore, appliesStore } = useStores();
+  const { userStore } = useStores();
 
-  if (!userStore.user) {
-    userStore.setUserInfo();
-    appliesStore.getAppliesByPerosn(
-      'bbbbbbbbbbbbbbbbbbbbbbbb',
-      'SUBMITTER',
-      'ID',
-      1,
-      20
-    );
-  }
+  useEffect(async () => {
+    await userStore.fetchUserInfo();
+  }, []);
 
   return (
     <BrowserRouter>
