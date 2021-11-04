@@ -1,10 +1,9 @@
-import { STATUSES, TYPES } from "../constants";
-import datesUtil from "../utils/dates";
-import { useState } from "react";
-import PreviewRequestsDialog from "./PreviewRequestsDialog";
+import { STATUSES, TYPES } from '../constants';
+import datesUtil from '../utils/dates';
+import { useState } from 'react';
+import PreviewRequestsDialog from './PreviewRequestsDialog';
 
 const List = ({ list }) => {
-
   const [dialogRequest, setDialogRequest] = useState({});
   const [dialogRequestIndex, setDialogRequestIndex] = useState({});
   const [isDialogVisible, setDialogVisiblity] = useState(false);
@@ -16,28 +15,32 @@ const List = ({ list }) => {
   };
 
   return (
-    <table className="tableStyle">
+    <table className='tableStyle'>
       <tbody>
         {list.map((request, index) => (
-          <tr key={request.id} onClick={() => onClick(request, index)} style={{ cursor: 'pointer' }}>
+          <tr
+            key={request.id}
+            onClick={() => onClick(request, index)}
+            style={{ cursor: 'pointer' }}
+          >
             <td>
-              <div className="td-inner">
+              <div className='td-inner'>
                 {datesUtil.formattedDate(Number(request.createdAt))}
               </div>
             </td>
             <td>
-              <div className="td-inner">{TYPES[request.type]}</div>
+              <div className='td-inner'>{TYPES[request.type]}</div>
             </td>
             <td>
-              <div className="td-inner td-inner-btn">
+              <div className='td-inner td-inner-btn'>
                 <button
                   className={
-                    "btn-status " +
+                    'btn-status ' +
                     (request.status === STATUSES.SENT
-                      ? "btn-sent"
-                      : " btn-rejected")
+                      ? 'btn-sent'
+                      : ' btn-rejected')
                   }
-                  type="button"
+                  type='button'
                   title={request.status}
                 >
                   {STATUSES[request.status]}
@@ -47,7 +50,13 @@ const List = ({ list }) => {
           </tr>
         ))}
       </tbody>
-      <PreviewRequestsDialog isDialogVisible={isDialogVisible} setDialogVisiblity={setDialogVisiblity} requests={list} index={dialogRequestIndex} request={dialogRequest} />
+      <PreviewRequestsDialog
+        isDialogVisible={isDialogVisible}
+        setDialogVisiblity={setDialogVisiblity}
+        requests={list}
+        index={dialogRequestIndex}
+        request={dialogRequest}
+      />
     </table>
   );
 };
