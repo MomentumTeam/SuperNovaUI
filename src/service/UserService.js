@@ -22,9 +22,14 @@ export const getUserType = async (userID) => {
 //   return users;
 // };
 
-export const getPictureByEntityId = async () => {
+export const getPictureByConnectedEntity = async () => {
+  const userPic = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/entities/me/picture`);
+  return userPic.data;
+};
+
+export const getPictureByEntityId = async (id) => {
   const userPic = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/entities/me/picture`,
+    `${apiBaseUrl}/api/kartoffel/entities/picture/${id}`,
   );
   return userPic.data;
 };

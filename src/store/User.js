@@ -1,5 +1,5 @@
 import { action, makeAutoObservable, observable } from 'mobx';
-import { getPictureByEntityId, getUser } from '../service/UserService';
+import { getPictureByConnectedEntity, getUser } from "../service/UserService";
 import { getMyNotifications, markAsRead } from '../service/NotificationService';
 import { Base64 } from 'js-base64';
 import { tokenName } from '../constants/api';
@@ -65,7 +65,7 @@ export default class UserStore {
   }
 
   async getMyPicture() {
-    const myPicture = await getPictureByEntityId();
+    const myPicture = await getPictureByConnectedEntity();
     this.user = {...this.user, picture: myPicture.image};
   }
 }

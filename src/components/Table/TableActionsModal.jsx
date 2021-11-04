@@ -12,6 +12,7 @@ import { HierarchyDelete } from "../Modals/Hierarchy/HierarchyDelete";
 import { TableAppliesActionsEnum } from "../../constants";
 import { PassRequestDialog } from "../Modals/Request/PassRequestDialog";
 import PreviewRequestsDialog from "../Modals/Request/PreviewRequestsDialog1";
+import { TakeRequest } from '../Modals/Request/TakeRequest';
 
 // TODO: change to reducer?
 const TableActionsModal = forwardRef((_, ref) => {
@@ -131,10 +132,13 @@ const TableActionsModal = forwardRef((_, ref) => {
               request={selectedItem[0]}
               isDialogVisible={isActionModalOpen}
               setDialogVisiblity={setIsActionModalOpen}
-              currEvent={currEvent}
+              actionPopup={actionPopup}
             />
           );
         case TableAppliesActionsEnum.TAKE_APPLY:
+          TakeRequest({request: selectedItem[0], actionPopup: actionPopup})
+          closeActionModal();
+          break;
         default:
           toastRef.show({
             severity: "error",

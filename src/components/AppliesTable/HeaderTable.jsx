@@ -24,18 +24,23 @@ const HeaderTable = ({ user, selectedTab, setTab, setSearchFields, getData }) =>
           <HeaderTemplate
             tab={TableNames.allreqs.tab}
             name={TableNames.allreqs.tableName}
-            badgeValue={appliesStore.approveAllApplies.totalCount}
+            badgeValue={appliesStore.approveAllApplies.waitingForApproveCount}
           />
           <HeaderTemplate
             tab={TableNames.myreqs.tab}
             name={TableNames.myreqs.tableName}
-            badgeValue={appliesStore.approveMyApplies.totalCount}
+            badgeValue={appliesStore.approveMyApplies.waitingForApproveCount}
           />
         </div>
       ) : (
         <div>
           <h2>{TableNames.myreqs.tableName}</h2>
-          <h3>{appliesStore.approveMyApplies.totalCount} סה"כ</h3>
+          <h3>
+            <b style={{ color: "black" }}>
+              {appliesStore.approveMyApplies.waitingForApproveCount}</b>/{appliesStore.approveMyApplies.totalCount}
+           {" "}
+            סה"כ
+          </h3>
         </div>
       )}
 

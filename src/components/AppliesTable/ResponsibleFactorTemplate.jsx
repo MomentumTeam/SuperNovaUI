@@ -15,7 +15,6 @@ const ResponsibleFactorFieldTemplate = (responsibles) => {
     if (names)
       return (
         <div>
-          {/* TODO: change to classname */}
           <span style={{ padding: "2px", display: "inline-block" }}>{names[0]}</span>
           <Badge
             value={`${names.length - 1}+`}

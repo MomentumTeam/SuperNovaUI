@@ -9,22 +9,22 @@ const StatCount = () => {
 
   return (
     <>
-    {isUserCanSeeMyApproveApplies(user) && (
-    <div className="display-flex comments">
-        <dl>
-          <dt> בקשות לאישורי</dt>
-          <dd className="green">{appliesStore.approveMyAppliesCount || "-"}</dd>
-        </dl>
-     
-      {isUserCanSeeAllApproveApplies(user) && (
-        <dl>
-          <dt> סל הבקשות</dt>
-          <dd>{appliesStore.approveAllAppliesCount || "-"}</dd>
-        </dl>
+      {isUserCanSeeMyApproveApplies(user) && (
+        <div className="display-flex comments">
+          <dl>
+            <dt> בקשות לאישורי</dt>
+            <dd className="green">{appliesStore.approveMyAppliesCount !== undefined? appliesStore.approveMyAppliesCount : "-"}</dd>
+          </dl>
+
+          {isUserCanSeeAllApproveApplies(user) && (
+            <dl>
+              <dt> סל הבקשות</dt>
+              <dd>{appliesStore.approveAllAppliesCount !== undefined?  appliesStore.approveAllAppliesCount:"-"}</dd>
+            </dl>
+          )}
+        </div>
       )}
-    </div>
-     )}
-     </>
+    </>
   );
 };
 

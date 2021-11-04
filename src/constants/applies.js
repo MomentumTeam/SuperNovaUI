@@ -4,7 +4,6 @@ import { ResponsibleFactorFieldTemplate } from '../components/AppliesTable/Respo
 import { StatusFieldTemplate } from '../components/AppliesTable/StatusFieldTemplate';
 import { TextFieldTemplate } from '../components/AppliesTable/TextFieldTemplate';
 import { getFormattedDate, getResponsibleFactor } from "../utils/applies";
-import { getUserNameFromDisplayName } from '../utils/user';
 
 export const STATUSES = {
   SUBMITTED: "הוגש",
@@ -32,7 +31,6 @@ export const TYPES = {
   CHANGE_ROLE_HIERARCHY: "שינוי היררכיה לתפקיד",
   CREATE_ROLE_BULK: "יצירת תפקידים חדשים",
   CHANGE_ROLE_HIERARCHY_BULK: "שינוי היררכיה לתפקידים",
-  UNRECOGNIZED: "לא ידוע",
 };
 
 export const TableNames = {
@@ -42,13 +40,26 @@ export const TableNames = {
 
 export const TableTypes = (selectedTab, user) => {
   return [
-    { field: "type", displayName: "סוג בקשה", enum: TYPES, sortable: true, default: "לא ידוע" },
-    { field: "submittedBy", displayName: "שם מבקש", sortable: true, template: RequestorFieldTemplate },
+    { field: "serialNumber", displayName: "מספר בקשה" },
+    {
+      field: "type",
+      displayName: "סוג בקשה",
+      enum: TYPES,
+      default: "לא ידוע",
+      sortable: true,
+      sortFields: sortFields.REQUEST_TYPE,
+    },
+    {
+      field: "submittedBy",
+      displayName: "שם מבקש",
+      sortable: true,
+      sortFields: sortFields.SUBMITTED_BY,
+      template: RequestorFieldTemplate,
+    },
     {
       field: getResponsibleFactor(user),
       displayName: "גורם מטפל",
       hide: selectedTab !== TableNames.allreqs.tab,
-      sortable: true,
       template: ResponsibleFactorFieldTemplate,
     },
     {
@@ -56,16 +67,38 @@ export const TableTypes = (selectedTab, user) => {
       displayName: "ת׳ בקשה",
       formatter: getFormattedDate,
       sortable: true,
+      sortFields: sortFields.CREATED_AT,
       template: DateFieldTemplate,
     },
-    { field: "additionalParams.directGroup", displayName: "היררכיה", sortable: true, template: TextFieldTemplate },
-    { field: "comments", displayName: "סיבה", sortable: true, template: TextFieldTemplate },
-    { field: "status", displayName: "סטטוס", enum: STATUSES, sortable: true, template: StatusFieldTemplate },
+    { field: "additionalParams.directGroup", displayName: "היררכיה", template: TextFieldTemplate },
+    { field: "comments", displayName: "סיבה", template: TextFieldTemplate },
+    {
+      field: "status",
+      displayName: "סטטוס",
+      enum: STATUSES,
+      sortable: true,
+      sortFields: sortFields.STATUS,
+      template: StatusFieldTemplate,
+    },
   ];
 };
 
-export const pageSize = 100;
-export const itemsPerRow = 50; // must be smaller than the page size
+export const searchFields = ["שם", "מספר אישי", 'ת"ז', "מספר בקשה"]
+export const searchTooltipMessage = `ניתן לחפש לפי השדות הבאים: ${searchFields.join(', ')}`;
+
+export const sortFields = {
+  REQUEST_TYPE: "REQUEST_TYPE",
+  SUBMITTED_BY: "SUBMITTED_BY",
+  CREATED_AT: "CREATED_AT",
+  STATUS: "STATUS",
+};
+export const sortOrder = {
+  INC: "INC",
+  DEC: "DEC"
+}
+
+export const pageSize = 10;
+export const itemsPerRow = 5; // must be smaller than the page size
 
 
 export const TableAppliesActionsEnum = {

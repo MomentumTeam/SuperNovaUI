@@ -15,7 +15,7 @@
 
 .p-dialog.dialogPass {
 min-height: unset!important;
-max-width: 410px;
+max-width: 500px;
 }
 
 @media (max-width: 730px) {
@@ -1986,11 +1986,11 @@ max-width: 410px;
   padding: 0.25rem 0.5rem;
   margin-right: 0rem;
   margin-left: 10px;
-  background-color: #a7abbd;
-  color: #f7f7f7;
-  border-radius: 3px;
-  border-radius: 50%;
-  width: 35px;
+  /* background-color: #a7abbd; */
+  /* color: #f7f7f7; */
+  /* border-radius: 3px;
+  border-radius: 50%; */
+  /* width: 45px; */
   height: 35px;
 }
 
@@ -2006,11 +2006,11 @@ max-width: 410px;
   overflow: hidden;
   white-space: nowrap;
   text-align: center;
-  max-width: 20px;
+  max-width: 40px;
   margin: 0 auto;
 }
 
-.p-dialog
+/* .p-dialog
   .p-dialog-content
   .p-fluid
   .p-fluid-item
@@ -2022,7 +2022,7 @@ max-width: 410px;
   position: absolute;
   top: 15px;
   left: 1px;
-}
+} */
 
 .p-dialog
   .p-dialog-content

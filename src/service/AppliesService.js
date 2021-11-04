@@ -23,28 +23,40 @@ export const getRequestById = async (id) => {
 };
 
 
-export const getMyApproveRequests = async (from, to, displayName = null, status = null, type = null) => {
+export const getMyApproveRequests = async ({from, to, searchQuery = null, status = null, type = null, sortField = null, sortOrder = null}) => {
   const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/approve/my`, {
     params: {
       from,
       to,
-      displayName,
+      searchQuery,
       status,
       type,
+      sortField,
+      sortOrder
     },
   });
 
   return response.data;
 };
 
-export const getAllApproveRequests = async (from, to, displayName = null, status = null, type = null) => {
+export const getAllApproveRequests = async ({
+  from,
+  to,
+  searchQuery = null,
+  status = null,
+  type = null,
+  sortField = null,
+  sortOrder = null,
+}) => {
   const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/approve/all`, {
     params: {
       from,
       to,
-      displayName,
+      searchQuery,
       status,
       type,
+      sortField,
+      sortOrder,
     },
   });
 
@@ -267,6 +279,17 @@ export const changeRoleHierarchyBulkRequest = async (data) => {
     `${apiBaseUrl}/api/bulk/request/role/hierarchy`,
     data
   );
+
+  return response.data;
+};
+
+
+export const transferApproverRequest = async ({reqId, approvers, approversType, comment}) => {  
+  const response = await axiosApiInstance.put(`${apiBaseUrl}/api/requests/approver/transfer/${reqId}`, {
+      approvers,
+      type: approversType,
+      commentForApprovers: comment,
+  });
 
   return response.data;
 };

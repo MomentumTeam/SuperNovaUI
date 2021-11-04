@@ -32,7 +32,10 @@ const Table = ({
   isVirtualScrollable = false,
   onVirtualScroll = null,
   totalRecordsScroll = null,
-  rows = itemsInPage
+  rows = itemsInPage,
+  onSort = null,
+  sortField = null,
+  sortOrder = null,
 }) => {
   const contextMenu = useRef(null);
   const { userStore } = useStores();
@@ -42,9 +45,9 @@ const Table = ({
   const user = toJS(userStore.user);
   const rowData = tableTypes;
 
-   const loadingText = () => {
-     return <span className="loading-text"></span>;
-   };
+  const loadingText = () => {
+    return <span className="loading-text"></span>;
+  };
 
   const openContextMenu = (event) => {
     contextMenu.current.show(event);
@@ -114,6 +117,9 @@ const Table = ({
                 contextMenu={!disableActions}
                 onContextMenuSelectionChange={!disableActions ? (e) => setValue(e.value) : undefined}
                 onContextMenu={!disableActions ? (e) => contextMenu.current.show(e.originalEvent) : undefined}
+                sortField={sortField}
+                sortOrder={sortOrder}
+                onSort={onSort}
               >
                 {selectionMode === "multiple" && (
                   <Column
@@ -136,12 +142,13 @@ const Table = ({
                         loadingBody={loadingText}
                         template={col?.template}
                         body={TableFieldTemplate}
+                        sortable={col?.sortable}
+                        sortFields={col?.sortFields}
+                        // sortFunction={col?.sortable && onSort !== null ? (e) => onSort(e, col) : undefined}
                       />
                     )
                 )}
-                {!disableActions && (
-                  <Column loadingBody={loadingText} body={TableActionsTemplate} />
-                )}
+                {!disableActions && <Column loadingBody={loadingText} body={TableActionsTemplate} />}
               </DataTable>
             </div>
           </div>

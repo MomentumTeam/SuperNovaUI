@@ -1031,3 +1031,9 @@ main .main-wrap .main-inner-wrap {
   position: initial !important;
   margin-top: unset !important;
 }
+
+.dropdown-autocomplete {
+  width:170px !important;
+  margin-top: 40px !important;
+  margin-left: 5px !important;
+}

@@ -1,4 +1,4 @@
-import { USER_TYPE, USER_TYPE_TAG } from '../constants';
+import { USER_TYPE, USER_TYPE_TAG } from "../constants";
 
 // permissions
 export const isUserCanSeeAllApproveApplies = (user) => {
@@ -12,8 +12,8 @@ export const isUserCanSeeMyApproveApplies = (user) => {
 };
 
 export const isUserHoldType = (user, type) => {
-    return user.types.includes(type);
-}
+  return user.types.includes(type);
+};
 
 export const getUserTag = (type) => {
   let tag;

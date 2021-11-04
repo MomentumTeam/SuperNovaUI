@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, observable } from "mobx";
+import { action, makeAutoObservable, observable, toJS } from "mobx";
 import {
   getMyRequests,
   getRequestById,
@@ -22,7 +22,9 @@ import {
   changeRoleHierarchyRequest,
   changeRoleHierarchyBulkRequest,
   createRoleBulkRequest,
+  transferApproverRequest,
 } from "../service/AppliesService";
+import { getResponsibleFactorByApproverType, IsRequestCompleteForUser } from "../utils/applies";
 
 export default class AppliesStore {
   myApplies = [];
@@ -56,6 +58,7 @@ export default class AppliesStore {
       deleteOGApply: action,
       disconectRoleFromEntityApply: action,
       updateApplyDecision: action,
+      transferApprovers: action,
     });
 
     this.loadMyApplies(1, 20);
@@ -75,15 +78,17 @@ export default class AppliesStore {
   }
 
   async getMyApproveRequests({
-    from = null,
-    to = null,
-    displayName = null,
-    type = null,
+    from,
+    to,
+    searchQuery = null,
     status = null,
+    type = null,
+    sortField = null,
+    sortOrder = null,
     append = false,
     saveToStore = true,
   }) {
-    const myApplies = await getMyApproveRequests(from, to, displayName, status, type);
+    const myApplies = await getMyApproveRequests({ from, to, searchQuery, status, type, sortField, sortOrder });
 
     if (saveToStore) {
       if (append) {
@@ -93,23 +98,25 @@ export default class AppliesStore {
       }
     }
 
-    if (displayName === null && type === null && status === null) {
-      this.approveMyAppliesCount = myApplies.totalCount;
+    if (searchQuery === null && type === null && status === null) {
+      this.approveMyAppliesCount = myApplies.waitingForApproveCount;
     }
 
     return myApplies;
   }
 
   async getAllApproveRequests({
-    from = null,
-    to = null,
-    displayName = null,
-    type = null,
+    from,
+    to,
+    searchQuery = null,
     status = null,
+    type = null,
+    sortField = null,
+    sortOrder = null,
     append = false,
     saveToStore = true,
   }) {
-    const allApplies = await getAllApproveRequests(from, to, displayName, status, type);
+    const allApplies = await getAllApproveRequests({ from, to, searchQuery, status, type, sortField, sortOrder });
 
     if (saveToStore) {
       if (append) {
@@ -119,8 +126,8 @@ export default class AppliesStore {
       }
     }
 
-    if (displayName === null && type === null && status === null) {
-      this.approveAllAppliesCount = allApplies.totalCount;
+    if (searchQuery === null && type === null && status === null) {
+      this.approveAllAppliesCount = allApplies.waitingForApproveCount;
     }
 
     return allApplies;
@@ -219,5 +226,57 @@ export default class AppliesStore {
   async updateApplyDecision(applyProperties) {
     const updatedRequest = await updateApproverDecision(applyProperties);
     //TODO- update Decision in state
+  }
+
+  async transferApprovers({ user, reqId, approvers, approversType, comment }) {
+    const apply = await transferApproverRequest({ reqId, approvers, approversType, comment });
+
+    const myApplyIndex = this.getApplyIndexById("approveMyApplies", reqId);
+    const allApplyIndex = this.getApplyIndexById("approveAllApplies", reqId);
+
+    const myApplyResponsibleBefore =
+      myApplyIndex != -1
+        ? this.checkIfResponsible(this.approveMyApplies.requests[myApplyIndex], user, approversType)
+        : false;
+
+
+    if (myApplyIndex != -1) this.updateApply("approveMyApplies", myApplyIndex, apply);
+    if (allApplyIndex != -1) this.updateApply("approveAllApplies", allApplyIndex, apply);
+
+    const responsibleAfter = this.checkIfResponsible(apply, user, approversType);
+
+    if (!responsibleAfter && myApplyResponsibleBefore) {
+      this.approveMyApplies.requests.splice(myApplyIndex, 1);
+      this.approveMyAppliesCount = this.approveMyAppliesCount - 1
+      this.approveMyApplies.waitingForApproveCount = this.approveMyApplies.waitingForApproveCount - 1;
+    };
+    if (responsibleAfter && !myApplyResponsibleBefore) {
+      this.approveMyApplies.requests.push(apply)
+      this.approveMyAppliesCount = this.approveMyAppliesCount + 1;
+      this.approveMyApplies.waitingForApproveCount = this.approveMyApplies.waitingForApproveCount + 1;
+    }
+
+  }
+
+  // UTILS
+  getApplyIndexById = (appliesArr, id) => {
+    if (Array.isArray(this[appliesArr].requests)) {
+      const reqIndex = this[appliesArr].requests.findIndex((apply) => apply.id === id);
+      return reqIndex;
+    }
+
+    return -1;
+  };
+
+  updateApply = (appliesArr, reqIndex, updateReq) => {
+    if (reqIndex != -1) this[appliesArr].requests[reqIndex] = updateReq;
+  };
+
+  checkIfResponsible(request, user, approversType) {
+    const approverField = getResponsibleFactorByApproverType(approversType);
+    return (
+      request[approverField].some((approver) => approver.id === user.id) &&
+      !IsRequestCompleteForUser(request, approversType)
+    );
   }
 }

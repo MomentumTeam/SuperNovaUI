@@ -37,8 +37,9 @@ const ApproverSection = ({ requestId, setDialogVisiblity }) => {
         <div className="p-fluid-item p-fluid-item-flex1">
           <div className="p-field">
             <label>
-              <span></span>הערות מאשר
+              <span></span>הערות מאשר 
             </label>
+             {/* TODO: change */}
             <InputTextarea
               value={approverComment}
               type="text"

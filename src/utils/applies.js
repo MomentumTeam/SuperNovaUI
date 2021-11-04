@@ -23,6 +23,63 @@ export const getResponsibleFactor = (user) => {
   return fields;
 };
 
+export const getResponsibleFactorByApproverType = (approverType) => {
+  switch (approverType) {
+    case USER_TYPE.SUPER_SECURITY:
+      return "superSecurityApprovers";
+    case USER_TYPE.SECURITY:
+      return "securityApprovers";
+    case USER_TYPE.COMMANDER:
+      return "commanders";
+    default:
+      break;
+  }
+};
+
+export const canPassApply = (apply, user) => {
+  if (apply === undefined) return false
+  return (
+    (isUserHoldType(user, USER_TYPE.SUPER_SECURITY) && !IsRequestCompleteForUser(apply, USER_TYPE.SUPER_SECURITY)) ||
+    (isUserHoldType(user, USER_TYPE.SECURITY) && !IsRequestCompleteForUser(apply, USER_TYPE.SECURITY)) ||
+    (isUserHoldType(user, USER_TYPE.ADMIN) && !IsRequestCompleteForUser(apply, USER_TYPE.COMMANDER))
+  );
+};
+
+export const getUserPassOptions = (apply, user) => {
+  let passOptions = [];
+
+  if (isUserHoldType(user, USER_TYPE.ADMIN) && !IsRequestCompleteForUser(apply, USER_TYPE.COMMANDER))
+    passOptions.push({ label: "גורם מאשר ראשוני", value: USER_TYPE.COMMANDER });
+  if (isUserHoldType(user, USER_TYPE.SECURITY) && !IsRequestCompleteForUser(apply, USER_TYPE.SECURITY))
+    passOptions.push({ label: 'יחב"ם', value: USER_TYPE.SECURITY });
+  if (isUserHoldType(user, USER_TYPE.SUPER_SECURITY) && !IsRequestCompleteForUser(apply, USER_TYPE.SUPER_SECURITY))
+    passOptions.push({ label: 'בטח"ם', value: USER_TYPE.SUPER_SECURITY });
+
+  return passOptions;
+};
+
+export const isStatusComplete = (status) => {
+  switch (status) {
+    case "DECISION_UNKNOWN":
+      return false  
+    default:
+      return true
+  }
+}
+
+export const IsRequestCompleteForUser = (apply, approverType) => {
+  switch (approverType) {
+    case USER_TYPE.SUPER_SECURITY:
+     return isStatusComplete(apply["superSecurityDecision"]["decision"]) 
+    case USER_TYPE.SECURITY:
+     return isStatusComplete(apply["securityDecision"]["decision"]); 
+    case USER_TYPE.COMMANDER:
+     return isStatusComplete(apply["commanderDecision"]["decision"]); 
+    default:
+      break;
+  }
+};
+
 export const exportToExcel = (exportedData) => {
   const ws = xlsx.utils.json_to_sheet(exportedData);
   const wb = { Sheets: { data: ws }, SheetNames: ['data'] };

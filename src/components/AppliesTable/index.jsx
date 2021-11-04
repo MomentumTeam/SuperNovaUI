@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import Table from "../Table";
 import { processApprovalTableData, exportToExcel } from "../../utils/applies";
 import { HeaderTable } from "./HeaderTable";
-import { TableNames, TableTypes, itemsPerRow, pageSize } from "../../constants/applies";
+import { TableNames, TableTypes, itemsPerRow, pageSize, sortOrder} from "../../constants/applies";
 import { isUserCanSeeAllApproveApplies, isUserCanSeeMyApproveApplies } from "../../utils/user";
 import { useStores } from "../../context/use-stores";
 
@@ -22,6 +22,13 @@ const AppliesTable = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [searchFields, setSearchFields] = useState({});
+  const [sortQuery, setSortQuery] = useState({});
+  const [sortEvent, setSortEvent] = useState({});
+
+  const sortActivate = useCallback(async () => {
+    await getData({ reset: true });
+  }, [sortQuery]);
+
   const handleFieldChange = (fieldId, value) => {
     if (value !== '' || value === undefined) {
       setSearchFields({ ...searchFields, [fieldId]: value });
@@ -40,10 +47,14 @@ const AppliesTable = () => {
 
   const getData = async ({ saveToStore = true, append = false, reset = false }) => {
     let data = [];
+    if (reset) {
+      setFirst(0)
+      setPage(0)
+    }
     let searchquery = reset
       ? { from: 1, to: pageSize, saveToStore: saveToStore }
       : { from: (page + 1) * pageSize + 1, to: (page + 2) * pageSize, append: append, saveToStore };
-    searchquery = { ...searchquery, ...searchFields };
+    searchquery = { ...searchquery, ...searchFields, ...sortQuery };
 
     switch (selectedTab) {
       case TableNames.allreqs.tab:
@@ -57,6 +68,17 @@ const AppliesTable = () => {
 
     return data;
   };
+
+  
+  const onSort = (event) => { 
+    let newSort = { ...sortQuery };   
+    newSort.sortOrder = event.order === 1 ? sortOrder.INC : sortOrder.DEC;
+
+    const sortField = columns.find((col) => col.field === event.sortField).sortFields;
+    if (sortField) newSort.sortField = sortField;
+    setSortQuery(newSort);
+    setSortEvent(event);
+  }
 
   const onVirtualScroll = async(event) => {
     let getNextPage = true;
@@ -93,13 +115,17 @@ const AppliesTable = () => {
   useEffect(() => {
     if (user) {
       if (isUserCanSeeMyApproveApplies(user)) {
-        appliesStore.getMyApproveRequests(1, pageSize);
+        appliesStore.getMyApproveRequests({from: 1, to: pageSize});
       }
       if (isUserCanSeeAllApproveApplies(user)) {
-        appliesStore.getAllApproveRequests(1, pageSize);
+        appliesStore.getAllApproveRequests({ from: 1, to: pageSize });
       }
     }
   },[userStore.user])
+
+  useEffect(() => {
+      sortActivate();
+  }, [sortQuery])
 
   return (
     <>
@@ -127,6 +153,9 @@ const AppliesTable = () => {
         rows={itemsPerRow}
         first={first}
         isLoading={isLoading}
+        onSort={onSort}
+        sortField={sortEvent?.sortField}
+        sortOrder={sortEvent?.sortOrder}
       />
     </>
   );
