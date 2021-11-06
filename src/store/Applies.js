@@ -24,7 +24,7 @@ import {
   createRoleBulkRequest,
   transferApproverRequest,
 } from "../service/AppliesService";
-import { getResponsibleFactorByApproverType, IsRequestCompleteForUser } from "../utils/applies";
+import { getResponsibleFactorByApproverType, IsRequestCompleteForApprover } from "../utils/applies";
 
 export default class AppliesStore {
   myApplies = [];
@@ -276,7 +276,7 @@ export default class AppliesStore {
     const approverField = getResponsibleFactorByApproverType(approversType);
     return (
       request[approverField].some((approver) => approver.id === user.id) &&
-      !IsRequestCompleteForUser(request, approversType)
+      !IsRequestCompleteForApprover(request, approversType)
     );
   }
 }

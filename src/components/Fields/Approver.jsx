@@ -18,11 +18,12 @@ const Approver = ({ setValue, name, multiple, disabled, defaultApprovers, errors
   };
 
   const itemSelectedTemplate = (item) => {
+    const id = Math.random().toString(36).slice(2);
+
     return (
       <>
-        <Tooltip target=".approver-name" content={item.displayName} position="top" />
-
-        <div className="approver-name">{item.displayName}</div>
+        <Tooltip target={`.approver-name-${id}`} content={item.displayName} position="top" />
+        <div className={`approver-name approver-name-${id}`}>{item.displayName}</div>
       </>
     );
   }
@@ -65,8 +66,13 @@ const Approver = ({ setValue, name, multiple, disabled, defaultApprovers, errors
             if (!multiple) {
               setSelectedApprover(e.value);
               
-              const { id, displayName, identityCard, personalNumber } = e.value;
-              setValue(name, [{ id, displayName, identityCard, personalNumber }]);
+              if (e.value?.id) {
+                const { id, displayName, identityCard, personalNumber } = e.value;
+                setValue(name, [{ id, displayName, identityCard, personalNumber }]);
+              } else {
+                setValue(name, [])
+              }
+              
               if (trigger) trigger(name);
             }
           }}

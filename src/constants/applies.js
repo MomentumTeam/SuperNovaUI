@@ -3,7 +3,7 @@ import { RequestorFieldTemplate } from '../components/AppliesTable/RequestorFiel
 import { ResponsibleFactorFieldTemplate } from '../components/AppliesTable/ResponsibleFactorTemplate';
 import { StatusFieldTemplate } from '../components/AppliesTable/StatusFieldTemplate';
 import { TextFieldTemplate } from '../components/AppliesTable/TextFieldTemplate';
-import { getFormattedDate, getResponsibleFactor } from "../utils/applies";
+import { getFormattedDate, getResponsibleFactorFields } from "../utils/applies";
 
 export const STATUSES = {
   SUBMITTED: "הוגש",
@@ -57,7 +57,7 @@ export const TableTypes = (selectedTab, user) => {
       template: RequestorFieldTemplate,
     },
     {
-      field: getResponsibleFactor(user),
+      field: getResponsibleFactorFields(user),
       displayName: "גורם מטפל",
       hide: selectedTab !== TableNames.allreqs.tab,
       template: ResponsibleFactorFieldTemplate,
