@@ -1,6 +1,6 @@
 import React from 'react';
-import { DECISIONS, DECISIONS_TRANSLATE } from '../constants/decisions.js';
-import { ModalContent } from './RequestFlowChart.styles.js';
+import { DECISIONS, DECISIONS_TRANSLATE } from '../../../constants/decisions.js';
+import { ModalContent } from '../../RequestFlowChart.styles.js';
 
 class RequestFlowChart extends React.Component {
   constructor(props) {
