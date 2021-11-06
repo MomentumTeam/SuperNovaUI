@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ModalHierarchy from '../ModalHierarchy';
+import ModalHierarchy from './Hierarchy/ModalHierarchy';
 import { searchOG } from '../../service/KartoffelService';
 import { AutoComplete } from 'primereact/autocomplete';
 

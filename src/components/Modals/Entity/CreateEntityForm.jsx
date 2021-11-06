@@ -5,8 +5,8 @@ import React, {
   useMemo,
   createRef,
 } from 'react';
-import AssignRoleToEntityForm from './AssignRoleToEntityForm';
-import CreateSpecialEntityForm from './CreateSpecialEntityForm';
+import AssignRoleToEntityForm from '../AssignRoleToEntityForm';
+import CreateSpecialEntityForm from '../Entity/CreateSpecialEntityForm';
 import { Accordion, AccordionTab } from 'primereact/accordion';
 
 const CreateEntityForm = forwardRef(({ setIsActionDone }, ref) => {

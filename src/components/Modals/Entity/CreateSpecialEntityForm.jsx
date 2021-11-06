@@ -5,9 +5,9 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useStores } from '../../context/use-stores';
-import {PHONE_REG_EXP} from '../../constants';
-import Approver from '../Fields/Approver';
+import { useStores } from '../../../context/use-stores';
+import {PHONE_REG_EXP} from '../../../constants';
+import Approver from '../../Fields/Approver';
 
 
 const validationSchema = Yup.object().shape({

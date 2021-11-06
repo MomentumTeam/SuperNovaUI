@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import {
   searchEntitiesByFullName,
   getEntityByIdentifier,
-} from '../../service/KartoffelService';
+} from '../../../service/KartoffelService';
 import { AutoComplete } from 'primereact/autocomplete';
 import { InputText } from 'primereact/inputtext';
-import { useStores } from '../../context/use-stores';
+import { useStores } from '../../../context/use-stores';
 import { toJS } from 'mobx';
 
 const Entity = ({ setValue, name }) => {
