@@ -251,19 +251,6 @@ export const assignRoleToEntityRequest = async (applyProperties) => {
   return response.data;
 };
 
-export const updateApproverDecision = async (reqId, decision, approverType) => {
-  const response = await axiosApiInstance.put(
-    `${apiBaseUrl}/api/requests/approver/decision/${reqId}`,
-    {
-      body: {
-        decision: decision,
-        approverType: approverType,
-      },
-    }
-  );
-
-  return response.data;
-};
 
 export const changeRoleHierarchyRequest = async (data) => {
   const response = await axiosApiInstance.put(

@@ -12,7 +12,7 @@ const TakeRequest = ({ request, actionPopup }) => {
     const req = {
       user,
       approvers,
-      approversType: 'COMMANDER',
+      approversType: 'COMMANDER', //TODO: change by user type
       reqId: request.id,
     };
 

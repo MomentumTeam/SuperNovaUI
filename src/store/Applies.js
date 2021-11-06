@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, observable, toJS } from "mobx";
+import { action, makeAutoObservable, observable } from "mobx";
 import {
   getMyRequests,
   getRequestById,
@@ -18,13 +18,13 @@ import {
   deleteRoleRequest,
   deleteOGRequest,
   disconectRoleFromEntityRequest,
-  updateApproverDecision,
   changeRoleHierarchyRequest,
   changeRoleHierarchyBulkRequest,
   createRoleBulkRequest,
   transferApproverRequest,
 } from "../service/AppliesService";
-import { getResponsibleFactorByApproverType, IsRequestCompleteForApprover } from "../utils/applies";
+import { updateDecisionReq } from '../service/ApproverService';
+import { canEditApply } from "../utils/applies";
 
 export default class AppliesStore {
   myApplies = [];
@@ -57,7 +57,6 @@ export default class AppliesStore {
       deleteRoleApply: action,
       deleteOGApply: action,
       disconectRoleFromEntityApply: action,
-      updateApplyDecision: action,
       transferApprovers: action,
     });
 
@@ -223,42 +222,57 @@ export default class AppliesStore {
     this.myApplies.unshift(changeRoleHierarchyBulkApply);
   }
 
-  async updateApplyDecision(applyProperties) {
-    const updatedRequest = await updateApproverDecision(applyProperties);
-    //TODO- update Decision in state
-  }
-
   async transferApprovers({ user, reqId, approvers, approversType, comment }) {
     const apply = await transferApproverRequest({ reqId, approvers, approversType, comment });
 
+    this.updateApplyAndCount({ user, reqId, apply, removeApply:true });
+  }
+
+  async updateApplyDecision({ user, requestId, decision }) {
+    const updatedRequest = await updateDecisionReq(requestId, decision);
+
+    this.updateApplyAndCount({
+      user,
+      reqId: requestId,
+      apply: updatedRequest,
+    });
+  }
+
+  // UTILS
+  updateApplyAndCount = ({
+    user,
+    reqId,
+    apply,
+    removeApply = false
+  }) => {
     const myApplyIndex = this.getApplyIndexById("approveMyApplies", reqId);
     const allApplyIndex = this.getApplyIndexById("approveAllApplies", reqId);
 
     const myApplyResponsibleBefore =
       myApplyIndex != -1
-        ? this.checkIfResponsible(this.approveMyApplies.requests[myApplyIndex], user, approversType)
+        ? canEditApply(this.approveMyApplies.requests[myApplyIndex], user)
         : false;
-
 
     if (myApplyIndex != -1) this.updateApply("approveMyApplies", myApplyIndex, apply);
     if (allApplyIndex != -1) this.updateApply("approveAllApplies", allApplyIndex, apply);
 
-    const responsibleAfter = this.checkIfResponsible(apply, user, approversType);
+    const responsibleAfter = canEditApply(apply, user);
 
     if (!responsibleAfter && myApplyResponsibleBefore) {
-      this.approveMyApplies.requests.splice(myApplyIndex, 1);
-      this.approveMyAppliesCount = this.approveMyAppliesCount - 1
+      if (removeApply) {
+        this.approveMyApplies.requests.splice(myApplyIndex, 1);
+        this.approveMyAppliesCount = this.approveMyAppliesCount - 1;
+      }
+
       this.approveMyApplies.waitingForApproveCount = this.approveMyApplies.waitingForApproveCount - 1;
-    };
+    }
     if (responsibleAfter && !myApplyResponsibleBefore) {
-      this.approveMyApplies.requests.push(apply)
+      this.approveMyApplies.requests.push(apply);
       this.approveMyAppliesCount = this.approveMyAppliesCount + 1;
       this.approveMyApplies.waitingForApproveCount = this.approveMyApplies.waitingForApproveCount + 1;
     }
+  };
 
-  }
-
-  // UTILS
   getApplyIndexById = (appliesArr, id) => {
     if (Array.isArray(this[appliesArr].requests)) {
       const reqIndex = this[appliesArr].requests.findIndex((apply) => apply.id === id);
@@ -271,12 +285,4 @@ export default class AppliesStore {
   updateApply = (appliesArr, reqIndex, updateReq) => {
     if (reqIndex != -1) this[appliesArr].requests[reqIndex] = updateReq;
   };
-
-  checkIfResponsible(request, user, approversType) {
-    const approverField = getResponsibleFactorByApproverType(approversType);
-    return (
-      request[approverField].some((approver) => approver.id === user.id) &&
-      !IsRequestCompleteForApprover(request, approversType)
-    );
-  }
 }

@@ -30,17 +30,27 @@ export const getResponsibleFactorFields = (user) => {
   return fields;
 };
 
-export const getResponsibleFactorByApproverType = (approverType) => {
-  switch (approverType) {
-    case USER_TYPE.SUPER_SECURITY:
-      return "superSecurityApprovers";
-    case USER_TYPE.SECURITY:
-      return "securityApprovers";
-    case USER_TYPE.COMMANDER:
-      return "commanders";
-    default:
-      break;
-  }
+export const getApproverComments = (apply, user) => {
+  const comments = [];
+  const applyComments = apply["approversComments"]
+
+  if (isUserHoldType(user, USER_TYPE.COMMANDER) || isUserHoldType(user, USER_TYPE.ADMIN))
+    comments.push({ comment: applyComments["commanderComment"], label: "הערות גורם מאשר" });
+  if (isUserHoldType(user, USER_TYPE.SECURITY))
+      comments.push({ comment: applyComments["securityComment"], label: 'הערות יחב"ם' });
+  if (isUserHoldType(user, USER_TYPE.SUPER_SECURITY)) comments.push({comment: applyComments["superSecurityComment"], label: 'הערות בטח"ם'})
+
+  return comments;
+};
+
+export const canEditApply = (apply, user) => {
+  if (apply === undefined) return false;
+  return (
+    (isUserHoldType(user, USER_TYPE.SUPER_SECURITY) &&
+      !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)) ||
+    (isUserHoldType(user, USER_TYPE.SECURITY) && !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) ||
+    (isUserHoldType(user, USER_TYPE.COMMANDER) && !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER))
+  );
 };
 
 export const canPassApply = (apply, user) => {
