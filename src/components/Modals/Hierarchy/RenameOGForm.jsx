@@ -10,8 +10,9 @@ import { useStores } from "../../../context/use-stores";
 import RenameBulkOGForm from "../Bulk/RenameBulkOGForm";
 import RenameSingleOGForm from "../Hierarchy/RenameSingleOGForm";
 import { USER_TYPE } from "../../../constants";
-import { isUserHoldType } from '../../../utils/user';
+import { isUserHoldType } from "../../../utils/user";
 import "../../../assets/css/local/components/rename-og-form.css";
+import renderHeader from "../accordionTabHeaders";
 
 const RenameOGForm = forwardRef(({ setIsActionDone }, ref) => {
   const { userStore } = useStores();
@@ -43,14 +44,14 @@ const RenameOGForm = forwardRef(({ setIsActionDone }, ref) => {
         });
       }}
     >
-      <AccordionTab header="שינוי היררכיה לתפקיד">
+      <AccordionTab header={renderHeader("שינוי היררכיה לתפקיד", true)}>
         <RenameSingleOGForm
           ref={formRefs[0]}
           showJob={false}
           setIsActionDone={setIsActionDone}
         />
       </AccordionTab>
-      <AccordionTab header="הגשת בקשה מרובה">
+      <AccordionTab header={renderHeader("הגשת בקשה מרובה", true)}>
         <RenameBulkOGForm
           ref={formRefs[1]}
           showJob={false}

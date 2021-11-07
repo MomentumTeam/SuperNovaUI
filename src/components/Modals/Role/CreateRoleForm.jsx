@@ -10,7 +10,8 @@ import CreateBulkRoleForm from "../Bulk/CreateBulkRoleForm";
 import CreateSingleRoleForm from "../Role/CreateSingleRoleForm";
 import { useStores } from "../../../context/use-stores";
 import { USER_TYPE } from "../../../constants";
-import { isUserHoldType } from '../../../utils/user';
+import { isUserHoldType } from "../../../utils/user";
+import renderHeader from "../accordionTabHeaders";
 
 const CreateRoleForm = forwardRef(({ setIsActionDone }, ref) => {
   const { userStore } = useStores();
@@ -42,14 +43,14 @@ const CreateRoleForm = forwardRef(({ setIsActionDone }, ref) => {
         });
       }}
     >
-      <AccordionTab header="תפקיד חדש">
+      <AccordionTab header={renderHeader("תפקיד חדש", true)}>
         <CreateSingleRoleForm
           ref={formRefs[0]}
           showJob={false}
           setIsActionDone={setIsActionDone}
         />
       </AccordionTab>
-      <AccordionTab header="תפקיד חדשים">
+      <AccordionTab header={renderHeader("תפקידים חדשים", true)}>
         <CreateBulkRoleForm
           ref={formRefs[1]}
           showJob={false}
