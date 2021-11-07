@@ -91,7 +91,7 @@ const AssignRoleToEntityForm = forwardRef(
         kartoffelParams: {
           id: user.id,
           uniqueId: roleId,
-          needDisconnect: true,
+          needDisconnect: showJob,
         },
         adParams: {
           oldSAMAccountName: userRole?.roleId,
@@ -304,7 +304,7 @@ const AssignRoleToEntityForm = forwardRef(
         </div>
         <HorizontalLine />
         <div className='display-flex title-wrap' style={{ width: 'inherit' }}>
-          <h2>מעבר לתפקיד</h2>
+          <h2>{showJob? "מעבר לתפקיד":"חיבור לתפקיד"}</h2>
         </div>
         <div style={{ display: 'flex' }}>
           <div className='p-fluid-item-flex p-fluid-item'>

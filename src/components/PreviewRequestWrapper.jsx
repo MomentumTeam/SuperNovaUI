@@ -9,6 +9,7 @@ import RequestFlowChart from './RequestFlowChart';
 const PreviewRequestWrapper = ({
   ModalComponent,
   request,
+  showJob,
   setDialogVisiblity,
 }) => {
   return (
@@ -50,9 +51,13 @@ const PreviewRequestWrapper = ({
       </div>
       <hr style={{ borderWidth: '1px' }} />
       <h2>פרטי הבקשה</h2>
-      <ModalComponent onlyForView={true} requestObject={request} />
+      <ModalComponent
+        onlyForView={true}
+        requestObject={request}
+        showJob={showJob}
+      />
       {
-        // TODO: show only to approvers and check if the component is not place in "My Requests" (maybe add prop var)
+        // TODO: show only to approvers and check if the component is not place in 'My Requests' (maybe add prop var)
         true && (
           <ApproverSection
             requestId={request.id}

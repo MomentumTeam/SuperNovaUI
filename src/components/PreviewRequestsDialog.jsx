@@ -9,6 +9,7 @@ import CreateSpecialEntityForm from './Modals/CreateSpecialEntityForm';
 import AssignRoleToEntityForm from './Modals/AssignRoleToEntityForm';
 import CreateBulkRoleForm from './Modals/CreateBulkRoleForm';
 import RenameBulkOGForm from './Modals/RenameBulkOGForm';
+import {TYPES} from '../constants/applies';
 
 const PreviewRequestsDialog = ({ request }) => {
   const [isDialogVisible, setDialogVisiblity] = useState(false);
@@ -17,49 +18,49 @@ const PreviewRequestsDialog = ({ request }) => {
   const dialogParams = {
     CREATE_OG: {
       footer: null,
-      header: 'פרטי בקשה ליצירת היררכיה חדשה',
+      header: `${TYPES.CREATE_OG}פרטי בקשה ל`,
       component: CreateOGForm,
       classDialog: 'dialogClass5',
     },
     CREATE_ROLE: {
       footer: null,
-      header: 'פרטי בקשה ליצירת תפקיד חדש',
+      header: `${TYPES.CREATE_ROLE}פרטי בקשה ל`,
       component: CreateSingleRoleForm,
       dialogClass: 'dialogClass1',
     },
     ASSIGN_ROLE_TO_ENTITY: {
       footer: null,
-      header: 'פרטי בקשה לחיבור משתמש חדש לתפקיד',
+      header: `${TYPES.ASSIGN_ROLE_TO_ENTITY}פרטי בקשה ל`,
       component: AssignRoleToEntityForm,
       dialogClass: 'dialogClass3',
     },
     CREATE_ENTITY: {
       footer: null,
-      header: 'פרטי בקשה ליצירת משתמש מיוחד',
+      header: `${TYPES.CREATE_ENTITY}פרטי בקשה ל`,
       component: CreateSpecialEntityForm,
       dialogClass: 'dialogClass3',
     },
     ADD_APPROVER: {
       footer: null,
-      header: 'פרטי בקשה ליצירת גורם מאשר',
+      header: `${TYPES.ADD_APPROVER}פרטי בקשה ל`,
       component: ApproverForm,
       dialogClass: 'dialogClass6',
     },
     CHANGE_ROLE_HIERARCHY: {
       footer: null,
-      header: 'פרטי בקשה לשינוי היררכיה לתפקיד',
+      header: `${TYPES.CREATE_ROLE_BULK}פרטי בקשה ל`,
       component: RenameSingleOGForm,
       dialogClass: 'dialogClass2',
     },
     CREATE_ROLE_BULK: {
       footer: null,
-      header: 'פרטי בקשה מרובה ליצירת תפקידים חדשים',
+      header: `${TYPES.CHANGE_ROLE_HIERARCHY}פרטי בקשה מרובה ל`,
       component: CreateBulkRoleForm,
       dialogClass: 'dialogClass1',
     },
     CHANGE_ROLE_HIERARCHY_BULK: {
       footer: null,
-      header: 'פרטי בקשה מרובה לשינוי היררכיה לתפקידים',
+      header: `${TYPES.CHANGE_ROLE_HIERARCHY_BULK}פרטי בקשה מרובה ל`,
       component: RenameBulkOGForm,
       dialogClass: 'dialogClass2',
     },
@@ -77,13 +78,14 @@ const PreviewRequestsDialog = ({ request }) => {
     if (request.type) {
       // TODO: handle UNRECOGNIZED
       if (dialogParams[request.type]) {
-        setDialogContent(
-          <PreviewRequestWrapper
-            request={request}
-            ModalComponent={dialogParams[request.type].component}
-            setDialogVisiblity={setDialogVisiblity}
-          />
-        );
+            setDialogContent(
+              <PreviewRequestWrapper
+                request={request}
+                showJob={request.kartoffelParams.needDisconnect}        //relevant only to ASSIGN_ROLE_TO_ENTITY requests (מעבר תפקיד או חיבור משתמש חדש לתפקיד)
+                ModalComponent={dialogParams[request.type].component}
+                setDialogVisiblity={setDialogVisiblity}
+              />
+            );
         setDialogVisiblity(true);
       }
     }
