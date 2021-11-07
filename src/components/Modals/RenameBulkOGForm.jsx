@@ -6,7 +6,6 @@ import BulkFileArea from "./BulkFileArea";
 import BulkRowsPopup from "./BulkRowsPopup";
 import { useStores } from "../../context/use-stores";
 import * as Yup from "yup";
-import { apiBaseUrl } from "../../constants/api";
 import FormData from "form-data";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -109,9 +108,8 @@ const RenameBulkOGForm = forwardRef(
         {!requestObject && (
           <BulkFileArea
             register={register}
+            bulkType={1}
             errors={errors}
-            downloadUrl={`${apiBaseUrl}/api/bulk/request/example?bulkType=1`}
-            fileName="renameOGBulkExample.xlsx"
           />
         )}
         {!!requestObject && (

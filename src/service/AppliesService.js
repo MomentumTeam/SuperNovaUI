@@ -1,5 +1,6 @@
 import axiosApiInstance from '../config/axios';
 import { apiBaseUrl } from '../constants/api';
+import { organizeRows } from '../utils/applies';
 
 //GET
 
@@ -121,6 +122,8 @@ export const getCreateBulkRoleData = async (id) => {
     `${apiBaseUrl}/api/bulk/request/createRole/${id}`
   );
 
+  response.data.rows = organizeRows(response.data.rows);
+
   return response.data;
 };
 
@@ -128,6 +131,8 @@ export const getBulkChangeRoleHierarchyData = async (id) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/bulk/request/changeRoleHierarchy/${id}`
   );
+
+  response.data.rows = organizeRows(response.data.rows);
 
   return response.data;
 };

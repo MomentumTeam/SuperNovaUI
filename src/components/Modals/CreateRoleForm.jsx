@@ -49,7 +49,7 @@ const CreateRoleForm = forwardRef(({ setIsActionDone }, ref) => {
           setIsActionDone={setIsActionDone}
         />
       </AccordionTab>
-      <AccordionTab header="תפקיד חדשים">
+      <AccordionTab header="הגשת בקשה מרובה">
         <CreateBulkRoleForm
           ref={formRefs[1]}
           showJob={false}

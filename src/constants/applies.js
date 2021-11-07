@@ -41,3 +41,14 @@ export const ROLE_CLEARANCE = [
   'סמ"צ',
   'כחול',
 ];
+
+export const BulkTypes = [
+  'CREATE_ROLE_REQUEST',
+  'CHANGE_ROLE_HIERARCHY_REQUEST',
+  'UNRECOGNIZED',
+]
+  ;
+export const bulkExampleFileName = [
+  'createRoleBulkExample',
+  'renameOGBulkExample',
+];
