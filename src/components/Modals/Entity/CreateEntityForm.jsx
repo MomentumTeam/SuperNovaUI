@@ -4,10 +4,11 @@ import React, {
   useImperativeHandle,
   useMemo,
   createRef,
-} from 'react';
-import AssignRoleToEntityForm from '../AssignRoleToEntityForm';
-import CreateSpecialEntityForm from '../Entity/CreateSpecialEntityForm';
-import { Accordion, AccordionTab } from 'primereact/accordion';
+} from "react";
+import AssignRoleToEntityForm from "../AssignRoleToEntityForm";
+import CreateSpecialEntityForm from "../Entity/CreateSpecialEntityForm";
+import { Accordion, AccordionTab } from "primereact/accordion";
+import renderHeader from "../accordionTabHeaders";
 
 const CreateEntityForm = forwardRef(({ setIsActionDone }, ref) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -23,8 +24,8 @@ const CreateEntityForm = forwardRef(({ setIsActionDone }, ref) => {
 
   return (
     <Accordion
-      expandIcon='pi pi-chevron-left'
-      style={{ marginBottom: '20px' }}
+      expandIcon="pi pi-chevron-left"
+      style={{ marginBottom: "20px" }}
       activeIndex={activeIndex}
       onTabChange={({ index }) => {
         setActiveIndex((currentIndex) => {
@@ -36,14 +37,14 @@ const CreateEntityForm = forwardRef(({ setIsActionDone }, ref) => {
         });
       }}
     >
-      <AccordionTab header='חיבור משתמש חדש לתפקיד'>
+      <AccordionTab header={renderHeader("חיבור משתמש חדש לתפקיד", true)}>
         <AssignRoleToEntityForm
           ref={formRefs[0]}
           showJob={false}
           setIsActionDone={setIsActionDone}
         />
       </AccordionTab>
-      <AccordionTab header='יצירת משתמש מיוחד'>
+      <AccordionTab header={renderHeader("יצירת משתמש מיוחד", true)}>
         <CreateSpecialEntityForm
           ref={formRefs[1]}
           setIsActionDone={setIsActionDone}
