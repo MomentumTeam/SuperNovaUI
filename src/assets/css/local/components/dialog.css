@@ -1,0 +1,7 @@
+.dialog-header-title {
+  width: fit-content;
+}
+
+.dialog-header {
+  justify-content: start;
+}

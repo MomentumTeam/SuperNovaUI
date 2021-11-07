@@ -1,7 +1,7 @@
-import React from 'react';
-import { InputText } from 'primereact/inputtext';
-import '../assets/css/local/components/modal-item.min.css';
-import ApproverSection from './ApproverSection';
+import React from "react";
+import { InputText } from "primereact/inputtext";
+import "../../../assets/css/local/components/modal-item.min.css";
+import ApproverSection from "../../ApproverSection";
 import RequestFlowChart from './RequestFlowChart';
 
 // TODO: add progress bar
@@ -11,6 +11,7 @@ const PreviewRequestWrapper = ({
   request,
   showJob,
   setDialogVisiblity,
+  isApprover
 }) => {
   return (
     <>
@@ -36,10 +37,7 @@ const PreviewRequestWrapper = ({
               <span className='required-field'>*</span>מ"א/ת"ז
             </label>
             <InputText
-              value={
-                request?.submittedBy?.personalNumber ||
-                request?.submittedBy?.identityCard
-              }
+              value={request?.submittedBy?.personalNumber || request?.submittedBy?.identityCard}
               disabled={true}
               id='2013'
               type='text'
@@ -56,15 +54,7 @@ const PreviewRequestWrapper = ({
         requestObject={request}
         showJob={showJob}
       />
-      {
-        // TODO: show only to approvers and check if the component is not place in 'My Requests' (maybe add prop var)
-        true && (
-          <ApproverSection
-            requestId={request.id}
-            setDialogVisiblity={setDialogVisiblity}
-          />
-        )
-      }
+      <ApproverSection isApprover={isApprover} request={request} setDialogVisiblity={setDialogVisiblity} />
     </>
   );
 };

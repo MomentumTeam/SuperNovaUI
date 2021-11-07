@@ -3,16 +3,16 @@ import { useForm } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
-import Hierarchy from "./Hierarchy";
-import Approver from "../Fields/Approver";
-import { useStores } from "../../context/use-stores";
+import Hierarchy from "../Hierarchy";
+import Approver from "../../Fields/Approver";
+import { useStores } from "../../../context/use-stores";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   getRolesUnderOG,
   getRoleByRoleId,
-} from "../../service/KartoffelService";
-import HorizontalLine from "../HorizontalLine";
+} from "../../../service/KartoffelService";
+import HorizontalLine from "../../HorizontalLine";
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({

@@ -1,66 +1,70 @@
 import { useState, useEffect } from 'react';
 import { Dialog } from 'primereact/dialog';
 import PreviewRequestWrapper from './PreviewRequestWrapper';
-import ApproverForm from './Modals/ApproverForm';
-import CreateOGForm from './Modals/CreateOGForm';
-import CreateSingleRoleForm from './Modals/CreateSingleRoleForm';
-import RenameSingleOGForm from './Modals/RenameSingleOGForm';
-import CreateSpecialEntityForm from './Modals/CreateSpecialEntityForm';
-import AssignRoleToEntityForm from './Modals/AssignRoleToEntityForm';
-import CreateBulkRoleForm from './Modals/CreateBulkRoleForm';
-import RenameBulkOGForm from './Modals/RenameBulkOGForm';
-import {TYPES} from '../constants/applies';
+import ApproverForm from '../ApproverForm';
+import CreateOGForm from '../Hierarchy/CreateOGForm';
+import CreateSingleRoleForm from '../Role/CreateSingleRoleForm';
+import RenameSingleOGForm from '../Hierarchy/RenameSingleOGForm';
+import CreateSpecialEntityForm from '../Entity/CreateSpecialEntityForm';
+import AssignRoleToEntityForm from '../AssignRoleToEntityForm';
+import CreateBulkRoleForm from '../Bulk/CreateBulkRoleForm';
+import RenameBulkOGForm from '../Bulk/RenameBulkOGForm';
+import { TYPES } from '../../../constants/applies';
 
-const PreviewRequestsDialog = ({ request }) => {
-  const [isDialogVisible, setDialogVisiblity] = useState(false);
+const PreviewRequestsDialog = ({
+  request,
+  isDialogVisible,
+  setDialogVisiblity,
+  isApprover = false,
+}) => {
   const [dialogContent, setDialogContent] = useState(null);
 
   const dialogParams = {
     CREATE_OG: {
       footer: null,
-      header: `${TYPES.CREATE_OG}פרטי בקשה ל`,
+      header: `פרטי בקשה ל${TYPES.CREATE_OG}`,
       component: CreateOGForm,
       classDialog: 'dialogClass5',
     },
     CREATE_ROLE: {
       footer: null,
-      header: `${TYPES.CREATE_ROLE}פרטי בקשה ל`,
+      header: `פרטי בקשה ל${TYPES.CREATE_ROLE}`,
       component: CreateSingleRoleForm,
       dialogClass: 'dialogClass1',
     },
     ASSIGN_ROLE_TO_ENTITY: {
       footer: null,
-      header: `${TYPES.ASSIGN_ROLE_TO_ENTITY}פרטי בקשה ל`,
+      header: `פרטי בקשה ל${TYPES.ASSIGN_ROLE_TO_ENTITY}`,
       component: AssignRoleToEntityForm,
       dialogClass: 'dialogClass3',
     },
     CREATE_ENTITY: {
       footer: null,
-      header: `${TYPES.CREATE_ENTITY}פרטי בקשה ל`,
+      header: `פרטי בקשה ל${TYPES.CREATE_ENTITY}`,
       component: CreateSpecialEntityForm,
       dialogClass: 'dialogClass3',
     },
     ADD_APPROVER: {
       footer: null,
-      header: `${TYPES.ADD_APPROVER}פרטי בקשה ל`,
+      header: `פרטי בקשה ל${TYPES.ADD_APPROVER}`,
       component: ApproverForm,
       dialogClass: 'dialogClass6',
     },
     CHANGE_ROLE_HIERARCHY: {
       footer: null,
-      header: `${TYPES.CREATE_ROLE_BULK}פרטי בקשה ל`,
+      header: `פרטי בקשה ל${TYPES.CHANGE_ROLE_HIERARCHY}`,
       component: RenameSingleOGForm,
       dialogClass: 'dialogClass2',
     },
     CREATE_ROLE_BULK: {
       footer: null,
-      header: `${TYPES.CHANGE_ROLE_HIERARCHY}פרטי בקשה מרובה ל`,
+      header: `פרטי בקשה מרובה ל${TYPES.CREATE_ROLE_BULK}`,
       component: CreateBulkRoleForm,
       dialogClass: 'dialogClass1',
     },
     CHANGE_ROLE_HIERARCHY_BULK: {
       footer: null,
-      header: `${TYPES.CHANGE_ROLE_HIERARCHY_BULK}פרטי בקשה מרובה ל`,
+      header: `פרטי בקשה מרובה ל${TYPES.CHANGE_ROLE_HIERARCHY_BULK}`,
       component: RenameBulkOGForm,
       dialogClass: 'dialogClass2',
     },
@@ -78,14 +82,15 @@ const PreviewRequestsDialog = ({ request }) => {
     if (request.type) {
       // TODO: handle UNRECOGNIZED
       if (dialogParams[request.type]) {
-            setDialogContent(
-              <PreviewRequestWrapper
-                request={request}
-                showJob={request.kartoffelParams.needDisconnect}        //relevant only to ASSIGN_ROLE_TO_ENTITY requests (מעבר תפקיד או חיבור משתמש חדש לתפקיד)
-                ModalComponent={dialogParams[request.type].component}
-                setDialogVisiblity={setDialogVisiblity}
-              />
-            );
+        setDialogContent(
+          <PreviewRequestWrapper
+            request={request}
+            showJob={request.kartoffelParams.needDisconnect} //relevant only to ASSIGN_ROLE_TO_ENTITY requests (מעבר תפקיד או חיבור משתמש חדש לתפקיד)
+            ModalComponent={dialogParams[request.type].component}
+            setDialogVisiblity={setDialogVisiblity}
+            isApprover={isApprover}
+          />
+        );
         setDialogVisiblity(true);
       }
     }

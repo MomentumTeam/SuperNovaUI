@@ -3,9 +3,9 @@ import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { AutoComplete } from 'primereact/autocomplete';
-import { getCountries } from '../service/CountryService';
-import Search from './Search/Search';
-import ChartForTree from './ChartForTree';
+import { getCountries } from '../../../service/CountryService';
+import Search from '../../Search/Search';
+import ChartForTree from '../../ChartForTree';
 
 class ModalHierarchy extends React.Component {
 
