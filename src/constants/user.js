@@ -16,5 +16,5 @@ export const USER_NO_PICTURE = process.env.USER_NO_PICTURE || "pictureUrl";
 export const USER_TYPE_TAG = {
   APPROVER: "גורם מאשר",
   SECURITY_APPROVER: "גורם מאשר במ",
-  ADMIN: "משתמש אדמין",
+  ADMIN: "מחשוב יחידתי",
 };

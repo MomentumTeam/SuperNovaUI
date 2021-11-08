@@ -1,9 +1,9 @@
 import React from 'react';
 import { InputText } from 'primereact/inputtext';
 import cookies from 'js-cookie';
-import { tokenName } from '../../constants/api';
-import { apiBaseUrl } from '../../constants/api';
-import { BulkTypes, bulkExampleFileName } from '../../constants/applies';
+import { tokenName } from '../../../constants/api';
+import { apiBaseUrl } from '../../../constants/api';
+import { BulkTypes, bulkExampleFileName } from '../../../constants/applies';
 import Downloader from 'js-file-downloader';
 
 const BulkFileArea = ({ register, bulkType, errors }) => {

@@ -1,24 +1,17 @@
-import { observer } from 'mobx-react';
-import { toJS } from 'mobx';
-import { useState, useEffect, useRef } from 'react';
-import { Toast } from 'primereact/toast';
-
-import '../../assets/css/local/pages/dashboard.min.css';
-
+import { observer } from "mobx-react";
+import { toJS } from "mobx";
+import { useState, useEffect, useRef } from "react";
+import { Toast } from "primereact/toast";
+import "../../assets/css/local/pages/dashboard.min.css";
 import { useStores } from '../../context/use-stores';
-import {
-  USER_TYPE,
-  USER_TYPE_TAG,
-  USER_NO_PICTURE,
-} from '../../constants/user';
-import SearchBox from '../../components/Search/SearchBox';
-import HierarchyTree from '../../components/HierarchyTree';
-import SideToolbar from '../../components/SideToolBar/SideToolbar';
-import ApprovalTable from '../../components/ApprovalTable';
-import UserProfileCard from './UserProfileCard';
-import FullEntityInformationModal from '../../components/Modals/Entity/FullEntityInformationModal';
-import DecorAnimation from '../../components/decor-animation';
-import { sortUserType } from '../../utils/userType';
+import SearchBox from "../../components/Search/SearchBox";
+import HierarchyTree from "../../components/HierarchyTree";
+import SideToolbar from "../../components/SideToolBar/SideToolbar";
+import UserProfileCard from "./UserProfileCard";
+import FullEntityInformationModal from "../../components/Modals/Entity/FullEntityInformationModal";
+import DecorAnimation from "../../components/decor-animation";
+import { getUserTag, isUserCanSeeAllApproveApplies, isUserCanSeeMyApproveApplies } from "../../utils/user";
+import { AppliesTable } from "../../components/AppliesTable";
 
 const Dashboard = observer(() => {
   const { userStore, appliesStore, treeStore } = useStores();
@@ -26,24 +19,27 @@ const Dashboard = observer(() => {
   const toast = useRef(null);
 
   const user = toJS(userStore.user);
-  const userPicture = toJS(userStore.userPicture);
   const myApplies = toJS(appliesStore.myApplies);
-  const allApplies = toJS(appliesStore.allApplies);
+  const approveMyApplies = toJS(appliesStore.approveMyApplies);
+  const approveAllApplies = toJS(appliesStore.approveAllApplies);
 
-  const userType = sortUserType(user?.types);
+  let userType;
+  user?.types.map((type) => {
+    userType = getUserTag(type);
+  });
 
   const actionPopup = (error = null) => {
     if (error === null) {
       toast.current.show({
-        severity: 'success',
-        summary: 'Success Message',
+        severity: "success",
+        summary: "Success Message",
         detail: `Success`,
         life: 3000,
       });
     } else {
       toast.current.show({
-        severity: 'error',
-        summary: 'Error Message',
+        severity: "error",
+        summary: "Error Message",
         detail: error.message || `failed`,
         life: 3000,
       });
@@ -52,10 +48,7 @@ const Dashboard = observer(() => {
 
   useEffect(() => {
     if (userStore.user) {
-      if (userStore.user.types.includes(USER_TYPE.COMMANDER)) {
-        appliesStore.getMyApproveRequests();
-        appliesStore.getAllApproveRequests();
-      } else {
+      if (!isUserCanSeeMyApproveApplies(userStore.user) && !isUserCanSeeAllApproveApplies(userStore.user)) {
         // appliesStore.loadApplies();
         treeStore.loadTreeByEntity(userStore.user);
       }
@@ -72,38 +65,27 @@ const Dashboard = observer(() => {
 
   return (
     <>
-      <div className='main-inner-item main-inner-item2'>
-        <div className='main-inner-item2-content'>
-          <div className='display-flex title-wrap'>
+      <div className="main-inner-item main-inner-item2">
+        <div className="main-inner-item2-content">
+          <div className="display-flex title-wrap">
             <h2>פרטים אישיים</h2>
           </div>
-          <UserProfileCard
-            user={user}
-            userPicture={userPicture}
-            userType={userType}
-            openFullDetailsModal={openFullDetailsModal}
-          />
+          <UserProfileCard user={user} userType={userType} openFullDetailsModal={openFullDetailsModal} />
           <FullEntityInformationModal
             user={user}
             isOpen={isFullUserInfoModalOpen}
             closeFullDetailsModal={closeFullDetailsModal}
             actionPopup={actionPopup}
           />
-          <div className='content-unit-wrap'>
-            {[USER_TYPE_TAG.APPROVER, USER_TYPE_TAG.SECURITY_APPROVER].includes(
-              userType.tag
-            ) ? (
+          <div className="content-unit-wrap">
+            {isUserCanSeeMyApproveApplies(user) ? (
               <>
-                <ApprovalTable
-                  applies={myApplies}
-                  allApplies={allApplies}
-                  approveType={userType.tag}
-                />
+                <AppliesTable user={user} myApplies={approveMyApplies} allApplies={approveAllApplies} />
               </>
             ) : (
-              <div className='content-unit-inner content-unit-inner-before'>
-                <div className='search-row'>
-                  <div className='search-row-inner'>
+              <div className="content-unit-inner content-unit-inner-before">
+                <div className="search-row">
+                  <div className="search-row-inner">
                     <SearchBox
                       loadDataByEntity={async (entity) => {
                         await treeStore.loadTreeByEntity(entity);
@@ -114,7 +96,7 @@ const Dashboard = observer(() => {
                     />
                   </div>
                 </div>
-                <div className='chart-wrap'>
+                <div className="chart-wrap">
                   <DecorAnimation />
                   <HierarchyTree data={toJS(treeStore.tree)} />
                 </div>

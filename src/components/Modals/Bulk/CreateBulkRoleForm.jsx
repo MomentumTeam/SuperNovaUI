@@ -1,18 +1,17 @@
 import React, { useImperativeHandle, forwardRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { InputTextarea } from 'primereact/inputtextarea';
-import Hierarchy from "./Hierarchy";
-import Approver from "../Fields/Approver";
+import { useStores } from '../../../context/use-stores';
+import Hierarchy from "../Hierarchy";
+import Approver from "../../Fields/Approver";
 import BulkRowsPopup from "./BulkRowsPopup";
 import BulkFileArea from "./BulkFileArea";
-import { useStores } from "../../context/use-stores";
 import * as Yup from "yup";
 import FormData from "form-data";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   uploadBulkFile,
   getCreateBulkRoleData,
-} from "../../service/AppliesService";
+} from "../../../service/AppliesService";
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
