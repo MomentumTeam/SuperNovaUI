@@ -26,12 +26,11 @@ const CreateOGForm = forwardRef(
 
     useEffect(() => {
       if (requestObject) {
-        console.log(requestObject);
         setValue("comments", requestObject.comments);
         setValue("newHierarchy", requestObject.adParams.name);
         setValue("parentHierarchy", { name: requestObject.adParams.ouName });
       }
-    });
+    },[]);
 
     const onSubmit = async (data) => {
       const { newHierarchy, parentHierarchy, approvers, comments } = data;
