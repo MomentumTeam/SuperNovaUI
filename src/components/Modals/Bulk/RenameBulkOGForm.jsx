@@ -42,7 +42,6 @@ const RenameBulkOGForm = forwardRef(
         console.log(data);
       };
       if (requestObject) {
-        console.log(requestObject);
         getBulkData();
       }
     }, []);

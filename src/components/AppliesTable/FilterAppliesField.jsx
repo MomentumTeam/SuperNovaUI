@@ -21,10 +21,10 @@ const FilterAppliesField = ({ selectedTab, setSearchFields, getData }) => {
     setSearchFields("type", null);
   }, [selectedTab]);
 
-  useEffect(async() => {
+  useEffect(async () => {
     await filterFunc();
-  }, [filter])
-  
+  }, [filter]);
+
   return (
     <div className="p-fluid">
       <div className="p-fluid-item">

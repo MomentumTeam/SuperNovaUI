@@ -2,58 +2,45 @@ import React, { useContext, useEffect, useState } from "react";
 import { observer } from "mobx-react";
 
 import Table from "../../components/Table";
+import SearchMyRequests from "./SearchMyRequests";
 import Header from "./Header";
-import SearchEntity from "./SearchEntity";
-import AddEntity from "./AddEntity";
 import { itemsInPage, pageSize } from "../../constants/api";
 import { useStores } from "../../context/use-stores";
 import { TableDataContext } from ".";
-import { TableNames, TableTypes } from "../../constants/usersTable";
+import { TableNames, TableTypes } from "../../constants/myRequestsTable";
 
 import "../../assets/css/local/pages/listUsersPage.min.css";
 
-const Entities = observer(() => {
+let curSearchFuncName = "loadMyRequests";
+let curSearchValue = "";
+
+const Requests = observer(() => {
   const [first, setFirst] = useState(0);
-  const { entitiesStore, rolesStore, groupsStore, userStore } = useStores();
+  const { myRequestsStore, userStore } = useStores();
   const { tableState, tableDispatch, tabId, setTabId } =
     useContext(TableDataContext);
 
-  const getData = async (append) => {
-    if (userStore.user.directGroup) {
-      switch (tabId) {
-        case TableNames.entities.tab:
-          await entitiesStore.loadEntitiesUnderOG(
-            userStore.user.directGroup,
-            tableState.page,
-            pageSize,
-            append
-          );
-          return entitiesStore.entities;
-        case TableNames.roles.tab:
-          await rolesStore.loadRolesUnderOG(
-            userStore.user.directGroup,
-            tableState.page,
-            pageSize,
-            append
-          );
-          return rolesStore.roles;
-        case TableNames.hierarchy.tab:
-          await groupsStore.loadOGChildren(
-            userStore.user.directGroup,
-            tableState.page,
-            pageSize,
-            append
-          );
-          return groupsStore.groups;
-        default:
-          break;
-      }
+  const getData = async (append, loadFuncName, searchValue) => {
+    switch (tabId) {
+      case TableNames.myRequests.tab:
+        await myRequestsStore[loadFuncName](
+          tableState.page * pageSize + 1,
+          (tableState.page + 1) * pageSize + 1,
+          append,
+          searchValue
+        );
+        return myRequestsStore.myRequests;
+      default:
+        return [];
     }
-
-    return [];
   };
 
-  const setData = async (event) => {
+  const setData = async (event, searchFuncName, searchValue) => {
+    if (searchFuncName) curSearchFuncName = searchFuncName;
+    if (typeof searchValue === "string") {
+      curSearchValue = searchValue;
+      if (searchValue === "") curSearchFuncName = "loadMyRequests";
+    }
     let append;
     let getNextPage = true;
     if (tabId && userStore.user) {
@@ -67,11 +54,14 @@ const Entities = observer(() => {
           getNextPage = false;
       }
 
-      if (getNextPage && !tableState.isSearch) {
+      if (getNextPage) {
         try {
           tableDispatch({ type: "loading" });
-          const data = await getData(append);
-          tableDispatch({ type: tabId, results: data });
+          const data = await getData(append, curSearchFuncName, curSearchValue);
+          tableDispatch({
+            type: tabId,
+            results: data,
+          });
         } catch (error) {
           tableDispatch({ type: "failedLoading" });
           console.log(error); // TODO: popup error
@@ -84,11 +74,12 @@ const Entities = observer(() => {
     // Get table's data
     const firstData = async () => {
       setFirst(0);
+      myRequestsStore.setSearch(false);
       tableDispatch({ type: "restore" });
       await setData();
     };
     firstData();
-  }, [tabId, userStore.user]);
+  }, [tabId]);
 
   useEffect(() => {
     userStore.fetchUserNotifications(userStore.user?.id);
@@ -102,8 +93,7 @@ const Entities = observer(() => {
           <div className="content-unit-wrap">
             <div className="content-unit-inner">
               <div className="display-flex search-row-wrap-flex">
-                <SearchEntity tableType={tabId} />
-                <AddEntity />
+                <SearchMyRequests tableType={tabId} searchFunc={setData} />
               </div>
               <Table
                 data={tableState.tableData}
@@ -123,4 +113,4 @@ const Entities = observer(() => {
   );
 });
 
-export default Entities;
+export default Requests;

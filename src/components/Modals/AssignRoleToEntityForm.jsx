@@ -55,7 +55,6 @@ const AssignRoleToEntityForm = forwardRef(
 
     useEffect(() => {
       const initializeValues = async () => {
-        console.log(requestObject);
         setValue("userName", requestObject.adParams.fullName);
         setValue("comments", requestObject.comments);
         setValue("roleId", requestObject.adParams.newSAMAccountName);
