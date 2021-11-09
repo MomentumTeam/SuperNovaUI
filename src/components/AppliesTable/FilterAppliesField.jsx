@@ -8,7 +8,7 @@ const FilterAppliesField = ({ selectedTab, setSearchFields, getData }) => {
     return { label: value, value: key };
   });
 
-  const filterFunc = useCallback(async() => {
+  const filterFunc = useCallback(async () => {
     if (filter !== null) {
       try {
         await getData({ saveToStore: true, reset: true, append: false });
@@ -26,7 +26,7 @@ const FilterAppliesField = ({ selectedTab, setSearchFields, getData }) => {
   useEffect(() => {
     filterFunc();
   }, [filterFunc]);
-  
+
   return (
     <div className="p-fluid">
       <div className="p-fluid-item">

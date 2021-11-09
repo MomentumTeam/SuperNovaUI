@@ -38,10 +38,9 @@ const RenameBulkOGForm = forwardRef(
         setValue("hierarchy", data.request.adParams.ouDisplayName);
 
         setValue("rows", data.rows);
-
       };
       if (requestObject) {
-         getBulkData();
+        getBulkData();
       }
     }, []);
 

@@ -1,0 +1,12 @@
+.bad {
+  color: lightcoral !important;
+  background-color: rgba(240, 128, 128, 0.15) !important;
+}
+.good {
+  color: limegreen !important;
+  background-color: rgba(144, 238, 144, 0.3) !important;
+}
+.neutral {
+  color: deepskyblue !important;
+  background-color: rgba(0, 191, 255, 0.15) !important;
+}
