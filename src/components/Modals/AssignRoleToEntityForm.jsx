@@ -19,6 +19,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import HorizontalLine from "../HorizontalLine";
 import "../../assets/css/local/components/calendar.css";
 import InfoPopup from "../InfoPopup";
+import '../../assets/css/local/components/approverForm.css'
 
 import {
   searchEntitiesByFullName,
@@ -182,6 +183,8 @@ const AssignRoleToEntityForm = forwardRef(
       const roleId = getValues("roleId");
 
       if (!roleId) {
+        setValue('role', null)
+        setValue('currentRoleUser', '')
         return;
       }
 
@@ -211,21 +214,19 @@ const AssignRoleToEntityForm = forwardRef(
       <div className="p-fluid" style={{ flexDirection: "column" }}>
         <div style={{ display: "flex" }}>
           <div className="p-fluid-item-flex p-fluid-item">
-            <button
-              className="btn-underline left19"
-              onClick={setCurrentUser}
-              type="button"
-              title="עבורי"
-              disabled={onlyForView}
-              style={onlyForView && { display: "none" }}
-            >
-              עבורי
-            </button>
             <div className="p-field">
               <label htmlFor="2020">
-                {" "}
                 <span className="required-field">*</span>שם משתמש
               </label>
+              <button
+                className="btn-underline left19 approver-fillMe"
+                onClick={setCurrentUser}
+                type="button"
+                title="עבורי"
+                style={onlyForView && { display: "none" }}
+              >
+                עבורי
+              </button>
               <AutoComplete
                 value={watch("userName")}
                 suggestions={userSuggestions}
@@ -246,6 +247,10 @@ const AssignRoleToEntityForm = forwardRef(
                     "userName",
                     e.value.displayName ? e.value.displayName : e.value
                   );
+                  if (e.value === "") {
+                    setValue("personalNumber", "");
+                    setValue("user", null);
+                  }
                 }}
                 required
                 disabled={onlyForView}
@@ -406,6 +411,7 @@ const AssignRoleToEntityForm = forwardRef(
               multiple={true}
               defaultApprovers={requestObject?.commanders || []}
               disabled={onlyForView}
+              errors={errors}
             />
           </div>
         </div>

@@ -219,7 +219,7 @@ const Action = () => {
             />
           ) : (
             <Button
-              label="שמירה"
+              label="שליחת בקשה"
               onClick={() => handleRequest(name)}
               className="btn-gradient orange"
             />
