@@ -58,6 +58,7 @@ const RenameBulkOGForm = forwardRef(
         commanders: approvers,
         kartoffelParams: {
           directGroup: hierarchy.id,
+          unit:"blablabla"  //TODO- change after backend change
         },
         adParams: {
           ouDisplayName: hierarchy.name,
