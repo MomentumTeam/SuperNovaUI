@@ -234,7 +234,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
             {...register('comments')}
             id='2016'
             type='text'
-            placeholder='הערות'
+            placeholder='הכנס הערות לבקשה...'
           />
         </div>
       </div>
