@@ -4,6 +4,7 @@ import RolesStore from './Roles';
 import EntitiesStore from './Entities';
 import GroupsStore from "./Groups";
 import AppliesStore from './Applies';
+import AppliesApproveStore from './AppliesApprove';
 import TreeStore from './Tree';
 import UserStore from './User';
 
@@ -14,6 +15,7 @@ const stores = {
   countryStore: new CountryStore(),
   userStore: new UserStore(),
   appliesStore: new AppliesStore(),
+  appliesApproveStore: new AppliesApproveStore(),
   treeStore: new TreeStore(),
 };
 

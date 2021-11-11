@@ -6,7 +6,7 @@ import { SearchAppliesField } from './SearchAppliesField';
 import { FilterAppliesField } from './FilterAppliesField';
 
 const HeaderTable = ({ user, selectedTab, setTab, setSearchFields, getData }) => {
-  const { appliesStore } = useStores();
+  const { appliesApproveStore } = useStores();
 
   const HeaderTemplate = ({ tab, name, badgeValue }) => {
     return (
@@ -24,22 +24,20 @@ const HeaderTable = ({ user, selectedTab, setTab, setSearchFields, getData }) =>
           <HeaderTemplate
             tab={TableNames.allreqs.tab}
             name={TableNames.allreqs.tableName}
-            badgeValue={appliesStore.approveAllApplies.waitingForApproveCount}
+            badgeValue={appliesApproveStore.approveAllApplies.waitingForApproveCount}
           />
           <HeaderTemplate
             tab={TableNames.myreqs.tab}
             name={TableNames.myreqs.tableName}
-            badgeValue={appliesStore.approveMyApplies.waitingForApproveCount}
+            badgeValue={appliesApproveStore.approveMyApplies.waitingForApproveCount}
           />
         </div>
       ) : (
         <div>
           <h2>{TableNames.myreqs.tableName}</h2>
           <h3>
-            <b style={{ color: "black" }}>
-              {appliesStore.approveMyApplies.waitingForApproveCount}</b>/{appliesStore.approveMyApplies.totalCount}
-           {" "}
-            סה"כ
+            <b style={{ color: "black" }}>{appliesApproveStore.approveMyApplies.waitingForApproveCount}</b>/
+            {appliesApproveStore.approveMyApplies.totalCount} סה"כ
           </h3>
         </div>
       )}

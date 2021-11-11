@@ -11,7 +11,7 @@ import "../../assets/css/local/general/table.min.css";
 import { toJS } from 'mobx';
 
 const AppliesTable = () => {
-  const { appliesStore, userStore } = useStores();
+  const { appliesApproveStore, userStore } = useStores();
 
   const user = toJS(userStore.user);
   const [selectedTab, setTab] = useState(
@@ -58,10 +58,10 @@ const AppliesTable = () => {
 
     switch (selectedTab) {
       case TableNames.allreqs.tab:
-        data = await appliesStore.getAllApproveRequests(searchquery);
+        data = await appliesApproveStore.getAllApproveRequests(searchquery);
         break;
       case TableNames.myreqs.tab:
-        data = await appliesStore.getMyApproveRequests(searchquery);
+        data = await appliesApproveStore.getMyApproveRequests(searchquery);
       default:
         break;
     }
@@ -108,17 +108,19 @@ const AppliesTable = () => {
   
   useEffect(() => {
     setTableData(
-      selectedTab === TableNames.myreqs.tab ? appliesStore.approveMyApplies : appliesStore.approveAllApplies
+      selectedTab === TableNames.myreqs.tab
+        ? appliesApproveStore.approveMyApplies
+        : appliesApproveStore.approveAllApplies
     );
-  }, [selectedTab, appliesStore.approveMyApplies, appliesStore.approveAllApplies]);
+  }, [selectedTab, appliesApproveStore.approveMyApplies, appliesApproveStore.approveAllApplies]);
 
   useEffect(() => {
     if (user) {
       if (isUserCanSeeMyApproveApplies(user)) {
-        appliesStore.getMyApproveRequests({from: 1, to: pageSize});
+        appliesApproveStore.getMyApproveRequests({ from: 1, to: pageSize });
       }
       if (isUserCanSeeAllApproveApplies(user)) {
-        appliesStore.getAllApproveRequests({ from: 1, to: pageSize });
+        appliesApproveStore.getAllApproveRequests({ from: 1, to: pageSize });
       }
     }
   },[userStore.user])
@@ -131,8 +133,8 @@ const AppliesTable = () => {
     <>
       <HeaderTable
         user={user}
-        myApplies={appliesStore.approveMyApplies}
-        allApplies={appliesStore.approveAllApplies}
+        myApplies={appliesApproveStore.approveMyApplies}
+        allApplies={appliesApproveStore.approveAllApplies}
         selectedTab={selectedTab}
         setTab={setTab}
         setSearchFields={handleFieldChange}
