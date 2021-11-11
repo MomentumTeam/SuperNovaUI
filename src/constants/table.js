@@ -61,48 +61,48 @@ export const TableActionsTypes = {
 };
 
 export const TableSearch = (tableType) => {
-  const { tablesStore } = useStores();
+  const { entitiesStore, rolesStore, groupsStore } = useStores();
 
   const searchFields = {
     entities: [
       {
         searchField: "displayName",
         searchDisplayName: 'שם/מ"א/ת"ז',
-        searchFunc: tablesStore.getEntitiesByEntity,
+        searchFunc: entitiesStore.getEntitiesByEntity,
       },
       {
         searchField: "displayName",
         searchDisplayName: "היררכיה",
-        searchFunc: tablesStore.getEntitiesByHierarchy,
+        searchFunc: entitiesStore.getEntitiesByHierarchy,
       },
       {
         searchField: "displayName",
         searchDisplayName: "חיפוש לפי תפקיד",
-        searchFunc: tablesStore.getEntitiesByRoleId,
+        searchFunc: entitiesStore.getEntitiesByRoleId,
       },
     ],
     hierarchy: [
       {
         searchField: "hierarchy",
         searchDisplayName: "היררכיה",
-        searchFunc: tablesStore.getHierarchyByHierarchy,
+        searchFunc: groupsStore.getHierarchyByHierarchy,
       },
       {
         searchField: "hierarchy",
         searchDisplayName: "חיפוש לפי תפקיד",
-        searchFunc: tablesStore.getHierarchyByRoleId,
+        searchFunc: groupsStore.getHierarchyByRoleId,
       },
     ],
     roles: [
       {
         searchField: "roleId",
         searchDisplayName: 'שם/מ"א/ת"ז',
-        searchFunc: tablesStore.getRolesByRoleId,
+        searchFunc: rolesStore.getRolesByRoleId,
       },
       {
         searchField: "roleId",
         searchDisplayName: "היררכיה",
-        searchFunc: tablesStore.getRolesByHierarchy,
+        searchFunc: rolesStore.getRolesByHierarchy,
       },
     ],
   };

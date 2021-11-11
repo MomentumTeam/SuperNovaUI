@@ -3,13 +3,21 @@ import React, { useContext, forwardRef } from "react";
 import { TableContext } from ".";
 import { TableActionsContext } from "./TableActionsMenu";
 
+// Table
 import { tableActionsEnum } from "../../constants/table";
+import { TableAppliesActionsEnum } from "../../constants";
+
+// Entity
 import FullEntityInformationModal from "../Modals/Entity/FullEntityInformationModal";
+
+// Hierarchy
 import { FullHierarchyInformation } from "../Modals/Hierarchy/FullHierarchyInformation";
-import { FullRoleInformation } from "../Modals/Role/FullRoleInformation";
 import { HierarchyDelete } from "../Modals/Hierarchy/HierarchyDelete";
 
-import { TableAppliesActionsEnum } from "../../constants";
+// Role
+import { FullRoleInformation } from "../Modals/Role/FullRoleInformation";
+
+// Request
 import { PassRequestDialog } from "../Modals/Request/PassRequestDialog";
 import PreviewRequestsDialog from "../Modals/Request/PreviewRequestsDialog1";
 import { TakeRequest } from '../Modals/Request/TakeRequest';

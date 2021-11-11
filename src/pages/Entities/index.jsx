@@ -10,9 +10,9 @@ export const TableDataContext = createContext(null);
 export const TableDataRecuder = (state, action) => {
   switch (action.type) {
     case "searchResult":
-      return { isLoading: false, tableData: action.results, page: firstPage };
+      return { isLoading: false, tableData: action.results, page: firstPage, isSearch:true };
     case "restore":
-      return { isLoading: false, tableData: [], page: firstPage };
+      return { isLoading: false, tableData: [], page: firstPage, isSearch: false };
     case "loading":
       return { ...state, isLoading: true };
     case "failedLoading":
@@ -32,6 +32,7 @@ const TableEntity = () => {
   const [tableState, tableDispatch] = useReducer(TableDataRecuder, {
     tableData: [],
     isLoading: false,
+    isSearch: false,
     page: 0,
   });
 
