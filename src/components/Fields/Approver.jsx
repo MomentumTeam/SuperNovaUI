@@ -1,19 +1,18 @@
 import React, { useState, useEffect} from 'react';
-import { searchApproverByDisplayNameReq } from '../../service/ApproverService';
+import { searchApproverByDisplayNameReq, searchHighApproverByDisplayNameReq } from '../../service/ApproverService';
 import { AutoComplete } from 'primereact/autocomplete';
 import { Tooltip } from "primereact/tooltip";
 
 import '../../assets/css/local/components/approver.css';
 
-const Approver = ({ setValue, name, multiple, disabled, defaultApprovers, errors, trigger =null, type="COMMANDER" }) => {
+const Approver = ({ setValue, name, multiple, disabled, defaultApprovers, errors, trigger =null, type="COMMANDER", isHighRank = false }) => {
   const [ApproverSuggestions, setApproverSuggestions] = useState([]);
   const [selectedApprover, setSelectedApprover] = useState(defaultApprovers);
 
   const searchApprover = async (event) => {
-    const result = await searchApproverByDisplayNameReq(
-      event.query,
-      type
-    );
+    const result = await (isHighRank
+      ? searchHighApproverByDisplayNameReq(event.query)
+      : searchApproverByDisplayNameReq(event.query, type));
     setApproverSuggestions(result.approvers);
   };
 

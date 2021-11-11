@@ -187,6 +187,10 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
             }}
             onChange={(e) => {
               setValue('userName', e.value);
+              if (e.value === "") {
+                setValue("personalNumber", "");
+                setValue("hierarchy", "");
+              }
             }}
             required
             disabled={onlyForView}

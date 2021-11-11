@@ -105,6 +105,7 @@ const CreateOGForm = forwardRef(
             multiple={true}
             errors={errors}
             disabled={onlyForView}
+            isHighRank={true}
           />
         </div>
         <div className="p-fluid-item p-fluid-item-flex1">

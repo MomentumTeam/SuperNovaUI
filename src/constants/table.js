@@ -61,48 +61,48 @@ export const TableActionsTypes = {
 };
 
 export const TableSearch = (tableType) => {
-  const { tablesStore } = useStores();
+  const { entitiesStore, rolesStore, groupsStore } = useStores();
 
   const searchFields = {
     entities: [
       {
-        searchField: "displayName",
+        searchField: 'displayName',
         searchDisplayName: 'שם/מ"א/ת"ז',
-        searchFunc: tablesStore.getEntitiesByEntity,
+        searchFunc: entitiesStore.getEntitiesByEntity,
       },
       {
-        searchField: "displayName",
-        searchDisplayName: "היררכיה",
-        searchFunc: tablesStore.getEntitiesByHierarchy,
+        searchField: 'displayName',
+        searchDisplayName: 'היררכיה',
+        searchFunc: entitiesStore.getEntitiesByHierarchy,
       },
       {
-        searchField: "displayName",
-        searchDisplayName: "חיפוש לפי מזהה תפקיד (T)",
-        searchFunc: tablesStore.getEntitiesByRoleId,
+        searchField: 'displayName',
+        searchDisplayName: 'חיפוש לפי מזהה תפקיד (T)',
+        searchFunc: entitiesStore.getEntitiesByRoleId,
       },
     ],
     hierarchy: [
       {
-        searchField: "hierarchy",
-        searchDisplayName: "היררכיה",
-        searchFunc: tablesStore.getHierarchyByHierarchy,
+        searchField: 'hierarchy',
+        searchDisplayName: 'היררכיה',
+        searchFunc: groupsStore.getHierarchyByHierarchy,
       },
       {
-        searchField: "hierarchy",
-        searchDisplayName: "חיפוש לפי מזהה תפקיד (T)",
-        searchFunc: tablesStore.getHierarchyByRoleId,
+        searchField: 'hierarchy',
+        searchDisplayName: 'חיפוש לפי מזהה תפקיד (T)',
+        searchFunc: groupsStore.getHierarchyByRoleId,
       },
     ],
     roles: [
       {
-        searchField: "roleId",
+        searchField: 'roleId',
         searchDisplayName: 'שם/מ"א/ת"ז',
-        searchFunc: tablesStore.getRolesByRoleId,
+        searchFunc: rolesStore.getRolesByRoleId,
       },
       {
-        searchField: "roleId",
-        searchDisplayName: "היררכיה",
-        searchFunc: tablesStore.getRolesByHierarchy,
+        searchField: 'roleId',
+        searchDisplayName: 'היררכיה',
+        searchFunc: rolesStore.getRolesByHierarchy,
       },
     ],
   };
