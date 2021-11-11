@@ -15,6 +15,8 @@ export const TableDataRecuder = (state, action) => {
       return { isLoading: false, tableData: [], page: firstPage };
     case "loading":
       return { ...state, isLoading: true };
+    case "loadingSearch":
+      return { ...state, isLoading: true, page: firstPage };
     case "failedLoading":
       return { ...state, isLoading: false };
     case TableNames.myRequests.tab:

@@ -73,7 +73,17 @@ export const getMyRequestsBySerialNumber = async (from, to, serialNumber) => {
 
 //TODO Michael
 export const getMyRequestsByType = async (from, to, type) => {
-  return (await getFormattedMyRequests(1, 1000)).filter((r) => r.type === type);
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/my`, {
+    params: {
+      from,
+      to,
+      type,
+    },
+  });
+  if (Array.isArray(response.data.requests)) {
+    return response.data.requests.map(formatMyRequest);
+  }
+  return [];
 };
 
 //TODO Michael
@@ -91,9 +101,17 @@ export const getMyRequestsBySearch = async (from, to, value) => {
 
 //TODO Michael
 export const getMyRequestsByStatus = async (from, to, status) => {
-  return (await getFormattedMyRequests(1, 1000)).filter(
-    (r) => r.status === status
-  );
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/my`, {
+    params: {
+      from,
+      to,
+      status,
+    },
+  });
+  if (Array.isArray(response.data.requests)) {
+    return response.data.requests.map(formatMyRequest);
+  }
+  return [];
 };
 
 export const getMyApproveRequests = async ({

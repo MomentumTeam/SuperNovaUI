@@ -36,6 +36,7 @@ const Requests = observer(() => {
   };
 
   const setData = async (event, searchFuncName, searchValue) => {
+    const firstLoad = searchFuncName || typeof searchValue === "string";
     if (searchFuncName) curSearchFuncName = searchFuncName;
     if (typeof searchValue === "string") {
       curSearchValue = searchValue;
@@ -56,10 +57,11 @@ const Requests = observer(() => {
 
       if (getNextPage) {
         try {
+          if (firstLoad) tableDispatch({ type: "restore" });
           tableDispatch({ type: "loading" });
           const data = await getData(append, curSearchFuncName, curSearchValue);
           tableDispatch({
-            type: tabId,
+            type: firstLoad ? "searchResult" : tabId,
             results: data,
           });
         } catch (error) {
@@ -76,7 +78,7 @@ const Requests = observer(() => {
       setFirst(0);
       myRequestsStore.setSearch(false);
       tableDispatch({ type: "restore" });
-      await setData();
+      await setData({}, "loadMyRequests");
     };
     firstData();
   }, [tabId]);
