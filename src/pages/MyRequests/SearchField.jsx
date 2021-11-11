@@ -1,6 +1,10 @@
 import { AutoComplete } from "primereact/autocomplete";
 import { useEffect, useState } from "react";
-import { EVENT_KEY_UP_CODE_ENTER, STATUSES, TYPES } from "../../constants";
+import {
+  EVENT_KEY_UP_CODE_ENTER,
+  AUTOCOMPLETE_STATUSES,
+  TYPES,
+} from "../../constants";
 import "../../assets/css/local/components/myRequestsSearch.css";
 
 const SearchField = ({
@@ -38,7 +42,7 @@ const SearchField = ({
         break;
       case "status":
         setResults(
-          Object.values(STATUSES)
+          Object.values(AUTOCOMPLETE_STATUSES)
             .filter((status) => status.includes(searchValue))
             .map((status) => ({ status }))
         );

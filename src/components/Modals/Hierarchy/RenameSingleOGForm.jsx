@@ -165,6 +165,8 @@ const RenameSingleOGForm = forwardRef(
             <InputText
               {...register("identifier")}
               onChange={onIdentifierChange}
+              tooltip={'לדוגמה: "T12345678"'}
+              tooltipOptions={{ position: "top" }}
               type="text"
               required
               placeholder="מזהה תפקיד"
@@ -196,6 +198,7 @@ const RenameSingleOGForm = forwardRef(
           <Approver
             setValue={setValue}
             name="approvers"
+            tooltip='רס"ן ומעלה ביחידתך'
             multiple={true}
             errors={errors}
             defaultApprovers={requestObject?.commanders || []}

@@ -1,5 +1,5 @@
 import axiosApiInstance from "../config/axios";
-import { TYPES, STATUSES } from "../constants";
+import { TYPES, STATUSES, AUTOCOMPLETE_STATUSES } from "../constants";
 import { apiBaseUrl } from "../constants/api";
 import dateFormat from "dateformat";
 import "../assets/css/local/components/status.css";
@@ -71,7 +71,6 @@ export const getMyRequestsBySerialNumber = async (from, to, serialNumber) => {
   }
 };
 
-//TODO Michael
 export const getMyRequestsByType = async (from, to, type) => {
   const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/my`, {
     params: {
@@ -86,7 +85,6 @@ export const getMyRequestsByType = async (from, to, type) => {
   return [];
 };
 
-//TODO Michael
 export const getMyRequestsBySearch = async (from, to, value) => {
   const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/my`, {
     params: {
@@ -99,7 +97,6 @@ export const getMyRequestsBySearch = async (from, to, value) => {
   return [];
 };
 
-//TODO Michael
 export const getMyRequestsByStatus = async (from, to, status) => {
   const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/my`, {
     params: {

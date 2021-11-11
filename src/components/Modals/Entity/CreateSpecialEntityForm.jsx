@@ -90,145 +90,24 @@ const CreateSpecialEntityForm = forwardRef(
     );
 
     return (
-      <div>
-        <div className="p-fluid">
-          <div className="p-fluid-item-flex p-fluid-item">
-            <div className="p-field">
-              <label htmlFor="1900">
-                <span className="required-field">*</span>שם פרטי
-                <InputText
-                  {...register("firstName")}
-                  id="firstName"
-                  type="text"
-                  disabled={onlyForView}
-                />
-                <label htmlFor="2020">
-                  {" "}
-                  {errors?.firstName && (
-                    <small style={{ color: "red" }}>יש למלא ערך</small>
-                  )}
-                </label>
-              </label>
-            </div>
-          </div>
-          <div className="p-fluid-item-flex p-fluid-item">
-            <div className="p-field">
-              <label htmlFor="1900">
-                <span className="required-field">*</span>שם משפחה
-                <InputText
-                  {...register("lastName")}
-                  id="lastName"
-                  type="text"
-                  disabled={onlyForView}
-                />
-                <label htmlFor="2020">
-                  {" "}
-                  {errors?.lastName && (
-                    <small style={{ color: "red" }}>יש למלא ערך</small>
-                  )}
-                </label>
-              </label>
-            </div>
-          </div>
-          <div className="p-fluid-item-flex p-fluid-item">
-            <div className="p-field">
-              <label htmlFor="1900">
-                <span className="required-field">*</span>ת״ז
-                <InputText
-                  {...register("identityNumber")}
-                  id="identityNumber"
-                  type="text"
-                  disabled={onlyForView}
-                />
-                <label htmlFor="2020">
-                  {" "}
-                  {errors?.identityNumber && (
-                    <small style={{ color: "red" }}> יש למלא ערך חוקי</small>
-                  )}
-                </label>
-              </label>
-            </div>
-          </div>
-          <div className="p-fluid-item-flex p-fluid-item">
-            <div className="p-field">
-              <label htmlFor="1900">
-                <span className="required-field">*</span>טלפון
-                <InputText
-                  {...register("phone")}
-                  id="phone"
-                  type="text"
-                  disabled={onlyForView}
-                />
-                <label htmlFor="2020">
-                  {" "}
-                  {errors?.phone && (
-                    <small style={{ color: "red" }}>יש למלא ערך חוקי</small>
-                  )}
-                </label>
-              </label>
-            </div>
-          </div>
-          <div className="p-fluid-item-flex p-fluid-item">
-            <div className="p-field">
-              <label htmlFor="1900">
-                <span className="required-field">*</span>סיווג המשתמש
-                <InputText
-                  {...register("classification")}
-                  id="classification"
-                  type="text"
-                  disabled={onlyForView}
-                />
-                <label htmlFor="2020">
-                  {" "}
-                  {errors?.classification && (
-                    <small style={{ color: "red" }}>יש למלא ערך חוקי</small>
-                  )}
-                </label>
-              </label>
-            </div>
-          </div>
-          <div className="p-fluid-item-flex p-fluid-item">
-            <div className="p-field">
-              <label htmlFor="1900">
-                מגדר
-                <Dropdown
-                  {...register("sex")}
-                  inputId="sex"
-                  options={[
-                    { label: "-", value: null },
-                    { label: "זכר", value: "1" },
-                    { label: "נקבה", value: "2" },
-                  ]}
-                  disabled={onlyForView}
-                  placeholder="מגדר"
-                  value={watch("sex")}
-                  onChange={(e) => {
-                    setValue("sex", e.value);
-                  }}
-                />
-              </label>
-            </div>
-          </div>
-          <div className="p-fluid-item">
-            <Approver
-              setValue={setValue}
-              name="approvers"
-              multiple={true}
-              defaultApprovers={requestObject?.commanders || []}
-              disabled={onlyForView}
-            />
-          </div>
-          <div className="p-fluid-item p-fluid-item-flex1">
-            <div className="p-field">
-              <label htmlFor="2028">הערות</label>
-              <InputTextarea
-                {...register("comments")}
-                id="comments"
+      <div className="p-fluid">
+        <div className="p-fluid-item-flex p-fluid-item">
+          <div className="p-field">
+            <label htmlFor="1900">
+              <span className="required-field">*</span>שם פרטי
+              <InputText
+                {...register("firstName")}
+                id="firstName"
                 type="text"
                 disabled={onlyForView}
-                placeholder="הכנס הערות לבקשה..."
               />
-            </div>
+              <label htmlFor="2020">
+                {" "}
+                {errors?.firstName && (
+                  <small style={{ color: "red" }}>יש למלא ערך</small>
+                )}
+              </label>
+            </label>
           </div>
         </div>
         <div className="p-fluid-item-flex p-fluid-item">
@@ -291,7 +170,7 @@ const CreateSpecialEntityForm = forwardRef(
         <div className="p-fluid-item-flex p-fluid-item">
           <div className="p-field">
             <label htmlFor="1900">
-              <span className="required-field">*</span>סיווג המשתמש (מספר)
+              <span className="required-field">*</span>סיווג המשתמש
               <InputText
                 {...register("classification")}
                 id="classification"
@@ -346,6 +225,7 @@ const CreateSpecialEntityForm = forwardRef(
               id="comments"
               type="text"
               disabled={onlyForView}
+              placeholder="הכנס הערות לבקשה..."
             />
           </div>
         </div>

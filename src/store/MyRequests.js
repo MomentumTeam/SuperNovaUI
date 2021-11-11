@@ -1,5 +1,5 @@
 import { action, makeAutoObservable, observable } from "mobx";
-import { STATUSES, TYPES } from "../constants";
+import { AUTOCOMPLETE_STATUSES, STATUSES, TYPES } from "../constants";
 import {
   getFormattedMyRequests,
   getMyRequestsByType,
@@ -76,7 +76,7 @@ export default class MyRequestsStore {
 
   async loadMyRequestsByStatus(from, to, append = false, value) {
     let filteredResults;
-    let status = Object.entries(STATUSES).filter(
+    let status = Object.entries(AUTOCOMPLETE_STATUSES).filter(
       ([_, text]) => text === value
     )[0];
 

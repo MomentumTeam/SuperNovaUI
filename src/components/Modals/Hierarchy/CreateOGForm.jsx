@@ -30,7 +30,7 @@ const CreateOGForm = forwardRef(
         setValue("newHierarchy", requestObject.adParams.name);
         setValue("parentHierarchy", { name: requestObject.adParams.ouName });
       }
-    },[]);
+    }, []);
 
     const onSubmit = async (data) => {
       const { newHierarchy, parentHierarchy, approvers, comments } = data;
@@ -102,6 +102,7 @@ const CreateOGForm = forwardRef(
             setValue={setValue}
             name="approvers"
             defaultApprovers={requestObject?.commanders || []}
+            tooltip='רס"ן ומעלה ביחידתך'
             multiple={true}
             errors={errors}
             disabled={onlyForView}

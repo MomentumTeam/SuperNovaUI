@@ -19,7 +19,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import HorizontalLine from "../HorizontalLine";
 import "../../assets/css/local/components/calendar.css";
 import InfoPopup from "../InfoPopup";
-import '../../assets/css/local/components/approverForm.css'
+import "../../assets/css/local/components/approverForm.css";
 
 import {
   searchEntitiesByFullName,
@@ -71,7 +71,6 @@ const AssignRoleToEntityForm = forwardRef(
 
         // TODO: fix due
         setValue("changeRoleAt", +requestObject.due);
-        console.log(watch("changeRoleAt"));
       };
 
       if (requestObject) {
@@ -182,8 +181,8 @@ const AssignRoleToEntityForm = forwardRef(
       const roleId = getValues("roleId");
 
       if (!roleId) {
-        setValue('role', null)
-        setValue('currentRoleUser', '')
+        setValue("role", null);
+        setValue("currentRoleUser", "");
         return;
       }
 
@@ -318,10 +317,11 @@ const AssignRoleToEntityForm = forwardRef(
         >
           <h2 style={{ padding: 0 }}>מעבר לתפקיד</h2>
           <InfoPopup
-            infoText="שים לב❣️ במידה והתפקיד אינו פנוי יש לבחור תאריך ושעה לביצוע ההחלפה בתיאום מראש עם מבצע התפקיד. עבור גורמים מאשרים, מבצע התפקיד יהיה הגורם המאשר."
+            infoText='שימו לב❣️ במידה והתפקיד אינו פנוי יש לבחור תאריך ושעה לביצוע ההחלפה בתיאום מראש עם מבצע התפקיד.עבור רס"ן ומעלה הגורם המאשר יהיה מבצע התפקיד.'
             name="מעבר לתפקיד"
             visible={!onlyForView}
             withTitle={false}
+            warning
           ></InfoPopup>
         </div>
         <div style={{ display: "flex" }}>
@@ -388,6 +388,8 @@ const AssignRoleToEntityForm = forwardRef(
                 id="2026"
                 type="text"
                 onBlur={onRoleIdChanged}
+                tooltip={'לדוגמה: "T12345678"'}
+                tooltipOptions={{ position: "top" }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     onRoleIdChanged();
@@ -407,6 +409,7 @@ const AssignRoleToEntityForm = forwardRef(
             <Approver
               setValue={setValue}
               name="approvers"
+              tooltip='רס"ן ומעלה ביחידתך'
               multiple={true}
               defaultApprovers={requestObject?.commanders || []}
               disabled={onlyForView}
