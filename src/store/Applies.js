@@ -1,4 +1,8 @@
-import { action, makeAutoObservable, observable } from 'mobx';
+import {
+  action,
+  makeAutoObservable,
+  observable
+} from 'mobx';
 import {
   getMyRequests,
   getRequestById,
@@ -146,7 +150,9 @@ export default class AppliesStore {
   }
 
   async renameRoleApply(applyProperties) {
+    console.log('apply properties', applyProperties)
     const newRenameRoleApply = await renameRoleRequest(applyProperties);
+    console.log('new rename role apply', newRenameRoleApply);
     this.myApplies.unshift(newRenameRoleApply);
   }
 

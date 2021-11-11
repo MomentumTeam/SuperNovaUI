@@ -16,7 +16,6 @@ import {
   getRolesUnderOG,
   getRoleByRoleId,
 } from '../../service/KartoffelService';
-import HorizontalLine from '../HorizontalLine';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
@@ -43,6 +42,7 @@ const EditRoleForm = forwardRef(
     useEffect(() => {
       const initializeValues = async () => {
         setValue('commanders', requestObject.commanders);
+        setValue('prevJobTitle', requestObject.prevJobTitle);
         setValue('jobTitle', requestObject.kartoffelParams.jobTitle);
         setValue('identifier', requestObject.kartoffelParams.roleId);
         setValue('hierarchy', requestObject.adParams.ouDisplayName);
@@ -121,7 +121,28 @@ const EditRoleForm = forwardRef(
               disabled={onlyForView}
             />
             <label>
-              {errors.newHierarchy && (
+              {errors.jobTitle && (
+                <small style={{ color: 'red' }}>יש למלא ערך</small>
+              )}
+            </label>
+          </div>
+        </div>
+        <div className='p-fluid-item p-fluid-item'>
+          <div className='p-field'>
+            <label htmlFor='2021'>
+              <span className='required-field'>*</span>שם תפקיד לשעבר
+            </label>
+            <InputText
+              {...register('prevJobTitle')}
+              id='2021'
+              type='text'
+              required
+              value={watch('prevJobTitle')}
+              placeholder='שם תפקיד לשעבר'
+              disabled={onlyForView}
+            />
+            <label>
+              {errors.jobTitle && (
                 <small style={{ color: 'red' }}>יש למלא ערך</small>
               )}
             </label>

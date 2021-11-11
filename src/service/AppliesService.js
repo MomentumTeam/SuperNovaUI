@@ -1,5 +1,7 @@
 import axiosApiInstance from '../config/axios';
-import { apiBaseUrl } from '../constants/api';
+import {
+  apiBaseUrl
+} from '../constants/api';
 
 //GET
 
@@ -10,6 +12,8 @@ export const getMyRequests = async (from, to) => {
       to,
     },
   });
+
+  console.log('this is the response', response.data)
 
   return response.data;
 };
@@ -24,8 +28,7 @@ export const getRequestById = async (id) => {
 
 export const getAllRequests = async (displayName, status, type, from, to) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/approve/all`,
-    {
+    `${apiBaseUrl}/api/requests/approve/all`, {
       params: {
         displayName,
         status,
@@ -40,8 +43,7 @@ export const getAllRequests = async (displayName, status, type, from, to) => {
 
 export const getMyApproveRequests = async (from, to) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/approve/my`,
-    {
+    `${apiBaseUrl}/api/requests/approve/my`, {
       params: {
         from,
         to,
@@ -54,8 +56,7 @@ export const getMyApproveRequests = async (from, to) => {
 
 export const getAllApproveRequests = async (from, to) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/approve/all`,
-    {
+    `${apiBaseUrl}/api/requests/approve/all`, {
       params: {
         from,
         to,
@@ -74,8 +75,7 @@ export const getRequestsByPerson = async (
   to
 ) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/person/${id}`,
-    {
+    `${apiBaseUrl}/api/requests/person/${id}`, {
       params: {
         personType,
         personInfoType,
@@ -103,8 +103,7 @@ export const searchRequestsBySubmitterDisplayName = async (
   to
 ) => {
   const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/person/${id}`,
-    {
+    `${apiBaseUrl}/api/requests/person/${id}`, {
       params: {
         displayName,
         from,
@@ -200,8 +199,11 @@ export const disconectRoleFromEntityRequest = async (applyProperties) => {
 export const uploadBulkFile = async (file) => {
   const response = await axiosApiInstance.post(
     `${apiBaseUrl}/api/bulk/upload`,
-    file,
-    { headers: { 'Content-Type': 'multipart/form-data' } }
+    file, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }
   );
 
   return response.data;
@@ -256,8 +258,7 @@ export const assignRoleToEntityRequest = async (applyProperties) => {
 
 export const updateApproverDecision = async (reqId, decision, approverType) => {
   const response = await axiosApiInstance.put(
-    `${apiBaseUrl}/api/requests/approver/decision/${reqId}`,
-    {
+    `${apiBaseUrl}/api/requests/approver/decision/${reqId}`, {
       body: {
         decision: decision,
         approverType: approverType,
