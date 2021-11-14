@@ -155,6 +155,7 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit,
         style={{ borderRadius: "30px" }}
         onHide={closeFullDetailsModal}
         footer={<FullEntityInformationFooter />}
+        dismissableMask={true}
       >
         <div>
           <div className="userpic-wrap">

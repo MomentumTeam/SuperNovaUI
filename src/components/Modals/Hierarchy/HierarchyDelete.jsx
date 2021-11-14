@@ -21,6 +21,7 @@ const HierarchyDelete = ({ hierarchy, isOpen, closeModal }) => {
         visible={isOpen}
         footer={<HierarchyDeleteFooter closeModal={closeModal} item={hierarchy} disabled={disabled} />}
         onHide={closeModal}
+        dismissableMask={true}
       >
         <div className="container">
           <div>

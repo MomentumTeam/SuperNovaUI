@@ -47,6 +47,7 @@ const PassRequestDialog = ({ request, isDialogVisible, setDialogVisiblity, actio
       footer={footer}
       closeOnEscape
       onHide={() => setDialogVisiblity(false)}
+      dismissableMask={true}
     >
       <PassRequestForm request={toJS(request)} ref={passForm} setActionIsDone={setActionIsDone}/>
     </Dialog>

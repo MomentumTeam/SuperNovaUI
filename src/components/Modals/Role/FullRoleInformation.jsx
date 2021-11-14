@@ -98,6 +98,7 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
         visible={isOpen}
         style={{ borderRadius: "30px" }}
         onHide={closeModal}
+        dismissableMask={true}
         footer={
           <FullRoleInformationFooter
             role={role}

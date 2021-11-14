@@ -262,6 +262,7 @@ const Action = () => {
               visible={displayResponsive}
               onHide={() => onHide(id)}
               footer={renderFooter(id)}
+              dismissableMask={true}
             >
               {renderModalForm(modalName, id)}
             </Dialog>
