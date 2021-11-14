@@ -36,6 +36,7 @@ const Table = ({
   onSort = null,
   sortField = null,
   sortOrder = null,
+  scrollHeight = null,
 }) => {
   const contextMenu = useRef(null);
   const { userStore } = useStores();
@@ -76,7 +77,7 @@ const Table = ({
 
   useEffect(() => {
     setSelectedItem([]);
-    setRowData(tableTypes.filter((col) => isAllowed(col)))
+    setRowData(tableTypes.filter((col) => isAllowed(col)));
   }, [tableType]);
 
   return (
@@ -103,7 +104,7 @@ const Table = ({
                   />
                 }
                 scrollable={scrollable}
-                scrollHeight="500px"
+                scrollHeight={scrollHeight ? scrollHeight : "500px"}
                 loading={isLoading}
                 rows={isPaginator || isVirtualScrollable ? rows : null}
                 paginator={isPaginator} // paginator start
