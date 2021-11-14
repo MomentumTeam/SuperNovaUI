@@ -22,7 +22,7 @@ export const TableTypes = {
     { field: "jobTitle", displayName: "שם תפקיד" },
     { field: "hierarchy", displayName: "היררכיה" },
     { field: "clearance", displayName: "סיווג התפקיד" },
-    { field: "digitalIdentityUniqueId", displayName: "משתמש" },
+    { field: "digitalIdentityUniqueId", displayName: "מזהה תפקיד" },
   ],
 };
 
@@ -66,42 +66,42 @@ export const TableSearch = (tableType) => {
   const searchFields = {
     entities: [
       {
-        searchField: "displayName",
+        searchField: 'displayName',
         searchDisplayName: 'שם/מ"א/ת"ז',
         searchFunc: entitiesStore.getEntitiesByEntity,
       },
       {
-        searchField: "displayName",
-        searchDisplayName: "היררכיה",
+        searchField: 'displayName',
+        searchDisplayName: 'היררכיה',
         searchFunc: entitiesStore.getEntitiesByHierarchy,
       },
       {
-        searchField: "displayName",
-        searchDisplayName: "חיפוש לפי תפקיד",
+        searchField: 'displayName',
+        searchDisplayName: 'חיפוש לפי מזהה תפקיד (T)',
         searchFunc: entitiesStore.getEntitiesByRoleId,
       },
     ],
     hierarchy: [
       {
-        searchField: "hierarchy",
-        searchDisplayName: "היררכיה",
+        searchField: 'hierarchy',
+        searchDisplayName: 'היררכיה',
         searchFunc: groupsStore.getHierarchyByHierarchy,
       },
       {
-        searchField: "hierarchy",
-        searchDisplayName: "חיפוש לפי תפקיד",
+        searchField: 'hierarchy',
+        searchDisplayName: 'חיפוש לפי מזהה תפקיד (T)',
         searchFunc: groupsStore.getHierarchyByRoleId,
       },
     ],
     roles: [
       {
-        searchField: "roleId",
+        searchField: 'roleId',
         searchDisplayName: 'שם/מ"א/ת"ז',
         searchFunc: rolesStore.getRolesByRoleId,
       },
       {
-        searchField: "roleId",
-        searchDisplayName: "היררכיה",
+        searchField: 'roleId',
+        searchDisplayName: 'היררכיה',
         searchFunc: rolesStore.getRolesByHierarchy,
       },
     ],

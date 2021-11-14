@@ -30,7 +30,6 @@ const CreateSpecialEntityForm = forwardRef(({ setIsActionDone, onlyForView, requ
 
     useEffect(() => {  
         if (requestObject) {
-            console.log(requestObject);
             setValue('comments', requestObject.comments);
             setValue('firstName', requestObject.kartoffelParams.firstName);
             setValue('lastName', requestObject.kartoffelParams.lastName);
@@ -152,7 +151,7 @@ const CreateSpecialEntityForm = forwardRef(({ setIsActionDone, onlyForView, requ
             <div className='p-fluid-item-flex p-fluid-item'>
                 <div className='p-field'>
                     <label htmlFor="1900">
-                        <span className="required-field">*</span>סיווג המשתמש (מספר)
+                        <span className="required-field">*</span>סיווג המשתמש
                         <InputText
                             {...register('classification')}
                             id='classification'
@@ -198,6 +197,7 @@ const CreateSpecialEntityForm = forwardRef(({ setIsActionDone, onlyForView, requ
                         id='comments'
                         type='text'
                         disabled={onlyForView}
+                        placeholder='הכנס הערות לבקשה...'
                     />
                 </div>
             </div>

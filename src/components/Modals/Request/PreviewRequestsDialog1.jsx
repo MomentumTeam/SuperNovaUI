@@ -1,14 +1,15 @@
-import { useState, useEffect } from "react";
-import { Dialog } from "primereact/dialog";
-import PreviewRequestWrapper from "./PreviewRequestWrapper";
-import ApproverForm from "../ApproverForm";
-import CreateOGForm from "../Hierarchy/CreateOGForm";
-import CreateSingleRoleForm from "../Role/CreateSingleRoleForm";
-import RenameSingleOGForm from "../Hierarchy/RenameSingleOGForm";
-import CreateSpecialEntityForm from "../Entity/CreateSpecialEntityForm";
-import AssignRoleToEntityForm from "../AssignRoleToEntityForm";
-import CreateBulkRoleForm from "../Bulk/CreateBulkRoleForm";
-import RenameBulkOGForm from "../Bulk/RenameBulkOGForm";
+import { useState, useEffect } from 'react';
+import { Dialog } from 'primereact/dialog';
+import PreviewRequestWrapper from './PreviewRequestWrapper';
+import ApproverForm from '../ApproverForm';
+import CreateOGForm from '../Hierarchy/CreateOGForm';
+import CreateSingleRoleForm from '../Role/CreateSingleRoleForm';
+import RenameSingleOGForm from '../Hierarchy/RenameSingleOGForm';
+import CreateSpecialEntityForm from '../Entity/CreateSpecialEntityForm';
+import AssignRoleToEntityForm from '../AssignRoleToEntityForm';
+import CreateBulkRoleForm from '../Bulk/CreateBulkRoleForm';
+import RenameBulkOGForm from '../Bulk/RenameBulkOGForm';
+import { TYPES } from '../../../constants/applies';
 
 const PreviewRequestsDialog = ({ request, isDialogVisible, setDialogVisiblity }) => {
   const [dialogContent, setDialogContent] = useState(null);
@@ -16,49 +17,49 @@ const PreviewRequestsDialog = ({ request, isDialogVisible, setDialogVisiblity })
   const dialogParams = {
     CREATE_OG: {
       footer: null,
-      header: 'פרטי בקשה ליצירת היררכיה חדשה',
+      header: `פרטי בקשה ל${TYPES.CREATE_OG}`,
       component: CreateOGForm,
       classDialog: 'dialogClass5',
     },
     CREATE_ROLE: {
       footer: null,
-      header: 'פרטי בקשה ליצירת תפקיד חדש',
+      header: `פרטי בקשה ל${TYPES.CREATE_ROLE}`,
       component: CreateSingleRoleForm,
       dialogClass: 'dialogClass1',
     },
     ASSIGN_ROLE_TO_ENTITY: {
       footer: null,
-      header: 'פרטי בקשה לחיבור משתמש חדש לתפקיד',
+      header: `פרטי בקשה ל${TYPES.ASSIGN_ROLE_TO_ENTITY}`,
       component: AssignRoleToEntityForm,
       dialogClass: 'dialogClass3',
     },
     CREATE_ENTITY: {
       footer: null,
-      header: 'פרטי בקשה ליצירת משתמש מיוחד',
+      header: `פרטי בקשה ל${TYPES.CREATE_ENTITY}`,
       component: CreateSpecialEntityForm,
       dialogClass: 'dialogClass3',
     },
     ADD_APPROVER: {
       footer: null,
-      header: 'פרטי בקשה ליצירת גורם מאשר',
+      header: `פרטי בקשה ל${TYPES.ADD_APPROVER}`,
       component: ApproverForm,
       dialogClass: 'dialogClass6',
     },
     CHANGE_ROLE_HIERARCHY: {
       footer: null,
-      header: 'פרטי בקשה לשינוי היררכיה לתפקיד',
+      header: `פרטי בקשה ל${TYPES.CHANGE_ROLE_HIERARCHY}`,
       component: RenameSingleOGForm,
       dialogClass: 'dialogClass2',
     },
     CREATE_ROLE_BULK: {
       footer: null,
-      header: 'פרטי בקשה מרובה ליצירת תפקידים חדשים',
+      header: `פרטי בקשה מרובה ל${TYPES.CREATE_ROLE_BULK}`,
       component: CreateBulkRoleForm,
       dialogClass: 'dialogClass1',
     },
     CHANGE_ROLE_HIERARCHY_BULK: {
       footer: null,
-      header: 'פרטי בקשה מרובה לשינוי היררכיה לתפקידים',
+      header: `פרטי בקשה מרובה ל${TYPES.CHANGE_ROLE_HIERARCHY_BULK}`,
       component: RenameBulkOGForm,
       dialogClass: 'dialogClass2',
     },
@@ -76,7 +77,14 @@ const PreviewRequestsDialog = ({ request, isDialogVisible, setDialogVisiblity })
     if (request.type) {
       // TODO: handle UNRECOGNIZED
       if (dialogParams[request.type]) {
-        setDialogContent(<PreviewRequestWrapper request={request} ModalComponent={dialogParams[request.type].component} setDialogVisiblity={setDialogVisiblity} />);
+        setDialogContent(
+          <PreviewRequestWrapper
+            request={request}
+            showJob={request.kartoffelParams.needDisconnect} //relevant only to ASSIGN_ROLE_TO_ENTITY requests (מעבר תפקיד או חיבור משתמש חדש לתפקיד)
+            ModalComponent={dialogParams[request.type].component}
+            setDialogVisiblity={setDialogVisiblity}
+          />
+        );
         setDialogVisiblity(true);
       }
     }
