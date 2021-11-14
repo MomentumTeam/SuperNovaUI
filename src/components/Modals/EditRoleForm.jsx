@@ -108,7 +108,7 @@ const EditRoleForm = forwardRef(
         <div className='p-fluid-item p-fluid-item'>
           <div className='p-field'>
             <label htmlFor='2021'>
-              <span className='required-field'>*</span>שם תפקיד
+              <span className='required-field'>*</span> שם תפקיד חדש
             </label>
             <InputText
               {...register('jobTitle')}
@@ -129,7 +129,7 @@ const EditRoleForm = forwardRef(
         <div className='p-fluid-item p-fluid-item'>
           <div className='p-field'>
             <label htmlFor='2021'>
-              <span className='required-field'>*</span>שם תפקיד לשעבר
+              <span className='required-field'>*</span>שם תפקיד קודם
             </label>
             <InputText
               {...register('oldJobTitle')}
