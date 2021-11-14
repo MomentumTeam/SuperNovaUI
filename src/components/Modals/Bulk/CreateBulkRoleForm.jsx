@@ -1,24 +1,26 @@
-import React, { useImperativeHandle, forwardRef, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import React, { useImperativeHandle, forwardRef, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { InputTextarea } from 'primereact/inputtextarea';
 import { useStores } from '../../../context/use-stores';
-import Hierarchy from "../Hierarchy";
-import Approver from "../../Fields/Approver";
-import BulkRowsPopup from "./BulkRowsPopup";
-import BulkFileArea from "./BulkFileArea";
-import * as Yup from "yup";
-import FormData from "form-data";
-import { yupResolver } from "@hookform/resolvers/yup";
+import Hierarchy from '../Hierarchy';
+import Approver from '../../Fields/Approver';
+import BulkRowsPopup from './BulkRowsPopup';
+import BulkFileArea from './BulkFileArea';
+import * as Yup from 'yup';
+import FormData from 'form-data';
+import { yupResolver } from '@hookform/resolvers/yup';
 import {
   uploadBulkFile,
   getCreateBulkRoleData,
-} from "../../../service/AppliesService";
+} from '../../../service/AppliesService';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
+  comments: Yup.string().optional(),
   hierarchy: Yup.object().required(),
   approvers: Yup.array().min(1).required(),
   bulkFile: Yup.mixed()
-    .test("fileSize", (value) => !!value)
+    .test('fileSize', (value) => !!value)
     .required(),
 });
 
@@ -34,8 +36,9 @@ const RenameBulkOGForm = forwardRef(
     useEffect(() => {
       const getBulkData = async () => {
         const data = await getCreateBulkRoleData(requestObject.id);
-        setValue("hierarchy", data.request.adParams.ouDisplayName);
-        setValue("rows", data.rows);
+        setValue('comments', requestObject.comments);
+        setValue('hierarchy', data.request.adParams.ouDisplayName);
+        setValue('rows', data.rows);
       };
       if (requestObject) {
         getBulkData();
@@ -48,22 +51,23 @@ const RenameBulkOGForm = forwardRef(
       } catch (err) {
         throw new Error(err.errors);
       }
-      const { hierarchy, approvers, bulkFile } = data;
+      const { hierarchy, approvers, bulkFile, comments } = data;
 
       const formData = new FormData();
-      formData.append("bulkFiles", bulkFile[0]);
+      formData.append('bulkFiles', bulkFile[0]);
       const { uploadFiles } = await uploadBulkFile(formData);
 
       const req = {
         commanders: approvers,
         kartoffelParams: {
           directGroup: hierarchy.id,
-          unit:"blablabla"  //TODO- change after backend change
+          unit: 'blablabla', //TODO- change after backend change
         },
         adParams: {
           ouDisplayName: hierarchy.name,
         },
         excelFilePath: uploadFiles[0],
+        comments,
       };
       await appliesStore.createRoleBulk(req);
       setIsActionDone(true);
@@ -95,11 +99,7 @@ const RenameBulkOGForm = forwardRef(
           </div>
         </div>
         {!requestObject && (
-          <BulkFileArea
-            register={register}
-            bulkType={0}
-            errors={errors}
-          />
+          <BulkFileArea register={register} bulkType={0} errors={errors} />
         )}
         {!!requestObject && (
           <BulkRowsPopup
@@ -121,6 +121,21 @@ const RenameBulkOGForm = forwardRef(
             defaultApprovers={requestObject?.commanders || []}
             disabled={onlyForView}
           />
+        </div>
+
+        <div className="p-fluid-item p-fluid-item-flex1">
+          <div className="p-field">
+            <label>
+              <span></span>הערות
+            </label>
+            <InputTextarea
+              {...register('comments')}
+              type="text"
+              autoResize="false"
+              disabled={onlyForView}
+              placeholder="הכנס הערות לבקשה..."
+            />
+          </div>
         </div>
       </div>
     );
