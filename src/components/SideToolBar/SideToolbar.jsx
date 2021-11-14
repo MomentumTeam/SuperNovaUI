@@ -16,18 +16,18 @@ const SideToolbar = ({ recentApplies }) => {
   }, [userStore]);
 
   return (
-    <div className='main-inner-item main-inner-item3'>
-      <div className='main-inner-item3-content'>
+    <div className="main-inner-item main-inner-item3">
+      <div className="main-inner-item3-content">
         <Notifications notifications={notifications} />
-        <StatCount/>
-        <div className='actions-inner-wrap'>
+        <StatCount />
+        <div className="actions-inner-wrap">
           <h2>פעולות</h2>
           <Actions />
         </div>
-        <div className='requests-inner-wrap'>
-          <div className='display-flex title-wrap'>
+        <div className="requests-inner-wrap">
+          <div className="display-flex title-wrap">
             <h2>בקשות שלי</h2>
-            <a href='#all' title='הכל - נפתך בחלון חדש'>
+            <a href="#all" title="הכל - נפתך בחלון חדש">
               הכל
             </a>
           </div>
