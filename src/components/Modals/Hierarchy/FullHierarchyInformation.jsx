@@ -10,21 +10,28 @@ import { ContainerRoleList } from "./FullHierarchyContainerRoleList";
 import { FullHierarchyInformationFooter } from "./FullHierarchyInformationFooter";
 import { getLabel, disabledInputStyle } from "../../Fields/InputCommon";
 import { HierarchyDelete } from "./HierarchyDelete";
-import { NAME_OG_EXP } from '../../../constants';
+import { NAME_OG_EXP } from "../../../constants";
 
 import "../../../assets/css/local/general/buttons.css";
 import "../../../assets/css/local/components/modal-item.css";
-import Approver from '../../Fields/Approver';
-import { HierarchyField } from '../../Fields/Hierarchy';
+import Approver from "../../Fields/Approver";
+import { HierarchyField } from "../../Fields/Hierarchy";
 
-
-const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit, actionPopup }) => {
+const FullHierarchyInformation = ({
+  hierarchy,
+  isOpen,
+  closeModal,
+  edit,
+  actionPopup,
+}) => {
   const [isEdit, setIsEdit] = useState(edit);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isHierarchyFree, setIsHierarchyFree] = useState(true);
 
   const validationSchema = Yup.object().shape({
-    approvers: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+    approvers: Yup.array()
+      .min(1, "יש לבחור לפחות גורם מאשר אחד")
+      .required("יש לבחור לפחות גורם מאשר אחד"),
     hierarchyName: Yup.string()
       .matches(NAME_OG_EXP, "שם לא תקין")
       .required("יש לבחור שם היררכיה")
@@ -73,7 +80,11 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit, actionP
           <div className="p-fluid-item p-fluid-item-flex1">
             <div className="p-field">
               {getLabel({ isEdit, canEdit: true, labelName: "היררכיה" })}
-              <HierarchyField isEdit={isEdit} hierarchy={hierarchy} setIsHierarchyFree={setIsHierarchyFree} />
+              <HierarchyField
+                isEdit={isEdit}
+                hierarchy={hierarchy}
+                setIsHierarchyFree={setIsHierarchyFree}
+              />
             </div>
           </div>
 
@@ -85,7 +96,9 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit, actionP
                 type="text"
                 disabled
                 style={disabledInputStyle}
-                placeholder={hierarchy.directRoles ? hierarchy.directRoles.length : 0}
+                placeholder={
+                  hierarchy.directRoles ? hierarchy.directRoles.length : 0
+                }
               />
             </div>
           </div>
@@ -93,7 +106,13 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit, actionP
           <div className="p-fluid-item">
             <div className="p-field">
               {getLabel({ labelName: "מזהה היררכיה" })}
-              <InputText id="2011" type="text" disabled style={disabledInputStyle} placeholder={hierarchy.id} />
+              <InputText
+                id="2011"
+                type="text"
+                disabled
+                style={disabledInputStyle}
+                placeholder={hierarchy.id}
+              />
             </div>
           </div>
 
@@ -102,6 +121,7 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit, actionP
               <Approver
                 setValue={methods.setValue}
                 name="approvers"
+                tooltip='רס"ן ומעלה ביחידתך'
                 multiple={true}
                 errors={errors}
                 trigger={methods.trigger}
@@ -118,7 +138,11 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit, actionP
           <ContainerRoleList roles={hierarchy.directRoles} />
         </div>
       </Dialog>
-      <HierarchyDelete hierarchy={hierarchy} isOpen={isDeleteModalOpen} closeModal={closeDeleteModal} />
+      <HierarchyDelete
+        hierarchy={hierarchy}
+        isOpen={isDeleteModalOpen}
+        closeModal={closeDeleteModal}
+      />
     </FormProvider>
   );
 };

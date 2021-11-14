@@ -1,0 +1,23 @@
+.p-autocomplete-dd .p-autocomplete-dropdown {
+  color: gray;
+  background: white;
+  border: 0px solid white;
+  font-size: 0.5rem;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s,
+    box-shadow 0.2s;
+  border-radius: 8px;
+  position: relative;
+  left: 34px;
+}
+
+.p-autocomplete-dd .p-autocomplete-dropdown:hover {
+  color: gray;
+  background: white;
+  border: 0px solid white;
+  font-size: 0.5rem;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s,
+    box-shadow 0.2s;
+  border-radius: 8px;
+  position: relative;
+  left: 34px;
+}

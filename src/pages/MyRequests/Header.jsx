@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { TableNames } from "../../constants/usersTable";
+import { TableNames } from "../../constants/myRequestsTable";
 import { useStores } from "../../context/use-stores";
 import Norifications from "../../components/Notifications/Notifications";
 import { toJS } from "mobx";

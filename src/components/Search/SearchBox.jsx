@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SearchField } from "./SearchField";
 
-const SearchBox = ({ searchFields }) => {
+const SearchBox = ({ searchFields, TableDataContext }) => {
   const [isSetTable, setIsSetTable] = useState(false);
 
   return (
@@ -15,6 +15,7 @@ const SearchBox = ({ searchFields }) => {
               searchDisplayName={searchField.searchDisplayName}
               isSetTable={isSetTable}
               setIsSetTable={setIsSetTable}
+              TableDataCtx={TableDataContext}
             />
           );
         })}
