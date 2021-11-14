@@ -42,14 +42,13 @@ const EditRoleForm = forwardRef(
     useEffect(() => {
       const initializeValues = async () => {
         setValue('commanders', requestObject.commanders);
-        setValue('prevJobTitle', requestObject.prevJobTitle);
         setValue('jobTitle', requestObject.kartoffelParams.jobTitle);
+        setValue('oldJobTitle', requestObject.kartoffelParams.oldJobTitle);
         setValue('identifier', requestObject.kartoffelParams.roleId);
         setValue('hierarchy', requestObject.adParams.ouDisplayName);
         const role = await getRoleByRoleId(
           requestObject.kartoffelParams.roleId
         );
-        console.log('this is the role:', role);
         setHierarchyByIdentifier(role.hierarchy);
 
         setValue('role', role);
@@ -133,11 +132,11 @@ const EditRoleForm = forwardRef(
               <span className='required-field'>*</span>שם תפקיד לשעבר
             </label>
             <InputText
-              {...register('prevJobTitle')}
+              {...register('oldJobTitle')}
               id='2021'
               type='text'
               required
-              value={watch('prevJobTitle')}
+              value={watch('oldJobTitle')}
               placeholder='שם תפקיד לשעבר'
               disabled={onlyForView}
             />

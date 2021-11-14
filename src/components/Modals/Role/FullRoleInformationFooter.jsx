@@ -34,6 +34,7 @@ const FullRoleInformationFooter = ({
     const kartoffelParams = {
       roleId: role.roleId,
       jobTitle: newJobTitle,
+      oldJobTitle: role.jobTitle,
     };
 
     // ASK: if this is correct
@@ -42,15 +43,10 @@ const FullRoleInformationFooter = ({
       jobTitle: newJobTitle,
     };
 
-    const additionalParams = {
-      prevJobTitle: role.jobTitle,
-    };
-
     try {
       const res = await appliesStore.renameRoleApply({
         kartoffelParams,
         adParams,
-        ...additionalParams,
       });
       actionPopup();
       closeModal();

@@ -51,10 +51,7 @@ const FullRoleInformation = ({
   const { errors } = methods.formState;
 
   useEffect(async () => {
-    console.log('I AM HERE');
-    console.log(role);
     const entityRes = await getEntityByRoleId(role.roleId);
-    console.log(entityRes);
     setEntity(entityRes);
   }, [role]);
 
