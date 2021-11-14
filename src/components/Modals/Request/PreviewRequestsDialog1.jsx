@@ -11,12 +11,7 @@ import CreateBulkRoleForm from '../Bulk/CreateBulkRoleForm';
 import RenameBulkOGForm from '../Bulk/RenameBulkOGForm';
 import { TYPES } from '../../../constants/applies';
 
-const PreviewRequestsDialog = ({
-  request,
-  isDialogVisible,
-  setDialogVisiblity,
-  isApprover = false,
-}) => {
+const PreviewRequestsDialog = ({ request, isDialogVisible, setDialogVisiblity }) => {
   const [dialogContent, setDialogContent] = useState(null);
 
   const dialogParams = {
@@ -88,7 +83,6 @@ const PreviewRequestsDialog = ({
             showJob={request.kartoffelParams.needDisconnect} //relevant only to ASSIGN_ROLE_TO_ENTITY requests (מעבר תפקיד או חיבור משתמש חדש לתפקיד)
             ModalComponent={dialogParams[request.type].component}
             setDialogVisiblity={setDialogVisiblity}
-            isApprover={isApprover}
           />
         );
         setDialogVisiblity(true);

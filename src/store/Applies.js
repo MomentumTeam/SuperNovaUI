@@ -24,7 +24,7 @@ import {
   transferApproverRequest,
 } from "../service/AppliesService";
 import { updateDecisionReq } from '../service/ApproverService';
-import { canEditApply } from "../utils/applies";
+import { isApproverAndCanEdit } from "../utils/applies";
 
 export default class AppliesStore {
   myApplies = [];
@@ -248,22 +248,16 @@ export default class AppliesStore {
     const allApplyIndex = this.getApplyIndexById("approveAllApplies", reqId);
 
     const myApplyResponsibleBefore =
-      myApplyIndex != -1
-        ? canEditApply(this.approveMyApplies.requests[myApplyIndex], user)
-        : false;
+      myApplyIndex != -1 ? isApproverAndCanEdit(this.approveMyApplies.requests[myApplyIndex], user) : false;
 
     if (myApplyIndex != -1) this.updateApply("approveMyApplies", myApplyIndex, apply);
     if (allApplyIndex != -1) this.updateApply("approveAllApplies", allApplyIndex, apply);
 
-    const responsibleAfter = canEditApply(apply, user);
-
-    if (!responsibleAfter && myApplyResponsibleBefore) {
-      if (removeApply) {
-        this.approveMyApplies.requests.splice(myApplyIndex, 1);
-        this.approveMyAppliesCount = this.approveMyAppliesCount - 1;
-      }
-
+    const responsibleAfter = isApproverAndCanEdit(apply, user);
+    if (!responsibleAfter && myApplyResponsibleBefore && removeApply) {
+      this.approveMyApplies.requests.splice(myApplyIndex, 1);
       this.approveMyApplies.waitingForApproveCount = this.approveMyApplies.waitingForApproveCount - 1;
+      this.approveMyAppliesCount = this.approveMyAppliesCount - 1;
     }
     if (responsibleAfter && !myApplyResponsibleBefore) {
       this.approveMyApplies.requests.push(apply);

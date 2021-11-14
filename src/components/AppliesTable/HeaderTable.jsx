@@ -36,10 +36,8 @@ const HeaderTable = ({ user, selectedTab, setTab, setSearchFields, getData }) =>
         <div>
           <h2>{TableNames.myreqs.tableName}</h2>
           <h3>
-            <b style={{ color: "black" }}>
-              {appliesStore.approveMyApplies.waitingForApproveCount}</b>/{appliesStore.approveMyApplies.totalCount}
-           {" "}
-            סה"כ
+            <b style={{ color: "black" }}>{appliesStore.approveMyApplies.waitingForApproveCount}</b>/
+            {appliesStore.approveMyApplies.totalCount} סה"כ
           </h3>
         </div>
       )}

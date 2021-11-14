@@ -131,7 +131,6 @@ const TableActionsModal = forwardRef((_, ref) => {
               isDialogVisible={isActionModalOpen}
               setDialogVisiblity={setIsActionModalOpen}
               request={selectedItem[0]}
-              isApprover={actionType === TableAppliesActionsEnum.VIEW_MY_APPLY}
             />
           );
         case TableAppliesActionsEnum.PASS_APPLY:

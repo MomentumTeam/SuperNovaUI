@@ -115,7 +115,7 @@ const AppliesTable = () => {
   useEffect(() => {
     if (user) {
       if (isUserCanSeeMyApproveApplies(user)) {
-        appliesStore.getMyApproveRequests({from: 1, to: pageSize});
+        appliesStore.getMyApproveRequests({ from: 1, to: pageSize });
       }
       if (isUserCanSeeAllApproveApplies(user)) {
         appliesStore.getAllApproveRequests({ from: 1, to: pageSize });

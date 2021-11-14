@@ -16,7 +16,8 @@ const TableFooter = ({
   };
 
   useEffect(() => {
-    setSelectedColumns(rowData.filter((row) => !row.hide));
+    let temprow = rowData;
+    setSelectedColumns(temprow.filter((row) => !row.hide));
   }, [rowData]);
 
   return (

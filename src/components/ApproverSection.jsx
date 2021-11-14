@@ -4,14 +4,14 @@ import { InputTextarea } from "primereact/inputtextarea";
 import "../assets/css/local/components/modal-item.min.css";
 import { useStores } from "../context/use-stores";
 import { toJS } from "mobx";
-import { canEditApply, getApproverComments } from '../utils/applies';
+import { getApproverComments, isApproverAndCanEdit } from '../utils/applies';
 
-const ApproverSection = ({ isApprover, request, setDialogVisiblity }) => {
+const ApproverSection = ({ request, setDialogVisiblity }) => {
   const { appliesStore, userStore } = useStores();
   const user = toJS(userStore.user);
 
   let requestId = request.id;
-  const enabledChange = canEditApply(request, user) && isApprover;
+  const enabledChange = isApproverAndCanEdit(request, user);
 
   const [approverComment, setApproverComment] = useState("");
 
