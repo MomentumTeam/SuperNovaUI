@@ -3,15 +3,15 @@
   direction: ltr;
   max-width: 1000px;
   overflow-x: auto;
+  scrollbar-color: #cee8e8 #67c8c9;
+  scrollbar-width: thin;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 900px) {
   .chart-wrap {
     padding-top: 60px;
     max-width: 650px;
     overflow-x: scroll;
-    scrollbar-color: #cee8e8 #67c8c9;
-    scrollbar-width: thin;
     margin: 0 auto;
   }
   .chart-wrap::-webkit-scrollbar-track {
