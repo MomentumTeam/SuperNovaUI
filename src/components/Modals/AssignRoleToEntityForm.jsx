@@ -93,7 +93,7 @@ const AssignRoleToEntityForm = forwardRef(
         kartoffelParams: {
           id: user.id,
           uniqueId: roleId,
-          needDisconnect: true,
+          needDisconnect: showJob,
         },
         adParams: {
           oldSAMAccountName: userRole?.roleId,
