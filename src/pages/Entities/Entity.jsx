@@ -95,6 +95,8 @@ const Entities = observer(() => {
                 isSelectedCol={true}
                 onScroll={setData}
                 first={first}
+                scrollable={true}
+                scrollHeight="300px"
               />
             </div>
           </div>
