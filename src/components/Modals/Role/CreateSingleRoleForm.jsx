@@ -11,11 +11,14 @@ import { useStores } from "../../../context/use-stores";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { isJobTitleAlreadyTakenRequest } from "../../../service/KartoffelService";
+import {isUserHoldType} from '../../../utils/user';
+import { USER_TYPE } from '../../../constants';
+import {GetDefaultApprovers} from '../../../utils/approver';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
   hierarchy: Yup.object().required(),
-  approvers: Yup.array().min(1).required(),
+  approvers: Yup.array().min(1).required('יש לבחור לפחות גורם מאשר אחד'),
   comments: Yup.string().optional(),
   clearance: Yup.string().required(),
   roleName: Yup.string().required(),
@@ -28,7 +31,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestObject }, ref) => {
-  const { appliesStore } = useStores();
+  const { appliesStore, userStore } = useStores();
 
   const { register, handleSubmit, setValue, watch, formState } = useForm({
     resolver: yupResolver(validationSchema),
@@ -44,6 +47,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
       setValue('isTafkidan', !!requestObject.kartoffelParams.roleEntityType);
     }
   }, []);
+
 
   const onSubmit = async (data) => {
     try {
@@ -118,7 +122,13 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
       </div>
       <div className="p-fluid-item p-fluid-item-flex1">
         <div className="p-field">
-          <Hierarchy setValue={setValue} name="hierarchy" errors={errors} ogValue={watch('hierarchy')} disabled={onlyForView} />
+          <Hierarchy
+            setValue={setValue}
+            name="hierarchy"
+            errors={errors}
+            ogValue={watch("hierarchy")}
+            disabled={onlyForView}
+          />
         </div>
       </div>
       <div className="p-fluid-item p-fluid-item">
@@ -127,26 +137,15 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             <span className="required-field">*</span>שם תפקיד
           </label>
           <span className="p-input-icon-left">
-            <i>
-              {watch("isJobAlreadyTakenData")?.isJobTitleAlreadyTaken
-                ? "תפוס"
-                : "פנוי"}
-            </i>
+            <i>{watch("isJobAlreadyTakenData")?.isJobTitleAlreadyTaken ? "תפוס" : "פנוי"}</i>
             <InputText {...register("roleName")} onChange={onRoleNameChange} disabled={onlyForView} />
             <label>{errors.roleName && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
-            <label>
-              {errors.isJobAlreadyTakenData && (
-                <small>יש לבחור תפקיד פנוי</small>
-              )}
-            </label>
+            <label>{errors.isJobAlreadyTakenData && <small>יש לבחור תפקיד פנוי</small>}</label>
           </span>
         </div>
       </div>
       {watch("isJobAlreadyTakenData")?.isJobTitleAlreadyTaken && (
-        <div
-          className="p-fluid-item p-fluid-item-flex1"
-          style={{ alignItems: "baseline", whiteSpace: "pre-wrap" }}
-        >
+        <div className="p-fluid-item p-fluid-item-flex1" style={{ alignItems: "baseline", whiteSpace: "pre-wrap" }}>
           <div className="p-field" style={{ display: "flex" }}>
             <div style={{ marginTop: "35px" }}>שמות פנויים:</div>
             <div style={{ margin: "20px", display: "flex", flexWrap: "wrap" }}>
@@ -184,8 +183,8 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
           name="approvers"
           multiple={true}
           errors={errors}
-          defaultApprovers={requestObject?.commanders || []}
-          disabled={onlyForView}
+          defaultApprovers={GetDefaultApprovers(requestObject, onlyForView, setValue)}
+          disabled={onlyForView || isUserHoldType(userStore.user, USER_TYPE.COMMANDER)}
         />
       </div>
       <div className="p-field-checkbox" style={{ marginBottom: "10px" }}>
@@ -208,7 +207,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             type="text"
             autoResize="false"
             disabled={onlyForView}
-            placeholder='הכנס הערות לבקשה...'
+            placeholder="הכנס הערות לבקשה..."
           />
           <label>{errors.comments && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
         </div>

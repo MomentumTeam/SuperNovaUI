@@ -11,11 +11,15 @@ import "../../../assets/css/local/components/modal-item.css";
 import Approver from "../../Fields/Approver";
 import { RoleField } from "../../Fields/Role";
 import { InputForm, InputTypes } from "../../Fields/InputForm";
-import { NAME_OG_EXP,USER_CLEARANCE } from "../../../constants";
+import { NAME_OG_EXP,USER_CLEARANCE, USER_TYPE } from "../../../constants";
 import { getEntityByRoleId } from "../../../service/KartoffelService";
 import { FullRoleInformationFooter } from "./FullRoleInformationFooter";
+import { GetDefaultApprovers } from '../../../utils/approver';
+import { isUserHoldType } from '../../../utils/user';
+import { useStores } from '../../../context/use-stores';
 
 const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) => {
+  const {userStore} = useStores();
   const [isEdit, setIsEdit] = useState(edit);
   const [entity, setEntity] = useState({});
   const [isJobTitleFree, setIsJobTitleFree] = useState(true);
@@ -37,7 +41,12 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
    const methods = useForm({
      mode: "onBlur",
      reValidateMode: "onChange",
-     defaultValues: { role: "" },
+     defaultValues: {
+       role: "",
+       approvers: () => {
+         return GetDefaultApprovers([], false, methods.setValue);
+       },
+     },
      resolver: yupResolver(validationSchema),
    });
   const { errors } = methods.formState;
@@ -120,7 +129,15 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
 
           {isEdit && (
             <div className="p-fluid-item padR">
-              <Approver setValue={methods.setValue} name="approvers" multiple={true} errors={errors} trigger={methods.trigger} />
+              <Approver
+                setValue={methods.setValue}
+                name="approvers"
+                multiple={true}
+                errors={errors}
+                trigger={methods.trigger}
+                defaultApprovers={methods.getValues("approvers")}
+                disabled={isUserHoldType(userStore.user, USER_TYPE.COMMANDER)}
+              />
             </div>
           )}
         </div>

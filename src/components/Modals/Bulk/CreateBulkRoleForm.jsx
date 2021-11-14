@@ -13,11 +13,14 @@ import {
   uploadBulkFile,
   getCreateBulkRoleData,
 } from "../../../service/AppliesService";
+import { USER_TYPE } from '../../../constants';
+import { isUserHoldType } from '../../../utils/user';
+import { GetDefaultApprovers } from '../../../utils/approver';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
   hierarchy: Yup.object().required(),
-  approvers: Yup.array().min(1).required(),
+  approvers: Yup.array().min(1).required('יש לבחור לפחות גורם מאשר אחד'),
   bulkFile: Yup.mixed()
     .test("fileSize", (value) => !!value)
     .required(),
@@ -25,7 +28,7 @@ const validationSchema = Yup.object().shape({
 
 const RenameBulkOGForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject }, ref) => {
-    const { appliesStore } = useStores();
+    const { appliesStore, userStore } = useStores();
     const { register, handleSubmit, setValue, formState, watch } = useForm({
       resolver: yupResolver(validationSchema),
     });
@@ -42,6 +45,7 @@ const RenameBulkOGForm = forwardRef(
         getBulkData();
       }
     }, []);
+
 
     const onSubmit = async (data) => {
       try {
@@ -79,7 +83,7 @@ const RenameBulkOGForm = forwardRef(
     );
 
     return (
-      <div className="p-fluid" style={{ display: 'flex', flexDirection: 'column' }}>
+      <div className="p-fluid" style={{ display: "flex", flexDirection: "column" }}>
         <div className="p-fluid-item-flex p-fluid-item">
           <div className="p-field">
             <Hierarchy
@@ -117,8 +121,10 @@ const RenameBulkOGForm = forwardRef(
             name="approvers"
             multiple={true}
             errors={errors}
-            defaultApprovers={requestObject?.commanders || []}
-            disabled={onlyForView}
+            setValue={setValue}
+            name="approvers"
+            defaultApprovers={GetDefaultApprovers(requestObject, onlyForView, setValue)}
+            disabled={onlyForView || isUserHoldType(userStore.user, USER_TYPE.COMMANDER)}
           />
         </div>
       </div>

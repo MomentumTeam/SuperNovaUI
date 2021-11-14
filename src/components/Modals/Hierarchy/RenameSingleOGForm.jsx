@@ -13,18 +13,21 @@ import {
   getRoleByRoleId,
 } from "../../../service/KartoffelService";
 import HorizontalLine from "../../HorizontalLine";
+import { GetDefaultApprovers } from '../../../utils/approver';
+import { isUserHoldType } from '../../../utils/user';
+import { USER_TYPE } from '../../../constants';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
   hierarchy: Yup.object().required(),
   role: Yup.object().required(),
-  approvers: Yup.array().min(1).required(),
+  approvers: Yup.array().min(1).required('יש לבחור לפחות גורם מאשר אחד'),
   comments: Yup.string().optional(),
-  identifier: Yup.string().email().required(),
+  identifier: Yup.string().email('יש להכניס מזהה תקין').required('יש למלא ערך'),
 });
 
 const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestObject }, ref) => {
-  const { appliesStore } = useStores();
+  const { appliesStore, userStore } = useStores();
   const [hierarchyByIdentifier, setHierarchyByIdentifier] = useState(null);
 
   const { register, handleSubmit, setValue, watch, formState } = useForm({
@@ -163,7 +166,13 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             placeholder="מזהה תפקיד"
             disabled={onlyForView}
           />
-          <label>{errors.identifier && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
+          <label>
+            {errors.identifier && (
+              <small style={{ color: "red" }}>
+                {errors.identifier?.message ? errors.identifier?.message : "יש למלא ערך"}
+              </small>
+            )}
+          </label>
         </div>
       </div>
       <HorizontalLine />
@@ -172,7 +181,13 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
       </div>
       <div className="p-fluid-item-flex p-fluid-item">
         <div className="p-field">
-          <Hierarchy setValue={setValue} name="hierarchy" errors={errors} ogValue={watch('hierarchy')} disabled={onlyForView} />
+          <Hierarchy
+            setValue={setValue}
+            name="hierarchy"
+            errors={errors}
+            ogValue={watch("hierarchy")}
+            disabled={onlyForView}
+          />
         </div>
       </div>
       <div className="p-fluid-item">
@@ -181,8 +196,8 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
           name="approvers"
           multiple={true}
           errors={errors}
-          defaultApprovers={requestObject?.commanders || []}
-          disabled={onlyForView}
+          defaultApprovers={GetDefaultApprovers(requestObject, onlyForView, setValue)}
+          disabled={onlyForView || isUserHoldType(userStore.user, USER_TYPE.COMMANDER)}
         />
       </div>
       <div className="p-fluid-item p-fluid-item-flex1">
@@ -195,7 +210,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             type="text"
             autoResize="false"
             disabled={onlyForView}
-            placeholder='הכנס הערות לבקשה...'
+            placeholder="הכנס הערות לבקשה..."
           />
         </div>
       </div>

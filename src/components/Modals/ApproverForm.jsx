@@ -16,6 +16,9 @@ import {
 } from '../../service/KartoffelService';
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { USER_TYPE } from '../../constants';
+import { isUserHoldType } from '../../utils/user';
+import { GetDefaultApprovers } from '../../utils/approver';
 
 const approverTypes = [
   { label: 'גורם מאשר ראשוני', value: 'COMMANDER' },
@@ -26,12 +29,12 @@ const approverTypes = [
 ];
 
 const validationSchema = Yup.object().shape({
-  approverType: Yup.string().required(),
-  user: Yup.object().required(),
-  hierarchy: Yup.string().required(),
-  approvers: Yup.array().min(1).required(),
+  approverType: Yup.string().required("יש להכניס סוג מאשר"),
+  user: Yup.object().required("יש לבחור משתמש"),
+  hierarchy: Yup.string().required("יש לבחור היררכיה"),
+  approvers: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
   comments: Yup.string().optional(),
-  userName: Yup.string().required(),
+  userName: Yup.string().required("יש לבחור שם משתמש"),
 });
 
 const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }, ref) => {
@@ -57,6 +60,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
     }
   }, []);
 
+  
   const onSubmit = async (data) => {
     const {
       approvers,
@@ -140,53 +144,53 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
   };
 
   return (
-    <div className='p-fluid'>
-      <div className='p-fluid-item p-fluid-item-flex1'>
-        <div className='p-field'>
-          <label htmlFor='2011'>
-            <span className='required-field'>*</span>סוג גורם מאשר
+    <div className="p-fluid">
+      <div className="p-fluid-item p-fluid-item-flex1">
+        <div className="p-field">
+          <label htmlFor="2011">
+            <span className="required-field">*</span>סוג גורם מאשר
           </label>
           <Dropdown
-            {...register('approverType')}
+            {...register("approverType")}
             disabled={onlyForView}
-            className={`${onlyForView ? 'disabled' : ''} approverType`}
+            className={`${onlyForView ? "disabled" : ""} approverType`}
             value={approverType}
-            inputId='2011'
+            inputId="2011"
             required
             options={approverTypes}
             onChange={handleApprover}
           />
         </div>
       </div>
-      <div className='p-fluid-item'>
-        <div className='p-field'>
-          <label htmlFor='2020'>
-            {' '}
-            <span className='required-field'>*</span>שם מלא
+      <div className="p-fluid-item">
+        <div className="p-field">
+          <label htmlFor="2020">
+            {" "}
+            <span className="required-field">*</span>שם מלא
           </label>
           <button
-            className='btn-underline left19 approver-fillMe'
+            className="btn-underline left19 approver-fillMe"
             onClick={setCurrentUser}
-            type='button'
-            title='עבורי'
-            style={onlyForView && { display: 'none' }}
+            type="button"
+            title="עבורי"
+            style={onlyForView && { display: "none" }}
           >
             עבורי
           </button>
           <AutoComplete
-            value={watch('userName')}
+            value={watch("userName")}
             suggestions={userSuggestions}
             completeMethod={onSearchUser}
-            id='approverForm-userName'
-            type='text'
-            field='fullName'
+            id="approverForm-userName"
+            type="text"
+            field="fullName"
             onSelect={(e) => {
-              setValue('user', e.value);
-              setValue('personalNumber', e.value.personalNumber || e.value.identityCard);
-              setValue('hierarchy', e.value.hierarchy);
+              setValue("user", e.value);
+              setValue("personalNumber", e.value.personalNumber || e.value.identityCard);
+              setValue("hierarchy", e.value.hierarchy);
             }}
             onChange={(e) => {
-              setValue('userName', e.value);
+              setValue("userName", e.value);
               if (e.value === "") {
                 setValue("personalNumber", "");
                 setValue("hierarchy", "");
@@ -195,46 +199,63 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
             required
             disabled={onlyForView}
           />
-          {errors.user && <small style={{ color: "red" }}>יש למלא ערך</small>}
+          {errors.user && (
+            <small style={{ color: "red" }}>{errors.user?.message ? errors.user?.message : "יש למלא ערך"}</small>
+          )}
         </div>
       </div>
-      <div className='p-fluid-item'>
-        <div className='p-field'>
-          <label htmlFor='2021'>
-            {' '}
-            <span className='required-field'>*</span>מ"א/ת"ז
+      <div className="p-fluid-item">
+        <div className="p-field">
+          <label htmlFor="2021">
+            {" "}
+            <span className="required-field">*</span>מ"א/ת"ז
           </label>
           <InputText
-            {...register('personalNumber', { required: true })}
-            id='2021'
-            type='text'
+            {...register("personalNumber", { required: true })}
+            id="2021"
+            type="text"
             required
             onBlur={onSearchUserByPersonalNumber}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === "Enter") {
                 onSearchUserByPersonalNumber();
               }
             }}
             disabled={onlyForView}
           />
-          {errors.user && <small style={{ color: "red" }}>יש למלא ערך</small>}
+          {errors.user && (
+            <small style={{ color: "red" }}> {errors.user?.message ? errors.user?.message : "יש למלא ערך"}</small>
+          )}
         </div>
       </div>
-      <div className='p-fluid-item'>
-        <Hierarchy disabled={true} setValue={setValue} name='hierarchy' ogValue={getValues('hierarchy')} errors={errors} />
+      <div className="p-fluid-item">
+        <Hierarchy
+          disabled={true}
+          setValue={setValue}
+          name="hierarchy"
+          ogValue={getValues("hierarchy")}
+          errors={errors}
+        />
       </div>
-      <div className='p-fluid-item'>
-        <Approver disabled={onlyForView} setValue={setValue} name='approvers' defaultApprovers={requestObject?.commanders || []} multiple={true} errors={errors} />
+      <div className="p-fluid-item">
+        <Approver
+          disabled={onlyForView || isUserHoldType(userStore.user, USER_TYPE.COMMANDER)}
+          setValue={setValue}
+          name="approvers"
+          defaultApprovers={GetDefaultApprovers(requestObject, onlyForView, setValue)}
+          multiple={true}
+          errors={errors}
+        />
       </div>
-      <div className='p-fluid-item p-fluid-item-flex1'>
-        <div className='p-field'>
-          <label htmlFor='2016'>הערות</label>
+      <div className="p-fluid-item p-fluid-item-flex1">
+        <div className="p-field">
+          <label htmlFor="2016">הערות</label>
           <InputTextarea
             disabled={onlyForView}
-            {...register('comments')}
-            id='2016'
-            type='text'
-            placeholder='הכנס הערות לבקשה...'
+            {...register("comments")}
+            id="2016"
+            type="text"
+            placeholder="הכנס הערות לבקשה..."
           />
         </div>
       </div>

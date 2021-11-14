@@ -97,8 +97,8 @@ export const sortOrder = {
   DEC: "DEC"
 }
 
-export const pageSize = 10;
-export const itemsPerRow = 5; // must be smaller than the page size
+export const pageSize = 100;
+export const itemsPerRow = 50; // must be smaller than the page size
 
 
 export const TableAppliesActionsEnum = {
