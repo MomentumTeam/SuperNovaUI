@@ -25,9 +25,7 @@ const AppliesTable = () => {
   const [sortQuery, setSortQuery] = useState({});
   const [sortEvent, setSortEvent] = useState({});
 
-  const sortActivate = useCallback(async () => {
-    await getData({ reset: true });
-  }, [sortQuery]);
+  const columns = TableTypes(selectedTab, user);
 
   const handleFieldChange = (fieldId, value) => {
     if (value !== '' || value === undefined) {
@@ -38,8 +36,6 @@ const AppliesTable = () => {
     }
   };
   
-  const columns = TableTypes(selectedTab, user);
-
   const excelExport = async (data) => {
     const approvalData = processApprovalTableData(data);
     exportToExcel(approvalData);
@@ -112,20 +108,21 @@ const AppliesTable = () => {
     );
   }, [selectedTab, appliesStore.approveMyApplies, appliesStore.approveAllApplies]);
 
-  useEffect(() => {
+  const getUserAppliesCallback = useCallback(async() => {
     if (user) {
       if (isUserCanSeeMyApproveApplies(user)) {
-        appliesStore.getMyApproveRequests({ from: 1, to: pageSize });
+        await appliesStore.getMyApproveRequests({ from: 1, to: pageSize });
       }
       if (isUserCanSeeAllApproveApplies(user)) {
-        appliesStore.getAllApproveRequests({ from: 1, to: pageSize });
+       await appliesStore.getAllApproveRequests({ from: 1, to: pageSize });
       }
     }
-  },[userStore.user])
+  }, [userStore.user.id]);
 
   useEffect(() => {
-      sortActivate();
-  }, [sortQuery])
+    getUserAppliesCallback();
+  }, [getUserAppliesCallback]);
+
 
   return (
     <>
