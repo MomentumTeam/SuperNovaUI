@@ -3,9 +3,9 @@ import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { AutoComplete } from 'primereact/autocomplete';
-import { getCountries } from '../service/CountryService';
-import Search from './Search/Search';
-import ChartForTree from './ChartForTree';
+import { getCountries } from '../../../service/CountryService';
+import Search from '../../Search/Search';
+import ChartForTree from '../../ChartForTree';
 
 class ModalHierarchy extends React.Component {
 
@@ -61,7 +61,7 @@ class ModalHierarchy extends React.Component {
             <div>
                 <Button title="פתיחת היררכיה" className="OpeningHierarchy" type="button" label="פתיחת היררכיה" onClick={() => this.toggleModalVisibility(true)} style={ this.props.disabled && { display: 'none' }} />
 
-                <Dialog className="dialogClass9" header="היררכיה" visible={this.state.visible} footer={this.renderFooter()} onHide={() => this.toggleModalVisibility(false)}>
+                <Dialog className="dialogClass9" header="היררכיה" dismissableMask={true} visible={this.state.visible} footer={this.renderFooter()} onHide={() => this.toggleModalVisibility(false)}>
                     <div>
                         <div>
                             <ChartForTree onSelectNode={this.setHierarchySelected}/>

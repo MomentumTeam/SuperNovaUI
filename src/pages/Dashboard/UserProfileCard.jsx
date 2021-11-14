@@ -3,7 +3,6 @@ import '../../assets/css/local/pages/dashboard.css';
 
 const UserProfileCard = ({
   user,
-  userPicture,
   userType,
   openFullDetailsModal,
 }) => (
@@ -19,8 +18,8 @@ const UserProfileCard = ({
           <img
             style={{ borderRadius: '50%' }}
             src={
-              user && userPicture
-                ? `data:image/jpeg;base64,${userPicture}`
+              user && user.picture
+                ? `data:image/jpeg;base64,${user.picture}`
                 : blankProfilePic
             }
             alt='userpic'

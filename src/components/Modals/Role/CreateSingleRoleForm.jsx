@@ -5,12 +5,12 @@ import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { InputTextarea } from "primereact/inputtextarea";
-import Hierarchy from "./Hierarchy";
-import Approver from "../Fields/Approver";
-import { useStores } from "../../context/use-stores";
+import Hierarchy from "../Hierarchy";
+import Approver from "../../Fields/Approver";
+import { useStores } from "../../../context/use-stores";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { isJobTitleAlreadyTakenRequest } from "../../service/KartoffelService";
+import { isJobTitleAlreadyTakenRequest } from "../../../service/KartoffelService";
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
@@ -208,6 +208,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             type="text"
             autoResize="false"
             disabled={onlyForView}
+            placeholder='הכנס הערות לבקשה...'
           />
           <label>{errors.comments && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
         </div>

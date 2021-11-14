@@ -26,43 +26,51 @@ export const getRequestById = async (id) => {
   return response.data;
 };
 
-export const getAllRequests = async (displayName, status, type, from, to) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/approve/all`, {
-      params: {
-        displayName,
-        status,
-        type,
-        from,
-        to,
-      },
-    }
-  );
-  return response.data;
-};
 
-export const getMyApproveRequests = async (from, to) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/approve/my`, {
-      params: {
-        from,
-        to,
-      },
-    }
-  );
+export const getMyApproveRequests = async ({
+  from,
+  to,
+  searchQuery = null,
+  status = null,
+  type = null,
+  sortField = null,
+  sortOrder = null
+}) => {
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/approve/my`, {
+    params: {
+      from,
+      to,
+      searchQuery,
+      status,
+      type,
+      sortField,
+      sortOrder
+    },
+  });
 
   return response.data;
 };
 
-export const getAllApproveRequests = async (from, to) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/approve/all`, {
-      params: {
-        from,
-        to,
-      },
-    }
-  );
+export const getAllApproveRequests = async ({
+  from,
+  to,
+  searchQuery = null,
+  status = null,
+  type = null,
+  sortField = null,
+  sortOrder = null,
+}) => {
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/approve/all`, {
+    params: {
+      from,
+      to,
+      searchQuery,
+      status,
+      type,
+      sortField,
+      sortOrder,
+    },
+  });
 
   return response.data;
 };
@@ -256,19 +264,6 @@ export const assignRoleToEntityRequest = async (applyProperties) => {
   return response.data;
 };
 
-export const updateApproverDecision = async (reqId, decision, approverType) => {
-  const response = await axiosApiInstance.put(
-    `${apiBaseUrl}/api/requests/approver/decision/${reqId}`, {
-      body: {
-        decision: decision,
-        approverType: approverType,
-      },
-    }
-  );
-
-  return response.data;
-};
-
 export const changeRoleHierarchyRequest = async (data) => {
   const response = await axiosApiInstance.put(
     `${apiBaseUrl}/api/requests/request/role/og`,
@@ -283,6 +278,22 @@ export const changeRoleHierarchyBulkRequest = async (data) => {
     `${apiBaseUrl}/api/bulk/request/role/hierarchy`,
     data
   );
+
+  return response.data;
+};
+
+
+export const transferApproverRequest = async ({
+  reqId,
+  approvers,
+  approversType,
+  comment
+}) => {
+  const response = await axiosApiInstance.put(`${apiBaseUrl}/api/requests/approver/transfer/${reqId}`, {
+    approvers,
+    type: approversType,
+    commentForApprovers: comment,
+  });
 
   return response.data;
 };

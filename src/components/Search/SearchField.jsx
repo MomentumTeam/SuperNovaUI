@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AutoComplete } from "primereact/autocomplete";
 import { EVENT_KEY_UP_CODE_ENTER } from "../../constants/general";
-import { useStores } from "../../context/use-stores";
 import { TableDataContext } from "../../pages/Entities/index";
 
 const SearchField = ({ searchFunc, searchField, searchDisplayName, isSetTable }) => {
@@ -9,7 +8,6 @@ const SearchField = ({ searchFunc, searchField, searchDisplayName, isSetTable })
 
   const [results, setResults] = useState([]);
   const [selected, setSelected] = useState([]);
-  const { tablesStore } = useStores();
 
   useEffect(() => {
     if (selected === "") setSelected([]);
@@ -42,13 +40,11 @@ const SearchField = ({ searchFunc, searchField, searchDisplayName, isSetTable })
 
               if (e.originalEvent.type === "click") {
                 await tableDispatch({ type: "searchResult", results: [e.value] });
-                tablesStore.setSearch(true);
               }
             }}
             onKeyUp={async (e) => {
               if (e.code === EVENT_KEY_UP_CODE_ENTER) {
                 await tableDispatch({ type: "searchResult", results });
-                tablesStore.setSearch(true);
               }
             }}
           />

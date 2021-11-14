@@ -27,6 +27,13 @@ export const searchApproverByDisplayNameReq = async (
   return approvers.data;
 };
 
+export const searchHighApproverByDisplayNameReq = async (
+  displayName,
+) => {
+  const approvers = await axiosApiInstance.get(`${apiBaseUrl}/api/approvers/highcommanders/displayname/${displayName}`);
+  return approvers.data;
+};
+
 export const searchApproverByDomainUser = async (domainUser, type) => {
   const approvers = await axiosApiInstance.get(
     `${apiBaseUrl}/api/approvers/domainuser/${domainUser}`,
@@ -51,10 +58,7 @@ export const getAllApproversReq = async (type) => {
   return allCommanderApprovers.data;
 };
 
-export const updateDecisionReq = async (
-  requestId,
-  approverDecision
-) => {
-  const response = await axiosApiInstance.put(`${apiBaseUrl}/api/approvers/decision/${requestId}`, approverDecision);
+export const updateDecisionReq = async (requestId, decision) => {
+  const response = await axiosApiInstance.put(`${apiBaseUrl}/api/approvers/decision/${requestId}`, {decision: decision});
   return response.data;
 };

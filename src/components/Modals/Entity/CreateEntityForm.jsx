@@ -1,23 +1,18 @@
 import React, {
+  forwardRef,
   useState,
   useImperativeHandle,
-  forwardRef,
   useMemo,
   createRef,
 } from "react";
+import AssignRoleToEntityForm from "../AssignRoleToEntityForm";
+import CreateSpecialEntityForm from "../Entity/CreateSpecialEntityForm";
 import { Accordion, AccordionTab } from "primereact/accordion";
-import { useStores } from "../../context/use-stores";
-import { toJS } from "mobx";
-import RenameBulkOGForm from "./RenameBulkOGForm";
-import RenameSingleOGForm from "./RenameSingleOGForm";
-import { USER_TYPE } from "../../constants";
-import "../../assets/css/local/components/rename-og-form.css";
+import renderHeader from "../accordionTabHeaders";
 
-const RenameOGForm = forwardRef(({ setIsActionDone }, ref) => {
-  const { userStore } = useStores();
+const CreateEntityForm = forwardRef(({ setIsActionDone }, ref) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const formRefs = useMemo(() => ({ 0: createRef(), 1: createRef() }), []);
-  const isBulkPermitted = toJS(userStore.user)?.type?.includes(USER_TYPE.BULK);
 
   useImperativeHandle(
     ref,
@@ -27,8 +22,7 @@ const RenameOGForm = forwardRef(({ setIsActionDone }, ref) => {
     [activeIndex, formRefs]
   );
 
-  // TODO: remove !
-  return !isBulkPermitted ? (
+  return (
     <Accordion
       expandIcon="pi pi-chevron-left"
       style={{ marginBottom: "20px" }}
@@ -43,28 +37,21 @@ const RenameOGForm = forwardRef(({ setIsActionDone }, ref) => {
         });
       }}
     >
-      <AccordionTab header="שינוי היררכיה לתפקיד">
-        <RenameSingleOGForm
+      <AccordionTab header={renderHeader("חיבור משתמש חדש לתפקיד", true)}>
+        <AssignRoleToEntityForm
           ref={formRefs[0]}
           showJob={false}
           setIsActionDone={setIsActionDone}
         />
       </AccordionTab>
-      <AccordionTab header="הגשת בקשה מרובה">
-        <RenameBulkOGForm
+      <AccordionTab header={renderHeader("יצירת משתמש מיוחד", true)}>
+        <CreateSpecialEntityForm
           ref={formRefs[1]}
-          showJob={false}
           setIsActionDone={setIsActionDone}
         />
       </AccordionTab>
     </Accordion>
-  ) : (
-    <RenameSingleOGForm
-      ref={formRefs[0]}
-      showJob={false}
-      setIsActionDone={setIsActionDone}
-    />
   );
 });
 
-export default RenameOGForm;
+export default CreateEntityForm;

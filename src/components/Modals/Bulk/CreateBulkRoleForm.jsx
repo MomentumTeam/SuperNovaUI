@@ -1,18 +1,18 @@
 import React, { useImperativeHandle, forwardRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import Hierarchy from "./Hierarchy";
-import Approver from "../Fields/Approver";
+import Hierarchy from "../Hierarchy";
+import Approver from "../../Fields/Approver";
 import BulkRowsPopup from "./BulkRowsPopup";
 import BulkFileArea from "./BulkFileArea";
-import { useStores } from "../../context/use-stores";
+import { useStores } from "../../../context/use-stores";
 import * as Yup from "yup";
-import { apiBaseUrl } from "../../constants/api";
+import { apiBaseUrl } from "../../../constants/api";
 import FormData from "form-data";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   uploadBulkFile,
   getCreateBulkRoleData,
-} from "../../service/AppliesService";
+} from "../../../service/AppliesService";
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
@@ -59,6 +59,7 @@ const RenameBulkOGForm = forwardRef(
         commanders: approvers,
         kartoffelParams: {
           directGroup: hierarchy.id,
+          unit:"blablabla"  //TODO- change after backend change
         },
         adParams: {
           ouDisplayName: hierarchy.name,

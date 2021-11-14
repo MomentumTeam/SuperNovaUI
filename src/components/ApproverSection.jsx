@@ -2,50 +2,71 @@ import React, { useState } from "react";
 import { Button } from "primereact/button";
 import { InputTextarea } from "primereact/inputtextarea";
 import "../assets/css/local/components/modal-item.min.css";
-import { updateDecisionReq } from "../service/ApproverService";
+import { useStores } from "../context/use-stores";
+import { toJS } from "mobx";
+import { getApproverComments, isApproverAndCanEdit } from '../utils/applies';
 
-const ApproverSection = ({ requestId, setDialogVisiblity }) => {
+const ApproverSection = ({ request, setDialogVisiblity }) => {
+  const { appliesStore, userStore } = useStores();
+  const user = toJS(userStore.user);
+
+  let requestId = request.id;
+  const enabledChange = isApproverAndCanEdit(request, user);
+
   const [approverComment, setApproverComment] = useState("");
 
-  const approveRequest = async () => {
+  const changeDecisionRequest = async (decision) => {
     try {
-      await updateDecisionReq(requestId, {
-        decision: { decision: "APPROVED", reason: approverComment },
-        type: "SUPER_SECURITY_APPROVER", // TODO: get approver type from user
-      });
+      let decisionObject = {
+        user,
+        requestId,
+        decision: { decision },
+      };
+
+      if (approverComment.length > 0) decisionObject.decision.reason = approverComment;
+
+      await appliesStore.updateApplyDecision(decisionObject);
     } catch (e) {
       console.log(e);
     }
     setDialogVisiblity(false);
   };
 
-  const denyRequest = async () => {
-    try {
-      await updateDecisionReq(requestId, {
-        decision: { decision: "DENIED", reason: approverComment },
-        type: "SUPER_SECURITY_APPROVER", // TODO: get approver type from user
-      });
-    } catch (e) {
-      console.log(e);
-    }
-    setDialogVisiblity(false);
-  };
 
   return (
     <>
       <div className="p-fluid">
         <div className="p-fluid-item p-fluid-item-flex1">
-          <div className="p-field">
-            <label>
-              <span></span>הערות מאשר
-            </label>
-            <InputTextarea
-              value={approverComment}
-              type="text"
-              autoResize="false"
-              onChange={(e) => setApproverComment(e.target.value)}
-            />
-          </div>
+          {getApproverComments(request, user).map(comment => {
+            return (
+              <div className="p-field">
+                <label>
+                  <span></span>
+                  {comment.label}
+                </label>
+                <InputTextarea
+                  disabled={true}
+                  value={comment.comment}
+                  type="text"
+                  autoResize="false"
+                  onChange={(e) => setApproverComment(e.target.value)}
+                />
+              </div>
+            );
+          })}
+          {enabledChange && (
+            <div className="p-field">
+              <label>
+                <span></span>הערות מאשר
+              </label>
+              <InputTextarea
+                value={approverComment}
+                type="text"
+                autoResize="false"
+                onChange={(e) => setApproverComment(e.target.value)}
+              />
+            </div>
+          )}
         </div>
       </div>
       <div
@@ -56,21 +77,19 @@ const ApproverSection = ({ requestId, setDialogVisiblity }) => {
           marginBottom: "10px",
         }}
       >
-        <div style={{ display: "flex", flexDirection: "row-reverse" }}>
-          <Button
-            label="אישור"
-            onClick={() => approveRequest()}
-            className="btn-gradient green"
-            style={{ marginRight: "20px" }}
-          />
-          <Button
-            label="דחייה"
-            onClick={() => denyRequest()}
-            className="btn-gradient orange"
-          />
-        </div>
+        {enabledChange && (
+          <div style={{ display: "flex", flexDirection: "row-reverse" }}>
+            <Button
+              label="אישור"
+              onClick={() => changeDecisionRequest("APPROVED")}
+              className="btn-gradient green"
+              style={{ marginRight: "20px" }}
+            />
+            <Button label="דחייה" onClick={() => changeDecisionRequest("DENIED")} className="btn-gradient orange" />
+          </div>
+        )}
         <div>
-          <Button label="סגירה" className="btn-gradient" onClick={() => setDialogVisiblity(false)}/>
+          <Button label="סגירה" className="btn-gradient" onClick={() => setDialogVisiblity(false)} />
         </div>
       </div>
     </>

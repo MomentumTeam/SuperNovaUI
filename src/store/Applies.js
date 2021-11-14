@@ -2,11 +2,10 @@ import {
   action,
   makeAutoObservable,
   observable
-} from 'mobx';
+} from "mobx";
 import {
   getMyRequests,
   getRequestById,
-  getAllRequests,
   getRequestsByPerson,
   getRequestBySerialNumber,
   getMyApproveRequests,
@@ -23,21 +22,32 @@ import {
   deleteRoleRequest,
   deleteOGRequest,
   disconectRoleFromEntityRequest,
-  updateApproverDecision,
   changeRoleHierarchyRequest,
   changeRoleHierarchyBulkRequest,
   createRoleBulkRequest,
-} from '../service/AppliesService';
+  transferApproverRequest,
+} from "../service/AppliesService";
+import {
+  updateDecisionReq
+} from '../service/ApproverService';
+import {
+  isApproverAndCanEdit
+} from "../utils/applies";
 
 export default class AppliesStore {
-  applies = [];
   myApplies = [];
-  allApplies = [];
+  approveMyApplies = [];
+  approveMyAppliesCount = 0;
+  approveAllApplies = [];
+  approveAllAppliesCount = 0;
 
   constructor() {
     makeAutoObservable(this, {
       myApplies: observable,
-      applies: observable,
+      approveMyApplies: observable,
+      approveMyAppliesCount: observable,
+      approveAllApplies: observable,
+      approveAllAppliesCount: observable,
       loadMyApplies: action,
       getAllApplies: action,
       getAppliesByPerosn: action,
@@ -55,7 +65,7 @@ export default class AppliesStore {
       deleteRoleApply: action,
       deleteOGApply: action,
       disconectRoleFromEntityApply: action,
-      updateApplyDecision: action,
+      transferApprovers: action,
     });
 
     this.loadMyApplies(1, 20);
@@ -64,13 +74,9 @@ export default class AppliesStore {
   // GET
 
   async loadMyApplies(from, to) {
+    // Requests that the user created
     const myApplies = await getMyRequests(from, to);
     this.myApplies = myApplies.requests;
-  }
-
-  async getAllApplies(approvementStatus, from, to) {
-    const myApplies = await getAllRequests(approvementStatus, from, to);
-    // this.applies = myApplies.requests;
   }
 
   async getApplyById(id) {
@@ -78,24 +84,80 @@ export default class AppliesStore {
     // this.applies = myApplies.requests;
   }
 
-  async getMyApproveRequests() {
-    const myApplies = await getMyApproveRequests();
-    this.applies = myApplies.requests;
+  async getMyApproveRequests({
+    from,
+    to,
+    searchQuery = null,
+    status = null,
+    type = null,
+    sortField = null,
+    sortOrder = null,
+    append = false,
+    saveToStore = true,
+  }) {
+    const myApplies = await getMyApproveRequests({
+      from,
+      to,
+      searchQuery,
+      status,
+      type,
+      sortField,
+      sortOrder
+    });
+
+    if (saveToStore) {
+      if (append) {
+        this.approveMyApplies.requests = [...this.approveMyApplies.requests, ...myApplies.requests];
+      } else {
+        this.approveMyApplies = myApplies;
+      }
+    }
+
+    if (searchQuery === null && type === null && status === null) {
+      this.approveMyAppliesCount = myApplies.waitingForApproveCount;
+    }
+
+    return myApplies;
   }
 
-  async getAllApproveRequests() {
-    const allApplies = await getAllApproveRequests();
-    this.allApplies = allApplies.requests;
+  async getAllApproveRequests({
+    from,
+    to,
+    searchQuery = null,
+    status = null,
+    type = null,
+    sortField = null,
+    sortOrder = null,
+    append = false,
+    saveToStore = true,
+  }) {
+    const allApplies = await getAllApproveRequests({
+      from,
+      to,
+      searchQuery,
+      status,
+      type,
+      sortField,
+      sortOrder
+    });
+
+    if (saveToStore) {
+      if (append) {
+        this.approveAllApplies.requests = [...this.approveAllApplies.requests, ...allApplies.requests];
+      } else {
+        this.approveAllApplies = allApplies;
+      }
+    }
+
+    if (searchQuery === null && type === null && status === null) {
+      this.approveAllAppliesCount = allApplies.waitingForApproveCount;
+    }
+
+    return allApplies;
   }
 
   async getAppliesByPerosn(id, personType, personInfoType, from, to) {
-    const myApplies = await getRequestsByPerson(
-      id,
-      personType,
-      personInfoType,
-      from,
-      to
-    );
+    const myApplies = await getRequestsByPerson(id, personType, personInfoType, from, to);
 
     // this.applies = myApplies.requests;
   }
@@ -106,11 +168,7 @@ export default class AppliesStore {
   }
 
   async searchAppliesBySubmitterDisplayName(displayName, from, to) {
-    const myApplies = await searchRequestsBySubmitterDisplayName(
-      displayName,
-      from,
-      to
-    );
+    const myApplies = await searchRequestsBySubmitterDisplayName(displayName, from, to);
     // this.applies = myApplies.requests;
   }
 
@@ -127,9 +185,7 @@ export default class AppliesStore {
   }
 
   async assignRoleToEntityApply(applyProperties) {
-    const newAssignRoleToEntityApply = await assignRoleToEntityRequest(
-      applyProperties
-    );
+    const newAssignRoleToEntityApply = await assignRoleToEntityRequest(applyProperties);
     this.myApplies.unshift(newAssignRoleToEntityApply);
   }
 
@@ -169,8 +225,7 @@ export default class AppliesStore {
   }
 
   async disconectRoleFromEntityApply(applyProperties) {
-    const newDisconectRoleFromEntityApply =
-      await disconectRoleFromEntityRequest(applyProperties);
+    const newDisconectRoleFromEntityApply = await disconectRoleFromEntityRequest(applyProperties);
     this.myApplies.unshift(newDisconectRoleFromEntityApply);
   }
 
@@ -181,21 +236,90 @@ export default class AppliesStore {
 
   // PUT
   async changeRoleHierarchy(applyProperties) {
-    const changeRoleHierarchyApply = await changeRoleHierarchyRequest(
-      applyProperties
-    );
+    const changeRoleHierarchyApply = await changeRoleHierarchyRequest(applyProperties);
     this.myApplies.unshift(changeRoleHierarchyApply);
   }
 
   async changeRoleHierarchyBulk(applyProperties) {
-    const changeRoleHierarchyBulkApply = await changeRoleHierarchyBulkRequest(
-      applyProperties
-    );
+    const changeRoleHierarchyBulkApply = await changeRoleHierarchyBulkRequest(applyProperties);
     this.myApplies.unshift(changeRoleHierarchyBulkApply);
   }
 
-  async updateApplyDecision(applyProperties) {
-    const updatedRequest = await updateApproverDecision(applyProperties);
-    //TODO- update Decision in state
+  async transferApprovers({
+    user,
+    reqId,
+    approvers,
+    approversType,
+    comment
+  }) {
+    const apply = await transferApproverRequest({
+      reqId,
+      approvers,
+      approversType,
+      comment
+    });
+
+    this.updateApplyAndCount({
+      user,
+      reqId,
+      apply,
+      removeApply: true
+    });
   }
+
+  async updateApplyDecision({
+    user,
+    requestId,
+    decision
+  }) {
+    const updatedRequest = await updateDecisionReq(requestId, decision);
+
+    this.updateApplyAndCount({
+      user,
+      reqId: requestId,
+      apply: updatedRequest,
+    });
+  }
+
+  // UTILS
+  updateApplyAndCount = ({
+    user,
+    reqId,
+    apply,
+    removeApply = false
+  }) => {
+    const myApplyIndex = this.getApplyIndexById("approveMyApplies", reqId);
+    const allApplyIndex = this.getApplyIndexById("approveAllApplies", reqId);
+
+    const myApplyResponsibleBefore =
+      myApplyIndex != -1 ? isApproverAndCanEdit(this.approveMyApplies.requests[myApplyIndex], user) : false;
+
+    if (myApplyIndex != -1) this.updateApply("approveMyApplies", myApplyIndex, apply);
+    if (allApplyIndex != -1) this.updateApply("approveAllApplies", allApplyIndex, apply);
+
+    const responsibleAfter = isApproverAndCanEdit(apply, user);
+    if (!responsibleAfter && myApplyResponsibleBefore && removeApply) {
+      this.approveMyApplies.requests.splice(myApplyIndex, 1);
+      this.approveMyApplies.waitingForApproveCount = this.approveMyApplies.waitingForApproveCount - 1;
+      this.approveMyAppliesCount = this.approveMyAppliesCount - 1;
+    }
+    if (responsibleAfter && !myApplyResponsibleBefore) {
+      this.approveMyApplies.requests.push(apply);
+      this.approveMyAppliesCount = this.approveMyAppliesCount + 1;
+      this.approveMyApplies.waitingForApproveCount = this.approveMyApplies.waitingForApproveCount + 1;
+    }
+  };
+
+  getApplyIndexById = (appliesArr, id) => {
+    if (Array.isArray(this[appliesArr].requests)) {
+      const reqIndex = this[appliesArr].requests.findIndex((apply) => apply.id === id);
+      return reqIndex;
+    }
+
+    return -1;
+  };
+
+  updateApply = (appliesArr, reqIndex, updateReq) => {
+    if (reqIndex != -1) this[appliesArr].requests[reqIndex] = updateReq;
+  };
 }
