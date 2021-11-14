@@ -1,4 +1,4 @@
-import { USER_CITIZEN, USER_SOURCE_DI, USER_TYPE, USER_TYPE_TAG } from '../constants';
+import { USER_CITIZEN, USER_SOURCE_DI, USER_TYPE } from '../constants';
 import { toJS } from 'mobx';
 import { TableTypes } from '../constants/table';
 import { useStores } from '../context/use-stores';

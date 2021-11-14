@@ -12,7 +12,7 @@ import { toJS } from "mobx";
 import { useStores } from "../../context/use-stores";
 
 import "../../assets/css/local/general/table.min.css";
-import { isUserHoldType } from '../../utils/user';
+import { isUserHoldType } from "../../utils/user";
 
 export const TableContext = createContext(null);
 
@@ -39,11 +39,15 @@ const Table = ({
 }) => {
   const contextMenu = useRef(null);
   const { userStore } = useStores();
+  const [rowData, setRowData] = useState([]);
   const [selectedItem, setSelectedItem] = useState([]);
   const [selectedColumns, setSelectedColumns] = useState([]);
 
   const user = toJS(userStore.user);
-  const rowData = tableTypes;
+
+  const isAllowed = (col) => {
+    return col.secured === undefined || col.secured.some((allowedType) => isUserHoldType(user, allowedType));
+  };
 
   const loadingText = () => {
     return <span className="loading-text"></span>;
@@ -70,12 +74,9 @@ const Table = ({
     Array.isArray(value) ? setSelectedItem(value) : setSelectedItem([value]);
   };
 
-  const isAllowed = (col) => {
-    return col.secured === undefined || col.secured.some((allowedType) => isUserHoldType(user, allowedType));
-  };
-
   useEffect(() => {
     setSelectedItem([]);
+    setRowData(tableTypes.filter((col) => isAllowed(col)))
   }, [tableType]);
 
   return (
@@ -129,25 +130,22 @@ const Table = ({
                   ></Column>
                 )}
 
-                {selectedColumns.map(
-                  (col) =>
-                    isAllowed(col) && (
-                      <Column
-                        key={col.field}
-                        field={col.field}
-                        header={col.displayName}
-                        formatter={col?.formatter}
-                        default={col?.default}
-                        enum={col?.enum}
-                        loadingBody={loadingText}
-                        template={col?.template}
-                        body={TableFieldTemplate}
-                        sortable={col?.sortable}
-                        sortFields={col?.sortFields}
-                        // sortFunction={col?.sortable && onSort !== null ? (e) => onSort(e, col) : undefined}
-                      />
-                    )
-                )}
+                {selectedColumns.map((col) => (
+                  <Column
+                    key={col.field}
+                    field={col.field}
+                    header={col.displayName}
+                    formatter={col?.formatter}
+                    default={col?.default}
+                    enum={col?.enum}
+                    loadingBody={loadingText}
+                    template={col?.template}
+                    body={TableFieldTemplate}
+                    sortable={col?.sortable}
+                    sortFields={col?.sortFields}
+                    // sortFunction={col?.sortable && onSort !== null ? (e) => onSort(e, col) : undefined}
+                  />
+                ))}
                 {!disableActions && <Column loadingBody={loadingText} body={TableActionsTemplate} />}
               </DataTable>
             </div>

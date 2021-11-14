@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import { forwardRef, useCallback, useImperativeHandle, useState } from "react";
+import { forwardRef, useImperativeHandle } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { InputTextarea } from "primereact/inputtextarea";
@@ -22,7 +22,7 @@ const PassRequestForm = forwardRef(({ request, setActionIsDone }, ref) => {
   const user = toJS(userStore.user);
   const passOptions = getUserPassOptions(request, user);
 
-  const { register, handleSubmit, setValue, getValues, watch, formState } = useForm({
+  const { register, handleSubmit, setValue, watch, formState } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: { approverType: passOptions.length > 0 ? passOptions[0].value : "" },
   });

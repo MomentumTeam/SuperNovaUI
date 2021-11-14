@@ -32,7 +32,6 @@ const Notification = ({ notification }) => {
           isDialogVisible={isModalOpen}
           setDialogVisiblity={setIsModalOpen}
           request={request}
-          isApprover={false}
         />
       )}
     </>

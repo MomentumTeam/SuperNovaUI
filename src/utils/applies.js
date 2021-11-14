@@ -1,5 +1,6 @@
 
 import * as filesaver from 'file-saver';
+import { toJS } from 'mobx';
 import * as xlsx from 'xlsx';
 import { USER_TYPE } from '../constants';
 import { STATUSES, TYPES } from '../constants/applies';
@@ -31,7 +32,10 @@ export const getFormattedDate = (timestamp) => {
 
 export const getResponsibleFactor = (apply, user) => {
   const fields = getResponsibleFactorFields(user);
-  const responsibles = fields.map(field => apply[field])
+  let responsibles = [];
+  fields.map(field => {
+    responsibles = [...responsibles, ...apply[field]];
+  })
 
   return responsibles;
 }
@@ -40,7 +44,7 @@ export const getResponsibleFactorFields = (user) => {
   const fields = [];
   if (isUserHoldType(user, USER_TYPE.SUPER_SECURITY)) fields.push("superSecurityApprovers");
   if (isUserHoldType(user, USER_TYPE.SECURITY)) fields.push("securityApprovers");
-  if (isUserHoldType(user, USER_TYPE.ADMIN)) fields.push("commanders");
+  if (isUserHoldType(user, USER_TYPE.ADMIN) || isUserHoldType(user, USER_TYPE.COMMANDER)) fields.push("commanders");
 
   return fields;
 };
@@ -58,13 +62,24 @@ export const getApproverComments = (apply, user) => {
   return comments;
 };
 
+export const isApproverAndCanEdit = (apply, user) => {
+  return isApprover(apply, user) && canEditApply(apply,user)
+}
+
+export const isApprover = (apply, user) => {
+  if (apply === undefined) return false;
+  const approvers = getResponsibleFactor(apply, user);
+  const isApprover = approvers.some(approver => approver.id === user.id)
+  return isApprover;
+}
+
 export const canEditApply = (apply, user) => {
   if (apply === undefined) return false;
   return (
     (isUserHoldType(user, USER_TYPE.SUPER_SECURITY) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)) ||
     (isUserHoldType(user, USER_TYPE.SECURITY) && !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) ||
-    (isUserHoldType(user, USER_TYPE.COMMANDER) && !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER))
+    ((isUserHoldType(user, USER_TYPE.COMMANDER) || isUserHoldType(user, USER_TYPE.ADMIN)) && !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER))
   );
 };
 

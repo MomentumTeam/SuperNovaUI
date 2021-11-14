@@ -2,11 +2,9 @@ import { useRef, useState,useEffect} from "react";
 import { PassRequestForm } from "./PassRequestForm";
 import { Dialog } from "primereact/dialog";
 import { toJS } from 'mobx';
-import { useStores } from '../../../context/use-stores';
 
 const PassRequestDialog = ({ request, isDialogVisible, setDialogVisiblity, actionPopup }) => {
   const [actionIsDone, setActionIsDone] = useState(false);
-  const {appliesStore} = useStores();
 
   const footer = (
     <div className="display-flex display-flex-end">

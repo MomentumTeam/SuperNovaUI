@@ -11,7 +11,6 @@ const PreviewRequestWrapper = ({
   request,
   showJob,
   setDialogVisiblity,
-  isApprover
 }) => {
   return (
     <>
@@ -54,7 +53,7 @@ const PreviewRequestWrapper = ({
         requestObject={request}
         showJob={showJob}
       />
-      <ApproverSection isApprover={isApprover} request={request} setDialogVisiblity={setDialogVisiblity} />
+      <ApproverSection request={request} setDialogVisiblity={setDialogVisiblity} />
     </>
   );
 };
