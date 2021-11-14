@@ -29,7 +29,7 @@ export const getResponsibleFactorFields = (user) => {
   const fields = [];
   if (isUserHoldType(user, USER_TYPE.SUPER_SECURITY)) fields.push("superSecurityApprovers");
   if (isUserHoldType(user, USER_TYPE.SECURITY)) fields.push("securityApprovers");
-  if (isUserHoldType(user, USER_TYPE.ADMIN)) fields.push("commanders");
+  if (isUserHoldType(user, USER_TYPE.ADMIN) || isUserHoldType(user, USER_TYPE.COMMANDER)) fields.push("commanders");
 
   return fields;
 };
@@ -55,7 +55,6 @@ export const isApprover = (apply, user) => {
   if (apply === undefined) return false;
   const approvers = getResponsibleFactor(apply, user);
   const isApprover = approvers.some(approver => approver.id === user.id)
-  
   return isApprover;
 }
 

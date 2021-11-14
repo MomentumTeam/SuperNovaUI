@@ -1,5 +1,5 @@
 import { Dropdown } from "primereact/dropdown";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { TYPES } from "../../constants";
 
 const FilterAppliesField = ({ selectedTab, setSearchFields, getData }) => {
@@ -8,22 +8,24 @@ const FilterAppliesField = ({ selectedTab, setSearchFields, getData }) => {
     return { label: value, value: key };
   });
 
-  const filterFunc = async () => {
-    try {
-      await getData({ saveToStore: true, reset: true, append: false });
-    } catch (error) {
-      console.log(error);
+  const filterFunc = useCallback(async() => {
+    if (filter !== null) {
+      try {
+        await getData({ saveToStore: true, reset: true, append: false });
+      } catch (error) {
+        console.log(error);
+      }
     }
-  };
+  }, [filter]);
 
   useEffect(() => {
     setFilter(null);
     setSearchFields("type", null);
   }, [selectedTab]);
 
-  useEffect(async() => {
-    await filterFunc();
-  }, [filter])
+  useEffect(() => {
+    filterFunc();
+  }, [filterFunc]);
   
   return (
     <div className="p-fluid">
