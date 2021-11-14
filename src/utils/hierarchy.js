@@ -1,4 +1,5 @@
 import { USER_TYPE } from "../constants";
+import { isUserHoldType } from './user';
 
 export const transformNode = (node) => {
   return {
@@ -11,7 +12,7 @@ export const transformNode = (node) => {
 };
 
 export const canEditHierarchy = (user) => {
-  return user.types.includes(USER_TYPE.COMMANDER);
+  return isUserHoldType(user, USER_TYPE.COMMANDER);
 };
 
 export const getHierarchy = (hierarchy) => {

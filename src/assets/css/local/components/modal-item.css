@@ -13,6 +13,11 @@
   width: 725px;
 }
 
+.p-dialog.dialogPass {
+min-height: unset!important;
+max-width: 500px;
+}
+
 @media (max-width: 730px) {
   .p-dialog {
     width: 90%;
@@ -1970,6 +1975,10 @@
   flex-wrap: nowrap;
 }
 
+.approver-name {
+    pointer-events: all !important;
+}
+
 .p-dialog
   .p-dialog-content
   .p-fluid
@@ -1981,11 +1990,11 @@
   padding: 0.25rem 0.5rem;
   margin-right: 0rem;
   margin-left: 10px;
-  background-color: #a7abbd;
-  color: #f7f7f7;
-  border-radius: 3px;
-  border-radius: 50%;
-  width: 35px;
+  /* background-color: #a7abbd; */
+  /* color: #f7f7f7; */
+  /* border-radius: 3px;
+  border-radius: 50%; */
+  /* width: 45px; */
   height: 35px;
 }
 
@@ -2001,11 +2010,11 @@
   overflow: hidden;
   white-space: nowrap;
   text-align: center;
-  max-width: 20px;
+  max-width: 40px;
   margin: 0 auto;
 }
 
-.p-dialog
+/* .p-dialog
   .p-dialog-content
   .p-fluid
   .p-fluid-item
@@ -2017,7 +2026,7 @@
   position: absolute;
   top: 15px;
   left: 1px;
-}
+} */
 
 .p-dialog
   .p-dialog-content

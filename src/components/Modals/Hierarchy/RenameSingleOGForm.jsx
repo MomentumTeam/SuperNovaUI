@@ -3,16 +3,16 @@ import { useForm } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
-import Hierarchy from "./Hierarchy";
-import Approver from "../Fields/Approver";
-import { useStores } from "../../context/use-stores";
+import Hierarchy from "../Hierarchy";
+import Approver from "../../Fields/Approver";
+import { useStores } from "../../../context/use-stores";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   getRolesUnderOG,
   getRoleByRoleId,
-} from "../../service/KartoffelService";
-import HorizontalLine from "../HorizontalLine";
+} from "../../../service/KartoffelService";
+import HorizontalLine from "../../HorizontalLine";
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
@@ -40,14 +40,12 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
       setValue('identifier', requestObject.kartoffelParams.roleId);
       setValue('hierarchy', requestObject.adParams.ouDisplayName);
       const role = await getRoleByRoleId(requestObject.kartoffelParams.roleId);
-      console.log(role);
       setHierarchyByIdentifier(role.hierarchy);
       setValue('role', role);
       setRoles([role]);
     }
 
     if (requestObject) {
-      console.log(requestObject);
       initializeValues();
     }
   }, []);
@@ -88,7 +86,8 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
     setValue(name, value);
 
     if (value?.id) {
-      setRoles((await getRolesUnderOG(value.id)).roles);
+      const roles = await getRolesUnderOG({id:value.id});
+      setRoles(roles);
     }
   };
 
@@ -189,13 +188,14 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
       <div className="p-fluid-item p-fluid-item-flex1">
         <div className="p-field">
           <label>
-            <span></span>סיבת מעבר
+            <span></span>הערות
           </label>
           <InputTextarea
             {...register("comments")}
             type="text"
             autoResize="false"
             disabled={onlyForView}
+            placeholder='הכנס הערות לבקשה...'
           />
         </div>
       </div>

@@ -57,6 +57,7 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit, actionP
         visible={isOpen}
         style={{ borderRadius: "30px" }}
         onHide={closeModal}
+        dismissableMask={true}
         footer={
           <FullHierarchyInformationFooter
             isEdit={isEdit}

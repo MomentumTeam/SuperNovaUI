@@ -63,7 +63,7 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
     },
     {
       fieldName: "digitalIdentityUniqueId",
-      displayName: "יוזר",
+      displayName: "מזהה תפקיד",
       inputType: InputTypes.TEXT,
       additionalClass: "padR",
     },
@@ -98,6 +98,7 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
         visible={isOpen}
         style={{ borderRadius: "30px" }}
         onHide={closeModal}
+        dismissableMask={true}
         footer={
           <FullRoleInformationFooter
             role={role}

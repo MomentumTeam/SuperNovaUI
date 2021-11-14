@@ -6,7 +6,7 @@ export const TableTypes = {
     { field: "firstName", displayName: "שם פרטי" },
     { field: "lastName", displayName: "שם משפחה" },
     { field: "personalNumber", displayName: 'מ"א/ת"ז' },
-    { field: "clearance", displayName: "סיווג", secured: [USER_TYPE.COMMANDER, USER_TYPE.SUPER_SECURITY] },
+    { field: "clearance", displayName: "סיווג", secured: [USER_TYPE.SECURITY, USER_TYPE.SUPER_SECURITY] },
     { field: "jobTitle", displayName: "תפקיד" },
     { field: "displayName", displayName: "יוזר" },
     { field: "rank", displayName: "דרגה" },
@@ -16,13 +16,13 @@ export const TableTypes = {
   hierarchy: [
     { field: "hierarchy", displayName: "היררכיה" },
     { field: "id", displayName: "מזהה היררכיה", hide: true },
-    { field: "directRoles", displayName: "מספר תפקידים" },
+    { field: "directRoles.length", displayName: "מספר תפקידים", default: 0 },
   ],
   roles: [
     { field: "jobTitle", displayName: "שם תפקיד" },
     { field: "hierarchy", displayName: "היררכיה" },
     { field: "clearance", displayName: "סיווג התפקיד" },
-    { field: "digitalIdentityUniqueId", displayName: "משתמש" },
+    { field: "digitalIdentityUniqueId", displayName: "מזהה תפקיד" },
   ],
 };
 
@@ -61,48 +61,48 @@ export const TableActionsTypes = {
 };
 
 export const TableSearch = (tableType) => {
-  const { tablesStore } = useStores();
+  const { entitiesStore, rolesStore, groupsStore } = useStores();
 
   const searchFields = {
     entities: [
       {
-        searchField: "displayName",
+        searchField: 'displayName',
         searchDisplayName: 'שם/מ"א/ת"ז',
-        searchFunc: tablesStore.getEntitiesByEntity,
+        searchFunc: entitiesStore.getEntitiesByEntity,
       },
       {
-        searchField: "displayName",
-        searchDisplayName: "היררכיה",
-        searchFunc: tablesStore.getEntitiesByHierarchy,
+        searchField: 'displayName',
+        searchDisplayName: 'היררכיה',
+        searchFunc: entitiesStore.getEntitiesByHierarchy,
       },
       {
-        searchField: "displayName",
-        searchDisplayName: "חיפוש לפי תפקיד",
-        searchFunc: tablesStore.getEntitiesByRoleId,
+        searchField: 'displayName',
+        searchDisplayName: 'חיפוש לפי מזהה תפקיד (T)',
+        searchFunc: entitiesStore.getEntitiesByRoleId,
       },
     ],
     hierarchy: [
       {
-        searchField: "hierarchy",
-        searchDisplayName: "היררכיה",
-        searchFunc: tablesStore.getHierarchyByHierarchy,
+        searchField: 'hierarchy',
+        searchDisplayName: 'היררכיה',
+        searchFunc: groupsStore.getHierarchyByHierarchy,
       },
       {
-        searchField: "hierarchy",
-        searchDisplayName: "חיפוש לפי תפקיד",
-        searchFunc: tablesStore.getHierarchyByRoleId,
+        searchField: 'hierarchy',
+        searchDisplayName: 'חיפוש לפי מזהה תפקיד (T)',
+        searchFunc: groupsStore.getHierarchyByRoleId,
       },
     ],
     roles: [
       {
-        searchField: "roleId",
+        searchField: 'roleId',
         searchDisplayName: 'שם/מ"א/ת"ז',
-        searchFunc: tablesStore.getRolesByRoleId,
+        searchFunc: rolesStore.getRolesByRoleId,
       },
       {
-        searchField: "roleId",
-        searchDisplayName: "היררכיה",
-        searchFunc: tablesStore.getRolesByHierarchy,
+        searchField: 'roleId',
+        searchDisplayName: 'היררכיה',
+        searchFunc: rolesStore.getRolesByHierarchy,
       },
     ],
   };
