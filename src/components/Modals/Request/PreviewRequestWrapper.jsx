@@ -10,7 +10,6 @@ const PreviewRequestWrapper = ({
   ModalComponent,
   request,
   setDialogVisiblity,
-  isApprover
 }) => {
   return (
     <>
@@ -49,7 +48,7 @@ const PreviewRequestWrapper = ({
       <hr style={{ borderWidth: '1px' }} />
       <h2>פרטי הבקשה</h2>
       <ModalComponent onlyForView={true} requestObject={request} />
-      <ApproverSection isApprover={isApprover} request={request} setDialogVisiblity={setDialogVisiblity} />
+      <ApproverSection request={request} setDialogVisiblity={setDialogVisiblity} />
     </>
   );
 };
