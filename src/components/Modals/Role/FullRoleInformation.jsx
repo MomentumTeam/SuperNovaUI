@@ -137,6 +137,7 @@ const FullRoleInformation = ({
               <Approver
                 setValue={methods.setValue}
                 name='approvers'
+                tooltip='רס"ן ומעלה ביחידתך'
                 multiple={true}
                 errors={errors}
                 trigger={methods.trigger}
