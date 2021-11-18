@@ -11,17 +11,25 @@ import "../../../assets/css/local/components/modal-item.css";
 import Approver from "../../Fields/Approver";
 import { RoleField } from "../../Fields/Role";
 import { InputForm, InputTypes } from "../../Fields/InputForm";
-import { NAME_OG_EXP,USER_CLEARANCE } from "../../../constants";
+import { NAME_OG_EXP, USER_CLEARANCE } from "../../../constants";
 import { getEntityByRoleId } from "../../../service/KartoffelService";
 import { FullRoleInformationFooter } from "./FullRoleInformationFooter";
 
-const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) => {
+const FullRoleInformation = ({
+  role,
+  isOpen,
+  closeModal,
+  edit,
+  actionPopup,
+}) => {
   const [isEdit, setIsEdit] = useState(edit);
   const [entity, setEntity] = useState({});
   const [isJobTitleFree, setIsJobTitleFree] = useState(true);
 
   const validationSchema = Yup.object().shape({
-    approvers: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+    approvers: Yup.array()
+      .min(1, "יש לבחור לפחות גורם מאשר אחד")
+      .required("יש לבחור לפחות גורם מאשר אחד"),
     role: Yup.string()
       .matches(NAME_OG_EXP, "תפקיד לא תקין")
       .required("יש לבחור שם תפקיד")
@@ -34,12 +42,12 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
       }),
   });
 
-   const methods = useForm({
-     mode: "onBlur",
-     reValidateMode: "onChange",
-     defaultValues: { role: "" },
-     resolver: yupResolver(validationSchema),
-   });
+  const methods = useForm({
+    mode: "onBlur",
+    reValidateMode: "onChange",
+    defaultValues: { role: "" },
+    resolver: yupResolver(validationSchema),
+  });
   const { errors } = methods.formState;
 
   useEffect(async () => {
@@ -78,18 +86,18 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
       displayName: "יחידה",
       inputType: InputTypes.TEXT,
       additionalClass: "padR",
-      force: true
+      force: true,
     },
   ];
 
-   const userInRoleField = [
-     {
-       fieldName: "fullName",
-       displayName: "משתמש בתפקיד",
-       inputType: InputTypes.TEXT,
-       additionalClass: "padL",
-     },
-   ];
+  const userInRoleField = [
+    {
+      fieldName: "fullName",
+      displayName: "משתמש בתפקיד",
+      inputType: InputTypes.TEXT,
+      additionalClass: "padL",
+    },
+  ];
   return (
     <FormProvider {...methods}>
       <Dialog
@@ -98,6 +106,7 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
         visible={isOpen}
         style={{ borderRadius: "30px" }}
         onHide={closeModal}
+        dismissableMask={true}
         footer={
           <FullRoleInformationFooter
             role={role}
@@ -110,8 +119,14 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
       >
         <div className="p-fluid">
           <div className="p-fluid-item padL">
-            <div className={`p-field  ${isEdit ? "p-field-edit" : "p-field-blue"}`}>
-              <RoleField isEdit={isEdit} role={role} setIsJobTitleFree={setIsJobTitleFree} />
+            <div
+              className={`p-field  ${isEdit ? "p-field-edit" : "p-field-blue"}`}
+            >
+              <RoleField
+                isEdit={isEdit}
+                role={role}
+                setIsJobTitleFree={setIsJobTitleFree}
+              />
             </div>
           </div>
 
@@ -120,7 +135,14 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
 
           {isEdit && (
             <div className="p-fluid-item padR">
-              <Approver setValue={methods.setValue} name="approvers" multiple={true} errors={errors} trigger={methods.trigger} />
+              <Approver
+                setValue={methods.setValue}
+                name="approvers"
+                tooltip='רס"ן ומעלה ביחידתך'
+                multiple={true}
+                errors={errors}
+                trigger={methods.trigger}
+              />
             </div>
           )}
         </div>

@@ -2,7 +2,14 @@ import { toJS } from "mobx";
 import { useStores } from "../../context/use-stores";
 
 import { TableAppliesActionsTypes } from "../../constants/applies";
-import { TableActionsTypes, TableNames } from "../../constants/table";
+import {
+  TableActionsTypes as UsersTableActionsTypes,
+  TableNames as UsersTableNames,
+} from "../../constants/usersTable";
+import {
+  TableActionsTypes as MyRequestsTableActionsTypes,
+  TableNames as MyRequestsUsersTableNames,
+} from "../../constants/myRequestsTable";
 import { USER_TYPE } from "../../constants";
 import { canEditEntity } from "../../utils/entites";
 import { canEditRole } from "../../utils/roles";
@@ -19,7 +26,11 @@ const TableActions = ({ setActionType, openActionModal, setEvent }) => {
 
   let actions = [];
   const user = toJS(userStore.user);
-  const dictAction = {...TableActionsTypes,...TableAppliesActionsTypes}
+  const dictAction = {
+    ...UsersTableActionsTypes,
+    ...MyRequestsTableActionsTypes,
+    ...TableAppliesActionsTypes,
+  };
   const tableActions = dictAction[tableType];
 
   const getAction = (labelName, action) => {
@@ -30,20 +41,21 @@ const TableActions = ({ setActionType, openActionModal, setEvent }) => {
         setEvent(e);
         openActionModal();
       },
-    }
+    };
   };
-
 
   if (tableActions) {
     // Add view action
-    if (tableActions.view) actions.push(getAction('צפייה', tableActions.view));
+    if (tableActions.view) actions.push(getAction("צפייה", tableActions.view));
 
     // Add edit action
     if (tableActions.edit) {
       if (
-        (tableType === TableNames.entities.tab && canEditEntity(selectedItem[0], user)) ||
-        (tableType === TableNames.roles.tab && canEditRole(selectedItem[0], user)) ||
-        (tableType === TableNames.hierarchy.tab && canEditHierarchy(user))
+        (tableType === UsersTableNames.entities.tab &&
+          canEditEntity(selectedItem[0], user)) ||
+        (tableType === UsersTableNames.roles.tab &&
+          canEditRole(selectedItem[0], user)) ||
+        (tableType === UsersTableNames.hierarchy.tab && canEditHierarchy(user))
       ) {
         actions.push(getAction("עריכה", tableActions.edit));
       }

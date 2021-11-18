@@ -1,8 +1,8 @@
 import React, { createContext, useReducer, useState, useEffect } from "react";
 
-import Entities from "./Entity";
+import MyRequests from "./MyRequests";
 import { firstPage } from "../../constants/api";
-import { TableNames } from "../../constants/usersTable";
+import { TableNames } from "../../constants/myRequestsTable";
 import { useStores } from "../../context/use-stores";
 
 export const TableDataContext = createContext(null);
@@ -10,20 +10,20 @@ export const TableDataContext = createContext(null);
 export const TableDataRecuder = (state, action) => {
   switch (action.type) {
     case "searchResult":
-      return { isLoading: false, tableData: action.results, page: firstPage, isSearch:true };
+      return { isLoading: false, tableData: action.results, page: firstPage };
     case "restore":
-      return { isLoading: false, tableData: [], page: firstPage, isSearch: false };
+      return { isLoading: false, tableData: [], page: firstPage };
     case "loading":
       return { ...state, isLoading: true };
+    case "loadingSearch":
+      return { ...state, isLoading: true, page: firstPage };
     case "failedLoading":
       return { ...state, isLoading: false };
-    case TableNames.entities.tab:
-    case TableNames.roles.tab:
-    case TableNames.hierarchy.tab:
+    case TableNames.myRequests.tab:
       return {
         isLoading: false,
         tableData: action.results,
-        page: state.page++,
+        page: state.page + 1,
       };
     default:
       break;
@@ -32,11 +32,10 @@ export const TableDataRecuder = (state, action) => {
 
 const TableEntity = () => {
   const { userStore } = useStores();
-  const [tabId, setTabId] = useState(TableNames.entities.tab);
+  const [tabId, setTabId] = useState(TableNames.myRequests.tab);
   const [tableState, tableDispatch] = useReducer(TableDataRecuder, {
     tableData: [],
     isLoading: false,
-    isSearch: false,
     page: 0,
   });
 
@@ -48,7 +47,7 @@ const TableEntity = () => {
     <TableDataContext.Provider
       value={{ tableState, tableDispatch, tabId, setTabId }}
     >
-      <Entities />
+      <MyRequests />
     </TableDataContext.Provider>
   );
 };

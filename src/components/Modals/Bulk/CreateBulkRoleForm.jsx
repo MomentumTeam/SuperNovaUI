@@ -84,7 +84,7 @@ const RenameBulkOGForm = forwardRef(
     return (
       <div
         className="p-fluid"
-        style={{ display: 'flex', flexDirection: 'column' }}
+        style={{ display: "flex", flexDirection: "column" }}
       >
         <div className="p-fluid-item-flex p-fluid-item">
           <div className="p-field">
@@ -116,6 +116,7 @@ const RenameBulkOGForm = forwardRef(
           <Approver
             setValue={setValue}
             name="approvers"
+            tooltip='רס"ן ומעלה ביחידתך'
             multiple={true}
             errors={errors}
             defaultApprovers={requestObject?.commanders || []}

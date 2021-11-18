@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, forwardRef,useEffect } from "react";
+import React, { useImperativeHandle, forwardRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
@@ -29,193 +29,223 @@ const validationSchema = Yup.object().shape({
     .required(),
 });
 
-const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestObject }, ref) => {
-  const { appliesStore } = useStores();
+const RenameSingleOGForm = forwardRef(
+  ({ setIsActionDone, onlyForView, requestObject }, ref) => {
+    const { appliesStore } = useStores();
 
-  const { register, handleSubmit, setValue, watch, formState } = useForm({
-    resolver: yupResolver(validationSchema),
-  });
-  const { errors } = formState;
-
-  useEffect(() => {
-    if (requestObject) {
-      setValue('comments', requestObject.comments);
-      setValue('clearance', requestObject.kartoffelParams.clearance);
-      setValue('roleName', requestObject.kartoffelParams.jobTitle);
-      setValue('hierarchy', { name: requestObject.adParams.ouDisplayName });
-      setValue('isTafkidan', !!requestObject.kartoffelParams.roleEntityType);
-    }
-  }, []);
-
-  const onSubmit = async (data) => {
-    try {
-      await validationSchema.validate(data);
-    } catch (err) {
-      throw new Error(err.errors);
-    }
-    const {
-      approvers,
-      hierarchy,
-      comments,
-      clearance,
-      roleName,
-      isTafkidan,
-    } = data;
-    const req = {
-      commanders: approvers,
-      kartoffelParams: {
-        jobTitle: roleName,
-        directGroup: hierarchy.id,
-        isRoleAttachable: true,
-        source: "oneTree",
-        type: "domainUser",
-        clearance,
-        roleEntityType: isTafkidan ? 'goalUser' : undefined,
-      },
-      adParams: {
-        ouDisplayName: hierarchy.name,
-        jobTitle: roleName,
-        samAccountName: "???", // TODO: check
-      },
-      comments,
-      due: Date.now(),
-    };
-    await appliesStore.createRoleApply(req);
-    setIsActionDone(true);
-  };
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      handleSubmit: handleSubmit(onSubmit),
-    }),
-    []
-  );
-
-  const onRoleNameChange = async (e) => {
-    const roleNameToSearch = e.target.value;
-
-    if (roleNameToSearch && watch("hierarchy")?.id) {
-      const isJobTitleAlreadyTakenResponse =
-        await isJobTitleAlreadyTakenRequest(
-          roleNameToSearch,
-          watch("hierarchy").id
-        );
-
-      setValue("isJobAlreadyTakenData", isJobTitleAlreadyTakenResponse);
-    }
-  };
-
-  const onAvailableRoleName = (e) => {
-    setValue("roleName", e.target.innerHTML);
-    setValue("isJobAlreadyTakenData", {
-      isJobTitleAlreadyTaken: false,
+    const { register, handleSubmit, setValue, watch, formState } = useForm({
+      resolver: yupResolver(validationSchema),
     });
-  };
+    const { errors } = formState;
 
-  return (
-    <div className="p-fluid">
-      <div className="display-flex title-wrap" style={{ width: "inherit" }}>
-        <h2>היררכיה</h2>
-      </div>
-      <div className="p-fluid-item p-fluid-item-flex1">
-        <div className="p-field">
-          <Hierarchy setValue={setValue} name="hierarchy" errors={errors} ogValue={watch('hierarchy')} disabled={onlyForView} />
+    useEffect(() => {
+      if (requestObject) {
+        setValue("comments", requestObject.comments);
+        setValue("clearance", requestObject.kartoffelParams.clearance);
+        setValue("roleName", requestObject.kartoffelParams.jobTitle);
+        setValue("hierarchy", { name: requestObject.adParams.ouDisplayName });
+        setValue("isTafkidan", !!requestObject.kartoffelParams.roleEntityType);
+      }
+    }, []);
+
+    const onSubmit = async (data) => {
+      try {
+        await validationSchema.validate(data);
+      } catch (err) {
+        throw new Error(err.errors);
+      }
+      const {
+        approvers,
+        hierarchy,
+        comments,
+        clearance,
+        roleName,
+        isTafkidan,
+      } = data;
+      const req = {
+        commanders: approvers,
+        kartoffelParams: {
+          jobTitle: roleName,
+          directGroup: hierarchy.id,
+          isRoleAttachable: true,
+          source: "oneTree",
+          type: "domainUser",
+          clearance,
+          roleEntityType: isTafkidan ? "goalUser" : undefined,
+        },
+        adParams: {
+          ouDisplayName: hierarchy.name,
+          jobTitle: roleName,
+          samAccountName: "???", // TODO: check
+        },
+        comments,
+        due: Date.now(),
+      };
+      await appliesStore.createRoleApply(req);
+      setIsActionDone(true);
+    };
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        handleSubmit: handleSubmit(onSubmit),
+      }),
+      []
+    );
+
+    const onRoleNameChange = async (e) => {
+      const roleNameToSearch = e.target.value;
+
+      if (roleNameToSearch && watch("hierarchy")?.id) {
+        const isJobTitleAlreadyTakenResponse =
+          await isJobTitleAlreadyTakenRequest(
+            roleNameToSearch,
+            watch("hierarchy").id
+          );
+
+        setValue("isJobAlreadyTakenData", isJobTitleAlreadyTakenResponse);
+      }
+    };
+
+    const onAvailableRoleName = (e) => {
+      setValue("roleName", e.target.innerHTML);
+      setValue("isJobAlreadyTakenData", {
+        isJobTitleAlreadyTaken: false,
+      });
+    };
+
+    return (
+      <div className="p-fluid">
+        <div className="display-flex title-wrap" style={{ width: "inherit" }}>
+          <h2>היררכיה</h2>
         </div>
-      </div>
-      <div className="p-fluid-item p-fluid-item">
-        <div className="p-field">
-          <label>
-            <span className="required-field">*</span>שם תפקיד
-          </label>
-          <span className="p-input-icon-left">
-            <i>
-              {watch("isJobAlreadyTakenData")?.isJobTitleAlreadyTaken
-                ? "תפוס"
-                : "פנוי"}
-            </i>
-            <InputText {...register("roleName")} onChange={onRoleNameChange} disabled={onlyForView} />
-            <label>{errors.roleName && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
-            <label>
-              {errors.isJobAlreadyTakenData && (
-                <small>יש לבחור תפקיד פנוי</small>
-              )}
-            </label>
-          </span>
-        </div>
-      </div>
-      {watch("isJobAlreadyTakenData")?.isJobTitleAlreadyTaken && (
-        <div
-          className="p-fluid-item p-fluid-item-flex1"
-          style={{ alignItems: "baseline", whiteSpace: "pre-wrap" }}
-        >
-          <div className="p-field" style={{ display: "flex" }}>
-            <div style={{ marginTop: "35px" }}>שמות פנויים:</div>
-            <div style={{ margin: "20px", display: "flex", flexWrap: "wrap" }}>
-              {watch("isJobAlreadyTakenData").suggestions.map((suggestion) => (
-                <Button
-                  className="p-button-secondary p-button-outlined"
-                  style={{ width: "auto" }}
-                  onClick={onAvailableRoleName}
-                >
-                  {suggestion}
-                </Button>
-              ))}
-            </div>
+        <div className="p-fluid-item p-fluid-item-flex1">
+          <div className="p-field">
+            <Hierarchy
+              setValue={setValue}
+              name="hierarchy"
+              errors={errors}
+              ogValue={watch("hierarchy")}
+              disabled={onlyForView}
+            />
           </div>
         </div>
-      )}
-      <div className="p-fluid-item-flex p-fluid-item">
-        <div className="p-field">
-          <label>
-            <span className="required-field">*</span>סיווג תפקיד
-          </label>
-          <Dropdown
-            options={ROLE_CLEARANCE}
-            {...register("clearance")}
-            value={watch("clearance")}
+        <div className="p-fluid-item p-fluid-item">
+          <div className="p-field">
+            <label>
+              <span className="required-field">*</span>שם תפקיד
+            </label>
+            <span className="p-input-icon-left">
+              <i>
+                {watch("isJobAlreadyTakenData")?.isJobTitleAlreadyTaken
+                  ? "תפוס"
+                  : "פנוי"}
+              </i>
+              <InputText
+                {...register("roleName")}
+                onChange={onRoleNameChange}
+                disabled={onlyForView}
+              />
+              <label>
+                {errors.roleName && (
+                  <small style={{ color: "red" }}>יש למלא ערך</small>
+                )}
+              </label>
+              <label>
+                {errors.isJobAlreadyTakenData && (
+                  <small>יש לבחור תפקיד פנוי</small>
+                )}
+              </label>
+            </span>
+          </div>
+        </div>
+        {watch("isJobAlreadyTakenData")?.isJobTitleAlreadyTaken && (
+          <div
+            className="p-fluid-item p-fluid-item-flex1"
+            style={{ alignItems: "baseline", whiteSpace: "pre-wrap" }}
+          >
+            <div className="p-field" style={{ display: "flex" }}>
+              <div style={{ marginTop: "35px" }}>שמות פנויים:</div>
+              <div
+                style={{ margin: "20px", display: "flex", flexWrap: "wrap" }}
+              >
+                {watch("isJobAlreadyTakenData").suggestions.map(
+                  (suggestion) => (
+                    <Button
+                      className="p-button-secondary p-button-outlined"
+                      style={{ width: "auto" }}
+                      onClick={onAvailableRoleName}
+                    >
+                      {suggestion}
+                    </Button>
+                  )
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+        <div className="p-fluid-item-flex p-fluid-item">
+          <div className="p-field">
+            <label>
+              <span className="required-field">*</span>סיווג תפקיד
+            </label>
+            <Dropdown
+              options={["אדום", "כחול", "סגול"]}
+              placeholder="סיווג תפקיד"
+              {...register("clearance")}
+              value={watch("clearance")}
+              disabled={onlyForView}
+            />
+            <label>
+              {errors.clearance && (
+                <small style={{ color: "red" }}>יש למלא ערך</small>
+              )}
+            </label>
+          </div>
+        </div>
+        <div className="p-fluid-item">
+          <Approver
+            setValue={setValue}
+            name="approvers"
+            tooltip='רס"ן ומעלה ביחידתך'
+            multiple={true}
+            errors={errors}
+            defaultApprovers={requestObject?.commanders || []}
             disabled={onlyForView}
           />
-          <label>{errors.clearance && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
         </div>
-      </div>
-      <div className="p-fluid-item">
-        <Approver
-          setValue={setValue}
-          name="approvers"
-          multiple={true}
-          errors={errors}
-          defaultApprovers={requestObject?.commanders || []}
-          disabled={onlyForView}
-        />
-      </div>
-      <div className="p-field-checkbox" style={{ marginBottom: "10px" }}>
-        <Checkbox
-          style={{ marginLeft: "10px" }}
-          {...register("isTafkidan")}
-          onChange={(e) => setValue("isTafkidan", e.checked)}
-          checked={watch("isTafkidan")}
-          disabled={onlyForView}
-        />
-        <label>התפקיד נפתח עבור משתמש תפקידן (מילואים / חמ"ל)</label>
-      </div>
-      <div className="p-fluid-item p-fluid-item-flex1">
-        <div className="p-field">
-          <label>
-            <span></span>הערות
-          </label>
-          <InputTextarea
-            {...register("comments")}
-            type="text"
-            autoResize="false"
+        <div className="p-field-checkbox" style={{ marginBottom: "10px" }}>
+          <Checkbox
+            style={{ marginLeft: "10px" }}
+            {...register("isTafkidan")}
+            onChange={(e) => setValue("isTafkidan", e.checked)}
+            checked={watch("isTafkidan")}
             disabled={onlyForView}
             placeholder='הכנס הערות לבקשה...'
           />
-          <label>{errors.comments && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
+          <label>התפקיד נפתח עבור משתמש תפקידן (מילואים / חמ"ל)</label>
+        </div>
+        <div className="p-fluid-item p-fluid-item-flex1">
+          <div className="p-field">
+            <label>
+              <span></span>הערות
+            </label>
+            <InputTextarea
+              {...register("comments")}
+              type="text"
+              autoResize="false"
+              disabled={onlyForView}
+            />
+            <label>
+              {errors.comments && (
+                <small style={{ color: "red" }}>יש למלא ערך</small>
+              )}
+            </label>
+          </div>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 
 export default RenameSingleOGForm;

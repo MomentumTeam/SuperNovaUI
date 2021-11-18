@@ -8,12 +8,14 @@ import Approver from "../../Fields/Approver";
 import { Dropdown } from "primereact/dropdown";
 import { useStores } from "../../../context/use-stores";
 import { toJS } from "mobx";
-import { USER_TYPE } from '../../../constants';
-import { getUserPassOptions } from '../../../utils/applies';
+import { USER_TYPE } from "../../../constants";
+import { getUserPassOptions } from "../../../utils/applies";
 
 const validationSchema = Yup.object().shape({
   approverType: Yup.string().required("יש לבחור סוג גורם מטפל"),
-  approvers: Yup.array().min(1, "יש לבחור לפחות גורם מטפל אחד").required("יש לבחור לפחות גורם מטפל אחד"),
+  approvers: Yup.array()
+    .min(1, "יש לבחור לפחות גורם מטפל אחד")
+    .required("יש לבחור לפחות גורם מטפל אחד"),
   comment: Yup.string().optional(),
 });
 
@@ -24,7 +26,9 @@ const PassRequestForm = forwardRef(({ request, setActionIsDone }, ref) => {
 
   const { register, handleSubmit, setValue, watch, formState } = useForm({
     resolver: yupResolver(validationSchema),
-    defaultValues: { approverType: passOptions.length > 0 ? passOptions[0].value : "" },
+    defaultValues: {
+      approverType: passOptions.length > 0 ? passOptions[0].value : "",
+    },
   });
   const { errors } = formState;
 
@@ -47,7 +51,7 @@ const PassRequestForm = forwardRef(({ request, setActionIsDone }, ref) => {
     if (comment.length > 0) req.comment = comment;
     await appliesStore.transferApprovers(req);
     setActionIsDone(true);
-  }
+  };
 
   useImperativeHandle(
     ref,
@@ -59,7 +63,7 @@ const PassRequestForm = forwardRef(({ request, setActionIsDone }, ref) => {
 
   return (
     <div className="p-fluid">
-      <div className="p-fluid-item" style={{ width: '100%' }}>
+      <div className="p-fluid-item" style={{ width: "100%" }}>
         <label htmlFor="12023">
           העברה לטיפול (בקשה {request?.serialNumber})
         </label>
@@ -79,9 +83,9 @@ const PassRequestForm = forwardRef(({ request, setActionIsDone }, ref) => {
               />
             )}
             <label htmlFor="2020">
-              {' '}
+              {" "}
               {errors.approverType && (
-                <small style={{ color: 'red' }}>
+                <small style={{ color: "red" }}>
                   {errors.approverType.message}
                 </small>
               )}
@@ -91,14 +95,15 @@ const PassRequestForm = forwardRef(({ request, setActionIsDone }, ref) => {
             <Approver
               setValue={setValue}
               name="approvers"
+              tooltip='רס"ן ומעלה ביחידתך'
               errors={errors}
-              type={watch('approverType')}
+              type={watch("approverType")}
               defaultApprovers={
-                watch('approverType') === USER_TYPE.COMMANDER
+                watch("approverType") === USER_TYPE.COMMANDER
                   ? request.commanders
                   : []
               }
-              multiple={watch('approverType') === USER_TYPE.COMMANDER}
+              multiple={watch("approverType") === USER_TYPE.COMMANDER}
             />
           </div>
         </div>

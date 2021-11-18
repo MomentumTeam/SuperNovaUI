@@ -36,6 +36,7 @@ const Table = ({
   onSort = null,
   sortField = null,
   sortOrder = null,
+  scrollHeight = null,
 }) => {
   const contextMenu = useRef(null);
   const { userStore } = useStores();
@@ -46,7 +47,10 @@ const Table = ({
   const user = toJS(userStore.user);
 
   const isAllowed = (col) => {
-    return col.secured === undefined || col.secured.some((allowedType) => isUserHoldType(user, allowedType));
+    return (
+      col.secured === undefined ||
+      col.secured.some((allowedType) => isUserHoldType(user, allowedType))
+    );
   };
 
   const loadingText = () => {
@@ -76,7 +80,7 @@ const Table = ({
 
   useEffect(() => {
     setSelectedItem([]);
-    setRowData(tableTypes.filter((col) => isAllowed(col)))
+    setRowData(tableTypes.filter((col) => isAllowed(col)));
   }, [tableType]);
 
   return (
@@ -88,6 +92,7 @@ const Table = ({
           <div className="tableStyle">
             <div className="card">
               <DataTable
+                emptyMessage={"אין תוצאות"}
                 value={data}
                 selection={selectedItem}
                 selectionMode={selectionMode}
@@ -103,7 +108,7 @@ const Table = ({
                   />
                 }
                 scrollable={scrollable}
-                scrollHeight="500px"
+                scrollHeight={scrollHeight ? scrollHeight : "500px"}
                 loading={isLoading}
                 rows={isPaginator || isVirtualScrollable ? rows : null}
                 paginator={isPaginator} // paginator start
@@ -112,12 +117,20 @@ const Table = ({
                 onPage={onScroll} // paginator end
                 virtualScroll={isVirtualScrollable} // virtual scroll start
                 onVirtualScroll={onVirtualScroll}
-                virtualRowHeight={isPaginator || isVirtualScrollable ? rows : null}
+                virtualRowHeight={
+                  isPaginator || isVirtualScrollable ? rows : null
+                }
                 lazy={isVirtualScrollable}
                 totalRecords={totalRecordsScroll} // virtual scroll end
                 contextMenu={!disableActions}
-                onContextMenuSelectionChange={!disableActions ? (e) => setValue(e.value) : undefined}
-                onContextMenu={!disableActions ? (e) => contextMenu.current.show(e.originalEvent) : undefined}
+                onContextMenuSelectionChange={
+                  !disableActions ? (e) => setValue(e.value) : undefined
+                }
+                onContextMenu={
+                  !disableActions
+                    ? (e) => contextMenu.current.show(e.originalEvent)
+                    : undefined
+                }
                 sortField={sortField}
                 sortOrder={sortOrder}
                 onSort={onSort}
@@ -146,7 +159,12 @@ const Table = ({
                     // sortFunction={col?.sortable && onSort !== null ? (e) => onSort(e, col) : undefined}
                   />
                 ))}
-                {!disableActions && <Column loadingBody={loadingText} body={TableActionsTemplate} />}
+                {!disableActions && (
+                  <Column
+                    loadingBody={loadingText}
+                    body={TableActionsTemplate}
+                  />
+                )}
               </DataTable>
             </div>
           </div>

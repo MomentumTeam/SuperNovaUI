@@ -23,6 +23,7 @@ const AllNotifications = ({ isVisible, setIsVisible }) => {
       visible={isVisible}
       header="כל ההתראות"
       onHide={() => setIsVisible(false)}
+      dismissableMask={true}
       footer={
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
           <Button

@@ -31,9 +31,9 @@ const SideToolbar = ({ recentApplies }) => {
               הכל
             </a>
           </div>
-          <div className="table-item-wrap">
-            <div className="table-item-inner">
-              <List list={recentApplies.slice(0, 5)} />
+          <div className='table-item-wrap'>
+            <div className='table-item-inner'>
+              <List list={recentApplies.slice(0,7)} />
             </div>
           </div>
         </div>
