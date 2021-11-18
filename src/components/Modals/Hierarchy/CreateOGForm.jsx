@@ -72,8 +72,8 @@ const CreateOGForm = forwardRef(
             setValue={setValue}
             name="parentHierarchy"
             errors={errors}
-            labelText={"היררכיית אב"}
-            ogValue={watch("parentHierarchy")}
+            labelText={'היררכיית אב'}
+            ogValue={watch('parentHierarchy')}
             disabled={onlyForView}
           />
         </div>
@@ -83,16 +83,15 @@ const CreateOGForm = forwardRef(
               <span className="required-field">*</span>שם היררכיה חדשה
             </label>
             <InputText
-              {...register("newHierarchy")}
+              {...register('newHierarchy')}
               id="2021"
               type="text"
               required
-              placeholder="שם היררכיה חדשה"
               disabled={onlyForView}
             />
             <label>
               {errors.newHierarchy && (
-                <small style={{ color: "red" }}>יש למלא ערך</small>
+                <small style={{ color: 'red' }}>יש למלא ערך</small>
               )}
             </label>
           </div>
@@ -112,10 +111,10 @@ const CreateOGForm = forwardRef(
           <div className="p-field">
             <label htmlFor="2023">הערות</label>
             <InputTextarea
-              {...register("comments")}
+              {...register('comments')}
               id="2023"
               type="text"
-              placeholder="הערות"
+              placeholder="הכנס הערות לבקשה..."
               disabled={onlyForView}
             />
           </div>

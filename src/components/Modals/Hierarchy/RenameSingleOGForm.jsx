@@ -160,7 +160,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             onChange={onIdentifierChange}
             type="text"
             required
-            placeholder="מזהה תפקיד"
+            // placeholder="מזהה תפקיד"
             disabled={onlyForView}
           />
           <label>{errors.identifier && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>

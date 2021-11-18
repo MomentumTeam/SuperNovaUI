@@ -172,7 +172,6 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
           </label>
           <Dropdown
             options={ROLE_CLEARANCE}
-            placeholder="סיווג תפקיד"
             {...register("clearance")}
             value={watch("clearance")}
             disabled={onlyForView}

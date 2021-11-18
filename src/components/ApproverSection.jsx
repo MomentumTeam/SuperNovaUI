@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Button } from "primereact/button";
-import { InputTextarea } from "primereact/inputtextarea";
-import "../assets/css/local/components/modal-item.min.css";
-import { useStores } from "../context/use-stores";
-import { toJS } from "mobx";
+import React, { useState } from 'react';
+import { Button } from 'primereact/button';
+import { InputTextarea } from 'primereact/inputtextarea';
+import '../assets/css/local/components/modal-item.min.css';
+import { useStores } from '../context/use-stores';
+import { toJS } from 'mobx';
 import { getApproverComments, isApproverAndCanEdit } from '../utils/applies';
 
 const ApproverSection = ({ request, setDialogVisiblity }) => {
@@ -13,7 +13,20 @@ const ApproverSection = ({ request, setDialogVisiblity }) => {
   let requestId = request.id;
   const enabledChange = isApproverAndCanEdit(request, user);
 
-  const [approverComment, setApproverComment] = useState("");
+  const [approverMode, setApproveMode] = useState({
+    commentMode: false,
+    denyMode: false,
+    denyReason: '',
+  });
+
+  const [approverComments, setApproverComments] = useState(
+    getApproverComments(request, user)
+  );
+
+  const onChangeComment = (e, index) => {
+    approverComments[index].comment = e.target.value;
+    setApproverComments([...approverComments]);
+  };
 
   const changeDecisionRequest = async (decision) => {
     try {
@@ -23,21 +36,44 @@ const ApproverSection = ({ request, setDialogVisiblity }) => {
         decision: { decision },
       };
 
-      if (approverComment.length > 0) decisionObject.decision.reason = approverComment;
+      if (approverMode.denyMode && approverMode.denyReason.length > 0)
+        decisionObject.decision.reason = approverMode.denyReason;
 
       await appliesStore.updateApplyDecision(decisionObject);
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      console.log(err);
     }
     setDialogVisiblity(false);
+    setApproveMode({
+      commentMode: false,
+      denyMode: false,
+      denyReason: '',
+    });
   };
 
+  const submit = async () => {
+    if (approverMode.denyMode) {
+      changeDecisionRequest('DENIED');
+      //TODO
+    } else if (approverMode.commentMode) {
+      for (let comment of approverComments) {
+        let newCommentObject = {
+          requestId,
+          approversType: comment.userType,
+          comment: comment.comment,
+        };
+
+        await appliesStore.updateApproversComments(newCommentObject);
+        setDialogVisiblity(false);
+      }
+    }
+  };
 
   return (
     <>
       <div className="p-fluid">
         <div className="p-fluid-item p-fluid-item-flex1">
-          {getApproverComments(request, user).map(comment => {
+          {approverComments.map((comment, index) => {
             return (
               <div className="p-field">
                 <label>
@@ -45,25 +81,34 @@ const ApproverSection = ({ request, setDialogVisiblity }) => {
                   {comment.label}
                 </label>
                 <InputTextarea
-                  disabled={true}
+                  disabled={!approverMode.commentMode}
                   value={comment.comment}
                   type="text"
                   autoResize="false"
-                  onChange={(e) => setApproverComment(e.target.value)}
+                  onChange={(e) => {
+                    onChangeComment(e, index);
+                  }}
                 />
               </div>
             );
           })}
-          {enabledChange && (
+
+          {enabledChange && approverMode.denyMode && (
             <div className="p-field">
               <label>
-                <span></span>הערות מאשר
+                <span></span>
+                סיבת דחייה
               </label>
               <InputTextarea
-                value={approverComment}
+                value={approverMode.denyReason}
                 type="text"
                 autoResize="false"
-                onChange={(e) => setApproverComment(e.target.value)}
+                onChange={(e) =>
+                  setApproveMode({
+                    ...approverMode,
+                    denyReason: e.target.value,
+                  })
+                }
               />
             </div>
           )}
@@ -71,26 +116,78 @@ const ApproverSection = ({ request, setDialogVisiblity }) => {
       </div>
       <div
         style={{
-          display: "flex",
-          flexDirection: "row-reverse",
-          justifyContent: "space-between",
-          marginBottom: "10px",
+          display: 'flex',
+          flexDirection: 'row-reverse',
+          justifyContent: 'space-between',
+          marginBottom: '10px',
         }}
       >
-        {enabledChange && (
-          <div style={{ display: "flex", flexDirection: "row-reverse" }}>
-            <Button
-              label="אישור"
-              onClick={() => changeDecisionRequest("APPROVED")}
-              className="btn-gradient green"
-              style={{ marginRight: "20px" }}
-            />
-            <Button label="דחייה" onClick={() => changeDecisionRequest("DENIED")} className="btn-gradient orange" />
-          </div>
-        )}
-        <div>
-          <Button label="סגירה" className="btn-gradient" onClick={() => setDialogVisiblity(false)} />
-        </div>
+        {enabledChange &&
+          (!approverMode.commentMode && !approverMode.denyMode ? (
+            <>
+              <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+                <Button
+                  label="אישור"
+                  onClick={() => changeDecisionRequest('APPROVED')}
+                  className="btn-gradient green"
+                  style={{ marginRight: '20px' }}
+                />
+                <Button
+                  label="דחייה"
+                  onClick={() => {
+                    setApproveMode({
+                      ...approverMode,
+                      denyMode: true,
+                      commentMode: false,
+                    });
+                  }}
+                  className="btn-gradient orange"
+                />
+              </div>
+            </>
+          ) : (
+            <div>
+              <Button
+                label={approverMode.denyMode ? 'דחייה' : 'שמירה'}
+                className="btn-gradient orange"
+                onClick={submit}
+              />
+            </div>
+          ))}
+
+        {enabledChange &&
+          (!approverMode.commentMode && !approverMode.denyMode ? (
+            <>
+              <div>
+                {/* TODO: CHANGE TO COMMENTS */}
+                <Button
+                  label="הוספת הערה"
+                  className="btn-gradient"
+                  onClick={(e) => {
+                    setApproveMode({
+                      ...approverMode,
+                      commentMode: true,
+                      denyMode: false,
+                    });
+                  }}
+                />
+              </div>
+            </>
+          ) : (
+            <div>
+              <Button
+                label="ביטול"
+                className="btn-gradient"
+                onClick={() =>
+                  setApproveMode({
+                    ...approverMode,
+                    commentMode: false,
+                    denyMode: false,
+                  })
+                }
+              />
+            </div>
+          ))}
       </div>
     </>
   );

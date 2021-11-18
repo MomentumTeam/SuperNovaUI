@@ -59,44 +59,59 @@ const PassRequestForm = forwardRef(({ request, setActionIsDone }, ref) => {
 
   return (
     <div className="p-fluid">
-      <div className="p-fluid-item" style={{ width: "100%" }}>
-        <label htmlFor="12023">העברה לטיפול (בקשה {request?.serialNumber})</label>
+      <div className="p-fluid-item" style={{ width: '100%' }}>
+        <label htmlFor="12023">
+          העברה לטיפול (בקשה {request?.serialNumber})
+        </label>
         <div className="display-flex">
           <div className="p-field">
             {passOptions.length > 1 && (
               <Dropdown
-                {...register("approverType")}
+                {...register('approverType')}
                 className="dropdown-autocomplete"
-                value={watch("approverType")}
+                value={watch('approverType')}
                 options={passOptions}
                 placeholder="סוג גורם מטפל"
                 onChange={(e) => {
-                  setValue("approverType", e.value);
-                  setValue("approvers", []);
+                  setValue('approverType', e.value);
+                  setValue('approvers', []);
                 }}
               />
             )}
             <label htmlFor="2020">
-              {" "}
-              {errors.approverType && <small style={{ color: "red" }}>{errors.approverType.message}</small>}
+              {' '}
+              {errors.approverType && (
+                <small style={{ color: 'red' }}>
+                  {errors.approverType.message}
+                </small>
+              )}
             </label>
           </div>
-          <div className="AutoCompleteWrap" style={{ width: "100%" }}>
+          <div className="AutoCompleteWrap" style={{ width: '100%' }}>
             <Approver
               setValue={setValue}
               name="approvers"
               errors={errors}
-              type={watch("approverType")}
-              defaultApprovers={watch("approverType") === USER_TYPE.COMMANDER ? request.commanders : []}
-              multiple={watch("approverType") === USER_TYPE.COMMANDER}
+              type={watch('approverType')}
+              defaultApprovers={
+                watch('approverType') === USER_TYPE.COMMANDER
+                  ? request.commanders
+                  : []
+              }
+              multiple={watch('approverType') === USER_TYPE.COMMANDER}
             />
           </div>
         </div>
       </div>
-      <div className="p-fluid-item" style={{ width: "100%" }}>
+      <div className="p-fluid-item" style={{ width: '100%' }}>
         <div className="p-field">
           <label htmlFor="12024">הערות</label>
-          <InputTextarea {...register("comment")} id="2028" type="text" placeholder="הערות" />
+          <InputTextarea
+            {...register('comment')}
+            id="2028"
+            type="text"
+            placeholder="הכנס הערות לבקשה..."
+          />
         </div>
       </div>
     </div>

@@ -26,7 +26,6 @@ const validationSchema = Yup.object().shape({
 
 const RenameBulkOGForm = forwardRef(
   ({ setIsActionDone, requestObject, onlyForView }, ref) => {
-    console.log('requestObject', requestObject)
     const { appliesStore } = useStores();
     const { register, handleSubmit, setValue, formState, watch } = useForm({
       resolver: yupResolver(validationSchema),
