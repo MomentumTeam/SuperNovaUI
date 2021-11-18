@@ -169,7 +169,6 @@ const RenameSingleOGForm = forwardRef(
               tooltipOptions={{ position: "top" }}
               type="text"
               required
-              placeholder="מזהה תפקיד"
               disabled={onlyForView}
             />
             <label>

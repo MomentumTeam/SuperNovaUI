@@ -362,7 +362,6 @@ const AssignRoleToEntityForm = forwardRef(
                 {...register('role')}
                 inputId="2025"
                 options={roles}
-                placeholder="שם תפקיד"
                 optionLabel="jobTitle"
                 value={watch('role')}
                 onChange={(e) => {

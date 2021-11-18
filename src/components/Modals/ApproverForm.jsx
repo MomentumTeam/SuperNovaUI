@@ -153,9 +153,9 @@ const ApproverForm = forwardRef(
               <span className="required-field">*</span>סוג גורם מאשר
             </label>
             <Dropdown
-              {...register("approverType")}
+              {...register('approverType')}
               disabled={onlyForView}
-              className={`${onlyForView ? "disabled" : ""} approverType`}
+              className={`${onlyForView ? 'disabled' : ''} approverType`}
               value={approverType}
               inputId="2011"
               required
@@ -167,7 +167,7 @@ const ApproverForm = forwardRef(
         <div className="p-fluid-item">
           <div className="p-field">
             <label htmlFor="2020">
-              {" "}
+              {' '}
               <span className="required-field">*</span>שם מלא
             </label>
             <button
@@ -175,58 +175,58 @@ const ApproverForm = forwardRef(
               onClick={setCurrentUser}
               type="button"
               title="עבורי"
-              style={onlyForView && { display: "none" }}
+              style={onlyForView && { display: 'none' }}
             >
               עבורי
             </button>
             <AutoComplete
-              value={watch("userName")}
+              value={watch('userName')}
               suggestions={userSuggestions}
               completeMethod={onSearchUser}
               id="approverForm-userName"
               type="text"
               field="fullName"
               onSelect={(e) => {
-                setValue("user", e.value);
+                setValue('user', e.value);
                 setValue(
-                  "personalNumber",
+                  'personalNumber',
                   e.value.personalNumber || e.value.identityCard
                 );
-                setValue("hierarchy", e.value.hierarchy);
+                setValue('hierarchy', e.value.hierarchy);
               }}
               onChange={(e) => {
-                setValue("userName", e.value);
-                if (e.value === "") {
-                  setValue("personalNumber", "");
-                  setValue("hierarchy", "");
+                setValue('userName', e.value);
+                if (e.value === '') {
+                  setValue('personalNumber', '');
+                  setValue('hierarchy', '');
                 }
               }}
               required
               disabled={onlyForView}
             />
-            {errors.user && <small style={{ color: "red" }}>יש למלא ערך</small>}
+            {errors.user && <small style={{ color: 'red' }}>יש למלא ערך</small>}
           </div>
         </div>
         <div className="p-fluid-item">
           <div className="p-field">
             <label htmlFor="2021">
-              {" "}
+              {' '}
               <span className="required-field">*</span>מ"א/ת"ז
             </label>
             <InputText
-              {...register("personalNumber", { required: true })}
+              {...register('personalNumber', { required: true })}
               id="2021"
               type="text"
               required
               onBlur={onSearchUserByPersonalNumber}
               onKeyDown={(e) => {
-                if (e.key === "Enter") {
+                if (e.key === 'Enter') {
                   onSearchUserByPersonalNumber();
                 }
               }}
               disabled={onlyForView}
             />
-            {errors.user && <small style={{ color: "red" }}>יש למלא ערך</small>}
+            {errors.user && <small style={{ color: 'red' }}>יש למלא ערך</small>}
           </div>
         </div>
         <div className="p-fluid-item">
@@ -234,7 +234,7 @@ const ApproverForm = forwardRef(
             disabled={true}
             setValue={setValue}
             name="hierarchy"
-            ogValue={getValues("hierarchy")}
+            ogValue={getValues('hierarchy')}
             errors={errors}
           />
         </div>
@@ -254,10 +254,10 @@ const ApproverForm = forwardRef(
             <label htmlFor="2016">הערות</label>
             <InputTextarea
               disabled={onlyForView}
-              {...register("comments")}
+              {...register('comments')}
               id="2016"
               type="text"
-              placeholder="הערות"
+              placeholder="הכנס הערות לבקשה..."
             />
           </div>
         </div>
