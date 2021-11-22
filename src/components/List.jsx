@@ -15,32 +15,32 @@ const List = ({ list }) => {
   };
 
   return (
-    <table className='tableStyle'>
+    <table className="tableStyle">
       <tbody>
         {list.map((request, index) => (
           <tr
             key={request.id}
             onClick={() => onClick(request, index)}
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: "pointer" }}
           >
             <td>
-              <div className='td-inner'>
+              <div className="td-inner">
                 {datesUtil.formattedDate(Number(request.createdAt))}
               </div>
             </td>
             <td>
-              <div className='td-inner'>{TYPES[request.type]}</div>
+              <div className="td-inner">{TYPES[request.type]}</div>
             </td>
             <td>
-              <div className='td-inner td-inner-btn'>
+              <div className="td-inner td-inner-btn">
                 <button
                   className={
-                    'btn-status ' +
-                    (request.status === STATUSES.SENT
-                      ? 'btn-sent'
-                      : ' btn-rejected')
+                    "btn-status " +
+                    ([STATUSES.DONE].includes(STATUSES[request.status])
+                      ? "btn-sent"
+                      : "btn-rejected")
                   }
-                  type='button'
+                  type="button"
                   title={request.status}
                 >
                   {STATUSES[request.status]}

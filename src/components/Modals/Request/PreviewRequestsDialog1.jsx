@@ -97,6 +97,7 @@ const PreviewRequestsDialog = ({ request, isDialogVisible, setDialogVisiblity })
       visible={isDialogVisible}
       onHide={() => setDialogVisiblity(false)}
       footer={dialogParams[request.type]?.footer}
+      dismissableMask={true}
     >
       {dialogContent}
     </Dialog>

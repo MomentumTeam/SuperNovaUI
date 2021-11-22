@@ -33,7 +33,7 @@ const CreateOGForm = forwardRef(
         setValue("newHierarchy", requestObject.adParams.name);
         setValue("parentHierarchy", { name: requestObject.adParams.ouName });
       }
-    },[]);
+    }, []);
 
     const onSubmit = async (data) => {
       const { newHierarchy, parentHierarchy, approvers, comments } = data;
@@ -105,6 +105,7 @@ const CreateOGForm = forwardRef(
             isHighRank={true}
             defaultApprovers={GetDefaultApprovers(requestObject, onlyForView, setValue)}
             disabled={onlyForView || isUserHoldType(userStore.user, USER_TYPE.COMMANDER)}
+            tooltip='רס"ן ומעלה ביחידתך'
           />
         </div>
         <div className="p-fluid-item p-fluid-item-flex1">

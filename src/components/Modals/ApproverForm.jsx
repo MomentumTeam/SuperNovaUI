@@ -1,19 +1,24 @@
-import React, { useEffect, useState, useImperativeHandle, forwardRef } from 'react';
-import { useForm } from 'react-hook-form';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { InputTextarea } from 'primereact/inputtextarea';
-import Hierarchy from './Hierarchy';
-import Approver from '../Fields/Approver';
-import { AutoComplete } from 'primereact/autocomplete';
-import '../../assets/css/local/components/approverForm.css'
+import React, {
+  useEffect,
+  useState,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
+import { useForm } from "react-hook-form";
+import { InputText } from "primereact/inputtext";
+import { Dropdown } from "primereact/dropdown";
+import { InputTextarea } from "primereact/inputtextarea";
+import Hierarchy from "./Hierarchy";
+import Approver from "../Fields/Approver";
+import { AutoComplete } from "primereact/autocomplete";
+import "../../assets/css/local/components/approverForm.css";
 // import { assignRoleToEntityRequest } from '../../service/AppliesService';
-import { useStores } from '../../context/use-stores';
-import { toJS } from 'mobx';
+import { useStores } from "../../context/use-stores";
+import { toJS } from "mobx";
 import {
   searchEntitiesByFullName,
   getEntityByIdentifier,
-} from '../../service/KartoffelService';
+} from "../../service/KartoffelService";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { USER_TYPE } from '../../constants';
@@ -21,11 +26,11 @@ import { isUserHoldType } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
 
 const approverTypes = [
-  { label: 'גורם מאשר ראשוני', value: 'COMMANDER' },
-  { label: 'גורם מאשר יחב"ם', value: 'SECURITY' },
-  { label: 'גורם מאשר בטח"ם', value: 'SUPER_SECURITY' },
-  { label: 'הרשאת בקשה מרובה', value: 'BULK' },
-  { label: 'מחשוב יחידתי', value: 'ADMIN' },
+  { label: "גורם מאשר ראשוני", value: "COMMANDER" },
+  { label: 'גורם מאשר יחב"ם', value: "SECURITY" },
+  { label: 'גורם מאשר בטח"ם', value: "SUPER_SECURITY" },
+  { label: "הרשאת בקשה מרובה", value: "BULK" },
+  { label: "מחשוב יחידתי", value: "ADMIN" },
 ];
 
 const validationSchema = Yup.object().shape({
@@ -245,6 +250,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
           defaultApprovers={GetDefaultApprovers(requestObject, onlyForView, setValue)}
           multiple={true}
           errors={errors}
+          tooltip='סא"ל ומעלה ביחידתך'
         />
       </div>
       <div className="p-fluid-item p-fluid-item-flex1">
@@ -258,14 +264,21 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
             placeholder="הכנס הערות לבקשה..."
           />
         </div>
+        <div className="p-fluid-item p-fluid-item-flex1">
+          <div className="p-field">
+            <label htmlFor="2016">הערות</label>
+            <InputTextarea disabled={onlyForView} {...register("comments")} id="2016" type="text" placeholder="הערות" />
+          </div>
+        </div>
       </div>
     </div>
   );
-});
+  }
+);
 
 ApproverForm.defaultProps = {
   onlyForView: undefined,
-  approverRequestObj: {}
-}
+  approverRequestObj: {},
+};
 
 export default ApproverForm;

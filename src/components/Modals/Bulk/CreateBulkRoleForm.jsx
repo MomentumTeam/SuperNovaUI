@@ -119,6 +119,7 @@ const RenameBulkOGForm = forwardRef(
           <Approver
             setValue={setValue}
             name="approvers"
+            tooltip='רס"ן ומעלה ביחידתך'
             multiple={true}
             errors={errors}
             setValue={setValue}

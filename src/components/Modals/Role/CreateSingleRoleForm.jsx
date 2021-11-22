@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, forwardRef,useEffect } from "react";
+import React, { useImperativeHandle, forwardRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
@@ -33,20 +33,20 @@ const validationSchema = Yup.object().shape({
 const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestObject }, ref) => {
   const { appliesStore, userStore } = useStores();
 
-  const { register, handleSubmit, setValue, watch, formState } = useForm({
-    resolver: yupResolver(validationSchema),
-  });
-  const { errors } = formState;
+    const { register, handleSubmit, setValue, watch, formState } = useForm({
+      resolver: yupResolver(validationSchema),
+    });
+    const { errors } = formState;
 
-  useEffect(() => {
-    if (requestObject) {
-      setValue('comments', requestObject.comments);
-      setValue('clearance', requestObject.kartoffelParams.clearance);
-      setValue('roleName', requestObject.kartoffelParams.jobTitle);
-      setValue('hierarchy', { name: requestObject.adParams.ouDisplayName });
-      setValue('isTafkidan', !!requestObject.kartoffelParams.roleEntityType);
-    }
-  }, []);
+    useEffect(() => {
+      if (requestObject) {
+        setValue("comments", requestObject.comments);
+        setValue("clearance", requestObject.kartoffelParams.clearance);
+        setValue("roleName", requestObject.kartoffelParams.jobTitle);
+        setValue("hierarchy", { name: requestObject.adParams.ouDisplayName });
+        setValue("isTafkidan", !!requestObject.kartoffelParams.roleEntityType);
+      }
+    }, []);
 
 
   const onSubmit = async (data) => {
@@ -72,48 +72,48 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
         source: "oneTree",
         type: "domainUser",
         clearance,
-        roleEntityType: isTafkidan ? 'goalUser' : undefined,
+        roleEntityType: isTafkidan ? "goalUser" : undefined,
       },
-      adParams: {
-        ouDisplayName: hierarchy.name,
-        jobTitle: roleName,
-        samAccountName: "???", // TODO: check
-      },
-      comments,
-      due: Date.now(),
+        adParams: {
+          ouDisplayName: hierarchy.name,
+          jobTitle: roleName,
+          samAccountName: "???", // TODO: check
+        },
+        comments,
+        due: Date.now(),
+      };
+      await appliesStore.createRoleApply(req);
+      setIsActionDone(true);
     };
-    await appliesStore.createRoleApply(req);
-    setIsActionDone(true);
-  };
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      handleSubmit: handleSubmit(onSubmit),
-    }),
-    []
-  );
+    useImperativeHandle(
+      ref,
+      () => ({
+        handleSubmit: handleSubmit(onSubmit),
+      }),
+      []
+    );
 
-  const onRoleNameChange = async (e) => {
-    const roleNameToSearch = e.target.value;
+    const onRoleNameChange = async (e) => {
+      const roleNameToSearch = e.target.value;
 
-    if (roleNameToSearch && watch("hierarchy")?.id) {
-      const isJobTitleAlreadyTakenResponse =
-        await isJobTitleAlreadyTakenRequest(
-          roleNameToSearch,
-          watch("hierarchy").id
-        );
+      if (roleNameToSearch && watch("hierarchy")?.id) {
+        const isJobTitleAlreadyTakenResponse =
+          await isJobTitleAlreadyTakenRequest(
+            roleNameToSearch,
+            watch("hierarchy").id
+          );
 
-      setValue("isJobAlreadyTakenData", isJobTitleAlreadyTakenResponse);
-    }
-  };
+        setValue("isJobAlreadyTakenData", isJobTitleAlreadyTakenResponse);
+      }
+    };
 
-  const onAvailableRoleName = (e) => {
-    setValue("roleName", e.target.innerHTML);
-    setValue("isJobAlreadyTakenData", {
-      isJobTitleAlreadyTaken: false,
-    });
-  };
+    const onAvailableRoleName = (e) => {
+      setValue("roleName", e.target.innerHTML);
+      setValue("isJobAlreadyTakenData", {
+        isJobTitleAlreadyTaken: false,
+      });
+    };
 
   return (
     <div className="p-fluid">
@@ -158,29 +158,34 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
                   {suggestion}
                 </Button>
               ))}
+              </div>
             </div>
           </div>
+        )}
+        <div className="p-fluid-item-flex p-fluid-item">
+          <div className="p-field">
+            <label>
+              <span className="required-field">*</span>סיווג תפקיד
+            </label>
+            <Dropdown
+              options={["אדום", "כחול", "סגול"]}
+              placeholder="סיווג תפקיד"
+              {...register("clearance")}
+              value={watch("clearance")}
+              disabled={onlyForView}
+            />
+            <label>
+              {errors.clearance && (
+                <small style={{ color: "red" }}>יש למלא ערך</small>
+              )}
+            </label>
+          </div>
         </div>
-      )}
-      <div className="p-fluid-item-flex p-fluid-item">
-        <div className="p-field">
-          <label>
-            <span className="required-field">*</span>סיווג תפקיד
-          </label>
-          <Dropdown
-            options={["אדום", "כחול", "סגול"]}
-            placeholder="סיווג תפקיד"
-            {...register("clearance")}
-            value={watch("clearance")}
-            disabled={onlyForView}
-          />
-          <label>{errors.clearance && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
-        </div>
-      </div>
       <div className="p-fluid-item">
         <Approver
           setValue={setValue}
           name="approvers"
+          tooltip='רס"ן ומעלה ביחידתך'
           multiple={true}
           errors={errors}
           defaultApprovers={GetDefaultApprovers(requestObject, onlyForView, setValue)}
@@ -209,11 +214,30 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             disabled={onlyForView}
             placeholder="הכנס הערות לבקשה..."
           />
-          <label>{errors.comments && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
+          <label>התפקיד נפתח עבור משתמש תפקידן (מילואים / חמ"ל)</label>
+        </div>
+        <div className="p-fluid-item p-fluid-item-flex1">
+          <div className="p-field">
+            <label>
+              <span></span>הערות
+            </label>
+            <InputTextarea
+              {...register("comments")}
+              type="text"
+              autoResize="false"
+              disabled={onlyForView}
+            />
+            <label>
+              {errors.comments && (
+                <small style={{ color: "red" }}>יש למלא ערך</small>
+              )}
+            </label>
+          </div>
         </div>
       </div>
-    </div>
-  );
-});
+      </div>
+    );
+  }
+);
 
 export default RenameSingleOGForm;

@@ -41,10 +41,9 @@ const RenameBulkOGForm = forwardRef(
         setValue("hierarchy", data.request.adParams.ouDisplayName);
 
         setValue("rows", data.rows);
-
       };
       if (requestObject) {
-         getBulkData();
+        getBulkData();
       }
     }, []);
 
@@ -130,6 +129,7 @@ const RenameBulkOGForm = forwardRef(
           <Approver
             setValue={setValue}
             name="approvers"
+            tooltip='רס"ן ומעלה ביחידתך'
             multiple={true}
             errors={errors}
             defaultApprovers={GetDefaultApprovers(requestObject, onlyForView, setValue)}

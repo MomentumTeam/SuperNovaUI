@@ -8,22 +8,19 @@ import Approver from "../../Fields/Approver";
 import { useStores } from "../../../context/use-stores";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  getRolesUnderOG,
-  getRoleByRoleId,
-} from "../../../service/KartoffelService";
+import { getRolesUnderOG, getRoleByRoleId } from "../../../service/KartoffelService";
 import HorizontalLine from "../../HorizontalLine";
-import { GetDefaultApprovers } from '../../../utils/approver';
-import { isUserHoldType } from '../../../utils/user';
-import { USER_TYPE } from '../../../constants';
+import { GetDefaultApprovers } from "../../../utils/approver";
+import { isUserHoldType } from "../../../utils/user";
+import { USER_TYPE } from "../../../constants";
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
   hierarchy: Yup.object().required(),
   role: Yup.object().required(),
-  approvers: Yup.array().min(1).required('יש לבחור לפחות גורם מאשר אחד'),
+  approvers: Yup.array().min(1).required("יש לבחור לפחות גורם מאשר אחד"),
   comments: Yup.string().optional(),
-  identifier: Yup.string().email('יש להכניס מזהה תקין').required('יש למלא ערך'),
+  identifier: Yup.string().email("יש להכניס מזהה תקין").required("יש למלא ערך"),
 });
 
 const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestObject }, ref) => {
@@ -36,17 +33,16 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
   const [roles, setRoles] = useState([]);
   const { errors } = formState;
 
-
   useEffect(() => {
     const initializeValues = async () => {
-      setValue('comments', requestObject.comments);
-      setValue('identifier', requestObject.kartoffelParams.roleId);
-      setValue('hierarchy', requestObject.adParams.ouDisplayName);
+      setValue("comments", requestObject.comments);
+      setValue("identifier", requestObject.kartoffelParams.roleId);
+      setValue("hierarchy", requestObject.adParams.ouDisplayName);
       const role = await getRoleByRoleId(requestObject.kartoffelParams.roleId);
       setHierarchyByIdentifier(role.hierarchy);
-      setValue('role', role);
+      setValue("role", role);
       setRoles([role]);
-    }
+    };
 
     if (requestObject) {
       initializeValues();
@@ -89,7 +85,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
     setValue(name, value);
 
     if (value?.id) {
-      const roles = await getRolesUnderOG({id:value.id});
+      const roles = await getRolesUnderOG({ id: value.id });
       setRoles(roles);
     }
   };
@@ -120,7 +116,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
   return (
     <div className="p-fluid">
       <div className="display-flex title-wrap" style={{ width: "inherit" }}>
-        <h2>היררכיה נכחית</h2>
+        <h2>היררכיה נוכחית</h2>
       </div>
       <div className="p-fluid-item p-fluid-item-flex1">
         <div className="p-field">
@@ -165,6 +161,8 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             required
             placeholder="מזהה תפקיד"
             disabled={onlyForView}
+            tooltip={'לדוגמה: "T12345678"'}
+            tooltipOptions={{ position: "top" }}
           />
           <label>
             {errors.identifier && (
@@ -198,6 +196,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
           errors={errors}
           defaultApprovers={GetDefaultApprovers(requestObject, onlyForView, setValue)}
           disabled={onlyForView || isUserHoldType(userStore.user, USER_TYPE.COMMANDER)}
+          tooltip='רס"ן ומעלה ביחידתך'
         />
       </div>
       <div className="p-fluid-item p-fluid-item-flex1">

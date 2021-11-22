@@ -26,7 +26,7 @@ const actions = [
     id: 1,
     className: "btn-actions btn-actions1",
     actionName: "תפקיד חדש",
-    infoText: `חיבור משתמש חדש לתפקיד קיים ויצירת אזרח`,
+    infoText: `פתיחת תפקיד חדש תחת היררכיה נבחרת`,
     infoWithTitle: false,
     displayResponsive: false,
     dialogClass: "dialogClass1",
@@ -262,6 +262,7 @@ const Action = () => {
               visible={displayResponsive}
               onHide={() => onHide(id)}
               footer={renderFooter(id)}
+              dismissableMask={true}
             >
               {renderModalForm(modalName, id)}
             </Dialog>

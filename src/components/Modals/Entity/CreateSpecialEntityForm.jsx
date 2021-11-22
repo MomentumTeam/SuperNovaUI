@@ -23,61 +23,71 @@ const validationSchema = Yup.object().shape({
   sex: Yup.string().optional().nullable(),
 });
 
-const CreateSpecialEntityForm = forwardRef(({ setIsActionDone, onlyForView, requestObject }, ref) => {
+const CreateSpecialEntityForm = forwardRef(
+  ({ setIsActionDone, onlyForView, requestObject }, ref) => {
     const { register, handleSubmit, watch, setValue, formState } = useForm({
-        resolver: yupResolver(validationSchema)
+      resolver: yupResolver(validationSchema),
     });
     const { errors } = formState;
     const { appliesStore, userStore} = useStores();
 
-    useEffect(() => {  
-        if (requestObject) {
-            setValue('comments', requestObject.comments);
-            setValue('firstName', requestObject.kartoffelParams.firstName);
-            setValue('lastName', requestObject.kartoffelParams.lastName);
-            setValue('identityNumber', requestObject.kartoffelParams.identityCard);
-            setValue('phone', requestObject.kartoffelParams.mobilePhone[0]);
-            setValue('classification', requestObject.kartoffelParams.clearance);
-            setValue('sex', requestObject.kartoffelParams.sex);
-        }
-      }, []);
+    useEffect(() => {
+      if (requestObject) {
+        setValue("comments", requestObject.comments);
+        setValue("firstName", requestObject.kartoffelParams.firstName);
+        setValue("lastName", requestObject.kartoffelParams.lastName);
+        setValue("identityNumber", requestObject.kartoffelParams.identityCard);
+        setValue("phone", requestObject.kartoffelParams.mobilePhone[0]);
+        setValue("classification", requestObject.kartoffelParams.clearance);
+        setValue("sex", requestObject.kartoffelParams.sex);
+      }
+    }, []);
 
     const onSubmit = async (data) => {
-        try {
-            await validationSchema.validate(data);
-        } catch (err) {
-            throw new Error(err.errors);
-        }
+      try {
+        await validationSchema.validate(data);
+      } catch (err) {
+        throw new Error(err.errors);
+      }
 
-        const { firstName, lastName, identityNumber, phone, classification, comments, sex, approvers } = data;
+      const {
+        firstName,
+        lastName,
+        identityNumber,
+        phone,
+        classification,
+        comments,
+        sex,
+        approvers,
+      } = data;
 
-        const req = {
-            commanders: approvers,
-            kartoffelParams: {
-                firstName,
-                lastName,
-                identityCard: identityNumber,
-                mobilePhone: [phone],
-                clearance: classification,
-                sex,
-                // TODO: put it correct type
-                entityType: "civillian", //TODO: what should this be??
-                serviceType: "???" //TODO: what should this be??
-            },
-            comments,
-            adParams: {} // IS THIS NEEDED???
-        };
+      const req = {
+        commanders: approvers,
+        kartoffelParams: {
+          firstName,
+          lastName,
+          identityCard: identityNumber,
+          mobilePhone: [phone],
+          clearance: classification,
+          sex,
+          // TODO: put it correct type
+          entityType: "civillian", //TODO: what should this be??
+          serviceType: "???", //TODO: what should this be??
+        },
+        comments,
+        adParams: {}, // IS THIS NEEDED???
+      };
 
-        await appliesStore.createEntityApply(req);
-        await setIsActionDone(true);
+      await appliesStore.createEntityApply(req);
+      await setIsActionDone(true);
     };
 
     useImperativeHandle(
-        ref,
-        () => ({
-            handleSubmit: handleSubmit(onSubmit)
-        }),
-        []
+      ref,
+      () => ({
+        handleSubmit: handleSubmit(onSubmit),
+      }),
+      []
     );
 
     return (
@@ -162,6 +172,7 @@ const CreateSpecialEntityForm = forwardRef(({ setIsActionDone, onlyForView, requ
             multiple={true}
             defaultApprovers={GetDefaultApprovers(requestObject, onlyForView, setValue)}
             disabled={onlyForView || isUserHoldType(userStore.user, USER_TYPE.COMMANDER)}
+            tooltip='רס"ן ומעלה ביחידתך'
           />
         </div>
         <div className="p-fluid-item p-fluid-item-flex1">
