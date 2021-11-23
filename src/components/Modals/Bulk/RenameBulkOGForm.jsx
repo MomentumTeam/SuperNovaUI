@@ -9,6 +9,7 @@ import { useStores } from '../../../context/use-stores';
 import * as Yup from 'yup';
 import FormData from 'form-data';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { BulkTypes } from '../../../constants/applies';
 import {
   uploadBulkFile,
   getBulkChangeRoleHierarchyData,
@@ -20,14 +21,32 @@ const validationSchema = Yup.object().shape({
   hierarchy: Yup.object().required(),
   approvers: Yup.array().min(1).required(),
   bulkFile: Yup.mixed()
-    .test('fileSize', (value) => !!value)
-    .required(),
+    .test('required', 'יש להעלות קובץ!', (value) => {
+      return value && value.length;
+    })
+    .test('', 'יש להעלות קובץ תקין! ראה פורמט', async (value) => {
+      const formData = new FormData();
+      formData.append('bulkFiles', value[0]);
+      const uploadFilesRes = await uploadBulkFile(formData, BulkTypes[1]);
+      if (!uploadFilesRes) {
+        //Table uploaded is illegl !
+        return false;
+      } else {
+        return uploadFilesRes?.uploadFiles[0];
+      }
+    }),
 });
 
 const RenameBulkOGForm = forwardRef(
   ({ setIsActionDone, requestObject, onlyForView }, ref) => {
     const { appliesStore } = useStores();
-    const { register, handleSubmit, setValue, formState, watch } = useForm({
+    const {
+      register,
+      handleSubmit,
+      setValue,
+      formState,
+      watch,
+    } = useForm({
       resolver: yupResolver(validationSchema),
     });
 
@@ -51,11 +70,12 @@ const RenameBulkOGForm = forwardRef(
       } catch (err) {
         throw new Error(err.errors);
       }
-      const { hierarchy, approvers, bulkFile, comments } = data;
+      const { hierarchy, approvers, bulkFile, comments } =
+        data;
 
       const formData = new FormData();
       formData.append('bulkFiles', bulkFile[0]);
-      const { uploadFiles } = await uploadBulkFile(formData);
+      const { uploadFiles } = await uploadBulkFile(formData, BulkTypes[1]);
 
       const req = {
         commanders: approvers,
@@ -68,6 +88,11 @@ const RenameBulkOGForm = forwardRef(
         excelFilePath: uploadFiles[0],
         comments,
       };
+
+      if (!comments.length) {
+        delete req.comments;
+      }
+
       await appliesStore.changeRoleHierarchyBulk(req);
       setIsActionDone(true);
     };
@@ -106,7 +131,11 @@ const RenameBulkOGForm = forwardRef(
           </div>
         </div>
         {!requestObject && (
-          <BulkFileArea register={register} bulkType={1} errors={errors} />
+          <BulkFileArea
+            register={register}
+            bulkType={1}
+            errors={errors}
+          />
         )}
         {!!requestObject && (
           <BulkRowsPopup
@@ -138,10 +167,10 @@ const RenameBulkOGForm = forwardRef(
             </label>
             <InputTextarea
               {...register('comments')}
+              id="2028"
               type="text"
-              autoResize="false"
-              disabled={onlyForView}
               placeholder="הכנס הערות לבקשה..."
+              disabled={onlyForView}
             />
           </div>
         </div>

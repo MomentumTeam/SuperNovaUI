@@ -9,6 +9,7 @@ import BulkFileArea from './BulkFileArea';
 import * as Yup from 'yup';
 import FormData from 'form-data';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { BulkTypes } from '../../../constants/applies';
 import {
   uploadBulkFile,
   getCreateBulkRoleData,
@@ -20,8 +21,20 @@ const validationSchema = Yup.object().shape({
   hierarchy: Yup.object().required(),
   approvers: Yup.array().min(1).required(),
   bulkFile: Yup.mixed()
-    .test('fileSize', (value) => !!value)
-    .required(),
+    .test('required', 'יש להעלות קובץ!', (value) => {
+      return value && value.length;
+    })
+    .test('', 'יש להעלות קובץ תקין! ראה פורמט', async (value) => {
+      const formData = new FormData();
+      formData.append('bulkFiles', value[0]);
+      const uploadFilesRes = await uploadBulkFile(formData, BulkTypes[0]);
+      if (!uploadFilesRes) {
+        //Table uploaded is illegl !
+        return false;
+      } else {
+        return uploadFilesRes?.uploadFiles[0];
+      }
+    }),
 });
 
 const RenameBulkOGForm = forwardRef(
@@ -55,13 +68,12 @@ const RenameBulkOGForm = forwardRef(
 
       const formData = new FormData();
       formData.append('bulkFiles', bulkFile[0]);
-      const { uploadFiles } = await uploadBulkFile(formData);
+      const { uploadFiles } = await uploadBulkFile(formData, BulkTypes[0]);
 
       const req = {
         commanders: approvers,
         kartoffelParams: {
           directGroup: hierarchy.id,
-          unit: 'blablabla', //TODO- change after backend change
         },
         adParams: {
           ouDisplayName: hierarchy.name,
@@ -69,6 +81,11 @@ const RenameBulkOGForm = forwardRef(
         excelFilePath: uploadFiles[0],
         comments,
       };
+
+      if (!comments.length) {
+        delete req.comments;
+      }
+
       await appliesStore.createRoleBulk(req);
       setIsActionDone(true);
     };
@@ -84,7 +101,7 @@ const RenameBulkOGForm = forwardRef(
     return (
       <div
         className="p-fluid"
-        style={{ display: "flex", flexDirection: "column" }}
+        style={{ display: 'flex', flexDirection: 'column' }}
       >
         <div className="p-fluid-item-flex p-fluid-item">
           <div className="p-field">
@@ -99,7 +116,11 @@ const RenameBulkOGForm = forwardRef(
           </div>
         </div>
         {!requestObject && (
-          <BulkFileArea register={register} bulkType={0} errors={errors} />
+          <BulkFileArea
+            register={register}
+            bulkType={0}
+            errors={errors}
+          />
         )}
         {!!requestObject && (
           <BulkRowsPopup

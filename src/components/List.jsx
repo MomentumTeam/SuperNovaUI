@@ -1,4 +1,4 @@
-import { STATUSES, TYPES } from "../constants";
+import { STATUSES, TYPES , assignRoleToEntityHeader } from "../constants";
 import datesUtil from "../utils/dates";
 import { useState } from "react";
 import PreviewRequestsDialog from "./Modals/Request/PreviewRequestsDialog1";
@@ -21,7 +21,7 @@ const List = ({ list }) => {
           <tr
             key={request.id}
             onClick={() => onClick(request, index)}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: 'pointer' }}
           >
             <td>
               <div className="td-inner">
@@ -29,16 +29,21 @@ const List = ({ list }) => {
               </div>
             </td>
             <td>
-              <div className="td-inner">{TYPES[request.type]}</div>
+              <div className="td-inner">
+                {request.type === 'ASSIGN_ROLE_TO_ENTITY' && //in case of ASSIGN_ROLE_TO_ENTITY requests (מעבר תפקיד או חיבור משתמש חדש לתפקיד)
+                request.kartoffelParams.needDisconnect
+                  ? assignRoleToEntityHeader[0] //מעבר תפקיד
+                  : TYPES[request.type]}
+              </div>
             </td>
             <td>
               <div className="td-inner td-inner-btn">
                 <button
                   className={
-                    "btn-status " +
+                    'btn-status ' +
                     ([STATUSES.DONE].includes(STATUSES[request.status])
-                      ? "btn-sent"
-                      : "btn-rejected")
+                      ? 'btn-sent'
+                      : 'btn-rejected')
                   }
                   type="button"
                   title={request.status}

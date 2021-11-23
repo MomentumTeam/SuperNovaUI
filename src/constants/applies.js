@@ -160,3 +160,5 @@ export const bulkExampleFileName = [
   'createRoleBulkExample',
   'renameOGBulkExample',
 ];
+
+export const assignRoleToEntityHeader = ['מעבר תפקיד', 'חיבור משתמש חדש לתפקיד'];

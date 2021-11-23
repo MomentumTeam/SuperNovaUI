@@ -1,6 +1,6 @@
-import axiosApiInstance from '../config/axios';
-import { apiBaseUrl } from '../constants/api';
-import { organizeRows } from '../utils/applies';
+import axiosApiInstance from "../config/axios";
+import { apiBaseUrl } from "../constants/api";
+import { organizeRows } from "../utils/applies";
 import { TYPES, STATUSES, AUTOCOMPLETE_STATUSES } from "../constants";
 import dateFormat from "dateformat";
 import "../assets/css/local/components/status.css";
@@ -219,7 +219,7 @@ export const searchRequestsBySubmitterDisplayName = async (
 export const getCreateBulkRoleData = async (id) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/bulk/request/createRole/${id}`
-    
+
   );
 
   response.data.rows = organizeRows(response.data.rows);
@@ -302,14 +302,19 @@ export const disconectRoleFromEntityRequest = async (applyProperties) => {
   return response.data;
 };
 
-export const uploadBulkFile = async (file) => {
-  const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/bulk/upload`,
-    file,
-    { headers: { "Content-Type": "multipart/form-data" } }
-  );
-
-  return response.data;
+export const uploadBulkFile = async (file, type) => {
+  try{
+    const response = await axiosApiInstance.post(
+      `${apiBaseUrl}/api/bulk/upload?type=${type}`,
+      file,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+    return response.data;
+  } catch (error) {
+    if (error.response.status === 500) {
+      return false;
+    }
+  }
 };
 
 export const createRoleBulkRequest = async (data) => {
@@ -400,7 +405,7 @@ export const updateApproversCommentsRequest = async ({
   approversType,
   comment,
 }) => {
-  
+
   const response = await axiosApiInstance.put(
     `${apiBaseUrl}/api/requests/approver/comments/${requestId}`,
     {

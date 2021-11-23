@@ -27,7 +27,11 @@ const BulkFileArea = ({ register, bulkType, errors }) => {
             />
             <label>
               {errors.bulkFile && (
-                <small style={{ color: 'red' }}>יש להעלות קובץ</small>
+                <small style={{ color: 'red' }}>
+                  {
+                    errors.bulkFile?.message
+                  }
+                </small>
               )}
             </label>
           </span>
