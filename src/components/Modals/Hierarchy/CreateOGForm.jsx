@@ -1,12 +1,12 @@
-import React, { useImperativeHandle, forwardRef, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { InputText } from "primereact/inputtext";
-import { InputTextarea } from "primereact/inputtextarea";
-import { useStores } from "../../../context/use-stores";
-import Hierarchy from "../Hierarchy";
-import Approver from "../../Fields/Approver";
-import * as Yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+import React, { useImperativeHandle, forwardRef, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { InputText } from 'primereact/inputtext';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { useStores } from '../../../context/use-stores';
+import Hierarchy from '../Hierarchy';
+import Approver from '../../Fields/Approver';
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 const validationSchema = Yup.object().shape({
   newHierarchy: Yup.string().required(),
@@ -26,31 +26,39 @@ const CreateOGForm = forwardRef(
 
     useEffect(() => {
       if (requestObject) {
-        setValue("comments", requestObject.comments);
-        setValue("newHierarchy", requestObject.adParams.name);
-        setValue("parentHierarchy", { name: requestObject.adParams.ouName });
+        setValue('comments', requestObject.comments);
+        setValue('newHierarchy', requestObject.adParams.name);
+        setValue('parentHierarchy', { name: requestObject.adParams.ouName });
       }
     }, []);
 
     const onSubmit = async (data) => {
       const { newHierarchy, parentHierarchy, approvers, comments } = data;
-
+      console.log(data);
       try {
         await validationSchema.validate(data);
       } catch (err) {
         throw new Error(err.errors);
       }
+      // let a = 'יסודות/אהלון/חכחכחכחכ/לאלאלא/oneTree/';
+
+      // a = a.substring(a.indexOf('/', 1), a.length); //Without oneTree
+      // console.log(a);
+
+      // parentHierarchy.hierarchy = parentHierarchy.hierarchy.substring(
+      //   parentHierarchy.hierarchy.indexOf('/', 1),
+      //   parentHierarchy.hierarchy.length
+      // ); //Without oneTree
 
       const req = {
-        // status: 'SUBMITTED',
         commanders: approvers,
         kartoffelParams: {
           name: newHierarchy,
           parent: parentHierarchy.id,
-          source: "oneTree",
+          source: 'oneTree',
         },
         adParams: {
-          ouDisplayName: parentHierarchy.name,
+          ouDisplayName: parentHierarchy.hierarchy,
           ouName: parentHierarchy.name,
           name: newHierarchy,
         },
@@ -72,8 +80,8 @@ const CreateOGForm = forwardRef(
             setValue={setValue}
             name="parentHierarchy"
             errors={errors}
-            labelText={"היררכיית אב"}
-            ogValue={watch("parentHierarchy")}
+            labelText={'היררכיית אב'}
+            ogValue={watch('parentHierarchy')}
             disabled={onlyForView}
           />
         </div>
@@ -83,7 +91,7 @@ const CreateOGForm = forwardRef(
               <span className="required-field">*</span>שם היררכיה חדשה
             </label>
             <InputText
-              {...register("newHierarchy")}
+              {...register('newHierarchy')}
               id="2021"
               type="text"
               required
@@ -92,7 +100,7 @@ const CreateOGForm = forwardRef(
             />
             <label>
               {errors.newHierarchy && (
-                <small style={{ color: "red" }}>יש למלא ערך</small>
+                <small style={{ color: 'red' }}>יש למלא ערך</small>
               )}
             </label>
           </div>
@@ -113,7 +121,7 @@ const CreateOGForm = forwardRef(
           <div className="p-field">
             <label htmlFor="2023">הערות</label>
             <InputTextarea
-              {...register("comments")}
+              {...register('comments')}
               id="2023"
               type="text"
               placeholder="הערות"
