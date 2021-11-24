@@ -11,8 +11,6 @@ import { InputTextarea } from "primereact/inputtextarea";
 import Hierarchy from "./Hierarchy";
 import Approver from "../Fields/Approver";
 import { AutoComplete } from "primereact/autocomplete";
-import "../../assets/css/local/components/approverForm.css";
-// import { assignRoleToEntityRequest } from '../../service/AppliesService';
 import { useStores } from "../../context/use-stores";
 import { toJS } from "mobx";
 import {
@@ -24,6 +22,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { USER_TYPE } from '../../constants';
 import { isUserHoldType } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
+import "../../assets/css/local/components/approverForm.css";
 
 const approverTypes = [
   { label: "גורם מאשר ראשוני", value: "COMMANDER" },
@@ -37,17 +36,24 @@ const validationSchema = Yup.object().shape({
   approverType: Yup.string().required("יש להכניס סוג מאשר"),
   user: Yup.object().required("יש לבחור משתמש"),
   hierarchy: Yup.string().required("יש לבחור היררכיה"),
-  approvers: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+  isUserApprover: Yup.boolean(),
+  approvers: Yup.array().when("isUserApprover", {
+    is: false,
+    then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+  }),
   comments: Yup.string().optional(),
-  userName: Yup.string().required("יש לבחור שם משתמש"),
+  userName: Yup.object().required("יש לבחור שם משתמש"),
 });
 
 const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }, ref) => {
   const { appliesStore, userStore } = useStores();
   const [approverType, setApproverType] = useState();
+  const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
+
   const { register, handleSubmit, setValue, getValues, formState, watch } =
     useForm({
       resolver: yupResolver(validationSchema),
+      defaultValues: {isUserApprover}
     });
   const [userSuggestions, setUserSuggestions] = useState([]);
   const { errors } = formState;
@@ -64,7 +70,6 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
       setApproverType(requestObject.additionalParams.type);
     }
   }, []);
-
   
   const onSubmit = async (data) => {
     const {
@@ -77,7 +82,6 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
     } = data;
 
     console.log(errors);
-
     try {
       await validationSchema.validate(data);
     } catch (err) {
@@ -86,17 +90,17 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
     }
 
     const req = {
-      status: 'SUBMITTED',
+      status: "SUBMITTED",
       commanders: approvers,
       additionalParams: {
         entityId: user.id,
-        displayName: userName,
+        displayName: userName.displayName,
         domainUsers: (user?.digitalIdentities || []).map(({ uniqueId, mail }) => uniqueId || mail),
         akaUnit: user.akaUnit,
-        personalNumber: user.personalNumber,
-        identityCard: user.identityCard,
         type: approverType,
         directGroup: hierarchy,
+        ...(user.personalNumber && {personalNumber: user.personalNumber}),
+        ...(user.identityCard && {identityCard: user.identityCard}),
       },
       comments,
       due: Date.now(),
@@ -130,7 +134,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
 
     if (user) {
       setValue('user', user);
-      setValue('userName', user.fullName);
+      setValue('userName', {fullName: user.fullName, displayName: user.displayName});
       setValue('hierarchy', user.hierarchy);
     }
   };
@@ -142,7 +146,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
 
   const setCurrentUser = () => {
     const user = toJS(userStore.user);
-    setValue('userName', user.displayName);
+    setValue('userName', {displayName: user.displayName, fullName: user.fullName});
     setValue('user', user);
     setValue('personalNumber', user.personalNumber || user.identityCard);
     setValue('hierarchy', user.hierarchy);
@@ -244,13 +248,13 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
       </div>
       <div className="p-fluid-item">
         <Approver
-          disabled={onlyForView || isUserHoldType(userStore.user, USER_TYPE.COMMANDER)}
           setValue={setValue}
           name="approvers"
-          defaultApprovers={GetDefaultApprovers(requestObject, onlyForView, setValue)}
           multiple={true}
           errors={errors}
-          tooltip='סא"ל ומעלה ביחידתך'
+          tooltip={'סא"ל ומעלה ביחידתך'} //todo: ASK
+          disabled={onlyForView || isUserApprover}
+          defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
         />
       </div>
       <div className="p-fluid-item p-fluid-item-flex1">
@@ -263,12 +267,6 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
             type="text"
             placeholder="הכנס הערות לבקשה..."
           />
-        </div>
-        <div className="p-fluid-item p-fluid-item-flex1">
-          <div className="p-field">
-            <label htmlFor="2016">הערות</label>
-            <InputTextarea disabled={onlyForView} {...register("comments")} id="2016" type="text" placeholder="הערות" />
-          </div>
         </div>
       </div>
     </div>

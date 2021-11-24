@@ -18,27 +18,22 @@ const List = ({ list }) => {
     <table className="tableStyle">
       <tbody>
         {list.map((request, index) => (
-          <tr
-            key={request.id}
-            onClick={() => onClick(request, index)}
-            style={{ cursor: "pointer" }}
-          >
+          <tr key={request.id} onClick={() => onClick(request, index)} style={{ cursor: "pointer" }}>
             <td>
-              <div className="td-inner">
-                {datesUtil.formattedDate(Number(request.createdAt))}
-              </div>
+              <div className="td-inner">{datesUtil.formattedDate(Number(request.createdAt))}</div>
             </td>
             <td>
-              <div className="td-inner">{TYPES[request.type]}</div>
+              <div className="td-inner">
+                {TYPES[request.type]}
+                {"  "}
+                {"("+request.serialNumber+")"}
+              </div>
             </td>
             <td>
               <div className="td-inner td-inner-btn">
                 <button
                   className={
-                    "btn-status " +
-                    ([STATUSES.DONE].includes(STATUSES[request.status])
-                      ? "btn-sent"
-                      : "btn-rejected")
+                    "btn-status " + ([STATUSES.DONE].includes(STATUSES[request.status]) ? "btn-sent" : "btn-rejected")
                   }
                   type="button"
                   title={request.status}

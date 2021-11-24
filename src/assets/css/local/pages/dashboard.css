@@ -6,6 +6,15 @@
   min-height: 700px;
 }
 
+.hierarchy-name {
+  max-width: 350px;
+}
+
+@media (max-width: 1400px) {
+  .hierarchy-name {
+  max-width: 100px;
+}
+}
 @media (max-width: 1630px) {
   .main-inner-item2 {
     margin: 0px 15px 0px 0px;

@@ -1,7 +1,5 @@
 import axiosApiInstance from "../config/axios";
-import { TYPES, STATUSES, AUTOCOMPLETE_STATUSES } from "../constants";
 import { apiBaseUrl } from "../constants/api";
-import dateFormat from "dateformat";
 import "../assets/css/local/components/status.css";
 
 //GET
@@ -17,44 +15,6 @@ export const getMyRequests = async (from, to) => {
   return response.data;
 };
 
-const formatMyRequest = (r) => {
-  const statusClasses = {
-    SUBMITTED: "neutral",
-    APPROVED_BY_COMMANDER: "neutral",
-    APPROVED_BY_SECURITY: "neutral",
-    IN_PROGRESS: "neutral",
-    DECLINED: "bad",
-    DONE: "good",
-    FAILED: "bad",
-  };
-  return {
-    ...r,
-    formattedType: TYPES[r.type],
-    date: dateFormat(Date(r.createdAt), "dddd, mmmm dS, yyyy, HH:MM:ss"),
-    reason: r.comments,
-    handler: r.commanders.map((c) => c.displayName).join(", "),
-    search: "",
-    PrettyStatus: (
-      <button
-        className={"btn-status " + statusClasses[r.status]}
-        type="button"
-        title={r.status}
-      >
-        {STATUSES[r.status]}
-      </button>
-    ),
-  };
-};
-
-export const getFormattedMyRequests = async (from, to) => {
-  const response = await getMyRequests(from, to);
-  const requests = response?.requests;
-  if (Array.isArray(requests)) {
-    return requests.map(formatMyRequest);
-  }
-  return [];
-};
-
 export const getRequestById = async (id) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/requests/${id}`
@@ -65,7 +25,7 @@ export const getRequestById = async (id) => {
 
 export const getMyRequestsBySerialNumber = async (from, to, serialNumber) => {
   try {
-    return [formatMyRequest(await getRequestBySerialNumber(serialNumber))];
+    return [await getRequestBySerialNumber(serialNumber)];
   } catch (error) {
     return [];
   }
@@ -80,7 +40,7 @@ export const getMyRequestsByType = async (from, to, type) => {
     },
   });
   if (Array.isArray(response.data.requests)) {
-    return response.data.requests.map(formatMyRequest);
+    return response.data.requests;
   }
   return [];
 };
@@ -92,7 +52,7 @@ export const getMyRequestsBySearch = async (from, to, value) => {
     },
   });
   if (Array.isArray(response.data.requests)) {
-    return response.data.requests.map(formatMyRequest);
+    return response.data.requests;
   }
   return [];
 };
@@ -106,7 +66,7 @@ export const getMyRequestsByStatus = async (from, to, status) => {
     },
   });
   if (Array.isArray(response.data.requests)) {
-    return response.data.requests.map(formatMyRequest);
+    return response.data.requests;
   }
   return [];
 };

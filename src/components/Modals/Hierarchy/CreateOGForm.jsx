@@ -9,20 +9,26 @@ import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { isUserHoldType } from '../../../utils/user';
-import { USER_TYPE } from '../../../constants';
+import { USER_SOURCE_DI, USER_TYPE } from '../../../constants';
 
 const validationSchema = Yup.object().shape({
   newHierarchy: Yup.string().required(),
   parentHierarchy: Yup.object().required(),
-  approvers: Yup.array().min(1).required('יש לבחור לפחות גורם מאשר אחד'),
+  isUserApprover: Yup.boolean(),
+  approvers: Yup.array().when("isUserApprover", {
+    is: false,
+    then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+  }),
   comments: Yup.string().optional(),
 });
 
 const CreateOGForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject }, ref) => {
     const { appliesStore, userStore } = useStores();
+    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
     const { register, handleSubmit, setValue, formState, watch } = useForm({
       resolver: yupResolver(validationSchema),
+      defaultValues: { isUserApprover },
     });
 
     const { errors } = formState;
@@ -50,7 +56,7 @@ const CreateOGForm = forwardRef(
         kartoffelParams: {
           name: newHierarchy,
           parent: parentHierarchy.id,
-          source: "oneTree",
+          source: USER_SOURCE_DI,
         },
         adParams: {
           ouDisplayName: parentHierarchy.name,
@@ -103,9 +109,9 @@ const CreateOGForm = forwardRef(
             multiple={true}
             errors={errors}
             isHighRank={true}
-            defaultApprovers={GetDefaultApprovers(requestObject, onlyForView, setValue)}
-            disabled={onlyForView || isUserHoldType(userStore.user, USER_TYPE.COMMANDER)}
             tooltip='רס"ן ומעלה ביחידתך'
+            disabled={onlyForView || isUserApprover}
+            defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
           />
         </div>
         <div className="p-fluid-item p-fluid-item-flex1">

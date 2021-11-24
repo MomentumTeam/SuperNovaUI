@@ -30,7 +30,7 @@ import {
   getEntityByRoleId,
   getEntityByMongoId,
 } from "../../service/KartoffelService";
-import { USER_TYPE } from '../../constants';
+import { USER_SOURCE_DI, USER_TYPE } from '../../constants';
 import { isUserHoldType } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
 
@@ -41,17 +41,23 @@ const validationSchema = Yup.object().shape({
   hierarchy: Yup.object().required(),
   role: Yup.object().required(),
   roleId: Yup.string().required(),
-  approvers: Yup.array().min(1).required('יש לבחור לפחות גורם מאשר אחד'),
+  isUserApprover: Yup.boolean(),
+  approvers: Yup.array().when("isUserApprover", {
+    is: false,
+    then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+  }),
   comments: Yup.string().optional(),
 });
 
 const AssignRoleToEntityForm = forwardRef(
   ({ showJob = true, setIsActionDone, onlyForView, requestObject }, ref) => {
     const { appliesStore, userStore } = useStores();
-    const { register, handleSubmit, setValue, getValues, watch, formState } =
-      useForm({
-        resolver: yupResolver(validationSchema),
-      });
+    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
+
+    const { register, handleSubmit, setValue, getValues, watch, formState } = useForm({
+      resolver: yupResolver(validationSchema),
+      defaultValues: { isUserApprover },
+    });
     const [userSuggestions, setUserSuggestions] = useState([]);
     const [roles, setRoles] = useState([]);
     const { errors } = formState;
@@ -129,9 +135,7 @@ const AssignRoleToEntityForm = forwardRef(
         return null;
       }
 
-      const relevantIdentity = user.digitalIdentities.find(
-        (identity) => identity.source === "oneTree"
-      );
+      const relevantIdentity = user.digitalIdentities.find((identity) => identity.source === USER_SOURCE_DI);
 
       if (relevantIdentity && relevantIdentity.role) {
         return relevantIdentity.role;
@@ -379,8 +383,8 @@ const AssignRoleToEntityForm = forwardRef(
               name="approvers"
               tooltip='רס"ן ומעלה ביחידתך'
               multiple={true}
-              defaultApprovers={GetDefaultApprovers(requestObject, onlyForView, setValue)}
-              disabled={onlyForView || isUserHoldType(userStore.user, USER_TYPE.COMMANDER)}
+              defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
+              disabled={onlyForView || isUserApprover}
               errors={errors}
             />
           </div>

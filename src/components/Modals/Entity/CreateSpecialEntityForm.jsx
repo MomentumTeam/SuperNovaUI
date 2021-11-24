@@ -18,18 +18,25 @@ const validationSchema = Yup.object().shape({
   identityNumber: Yup.string().required(),
   phone: Yup.string().matches(PHONE_REG_EXP, "מספר לא תקין").required(),
   classification: Yup.string().required(),
-  approvers: Yup.array().min(1).required('יש לבחור לפחות גורם מאשר אחד'),
+  isUserApprover: Yup.boolean(),
+  approvers: Yup.array().when("isUserApprover", {
+    is: false,
+    then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+  }),
   comments: Yup.string().optional(),
   sex: Yup.string().optional().nullable(),
 });
 
 const CreateSpecialEntityForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject }, ref) => {
+    const { appliesStore, userStore} = useStores();
+    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
+
     const { register, handleSubmit, watch, setValue, formState } = useForm({
       resolver: yupResolver(validationSchema),
+      defaultValues: { isUserApprover },
     });
     const { errors } = formState;
-    const { appliesStore, userStore} = useStores();
 
     useEffect(() => {
       if (requestObject) {
@@ -170,9 +177,9 @@ const CreateSpecialEntityForm = forwardRef(
             setValue={setValue}
             name="approvers"
             multiple={true}
-            defaultApprovers={GetDefaultApprovers(requestObject, onlyForView, setValue)}
-            disabled={onlyForView || isUserHoldType(userStore.user, USER_TYPE.COMMANDER)}
             tooltip='רס"ן ומעלה ביחידתך'
+            disabled={onlyForView || isUserApprover}
+            defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
           />
         </div>
         <div className="p-fluid-item p-fluid-item-flex1">

@@ -23,11 +23,14 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
   const [isEdit, setIsEdit] = useState(edit);
   const [entity, setEntity] = useState({});
   const [isJobTitleFree, setIsJobTitleFree] = useState(true);
+  const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
 
   const validationSchema = Yup.object().shape({
-    approvers: Yup.array()
-      .min(1, "יש לבחור לפחות גורם מאשר אחד")
-      .required("יש לבחור לפחות גורם מאשר אחד"),
+    isUserApprover: Yup.boolean(),
+    approvers: Yup.array().when("isUserApprover", {
+      is: false,
+      then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+    }),
     role: Yup.string()
       .matches(NAME_OG_EXP, "תפקיד לא תקין")
       .required("יש לבחור שם תפקיד")
@@ -45,9 +48,10 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
      reValidateMode: "onChange",
      defaultValues: {
        role: "",
-       approvers: () => {
-         return GetDefaultApprovers([], false, methods.setValue);
-       },
+       isUserApprover,
+      //  approvers: () => {
+      //    return GetDefaultApprovers([], false);
+      //  },
      },
      resolver: yupResolver(validationSchema),
    });
@@ -122,14 +126,8 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
       >
         <div className="p-fluid">
           <div className="p-fluid-item padL">
-            <div
-              className={`p-field  ${isEdit ? "p-field-edit" : "p-field-blue"}`}
-            >
-              <RoleField
-                isEdit={isEdit}
-                role={role}
-                setIsJobTitleFree={setIsJobTitleFree}
-              />
+            <div className={`p-field  ${isEdit ? "p-field-edit" : "p-field-blue"}`}>
+              <RoleField isEdit={isEdit} role={role} setIsJobTitleFree={setIsJobTitleFree} />
             </div>
           </div>
 
@@ -144,8 +142,8 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
                 multiple={true}
                 errors={errors}
                 trigger={methods.trigger}
-                defaultApprovers={methods.getValues("approvers")}
-                disabled={isUserHoldType(userStore.user, USER_TYPE.COMMANDER)}
+                defaultApprovers={GetDefaultApprovers([], false)}
+                disabled={isUserApprover}
                 tooltip='רס"ן ומעלה ביחידתך'
               />
             </div>

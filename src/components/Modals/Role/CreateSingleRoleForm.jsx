@@ -12,13 +12,17 @@ import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { isJobTitleAlreadyTakenRequest } from "../../../service/KartoffelService";
 import {isUserHoldType} from '../../../utils/user';
-import { USER_TYPE } from '../../../constants';
+import { USER_SOURCE_DI, USER_TYPE } from '../../../constants';
 import {GetDefaultApprovers} from '../../../utils/approver';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
   hierarchy: Yup.object().required(),
-  approvers: Yup.array().min(1).required('יש לבחור לפחות גורם מאשר אחד'),
+  isUserApprover: Yup.boolean(),
+  approvers: Yup.array().when("isUserApprover", {
+    is: false,
+    then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+  }),
   comments: Yup.string().optional(),
   clearance: Yup.string().required(),
   roleName: Yup.string().required(),
@@ -32,21 +36,23 @@ const validationSchema = Yup.object().shape({
 
 const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestObject }, ref) => {
   const { appliesStore, userStore } = useStores();
+  const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
 
-    const { register, handleSubmit, setValue, watch, formState } = useForm({
-      resolver: yupResolver(validationSchema),
-    });
-    const { errors } = formState;
+  const { register, handleSubmit, setValue, watch, formState } = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: { isUserApprover },
+  });
+  const { errors } = formState;
 
-    useEffect(() => {
-      if (requestObject) {
-        setValue("comments", requestObject.comments);
-        setValue("clearance", requestObject.kartoffelParams.clearance);
-        setValue("roleName", requestObject.kartoffelParams.jobTitle);
-        setValue("hierarchy", { name: requestObject.adParams.ouDisplayName });
-        setValue("isTafkidan", !!requestObject.kartoffelParams.roleEntityType);
-      }
-    }, []);
+  useEffect(() => {
+    if (requestObject) {
+      setValue("comments", requestObject.comments);
+      setValue("clearance", requestObject.kartoffelParams.clearance);
+      setValue("roleName", requestObject.kartoffelParams.jobTitle);
+      setValue("hierarchy", { name: requestObject.adParams.ouDisplayName });
+      setValue("isTafkidan", !!requestObject.kartoffelParams.roleEntityType);
+    }
+  }, []);
 
 
   const onSubmit = async (data) => {
@@ -69,19 +75,19 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
         jobTitle: roleName,
         directGroup: hierarchy.id,
         isRoleAttachable: true,
-        source: "oneTree",
+        source: USER_SOURCE_DI,
         type: "domainUser",
         clearance,
         roleEntityType: isTafkidan ? "goalUser" : undefined,
       },
-        adParams: {
-          ouDisplayName: hierarchy.name,
-          jobTitle: roleName,
-          samAccountName: "???", // TODO: check
-        },
-        comments,
-        due: Date.now(),
-      };
+      adParams: {
+        ouDisplayName: hierarchy.name,
+        jobTitle: roleName,
+        samAccountName: "???", // TODO: check
+      },
+      comments,
+      due: Date.now(),
+    };
       await appliesStore.createRoleApply(req);
       setIsActionDone(true);
     };
@@ -158,29 +164,25 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
                   {suggestion}
                 </Button>
               ))}
-              </div>
             </div>
           </div>
-        )}
-        <div className="p-fluid-item-flex p-fluid-item">
-          <div className="p-field">
-            <label>
-              <span className="required-field">*</span>סיווג תפקיד
-            </label>
-            <Dropdown
-              options={["אדום", "כחול", "סגול"]}
-              placeholder="סיווג תפקיד"
-              {...register("clearance")}
-              value={watch("clearance")}
-              disabled={onlyForView}
-            />
-            <label>
-              {errors.clearance && (
-                <small style={{ color: "red" }}>יש למלא ערך</small>
-              )}
-            </label>
-          </div>
         </div>
+      )}
+      <div className="p-fluid-item-flex p-fluid-item">
+        <div className="p-field">
+          <label>
+            <span className="required-field">*</span>סיווג תפקיד
+          </label>
+          <Dropdown
+            options={["אדום", "כחול", "סגול"]}
+            placeholder="סיווג תפקיד"
+            {...register("clearance")}
+            value={watch("clearance")}
+            disabled={onlyForView}
+          />
+          <label>{errors.clearance && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
+        </div>
+      </div>
       <div className="p-fluid-item">
         <Approver
           setValue={setValue}
@@ -188,8 +190,8 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
           tooltip='רס"ן ומעלה ביחידתך'
           multiple={true}
           errors={errors}
-          defaultApprovers={GetDefaultApprovers(requestObject, onlyForView, setValue)}
-          disabled={onlyForView || isUserHoldType(userStore.user, USER_TYPE.COMMANDER)}
+          disabled={onlyForView || isUserApprover}
+          defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
         />
       </div>
       <div className="p-field-checkbox" style={{ marginBottom: "10px" }}>
@@ -221,22 +223,13 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             <label>
               <span></span>הערות
             </label>
-            <InputTextarea
-              {...register("comments")}
-              type="text"
-              autoResize="false"
-              disabled={onlyForView}
-            />
-            <label>
-              {errors.comments && (
-                <small style={{ color: "red" }}>יש למלא ערך</small>
-              )}
-            </label>
+            <InputTextarea {...register("comments")} type="text" autoResize="false" disabled={onlyForView} />
+            <label>{errors.comments && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
           </div>
         </div>
       </div>
-      </div>
-    );
+    </div>
+  );
   }
 );
 

@@ -65,8 +65,8 @@ const Approver = ({
             multiple === true ? "multiple" : "single"
           } ${disabled ? "disabled" : ""}`}
           multiple={multiple}
-          tooltip={tooltip}
-          tooltipOptions={{ position: "top" }}
+          tooltip={disabled? "": tooltip}
+          tooltipOptions={{ position: "top"}}
           value={
             multiple
               ? Array.isArray(selectedApprover)

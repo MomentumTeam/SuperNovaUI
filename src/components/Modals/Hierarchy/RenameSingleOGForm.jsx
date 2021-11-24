@@ -18,7 +18,11 @@ import { USER_TYPE } from "../../../constants";
 const validationSchema = Yup.object().shape({
   hierarchy: Yup.object().required(),
   role: Yup.object().required(),
-  approvers: Yup.array().min(1).required("יש לבחור לפחות גורם מאשר אחד"),
+  isUserApprover: Yup.boolean(),
+  approvers: Yup.array().when("isUserApprover", {
+    is: false,
+    then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+  }),
   comments: Yup.string().optional(),
   identifier: Yup.string().email("יש להכניס מזהה תקין").required("יש למלא ערך"),
 });
@@ -26,9 +30,11 @@ const validationSchema = Yup.object().shape({
 const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestObject }, ref) => {
   const { appliesStore, userStore } = useStores();
   const [hierarchyByIdentifier, setHierarchyByIdentifier] = useState(null);
+  const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
 
   const { register, handleSubmit, setValue, watch, formState } = useForm({
     resolver: yupResolver(validationSchema),
+    defaultValues: { isUserApprover },
   });
   const [roles, setRoles] = useState([]);
   const { errors } = formState;
@@ -194,9 +200,9 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
           name="approvers"
           multiple={true}
           errors={errors}
-          defaultApprovers={GetDefaultApprovers(requestObject, onlyForView, setValue)}
-          disabled={onlyForView || isUserHoldType(userStore.user, USER_TYPE.COMMANDER)}
           tooltip='רס"ן ומעלה ביחידתך'
+          disabled={onlyForView || isUserApprover}
+          defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
         />
       </div>
       <div className="p-fluid-item p-fluid-item-flex1">
