@@ -13,11 +13,18 @@ import {
   uploadBulkFile,
   getBulkChangeRoleHierarchyData,
 } from "../../../service/AppliesService";
+import { GetDefaultApprovers } from '../../../utils/approver';
+import { isUserHoldType } from '../../../utils/user';
+import { USER_TYPE } from '../../../constants';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
   hierarchy: Yup.object().required(),
-  approvers: Yup.array().min(1).required(),
+  isUserApprover: Yup.boolean(),
+  approvers: Yup.array().when("isUserApprover", {
+    is: false,
+    then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+  }),
   bulkFile: Yup.mixed()
     .test("fileSize", (value) => !!value)
     .required(),
@@ -25,9 +32,11 @@ const validationSchema = Yup.object().shape({
 
 const RenameBulkOGForm = forwardRef(
   ({ setIsActionDone, requestObject, onlyForView }, ref) => {
-    const { appliesStore } = useStores();
+    const { appliesStore, userStore } = useStores();
+    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
     const { register, handleSubmit, setValue, formState, watch } = useForm({
       resolver: yupResolver(validationSchema),
+      defaultValues: { isUserApprover },
     });
 
     const { errors } = formState;
@@ -129,8 +138,8 @@ const RenameBulkOGForm = forwardRef(
             tooltip='רס"ן ומעלה ביחידתך'
             multiple={true}
             errors={errors}
-            defaultApprovers={requestObject?.approvers || []}
-            disabled={onlyForView}
+            disabled={onlyForView || isUserApprover}
+            defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
           />
         </div>
       </div>

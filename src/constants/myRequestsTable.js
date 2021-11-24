@@ -1,11 +1,23 @@
+import { TYPES } from ".";
+import { ResponsibleFactorFieldTemplate } from "../components/AppliesTable/ResponsibleFactorTemplate";
+import { DateFieldTemplate } from "../components/Fields/DateFieldTemplate";
+import { StatusFieldTemplate } from "../components/Fields/StatusFieldTemplate";
+import { TextFieldTemplate } from "../components/Fields/TextFieldTemplate";
+import { getFormattedDate, getResponsibleFactorFields } from "../utils/applies";
+import { STATUSES } from "./status";
+
 export const TableTypes = {
   myRequests: [
     { field: "serialNumber", displayName: "מספר סידורי" },
-    { field: "formattedType", displayName: "סוג בקשה" },
-    { field: "handler", displayName: "גורם מטפל" },
-    { field: "date", displayName: "תאריך בקשה" },
-    { field: "reason", displayName: "סיבה" },
-    { field: "PrettyStatus", displayName: "סטטוס" },
+    { field: "type", displayName: "סוג בקשה", enum: TYPES },
+    {
+      field: getResponsibleFactorFields(), // todo: fix function
+      displayName: "גורם מטפל",
+      template: ResponsibleFactorFieldTemplate,
+    },
+    { field: "createdAt", displayName: "תאריך בקשה", formatter: getFormattedDate, template: DateFieldTemplate },
+    { field: "comments", displayName: "סיבה", template: TextFieldTemplate },
+    { field: "status", displayName: "סטטוס", enum: STATUSES, template: StatusFieldTemplate },
   ],
 };
 

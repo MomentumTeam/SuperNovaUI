@@ -1,8 +1,6 @@
 import * as filesaver from 'file-saver';
-import { toJS } from 'mobx';
 import * as xlsx from 'xlsx';
-import { USER_TYPE } from '../constants';
-import { STATUSES, TYPES } from '../constants/applies';
+import { USER_TYPE, STATUSES, TYPES } from "../constants";
 import datesUtil from "../utils/dates";
 import { isUserHoldType } from './user';
 
@@ -25,11 +23,13 @@ export const getResponsibleFactor = (apply, user) => {
   return responsibles;
 }
 
+
 export const getResponsibleFactorFields = (user) => {
   const fields = [];
-  if (isUserHoldType(user, USER_TYPE.SUPER_SECURITY)) fields.push("superSecurityApprovers");
-  if (isUserHoldType(user, USER_TYPE.SECURITY)) fields.push("securityApprovers");
-  if (isUserHoldType(user, USER_TYPE.ADMIN) || isUserHoldType(user, USER_TYPE.COMMANDER)) fields.push("commanders");
+  if (user === undefined || isUserHoldType(user, USER_TYPE.SUPER_SECURITY)) fields.push("superSecurityApprovers");
+  if (user === undefined || isUserHoldType(user, USER_TYPE.SECURITY)) fields.push("securityApprovers");
+  if (user === undefined ||  isUserHoldType(user, USER_TYPE.ADMIN) || isUserHoldType(user, USER_TYPE.COMMANDER))
+    fields.push("commanders");
 
   return fields;
 };

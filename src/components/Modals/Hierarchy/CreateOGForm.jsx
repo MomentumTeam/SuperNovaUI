@@ -7,19 +7,30 @@ import Hierarchy from '../Hierarchy';
 import Approver from '../../Fields/Approver';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { GetDefaultApprovers } from '../../../utils/approver';
+import { isUserHoldType } from '../../../utils/user';
+import { USER_SOURCE_DI, USER_TYPE } from '../../../constants';
 
 const validationSchema = Yup.object().shape({
   newHierarchy: Yup.string().required(),
   parentHierarchy: Yup.object().required(),
-  approvers: Yup.array().min(1).required(),
+  isUserApprover: Yup.boolean(),
+  approvers: Yup.array().when('isUserApprover', {
+    is: false,
+    then: Yup.array()
+      .min(1, 'יש לבחור לפחות גורם מאשר אחד')
+      .required('יש לבחור לפחות גורם מאשר אחד'),
+  }),
   comments: Yup.string().optional(),
 });
 
 const CreateOGForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject }, ref) => {
-    const { appliesStore } = useStores();
+    const { appliesStore, userStore } = useStores();
+    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
     const { register, handleSubmit, setValue, formState, watch } = useForm({
       resolver: yupResolver(validationSchema),
+      defaultValues: { isUserApprover },
     });
 
     const { errors } = formState;
@@ -34,28 +45,20 @@ const CreateOGForm = forwardRef(
 
     const onSubmit = async (data) => {
       const { newHierarchy, parentHierarchy, approvers, comments } = data;
-      console.log(data);
+
       try {
         await validationSchema.validate(data);
       } catch (err) {
         throw new Error(err.errors);
       }
-      // let a = 'יסודות/אהלון/חכחכחכחכ/לאלאלא/oneTree/';
-
-      // a = a.substring(a.indexOf('/', 1), a.length); //Without oneTree
-      // console.log(a);
-
-      // parentHierarchy.hierarchy = parentHierarchy.hierarchy.substring(
-      //   parentHierarchy.hierarchy.indexOf('/', 1),
-      //   parentHierarchy.hierarchy.length
-      // ); //Without oneTree
 
       const req = {
+        // status: 'SUBMITTED',
         commanders: approvers,
         kartoffelParams: {
           name: newHierarchy,
           parent: parentHierarchy.id,
-          source: 'oneTree',
+          source: USER_SOURCE_DI,
         },
         adParams: {
           ouDisplayName: parentHierarchy.hierarchy,
@@ -109,12 +112,12 @@ const CreateOGForm = forwardRef(
           <Approver
             setValue={setValue}
             name="approvers"
-            defaultApprovers={requestObject?.commanders || []}
-            tooltip='רס"ן ומעלה ביחידתך'
             multiple={true}
             errors={errors}
-            disabled={onlyForView}
             isHighRank={true}
+            tooltip='רס"ן ומעלה ביחידתך'
+            disabled={onlyForView || isUserApprover}
+            defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
           />
         </div>
         <div className="p-fluid-item p-fluid-item-flex1">

@@ -153,6 +153,7 @@ const AppliesTable = () => {
         onSort={onSort}
         sortField={sortEvent?.sortField}
         sortOrder={sortEvent?.sortOrder}
+        scrollHeight="300px"
       />
     </>
   );
