@@ -32,6 +32,7 @@ export default class UserStore {
 
   async fetchUserInfo() {
     const kartoffelUser = await getUser();
+    if (kartoffelUser.displayName === "") kartoffelUser.displayName = kartoffelUser.fullName;
     this.user = { ...this.user, ...kartoffelUser };
   }
 

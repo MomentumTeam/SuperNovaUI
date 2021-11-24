@@ -7,19 +7,28 @@ import Hierarchy from "../Hierarchy";
 import Approver from "../../Fields/Approver";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { GetDefaultApprovers } from '../../../utils/approver';
+import { isUserHoldType } from '../../../utils/user';
+import { USER_SOURCE_DI, USER_TYPE } from '../../../constants';
 
 const validationSchema = Yup.object().shape({
   newHierarchy: Yup.string().required(),
   parentHierarchy: Yup.object().required(),
-  approvers: Yup.array().min(1).required(),
+  isUserApprover: Yup.boolean(),
+  approvers: Yup.array().when("isUserApprover", {
+    is: false,
+    then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+  }),
   comments: Yup.string().optional(),
 });
 
 const CreateOGForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject }, ref) => {
-    const { appliesStore } = useStores();
+    const { appliesStore, userStore } = useStores();
+    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
     const { register, handleSubmit, setValue, formState, watch } = useForm({
       resolver: yupResolver(validationSchema),
+      defaultValues: { isUserApprover },
     });
 
     const { errors } = formState;
@@ -47,7 +56,7 @@ const CreateOGForm = forwardRef(
         kartoffelParams: {
           name: newHierarchy,
           parent: parentHierarchy.id,
-          source: "oneTree",
+          source: USER_SOURCE_DI,
         },
         adParams: {
           ouDisplayName: parentHierarchy.name,
@@ -90,35 +99,25 @@ const CreateOGForm = forwardRef(
               placeholder="שם היררכיה חדשה"
               disabled={onlyForView}
             />
-            <label>
-              {errors.newHierarchy && (
-                <small style={{ color: "red" }}>יש למלא ערך</small>
-              )}
-            </label>
+            <label>{errors.newHierarchy && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
           </div>
         </div>
         <div className="p-fluid-item">
           <Approver
             setValue={setValue}
             name="approvers"
-            defaultApprovers={requestObject?.commanders || []}
-            tooltip='רס"ן ומעלה ביחידתך'
             multiple={true}
             errors={errors}
-            disabled={onlyForView}
             isHighRank={true}
+            tooltip='רס"ן ומעלה ביחידתך'
+            disabled={onlyForView || isUserApprover}
+            defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
           />
         </div>
         <div className="p-fluid-item p-fluid-item-flex1">
           <div className="p-field">
             <label htmlFor="2023">הערות</label>
-            <InputTextarea
-              {...register("comments")}
-              id="2023"
-              type="text"
-              placeholder="הערות"
-              disabled={onlyForView}
-            />
+            <InputTextarea {...register("comments")} id="2023" type="text" placeholder="הערות" disabled={onlyForView} />
           </div>
         </div>
       </div>

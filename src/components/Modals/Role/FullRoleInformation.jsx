@@ -11,25 +11,26 @@ import "../../../assets/css/local/components/modal-item.css";
 import Approver from "../../Fields/Approver";
 import { RoleField } from "../../Fields/Role";
 import { InputForm, InputTypes } from "../../Fields/InputForm";
-import { NAME_OG_EXP, USER_CLEARANCE } from "../../../constants";
+import { NAME_OG_EXP,USER_CLEARANCE, USER_TYPE } from "../../../constants";
 import { getEntityByRoleId } from "../../../service/KartoffelService";
 import { FullRoleInformationFooter } from "./FullRoleInformationFooter";
+import { GetDefaultApprovers } from '../../../utils/approver';
+import { isUserHoldType } from '../../../utils/user';
+import { useStores } from '../../../context/use-stores';
 
-const FullRoleInformation = ({
-  role,
-  isOpen,
-  closeModal,
-  edit,
-  actionPopup,
-}) => {
+const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) => {
+  const {userStore} = useStores();
   const [isEdit, setIsEdit] = useState(edit);
   const [entity, setEntity] = useState({});
   const [isJobTitleFree, setIsJobTitleFree] = useState(true);
+  const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
 
   const validationSchema = Yup.object().shape({
-    approvers: Yup.array()
-      .min(1, "יש לבחור לפחות גורם מאשר אחד")
-      .required("יש לבחור לפחות גורם מאשר אחד"),
+    isUserApprover: Yup.boolean(),
+    approvers: Yup.array().when("isUserApprover", {
+      is: false,
+      then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+    }),
     role: Yup.string()
       .matches(NAME_OG_EXP, "תפקיד לא תקין")
       .required("יש לבחור שם תפקיד")
@@ -42,12 +43,18 @@ const FullRoleInformation = ({
       }),
   });
 
-  const methods = useForm({
-    mode: "onBlur",
-    reValidateMode: "onChange",
-    defaultValues: { role: "" },
-    resolver: yupResolver(validationSchema),
-  });
+   const methods = useForm({
+     mode: "onBlur",
+     reValidateMode: "onChange",
+     defaultValues: {
+       role: "",
+       isUserApprover,
+      //  approvers: () => {
+      //    return GetDefaultApprovers([], false);
+      //  },
+     },
+     resolver: yupResolver(validationSchema),
+   });
   const { errors } = methods.formState;
 
   useEffect(async () => {
@@ -119,14 +126,8 @@ const FullRoleInformation = ({
       >
         <div className="p-fluid">
           <div className="p-fluid-item padL">
-            <div
-              className={`p-field  ${isEdit ? "p-field-edit" : "p-field-blue"}`}
-            >
-              <RoleField
-                isEdit={isEdit}
-                role={role}
-                setIsJobTitleFree={setIsJobTitleFree}
-              />
+            <div className={`p-field  ${isEdit ? "p-field-edit" : "p-field-blue"}`}>
+              <RoleField isEdit={isEdit} role={role} setIsJobTitleFree={setIsJobTitleFree} />
             </div>
           </div>
 
@@ -138,10 +139,12 @@ const FullRoleInformation = ({
               <Approver
                 setValue={methods.setValue}
                 name="approvers"
-                tooltip='רס"ן ומעלה ביחידתך'
                 multiple={true}
                 errors={errors}
                 trigger={methods.trigger}
+                defaultApprovers={GetDefaultApprovers([], false)}
+                disabled={isUserApprover}
+                tooltip='רס"ן ומעלה ביחידתך'
               />
             </div>
           )}
