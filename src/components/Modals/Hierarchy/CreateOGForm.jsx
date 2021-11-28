@@ -61,7 +61,10 @@ const CreateOGForm = forwardRef(
           source: USER_SOURCE_DI,
         },
         adParams: {
-          ouDisplayName: parentHierarchy.hierarchy,
+          ouDisplayName: `${parentHierarchy.hierarchy.substring(
+            parentHierarchy.hierarchy.indexOf('/') + 1,
+            parentHierarchy.hierarchy.length
+          )}/${parentHierarchy.name}`,
           ouName: parentHierarchy.name,
           name: newHierarchy,
         },
