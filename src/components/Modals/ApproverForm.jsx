@@ -25,11 +25,11 @@ import { GetDefaultApprovers } from '../../utils/approver';
 import "../../assets/css/local/components/approverForm.css";
 
 const approverTypes = [
-  { label: "גורם מאשר ראשוני", value: "COMMANDER" },
-  { label: 'גורם מאשר יחב"ם', value: "SECURITY" },
-  { label: 'גורם מאשר בטח"ם', value: "SUPER_SECURITY" },
-  { label: "הרשאת בקשה מרובה", value: "BULK" },
-  { label: "מחשוב יחידתי", value: "ADMIN" },
+  { label: "גורם מאשר ראשוני", value: USER_TYPE.COMMANDER },
+  { label: 'גורם מאשר יחב"ם', value: USER_TYPE.SECURITY },
+  { label: 'גורם מאשר בטח"ם', value: USER_TYPE.SUPER_SECURITY },
+  { label: "הרשאת בקשה מרובה", value: USER_TYPE.BULK },
+  { label: "מחשוב יחידתי", value: USER_TYPE.ADMIN },
 ];
 
 const validationSchema = Yup.object().shape({
@@ -59,8 +59,8 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
   const { errors } = formState;
 
   useEffect(() => {
-    setValue('approverType', 'COMMANDER');
-    setApproverType('COMMANDER');
+    setValue("approverType", USER_TYPE.COMMANDER);
+    setApproverType(USER_TYPE.COMMANDER);
 
     if (requestObject) {
       setValue('comments', requestObject.comments);
@@ -96,11 +96,11 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
         entityId: user.id,
         displayName: userName.displayName,
         domainUsers: (user?.digitalIdentities || []).map(({ uniqueId, mail }) => uniqueId || mail),
-        akaUnit: user.akaUnit,
         type: approverType,
         directGroup: hierarchy,
-        ...(user.personalNumber && {personalNumber: user.personalNumber}),
-        ...(user.identityCard && {identityCard: user.identityCard}),
+        ...(user.akaUnit && { akaUnit: user.akaUnit }),
+        ...(user.personalNumber && { personalNumber: user.personalNumber }),
+        ...(user.identityCard && { identityCard: user.identityCard }),
       },
       comments,
       due: Date.now(),
@@ -265,7 +265,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
             {...register("comments")}
             id="2016"
             type="text"
-            placeholder="הכנס הערות לבקשה..."
+            placeholder={!onlyForView && "הכנס הערות לבקשה..."}
           />
         </div>
       </div>

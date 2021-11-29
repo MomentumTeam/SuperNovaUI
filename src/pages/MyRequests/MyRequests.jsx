@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { observer } from "mobx-react";
 
 import Table from "../../components/Table";
@@ -6,86 +6,87 @@ import SearchMyRequests from "./SearchMyRequests";
 import Header from "./Header";
 import { itemsInPage, pageSize } from "../../constants/api";
 import { useStores } from "../../context/use-stores";
-import { TableDataContext } from ".";
 import { TableNames, TableTypes } from "../../constants/myRequestsTable";
 
 import "../../assets/css/local/pages/listUsersPage.min.css";
 
-let curSearchFuncName = "loadMyRequests";
-let curSearchValue = "";
+let defaultSearchFuncName = "loadMyRequests";
+let defaultSearchValue = "";
 
 const Requests = observer(() => {
-  const [first, setFirst] = useState(0);
   const { myRequestsStore, userStore } = useStores();
-  const { tableState, tableDispatch, tabId, setTabId } =
-    useContext(TableDataContext);
+  const [tabId, setTabId] = useState(TableNames.myRequests.tab);
+  const [first, setFirst] = useState(0);
+  const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [tableData, setTableData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState({});
 
-  const getData = async (append, loadFuncName, searchValue) => {
+  const searchActivate = useCallback(async () => {
+    if (searchQuery != {}) await getData({ reset: true });
+  }, [searchQuery]);
+
+  const getData = async ({ append = false, reset = false }) => {
+    let data = [];
+    if (reset) {
+      setFirst(0);
+      setPage(0);
+    }
+
+    const from = reset ? 1 : (page + 1) * pageSize + 1;
+    const to = reset ? pageSize : (page + 2) * pageSize;
+    const funcName =
+      searchQuery?.searchFunc && searchQuery?.searchValue ? searchQuery.searchFunc : defaultSearchFuncName;
+    const searchValue = searchQuery?.searchValue ? searchQuery.searchValue : defaultSearchValue;
+
     switch (tabId) {
       case TableNames.myRequests.tab:
-        await myRequestsStore[loadFuncName](
-          tableState.page * pageSize + 1,
-          (tableState.page + 1) * pageSize + 1,
-          append,
-          searchValue
-        );
-        return myRequestsStore.myRequests;
+        data = await myRequestsStore[funcName](from, to, append, searchValue);
+        break;
       default:
-        return [];
+        break;
     }
+
+    return data;
   };
 
-  const setData = async (event, searchFuncName, searchValue) => {
-    const firstLoad = searchFuncName || typeof searchValue === "string";
-    if (searchFuncName) curSearchFuncName = searchFuncName;
-    if (typeof searchValue === "string") {
-      curSearchValue = searchValue;
-      if (searchValue === "") curSearchFuncName = "loadMyRequests";
-    }
-    let append;
+  const onVirtualScroll = async (event) => {
     let getNextPage = true;
-    if (tabId && userStore.user) {
-      if (event && event.first !== undefined) {
-        append = true;
-        setFirst(event.first);
-        if (
-          first >= event.first ||
-          tableState.tableData.length / (event.page + 1) > itemsInPage
-        )
-          getNextPage = false;
+
+    if (event && event.first !== undefined) {
+      if (
+        tableData.length >= myRequestsStore.totalCount ||
+        first >= event.first ||
+        tableData.length / (event.page + 1) > itemsInPage
+      )
+      getNextPage = false;
+      setFirst(event.first);
+    }
+
+    if (getNextPage) {
+      setIsLoading(true);
+      try {
+        await getData({ append: getNextPage });
+        setPage(page + 1);
+      } catch (error) {
+        console.log(error);
       }
 
-      if (getNextPage) {
-        try {
-          if (firstLoad) tableDispatch({ type: "restore" });
-          tableDispatch({ type: "loading" });
-          const data = await getData(append, curSearchFuncName, curSearchValue);
-          tableDispatch({
-            type: firstLoad ? "searchResult" : tabId,
-            results: data,
-          });
-        } catch (error) {
-          tableDispatch({ type: "failedLoading" });
-          console.log(error); // TODO: popup error
-        }
-      }
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    // Get table's data
-    const firstData = async () => {
-      setFirst(0);
-      myRequestsStore.setSearch(false);
-      tableDispatch({ type: "restore" });
-      await setData({}, "loadMyRequests");
-    };
-    firstData();
-  }, [tabId]);
+    setTableData(myRequestsStore.myRequests);
+  }, [myRequestsStore.myRequests, myRequestsStore.totalCount]);
 
   useEffect(() => {
     userStore.fetchUserNotifications(userStore.user?.id);
   }, [userStore.user]);
+
+  useEffect(() => {
+    searchActivate();
+  }, [searchQuery]);
 
   return (
     <>
@@ -95,16 +96,16 @@ const Requests = observer(() => {
           <div className="content-unit-wrap">
             <div className="content-unit-inner">
               <div className="display-flex search-row-wrap-flex">
-                <SearchMyRequests tableType={tabId} searchFunc={setData} />
+                <SearchMyRequests tableType={tabId} setSearchQuery={setSearchQuery} />
               </div>
               <Table
-                data={tableState.tableData}
-                tableTypes={TableTypes[tabId]}
+                data={tableData}
+                tableTypes={TableTypes(userStore.user)[tabId]}
                 tableType={tabId}
-                isLoading={tableState.isLoading}
+                isLoading={isLoading}
                 isPaginator={true}
                 isSelectedCol={true}
-                onScroll={setData}
+                onScroll={onVirtualScroll}
                 first={first}
               />
             </div>

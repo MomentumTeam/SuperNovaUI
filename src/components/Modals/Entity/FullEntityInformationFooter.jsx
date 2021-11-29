@@ -50,10 +50,10 @@ const FullEntityInformationFooter = () => {
           fullName: tempForm.fullName,
         },
       });
-      actionPopup();
+      actionPopup("עריכת משתמש");
       closeFullDetailsModal();
     } catch (error) {
-      actionPopup(error);
+      actionPopup("עריכת משתמש", error);
     }
   };
 

@@ -334,14 +334,14 @@ export const changeRoleHierarchyBulkRequest = async (data) => {
 export const transferApproverRequest = async ({
   reqId,
   approvers,
-  approversType,
+  type,
   comment,
 }) => {
   const response = await axiosApiInstance.put(
     `${apiBaseUrl}/api/requests/approver/transfer/${reqId}`,
     {
       approvers,
-      type: approversType,
+      type,
       commentForApprovers: comment,
     }
   );
