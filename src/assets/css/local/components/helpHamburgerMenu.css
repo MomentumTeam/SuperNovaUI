@@ -2,27 +2,24 @@
   position: relative;
   align-items: center;
   margin: 0 10px;
+  margin-top: 5px;
 }
 
 .p-speeddial-button.p-button.p-button-icon-only {
-  width: 50px;
-  height: 50px;
-  -webkit-text-stroke: 0.8px;
+  width: 40px;
+  height: 40px;
+  -webkit-text-stroke: 1px;
 }
 
 .p-speeddial-action {
   width: 40px;
   height: 40px;
-  background: #495057;
+  background: #2babbc;
   color: #fff;
 }
 
 .p-speeddial-list {
   margin-left: 8px;
-}
-
-.p-button.p-button-outlined {
-  border: 2px solid;
 }
 
 .p-dialog.faq-dialog .p-dialog-header .p-dialog-title::before {
@@ -33,4 +30,18 @@
 .p-dialog.contact-info-dialog .p-dialog-header .p-dialog-title::before {
   background-image: url(../../../images/contact-icon.png);
   background-size: contain;
+}
+
+.p-button.p-button-outlined {
+  border: 3px solid;
+  color: #2babbc;
+}
+.p-button.p-button-outlined:enabled:hover,
+.p-button.p-button-outlined:not(button):not(a):not(.p-disabled):hover {
+  border: 3px solid;
+  color: #2babbc;
+}
+
+.pi-bars:before {
+  font-size: 18px;
 }

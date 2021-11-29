@@ -56,10 +56,7 @@ const HelpHamburgerMenu = () => {
           style={{ width: "60vw" }}
           className="contact-info-dialog"
         >
-          <ContactInfo
-            displayContactInfo={displayContactInfo}
-            onContactInfoHide={onContactInfoHide}
-          />
+          <ContactInfo />
         </Dialog>
         <Dialog
           header="שאלות ותשובות"
@@ -69,7 +66,7 @@ const HelpHamburgerMenu = () => {
           style={{ width: "60vw" }}
           className="faq-dialog"
         >
-          <FAQ displayFAQ={displayFAQ} onFAQHide={onFAQHide} />
+          <FAQ />
         </Dialog>
       </div>
     </div>

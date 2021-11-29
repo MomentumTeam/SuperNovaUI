@@ -3,7 +3,7 @@ import "primereact/resources/primereact.css";
 import React from "react";
 
 const ContactInfo = () => {
-  return <div></div>;
+  return <div>EXAMPLE TEXT</div>;
 };
 
 export default ContactInfo;

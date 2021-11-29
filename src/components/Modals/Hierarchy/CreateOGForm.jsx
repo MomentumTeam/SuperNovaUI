@@ -109,7 +109,7 @@ const CreateOGForm = forwardRef(
             multiple={true}
             errors={errors}
             isHighRank={true}
-            tooltip='רס"ן ומעלה ביחידתך'
+            tooltip='סא"ל ומעלה ביחידתך'
             disabled={onlyForView || isUserApprover}
             defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
           />
