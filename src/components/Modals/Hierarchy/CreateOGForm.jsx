@@ -1,12 +1,12 @@
-import React, { useImperativeHandle, forwardRef, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { InputText } from "primereact/inputtext";
-import { InputTextarea } from "primereact/inputtextarea";
-import { useStores } from "../../../context/use-stores";
-import Hierarchy from "../Hierarchy";
-import Approver from "../../Fields/Approver";
-import * as Yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+import React, { useImperativeHandle, forwardRef, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { InputText } from 'primereact/inputtext';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { useStores } from '../../../context/use-stores';
+import Hierarchy from '../Hierarchy';
+import Approver from '../../Fields/Approver';
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { isUserHoldType } from '../../../utils/user';
 import { USER_SOURCE_DI, USER_TYPE } from '../../../constants';
@@ -15,9 +15,11 @@ const validationSchema = Yup.object().shape({
   newHierarchy: Yup.string().required(),
   parentHierarchy: Yup.object().required(),
   isUserApprover: Yup.boolean(),
-  approvers: Yup.array().when("isUserApprover", {
+  approvers: Yup.array().when('isUserApprover', {
     is: false,
-    then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+    then: Yup.array()
+      .min(1, 'יש לבחור לפחות גורם מאשר אחד')
+      .required('יש לבחור לפחות גורם מאשר אחד'),
   }),
   comments: Yup.string().optional(),
 });
@@ -35,9 +37,9 @@ const CreateOGForm = forwardRef(
 
     useEffect(() => {
       if (requestObject) {
-        setValue("comments", requestObject.comments);
-        setValue("newHierarchy", requestObject.adParams.name);
-        setValue("parentHierarchy", { name: requestObject.adParams.ouName });
+        setValue('comments', requestObject.comments);
+        setValue('newHierarchy', requestObject.adParams.name);
+        setValue('parentHierarchy', { name: requestObject.adParams.ouName });
       }
     }, []);
 
@@ -59,7 +61,10 @@ const CreateOGForm = forwardRef(
           source: USER_SOURCE_DI,
         },
         adParams: {
-          ouDisplayName: parentHierarchy.name,
+          ouDisplayName: `${parentHierarchy.hierarchy.substring(
+            parentHierarchy.hierarchy.indexOf('/') + 1,
+            parentHierarchy.hierarchy.length
+          )}/${parentHierarchy.name}`,
           ouName: parentHierarchy.name,
           name: newHierarchy,
         },
@@ -81,8 +86,8 @@ const CreateOGForm = forwardRef(
             setValue={setValue}
             name="parentHierarchy"
             errors={errors}
-            labelText={"היררכיית אב"}
-            ogValue={watch("parentHierarchy")}
+            labelText={'היררכיית אב'}
+            ogValue={watch('parentHierarchy')}
             disabled={onlyForView}
           />
         </div>
@@ -92,14 +97,18 @@ const CreateOGForm = forwardRef(
               <span className="required-field">*</span>שם היררכיה חדשה
             </label>
             <InputText
-              {...register("newHierarchy")}
+              {...register('newHierarchy')}
               id="2021"
               type="text"
               required
               placeholder="שם היררכיה חדשה"
               disabled={onlyForView}
             />
-            <label>{errors.newHierarchy && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
+            <label>
+              {errors.newHierarchy && (
+                <small style={{ color: 'red' }}>יש למלא ערך</small>
+              )}
+            </label>
           </div>
         </div>
         <div className="p-fluid-item">
@@ -117,7 +126,13 @@ const CreateOGForm = forwardRef(
         <div className="p-fluid-item p-fluid-item-flex1">
           <div className="p-field">
             <label htmlFor="2023">הערות</label>
-            <InputTextarea {...register("comments")} id="2023" type="text" placeholder="הערות" disabled={onlyForView} />
+            <InputTextarea
+              {...register('comments')}
+              id="2023"
+              type="text"
+              placeholder="הערות"
+              disabled={onlyForView}
+            />
           </div>
         </div>
       </div>
