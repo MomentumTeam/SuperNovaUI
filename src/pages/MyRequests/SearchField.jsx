@@ -7,12 +7,7 @@ import {
 } from "../../constants";
 import "../../assets/css/local/components/myRequestsSearch.css";
 
-const SearchField = ({
-  searchField,
-  searchFunc,
-  currentField,
-  setCurrentField,
-}) => {
+const SearchField = ({ searchField, setSearchQuery, currentField, setCurrentField }) => {
   const [results, setResults] = useState([]);
   const [selected, setSelected] = useState(null);
 
@@ -57,35 +52,33 @@ const SearchField = ({
       <div className="p-fluid">
         <span className="p-float-label">
           <AutoComplete
-            dropdown={["formattedType", "status"].includes(
-              searchField.searchField
-            )}
+            dropdown={["formattedType", "status"].includes(searchField.searchField)}
             dropdownMode="current"
             style={{ padding: "0 10px" }}
             value={searchField.searchField === currentField ? selected : ""}
             suggestions={results}
+            
             completeMethod={completeFunc}
             field={searchField.searchField}
-            forceSelection={["formattedType", "status"].includes(
-              searchField.searchField
-            )}
+            forceSelection={["formattedType", "status"].includes(searchField.searchField)}
             onChange={async (e) => {
-              searchField.searchField !== currentField &&
-                setCurrentField(searchField.searchField);
+              searchField.searchField !== currentField && setCurrentField(searchField.searchField);
               if (e.originalEvent.type === "click") {
                 setSelected(e.value[searchField.searchField]);
-                await searchFunc(
-                  null,
-                  searchField.searchFuncName,
-                  e.value[searchField.searchField]
-                );
+                setSearchQuery({
+                  searchFunc: searchField.searchFuncName,
+                  searchValue: e.value[searchField.searchField],
+                });
               } else {
                 setSelected(e.value);
               }
             }}
             onKeyUp={async (e) => {
               if (e.code === EVENT_KEY_UP_CODE_ENTER) {
-                await searchFunc(null, searchField.searchFuncName, selected);
+                setSearchQuery({
+                  searchFunc: searchField.searchFuncName,
+                  searchValue: selected,
+                });
               }
             }}
           />

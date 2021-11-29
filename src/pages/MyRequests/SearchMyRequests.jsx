@@ -2,7 +2,7 @@ import { useState } from "react";
 import { TableSearch } from "../../constants/myRequestsTable";
 import SearchField from "./SearchField";
 
-const SearchEntity = ({ tableType, searchFunc }) => {
+const SearchMyRequests = ({ tableType, setSearchQuery }) => {
   const searchFields = TableSearch(tableType);
   const [currentField, setCurrentField] = useState(null);
 
@@ -15,7 +15,7 @@ const SearchEntity = ({ tableType, searchFunc }) => {
               return (
                 <SearchField
                   searchField={searchField}
-                  searchFunc={searchFunc}
+                  setSearchQuery={setSearchQuery}
                   currentField={currentField}
                   setCurrentField={setCurrentField}
                 />
@@ -27,4 +27,4 @@ const SearchEntity = ({ tableType, searchFunc }) => {
   );
 };
 
-export default SearchEntity;
+export default SearchMyRequests;

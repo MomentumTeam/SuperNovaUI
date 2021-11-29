@@ -10,7 +10,7 @@ export const STATUSES = {
 };
 
 export const STATUSES_CLASS = {
-  [STATUSES.SUBMITTED]: "neutral",
+  [STATUSES.SUBMITTED]: "start",
   [STATUSES.APPROVED_BY_COMMANDER]: "neutral",
   [STATUSES.APPROVED_BY_SECURITY]: "neutral",
   [STATUSES.IN_PROGRESS]: "neutral",
@@ -27,4 +27,8 @@ export const AUTOCOMPLETE_STATUSES = {
   DECLINED: "סורב",
   DONE: "בוצע",
   FAILED: "נכשל",
+};
+
+export const checkIfRequestIsDone = (req) => {
+  return req.status === "DECLINED" || req.status === "DONE" || req.status === "FAILED" || req.status === "IN_PROGRESS";
 };

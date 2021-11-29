@@ -117,20 +117,12 @@ const Table = ({
                 onPage={onScroll} // paginator end
                 virtualScroll={isVirtualScrollable} // virtual scroll start
                 onVirtualScroll={onVirtualScroll}
-                virtualRowHeight={
-                  isPaginator || isVirtualScrollable ? rows : null
-                }
+                virtualRowHeight={isPaginator || isVirtualScrollable ? rows : null}
                 lazy={isVirtualScrollable}
                 totalRecords={totalRecordsScroll} // virtual scroll end
                 contextMenu={!disableActions}
-                onContextMenuSelectionChange={
-                  !disableActions ? (e) => setValue(e.value) : undefined
-                }
-                onContextMenu={
-                  !disableActions
-                    ? (e) => contextMenu.current.show(e.originalEvent)
-                    : undefined
-                }
+                onContextMenuSelectionChange={!disableActions ? (e) => setValue(e.value) : undefined}
+                onContextMenu={!disableActions ? (e) => contextMenu.current.show(e.originalEvent) : undefined}
                 sortField={sortField}
                 sortOrder={sortOrder}
                 onSort={onSort}
@@ -153,18 +145,14 @@ const Table = ({
                     enum={col?.enum}
                     loadingBody={loadingText}
                     template={col?.template}
+                    templateParam={col?.templateParam}
                     body={TableFieldTemplate}
                     sortable={col?.sortable}
                     sortFields={col?.sortFields}
                     // sortFunction={col?.sortable && onSort !== null ? (e) => onSort(e, col) : undefined}
                   />
                 ))}
-                {!disableActions && (
-                  <Column
-                    loadingBody={loadingText}
-                    body={TableActionsTemplate}
-                  />
-                )}
+                {!disableActions && <Column loadingBody={loadingText} body={TableActionsTemplate} />}
               </DataTable>
             </div>
           </div>

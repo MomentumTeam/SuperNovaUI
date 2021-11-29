@@ -11,8 +11,10 @@ import { TableDataContext } from ".";
 import { TableNames, TableTypes } from "../../constants/usersTable";
 
 import "../../assets/css/local/pages/listUsersPage.min.css";
+import { useToast } from '../../context/use-toast';
 
 const Entities = observer(() => {
+  const {actionPopup} = useToast();
   const [first, setFirst] = useState(0);
   const { entitiesStore, rolesStore, groupsStore, userStore } = useStores();
   const { tableState, tableDispatch, tabId, setTabId } =
@@ -74,7 +76,9 @@ const Entities = observer(() => {
           tableDispatch({ type: tabId, results: data });
         } catch (error) {
           tableDispatch({ type: "failedLoading" });
-          console.log(error); // TODO: popup error
+          console.log(error); 
+          actionPopup("הבאת מידע", error);
+
         }
       }
     }

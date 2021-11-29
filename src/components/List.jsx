@@ -2,6 +2,7 @@ import { STATUSES, TYPES } from "../constants";
 import datesUtil from "../utils/dates";
 import { useState } from "react";
 import PreviewRequestsDialog from "./Modals/Request/PreviewRequestsDialog1";
+import { StatusFieldTemplate } from './Fields/StatusFieldTemplate';
 
 const List = ({ list }) => {
   const [dialogRequest, setDialogRequest] = useState({});
@@ -26,20 +27,12 @@ const List = ({ list }) => {
               <div className="td-inner">
                 {TYPES[request.type]}
                 {"  "}
-                {"("+request.serialNumber+")"}
+                {"(" + request.serialNumber + ")"}
               </div>
             </td>
             <td>
               <div className="td-inner td-inner-btn">
-                <button
-                  className={
-                    "btn-status " + ([STATUSES.DONE].includes(STATUSES[request.status]) ? "btn-sent" : "btn-rejected")
-                  }
-                  type="button"
-                  title={request.status}
-                >
-                  {STATUSES[request.status]}
-                </button>
+                <StatusFieldTemplate status={STATUSES[request.status]} />
               </div>
             </td>
           </tr>

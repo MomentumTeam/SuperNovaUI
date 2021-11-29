@@ -1,6 +1,6 @@
 import * as filesaver from 'file-saver';
 import * as xlsx from 'xlsx';
-import { USER_TYPE, STATUSES, TYPES } from "../constants";
+import { USER_TYPE, STATUSES, TYPES, checkIfRequestIsDone } from "../constants";
 import datesUtil from "../utils/dates";
 import { isUserHoldType } from './user';
 
@@ -23,6 +23,48 @@ export const getResponsibleFactor = (apply, user) => {
   return responsibles;
 }
 
+
+export const getResponsibleFactors = (apply, user) => {
+  let fields = [];
+  const isReqDone = checkIfRequestIsDone(apply);
+  const isSecurityNeeded = apply.needSecurityDecision;
+  const isSuperSecurityNeeded = apply.needSuperSecurityDecision;
+
+  if (!isReqDone) {
+    if (!IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER)) {
+      fields = apply["commanders"];
+      return fields;
+    }
+
+    if (isSecurityNeeded && !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) {
+      if (apply["securityApprovers"].length > 0) {
+        fields = apply["securityApprovers"];
+      } else {
+        fields = [...fields, isUserHoldType(user, USER_TYPE.SECURITY) ? "---" : 'ממתין לאישור ע"י יחב"ם'];
+      }
+
+      return fields;
+    } 
+
+    if (isSuperSecurityNeeded && !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)) {
+      if (apply["superSecurityApprovers"].length > 0) {
+        fields = apply["superSecurityApprovers"];
+      } else {
+        fields = [...fields, isUserHoldType(user, USER_TYPE.SUPER_SECURITY) ? "---" : 'ממתין לאישור ע"י בטח"ם'];
+      }
+
+      return fields;
+    }
+  } else {
+    fields = [...fields, ...apply["commanders"]];
+    fields = [...fields, ...apply["securityApprovers"]];
+    fields = [...fields, ...apply["superSecurityApprovers"]];
+  }
+
+
+
+  return fields;
+};
 
 export const getResponsibleFactorFields = (user) => {
   const fields = [];

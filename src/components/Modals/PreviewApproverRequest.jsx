@@ -4,7 +4,6 @@ import ApproverForm from './ApproverForm';
 import RequestFlowChart from '../RequestFlowChart';
 
 const PreviewApproverRequest = ({ request }) => {
-  console.log(request);
   return (
     <>
     <RequestFlowChart request={request} />
