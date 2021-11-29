@@ -12,16 +12,22 @@ export const TableTypes = (user) => {
       { field: "serialNumber", displayName: "מספר סידורי" },
       { field: "type", displayName: "סוג בקשה", enum: TYPES },
       {
-        field: null, 
+        field: null,
         displayName: "גורם מטפל",
         templateParam: user,
         template: ResponsibleFactorWithWaitingFieldTemplate,
       },
-      { field: "createdAt", displayName: "תאריך בקשה", formatter: getFormattedDate, template: DateFieldTemplate },
+      {
+        field: "createdAt",
+        displayName: "תאריך בקשה",
+        formatter: getFormattedDate,
+        templateParam: [user, "superSecurityDecision", "securityDecision", "commanderDecision"],
+        template: DateFieldTemplate,
+      },
       { field: "comments", displayName: "סיבה", template: TextFieldTemplate },
       { field: "status", displayName: "סטטוס", enum: STATUSES, template: StatusFieldTemplate },
     ],
-  }
+  };
 }
 
 export const TableNames = {
