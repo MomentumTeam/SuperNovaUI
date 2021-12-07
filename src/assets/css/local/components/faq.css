@@ -16,7 +16,8 @@
   margin: 0;
 }
 
-.p-accordion
+.accordion-faq
+  .p-accordion
   .p-accordion-tab:first-child
   .p-accordion-header:not(.p-highlight)
   .p-accordion-header-link {
@@ -29,7 +30,8 @@
   margin-bottom: 25px;
 }
 
-.p-accordion
+.accordion-faq
+  .p-accordion
   .p-accordion-tab:first-child
   .p-accordion-header
   .p-accordion-header-link {
@@ -37,12 +39,13 @@
   border-top-left-radius: 20px;
 }
 
-.p-accordion .p-accordion-tab:first-child .p-accordion-content {
+.accordion-faq .p-accordion .p-accordion-tab:first-child .p-accordion-content {
   border-bottom-right-radius: 20px;
   border-bottom-left-radius: 20px;
 }
 
-.p-accordion
+.accordion-faq
+  .p-accordion
   .p-accordion-tab:last-child
   .p-accordion-header:not(.p-highlight)
   .p-accordion-header-link {
@@ -50,7 +53,8 @@
   border-bottom-left-radius: 20px;
 }
 
-.p-accordion
+.accordion-faq
+  .p-accordion
   .p-accordion-tab:nth-child(2)
   .p-accordion-header
   .p-accordion-header-link {
@@ -60,6 +64,6 @@
   margin-top: 25px;
 }
 
-.p-accordion .p-accordion-tab:first-child .p-accordion-content {
+.accordion-faq .p-accordion .p-accordion-tab:first-child .p-accordion-content {
   text-align: center;
 }
