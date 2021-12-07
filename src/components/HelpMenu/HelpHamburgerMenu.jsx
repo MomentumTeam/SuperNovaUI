@@ -39,7 +39,7 @@ const HelpHamburgerMenu = () => {
 
   return (
     <div>
-      <div className="card">
+      <div className="card help-speeddial">
         <SpeedDial
           model={hamburgerItems}
           direction="left"
