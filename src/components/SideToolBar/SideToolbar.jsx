@@ -6,6 +6,7 @@ import List from '../List';
 import Notifications from '../Notifications/Notifications';
 import '../../assets/css/local/components/aside.min.css';
 import { StatCount } from './StatCount';
+import { Link } from 'react-router-dom';
 
 const SideToolbar = ({ recentApplies }) => {
   const { userStore } = useStores();
@@ -27,13 +28,13 @@ const SideToolbar = ({ recentApplies }) => {
         <div className="requests-inner-wrap">
           <div className="display-flex title-wrap">
             <h2>בקשות שלי</h2>
-            <a href="#all" title="הכל - נפתך בחלון חדש">
+            <Link to="/myRequests" title="כל הבקשות">
               הכל
-            </a>
+            </Link>
           </div>
-          <div className='table-item-wrap'>
-            <div className='table-item-inner'>
-              <List list={recentApplies.slice(0,7)} />
+          <div className="table-item-wrap">
+            <div className="table-item-inner">
+              <List list={recentApplies.slice(0, 5)} />
             </div>
           </div>
         </div>

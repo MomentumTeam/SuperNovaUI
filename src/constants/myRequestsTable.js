@@ -1,13 +1,34 @@
-export const TableTypes = {
-  myRequests: [
-    { field: "serialNumber", displayName: "מספר סידורי" },
-    { field: "formattedType", displayName: "סוג בקשה" },
-    { field: "handler", displayName: "גורם מטפל" },
-    { field: "date", displayName: "תאריך בקשה" },
-    { field: "reason", displayName: "סיבה" },
-    { field: "PrettyStatus", displayName: "סטטוס" },
-  ],
-};
+import { TYPES } from ".";
+import { ResponsibleFactorWithWaitingFieldTemplate } from "../components/AppliesTable/ResponsibleFactorWithWaitingFieldTemplate";
+import { DateFieldTemplate } from "../components/Fields/DateFieldTemplate";
+import { StatusFieldTemplate } from "../components/Fields/StatusFieldTemplate";
+import { TextFieldTemplate } from "../components/Fields/TextFieldTemplate";
+import { getFormattedDate } from "../utils/applies";
+import { STATUSES } from "./status";
+
+export const TableTypes = (user) => {
+  return {
+    myRequests: [
+      { field: "serialNumber", displayName: "מספר סידורי" },
+      { field: "type", displayName: "סוג בקשה", enum: TYPES },
+      {
+        field: null,
+        displayName: "גורם מטפל",
+        templateParam: user,
+        template: ResponsibleFactorWithWaitingFieldTemplate,
+      },
+      {
+        field: "createdAt",
+        displayName: "תאריך בקשה",
+        formatter: getFormattedDate,
+        templateParam: [user, "superSecurityDecision", "securityDecision", "commanderDecision"],
+        template: DateFieldTemplate,
+      },
+      { field: "comments", displayName: "סיבה", template: TextFieldTemplate },
+      { field: "status", displayName: "סטטוס", enum: STATUSES, template: StatusFieldTemplate },
+    ],
+  };
+}
 
 export const TableNames = {
   myRequests: { tab: "myRequests", tableName: "הבקשות שלי" },

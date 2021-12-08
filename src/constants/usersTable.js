@@ -1,5 +1,6 @@
 import { USER_TYPE } from ".";
 import { useStores } from "../context/use-stores";
+import { TextFieldTemplate } from "../components/Fields/TextFieldTemplate";
 
 export const TableTypes = {
   entities: [
@@ -12,7 +13,7 @@ export const TableTypes = {
       secured: [USER_TYPE.SECURITY, USER_TYPE.SUPER_SECURITY],
     },
     { field: "jobTitle", displayName: "תפקיד" },
-    { field: "displayName", displayName: "יוזר" },
+    { field: "displayName", displayName: "יוזר", template: TextFieldTemplate },
     { field: "rank", displayName: "דרגה" },
     { field: "akaUnit", displayName: "יחידה" },
     { field: "serviceType", displayName: "סוג שירות" },

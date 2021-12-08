@@ -2,6 +2,7 @@ import { STATUSES, TYPES , assignRoleToEntityHeader } from "../constants";
 import datesUtil from "../utils/dates";
 import { useState } from "react";
 import PreviewRequestsDialog from "./Modals/Request/PreviewRequestsDialog1";
+import { StatusFieldTemplate } from './Fields/StatusFieldTemplate';
 
 const List = ({ list }) => {
   const [dialogRequest, setDialogRequest] = useState({});
@@ -18,15 +19,9 @@ const List = ({ list }) => {
     <table className="tableStyle">
       <tbody>
         {list.map((request, index) => (
-          <tr
-            key={request.id}
-            onClick={() => onClick(request, index)}
-            style={{ cursor: 'pointer' }}
-          >
+          <tr key={request.id} onClick={() => onClick(request, index)} style={{ cursor: "pointer" }}>
             <td>
-              <div className="td-inner">
-                {datesUtil.formattedDate(Number(request.createdAt))}
-              </div>
+              <div className="td-inner">{datesUtil.formattedDate(Number(request.createdAt))}</div>
             </td>
             <td>
               <div className="td-inner">
@@ -34,22 +29,13 @@ const List = ({ list }) => {
                 request.kartoffelParams.needDisconnect
                   ? assignRoleToEntityHeader[0] //מעבר תפקיד
                   : TYPES[request.type]}
+                {"  "}
+                {"(" + request.serialNumber + ")"}
               </div>
             </td>
             <td>
               <div className="td-inner td-inner-btn">
-                <button
-                  className={
-                    'btn-status ' +
-                    ([STATUSES.DONE].includes(STATUSES[request.status])
-                      ? 'btn-sent'
-                      : 'btn-rejected')
-                  }
-                  type="button"
-                  title={request.status}
-                >
-                  {STATUSES[request.status]}
-                </button>
+                <StatusFieldTemplate status={STATUSES[request.status]} />
               </div>
             </td>
           </tr>

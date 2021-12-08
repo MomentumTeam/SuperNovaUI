@@ -1,29 +1,11 @@
-import { DateFieldTemplate } from "../components/AppliesTable/DateFieldTemplate";
+import { DateFieldTemplate } from "../components/Fields/DateFieldTemplate";
 import { RequestorFieldTemplate } from "../components/AppliesTable/RequestorFieldTemplate";
-import { ResponsibleFactorFieldTemplate } from "../components/AppliesTable/ResponsibleFactorTemplate";
-import { StatusFieldTemplate } from "../components/AppliesTable/StatusFieldTemplate";
-import { TextFieldTemplate } from "../components/AppliesTable/TextFieldTemplate";
-import { getFormattedDate, getResponsibleFactorFields } from "../utils/applies";
+import { StatusFieldTemplate } from "../components/Fields/StatusFieldTemplate";
+import { TextFieldTemplate } from "../components/Fields/TextFieldTemplate";
+import { getFormattedDate } from "../utils/applies";
+import { STATUSES } from '.';
+import { ResponsibleFactorWithWaitingFieldTemplate } from '../components/AppliesTable/ResponsibleFactorWithWaitingFieldTemplate';
 
-export const STATUSES = {
-  SUBMITTED: 'הוגש',
-  APPROVED_BY_COMMANDER: 'בתהליך',
-  APPROVED_BY_SECURITY: 'בתהליך',
-  IN_PROGRESS: 'אושר',
-  DECLINED: 'סורב',
-  DONE: 'בוצע',
-  FAILED: 'נכשל',
-};
-
-export const AUTOCOMPLETE_STATUSES = {
-  SUBMITTED: "הוגש לאישור ראשוני",
-  APPROVED_BY_COMMANDER: 'בתהליך לאישור יחב"ם',
-  APPROVED_BY_SECURITY: 'בתהליך לאישור בטח"ם',
-  IN_PROGRESS: "אושר",
-  DECLINED: "סורב",
-  DONE: "בוצע",
-  FAILED: "נכשל",
-};
 
 export const TYPES = {
   CREATE_OG: "יצירת היררכיה חדשה",
@@ -67,10 +49,11 @@ export const TableTypes = (selectedTab, user) => {
       template: RequestorFieldTemplate,
     },
     {
-      field: getResponsibleFactorFields(user),
+      field: null,
       displayName: "גורם מטפל",
       hide: selectedTab !== TableNames.allreqs.tab,
-      template: ResponsibleFactorFieldTemplate,
+      templateParam: user,
+      template: ResponsibleFactorWithWaitingFieldTemplate,
     },
     {
       field: "createdAt",
@@ -78,6 +61,7 @@ export const TableTypes = (selectedTab, user) => {
       formatter: getFormattedDate,
       sortable: true,
       sortFields: sortFields.CREATED_AT,
+      templateParam: [user, "superSecurityDecision", "securityDecision", "commanderDecision"],
       template: DateFieldTemplate,
     },
     {
@@ -98,9 +82,7 @@ export const TableTypes = (selectedTab, user) => {
 };
 
 export const searchFields = ["שם", "מספר אישי", 'ת"ז', "מספר בקשה"];
-export const searchTooltipMessage = `ניתן לחפש לפי השדות הבאים: ${searchFields.join(
-  ", "
-)}`;
+export const searchTooltipMessage = `ניתן לחפש לפי השדות הבאים: ${searchFields.join(", ")}`;
 
 export const sortFields = {
   REQUEST_TYPE: "REQUEST_TYPE",

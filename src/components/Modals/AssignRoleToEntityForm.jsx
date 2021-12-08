@@ -30,6 +30,9 @@ import {
   getEntityByRoleId,
   getEntityByMongoId,
 } from "../../service/KartoffelService";
+import { USER_SOURCE_DI, USER_TYPE } from '../../constants';
+import { isUserHoldType } from '../../utils/user';
+import { GetDefaultApprovers } from '../../utils/approver';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
@@ -38,17 +41,23 @@ const validationSchema = Yup.object().shape({
   hierarchy: Yup.object().required(),
   role: Yup.object().required(),
   roleId: Yup.string().required(),
-  approvers: Yup.array().min(1).required(),
+  isUserApprover: Yup.boolean(),
+  approvers: Yup.array().when("isUserApprover", {
+    is: false,
+    then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+  }),
   comments: Yup.string().optional(),
 });
 
 const AssignRoleToEntityForm = forwardRef(
   ({ showJob = true, setIsActionDone, onlyForView, requestObject }, ref) => {
     const { appliesStore, userStore } = useStores();
-    const { register, handleSubmit, setValue, getValues, watch, formState } =
-      useForm({
-        resolver: yupResolver(validationSchema),
-      });
+    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
+
+    const { register, handleSubmit, setValue, getValues, watch, formState } = useForm({
+      resolver: yupResolver(validationSchema),
+      defaultValues: { isUserApprover },
+    });
     const [userSuggestions, setUserSuggestions] = useState([]);
     const [roles, setRoles] = useState([]);
     const { errors } = formState;
@@ -77,6 +86,7 @@ const AssignRoleToEntityForm = forwardRef(
         initializeValues();
       }
     }, []);
+
 
     const onSubmit = async (data) => {
       try {
@@ -120,14 +130,13 @@ const AssignRoleToEntityForm = forwardRef(
 
     const getUserRole = () => {
       const user = watch("user");
+      console.log('user', user)
 
       if (!user) {
         return null;
       }
 
-      const relevantIdentity = user.digitalIdentities.find(
-        (identity) => identity.source === "oneTree"
-      );
+      const relevantIdentity = user.digitalIdentities.find((identity) => identity.source === USER_SOURCE_DI);
 
       if (relevantIdentity && relevantIdentity.role) {
         return relevantIdentity.role;
@@ -233,38 +242,24 @@ const AssignRoleToEntityForm = forwardRef(
                 type="text"
                 field="fullName"
                 onSelect={(e) => {
-                  setValue('user', e.value);
-                  setValue(
-                    'personalNumber',
-                    e.value.personalNumber || e.value.identityCard
-                  );
-                  setValue('userRole', e.value.jobTitle);
+                  setValue("user", e.value);
+                  setValue("personalNumber", e.value.personalNumber || e.value.identityCard);
+                  setValue("userRole", e.value.jobTitle);
                 }}
                 onChange={(e) => {
-                  setValue(
-                    'userName',
-                    e.value.displayName ? e.value.displayName : e.value
-                  );
-                  if (e.value === '') {
-                    setValue('personalNumber', '');
-                    setValue('user', null);
+                  setValue("userName", e.value.displayName ? e.value.displayName : e.value);
+                  if (e.value === "") {
+                    setValue("personalNumber", "");
+                    setValue("user", null);
                   }
                 }}
                 required
                 disabled={onlyForView}
               />
-              <label htmlFor="2020">
-                {' '}
-                {errors.userName && (
-                  <small style={{ color: 'red' }}>יש למלא ערך</small>
-                )}
-              </label>
+              <label htmlFor="2020"> {errors.userName && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
             </div>
           </div>
-          <div
-            className="p-fluid-item-flex p-fluid-item"
-            style={{ marginLeft: '10px' }}
-          >
+          <div className="p-fluid-item-flex p-fluid-item" style={{ marginLeft: "10px" }}>
             <div className="p-field">
               <label htmlFor="2021">
                 {' '}
@@ -284,10 +279,8 @@ const AssignRoleToEntityForm = forwardRef(
                 disabled={onlyForView}
               />
               <label htmlFor="2021">
-                {' '}
-                {errors.personalNumber && (
-                  <small style={{ color: 'red' }}>יש למלא ערך</small>
-                )}
+                {" "}
+                {errors.personalNumber && <small style={{ color: "red" }}>יש למלא ערך</small>}
               </label>
             </div>
           </div>
@@ -295,13 +288,7 @@ const AssignRoleToEntityForm = forwardRef(
             <div className="p-fluid-item">
               <div className="p-field p-field-blue">
                 <label htmlFor="2022">תפקיד</label>
-                <InputText
-                  id="2022"
-                  disabled
-                  type="text"
-                  placeholder="תפקיד"
-                  value={userRoleDisplay}
-                />
+                <InputText id="2022" disabled type="text" placeholder="תפקיד" value={userRoleDisplay} />
               </div>
             </div>
           ) : null}
@@ -337,11 +324,7 @@ const AssignRoleToEntityForm = forwardRef(
           </div>
           {watch('currentRoleUser') && (
             <div className="p-fluid-item-flex p-fluid-item">
-              <div
-                className={`p-field ${
-                  watch('currentRoleUser') ? 'p-field-red' : 'p-field-green'
-                }`}
-              >
+              <div className={`p-field ${watch("currentRoleUser") ? "p-field-red" : "p-field-green"}`}>
                 <label htmlFor="2024">סטטוס תפקיד</label>
                 <InputText
                   {...register('roleStatus')}
@@ -371,12 +354,7 @@ const AssignRoleToEntityForm = forwardRef(
                 }}
                 disabled={onlyForView}
               />
-              <label htmlFor="2021">
-                {' '}
-                {errors.role && (
-                  <small style={{ color: 'red' }}>יש למלא ערך</small>
-                )}
-              </label>
+              <label htmlFor="2021"> {errors.role && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
             </div>
           </div>
           <div className="p-fluid-item">
@@ -396,12 +374,7 @@ const AssignRoleToEntityForm = forwardRef(
                 }}
                 disabled={onlyForView}
               />
-              <label htmlFor="2021">
-                {' '}
-                {errors.roleId && (
-                  <small style={{ color: 'red' }}>יש למלא ערך</small>
-                )}
-              </label>
+              <label htmlFor="2021"> {errors.roleId && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
             </div>
           </div>
           <div className="p-fluid-item">
@@ -410,8 +383,8 @@ const AssignRoleToEntityForm = forwardRef(
               name="approvers"
               tooltip='רס"ן ומעלה ביחידתך'
               multiple={true}
-              defaultApprovers={requestObject?.commanders || []}
-              disabled={onlyForView}
+              defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
+              disabled={onlyForView || isUserApprover}
               errors={errors}
             />
           </div>
@@ -421,13 +394,7 @@ const AssignRoleToEntityForm = forwardRef(
             <div className="p-fluid-item" style={{ width: '68%' }}>
               <div className="p-field">
                 <label htmlFor="2030">מבצע תפקיד</label>
-                <InputText
-                  {...register('currentRoleUser')}
-                  id="2030"
-                  type="text"
-                  disabled
-                  placeholder="מבצע תפקיד"
-                />
+                <InputText {...register("currentRoleUser")} id="2030" type="text" disabled placeholder="מבצע תפקיד" />
               </div>
             </div>
             <div className="p-fluid-item">
@@ -443,10 +410,8 @@ const AssignRoleToEntityForm = forwardRef(
                   disabled={onlyForView}
                 />
                 <label htmlFor="2021">
-                  {' '}
-                  {errors.changeRoleAt && (
-                    <small style={{ color: 'red' }}>יש למלא ערך</small>
-                  )}
+                  {" "}
+                  {errors.changeRoleAt && <small style={{ color: "red" }}>יש למלא ערך</small>}
                 </label>
               </div>
             </div>
@@ -455,13 +420,7 @@ const AssignRoleToEntityForm = forwardRef(
         <div className="p-fluid-item p-fluid-item-flex1">
           <div className="p-field">
             <label htmlFor="2028">סיבת מעבר</label>
-            <InputTextarea
-              {...register('comments')}
-              id="2028"
-              type="text"
-              placeholder="הכנס הערות לבקשה..."
-              disabled={onlyForView}
-            />
+            <InputTextarea {...register("comments")} id="2028" type="text" placeholder="הערות" disabled={onlyForView} />
           </div>
         </div>
       </div>

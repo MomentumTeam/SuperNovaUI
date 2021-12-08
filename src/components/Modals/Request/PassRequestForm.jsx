@@ -95,7 +95,6 @@ const PassRequestForm = forwardRef(({ request, setActionIsDone }, ref) => {
             <Approver
               setValue={setValue}
               name="approvers"
-              tooltip='רס"ן ומעלה ביחידתך'
               errors={errors}
               type={watch("approverType")}
               defaultApprovers={

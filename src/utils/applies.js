@@ -1,9 +1,7 @@
 import * as filesaver from 'file-saver';
-import { toJS } from 'mobx';
 import * as xlsx from 'xlsx';
-import { USER_TYPE } from '../constants';
-import { STATUSES, TYPES } from '../constants/applies';
-import datesUtil from '../utils/dates';
+import { USER_TYPE, STATUSES, TYPES, checkIfRequestIsDone } from "../constants";
+import datesUtil from "../utils/dates";
 import { isUserHoldType } from './user';
 
 const fileType =
@@ -39,17 +37,55 @@ export const getResponsibleFactor = (apply, user) => {
   return responsibles;
 };
 
+
+export const getResponsibleFactors = (apply, user) => {
+  let fields = [];
+  const isReqDone = checkIfRequestIsDone(apply);
+  const isSecurityNeeded = apply.needSecurityDecision;
+  const isSuperSecurityNeeded = apply.needSuperSecurityDecision;
+
+  if (!isReqDone) {
+    if (!IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER)) {
+      fields = apply["commanders"];
+      return fields;
+    }
+
+    if (isSecurityNeeded && !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) {
+      if (apply["securityApprovers"].length > 0) {
+        fields = apply["securityApprovers"];
+      } else {
+        fields = [...fields, isUserHoldType(user, USER_TYPE.SECURITY) ? "---" : 'ממתין לאישור ע"י יחב"ם'];
+      }
+
+      return fields;
+    } 
+
+    if (isSuperSecurityNeeded && !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)) {
+      if (apply["superSecurityApprovers"].length > 0) {
+        fields = apply["superSecurityApprovers"];
+      } else {
+        fields = [...fields, isUserHoldType(user, USER_TYPE.SUPER_SECURITY) ? "---" : 'ממתין לאישור ע"י בטח"ם'];
+      }
+
+      return fields;
+    }
+  } else {
+    fields = [...fields, ...apply["commanders"]];
+    fields = [...fields, ...apply["securityApprovers"]];
+    fields = [...fields, ...apply["superSecurityApprovers"]];
+  }
+
+
+
+  return fields;
+};
+
 export const getResponsibleFactorFields = (user) => {
   const fields = [];
-  if (isUserHoldType(user, USER_TYPE.SUPER_SECURITY))
-    fields.push('superSecurityApprovers');
-  if (isUserHoldType(user, USER_TYPE.SECURITY))
-    fields.push('securityApprovers');
-  if (
-    isUserHoldType(user, USER_TYPE.ADMIN) ||
-    isUserHoldType(user, USER_TYPE.COMMANDER)
-  )
-    fields.push('commanders');
+  if (user === undefined || isUserHoldType(user, USER_TYPE.SUPER_SECURITY)) fields.push("superSecurityApprovers");
+  if (user === undefined || isUserHoldType(user, USER_TYPE.SECURITY)) fields.push("securityApprovers");
+  if (user === undefined ||  isUserHoldType(user, USER_TYPE.ADMIN) || isUserHoldType(user, USER_TYPE.COMMANDER))
+    fields.push("commanders");
 
   return fields;
 };

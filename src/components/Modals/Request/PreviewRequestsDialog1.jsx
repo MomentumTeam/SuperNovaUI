@@ -80,7 +80,7 @@ const PreviewRequestsDialog = ({ request, isDialogVisible, setDialogVisiblity })
         setDialogContent(
           <PreviewRequestWrapper
             request={request}
-            showJob={request.kartoffelParams.needDisconnect} //relevant only to ASSIGN_ROLE_TO_ENTITY requests (מעבר תפקיד או חיבור משתמש חדש לתפקיד)
+            showJob={request.kartoffelParams?.needDisconnect} //relevant only to ASSIGN_ROLE_TO_ENTITY requests (מעבר תפקיד או חיבור משתמש חדש לתפקיד)
             ModalComponent={dialogParams[request.type].component}
             setDialogVisiblity={setDialogVisiblity}
           />

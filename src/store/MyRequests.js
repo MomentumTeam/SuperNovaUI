@@ -1,7 +1,7 @@
 import { action, makeAutoObservable, observable } from "mobx";
-import { AUTOCOMPLETE_STATUSES, STATUSES, TYPES } from "../constants";
+import { AUTOCOMPLETE_STATUSES, TYPES } from "../constants";
 import {
-  getFormattedMyRequests,
+  getMyRequests,
   getMyRequestsByType,
   getMyRequestsByStatus,
   getMyRequestsBySerialNumber,
@@ -10,28 +10,23 @@ import {
 
 export default class MyRequestsStore {
   myRequests = [];
-  isSearch = false;
-
+  totalCount = 0;
   constructor() {
     makeAutoObservable(this, {
       myRequests: observable,
-
+      totalCount: observable,
       loadMyRequests: action,
-
       getMyRequestsByType: action,
       getMyRequestsBySearch: action,
       getMyRequestsByStatus: action,
-      setSearch: action,
     });
   }
 
-  setSearch(isSearch) {
-    this.isSearch = isSearch;
-  }
 
   async loadMyRequests(from, to, append = false) {
-    const myRequests = await getFormattedMyRequests(from, to);
-    this.myRequests = append ? [...this.myRequests, ...myRequests] : myRequests;
+    const myRequests = await getMyRequests(from, to);
+    this.myRequests = append ? [...this.myRequests, ...myRequests.requests] : myRequests.requests;
+    this.totalCount  = myRequests.totalCount;
   }
 
   async loadMyRequestsBySerialNumber(from, to, append = false, value) {
@@ -41,9 +36,7 @@ export default class MyRequestsStore {
       filteredResults = [];
     } else {
       filteredResults = await getMyRequestsBySerialNumber(from, to, value);
-      this.myRequests = append
-        ? [...this.myRequests, ...filteredResults]
-        : filteredResults;
+      this.myRequests = append ? [...this.myRequests, ...filteredResults] : filteredResults;
     }
   }
 
@@ -55,9 +48,7 @@ export default class MyRequestsStore {
       filteredResults = [];
     } else {
       filteredResults = await getMyRequestsByType(from, to, type[0]);
-      this.myRequests = append
-        ? [...this.myRequests, ...filteredResults]
-        : filteredResults;
+      this.myRequests = append ? [...this.myRequests, ...filteredResults] : filteredResults;
     }
   }
 
@@ -68,25 +59,19 @@ export default class MyRequestsStore {
       filteredResults = [];
     } else {
       filteredResults = await getMyRequestsBySearch(from, to, value);
-      this.myRequests = append
-        ? [...this.myRequests, ...filteredResults]
-        : filteredResults;
+      this.myRequests = append ? [...this.myRequests, ...filteredResults] : filteredResults;
     }
   }
 
   async loadMyRequestsByStatus(from, to, append = false, value) {
     let filteredResults;
-    let status = Object.entries(AUTOCOMPLETE_STATUSES).filter(
-      ([_, text]) => text === value
-    )[0];
+    let status = Object.entries(AUTOCOMPLETE_STATUSES).filter(([_, text]) => text === value)[0];
 
     if (!Array.isArray(status)) {
       filteredResults = [];
     } else {
       filteredResults = await getMyRequestsByStatus(from, to, status[0]);
-      this.myRequests = append
-        ? [...this.myRequests, ...filteredResults]
-        : filteredResults;
+      this.myRequests = append ? [...this.myRequests, ...filteredResults] : filteredResults;
     }
   }
 }

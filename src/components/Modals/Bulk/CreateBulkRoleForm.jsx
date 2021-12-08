@@ -13,13 +13,20 @@ import { BulkTypes } from '../../../constants/applies';
 import {
   uploadBulkFile,
   getCreateBulkRoleData,
-} from '../../../service/AppliesService';
+} from "../../../service/AppliesService";
+import { USER_TYPE } from '../../../constants';
+import { isUserHoldType } from '../../../utils/user';
+import { GetDefaultApprovers } from '../../../utils/approver';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
   comments: Yup.string().optional(),
   hierarchy: Yup.object().required(),
-  approvers: Yup.array().min(1).required(),
+  isUserApprover: Yup.boolean(),
+  approvers: Yup.array().when("isUserApprover", {
+    is: false,
+    then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+  }),
   bulkFile: Yup.mixed()
     .test('required', 'יש להעלות קובץ!', (value) => {
       return value && value.length;
@@ -39,9 +46,11 @@ const validationSchema = Yup.object().shape({
 
 const RenameBulkOGForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject }, ref) => {
-    const { appliesStore } = useStores();
+    const { appliesStore, userStore } = useStores();
+    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
     const { register, handleSubmit, setValue, formState, watch } = useForm({
       resolver: yupResolver(validationSchema),
+      defaultValues: { isUserApprover },
     });
 
     const { errors } = formState;
@@ -57,6 +66,7 @@ const RenameBulkOGForm = forwardRef(
         getBulkData();
       }
     }, []);
+
 
     const onSubmit = async (data) => {
       try {
@@ -99,10 +109,7 @@ const RenameBulkOGForm = forwardRef(
     );
 
     return (
-      <div
-        className="p-fluid"
-        style={{ display: 'flex', flexDirection: 'column' }}
-      >
+      <div className="p-fluid" style={{ display: "flex", flexDirection: "column" }}>
         <div className="p-fluid-item-flex p-fluid-item">
           <div className="p-field">
             <Hierarchy
@@ -140,8 +147,10 @@ const RenameBulkOGForm = forwardRef(
             tooltip='רס"ן ומעלה ביחידתך'
             multiple={true}
             errors={errors}
-            defaultApprovers={requestObject?.commanders || []}
-            disabled={onlyForView}
+            setValue={setValue}
+            name="approvers"
+            defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
+            disabled={onlyForView || isUserApprover}
           />
         </div>
 
