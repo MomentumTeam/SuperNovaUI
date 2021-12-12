@@ -101,7 +101,6 @@ const CreateOGForm = forwardRef(
               id="2021"
               type="text"
               required
-              placeholder="שם היררכיה חדשה"
               disabled={onlyForView}
             />
             <label>
@@ -130,7 +129,7 @@ const CreateOGForm = forwardRef(
               {...register('comments')}
               id="2023"
               type="text"
-              placeholder="הערות"
+              placeholder="הכנס הערות לבקשה..."
               disabled={onlyForView}
             />
           </div>

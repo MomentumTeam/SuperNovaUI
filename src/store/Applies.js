@@ -23,9 +23,10 @@ import {
   changeRoleHierarchyBulkRequest,
   createRoleBulkRequest,
   transferApproverRequest,
-} from "../service/AppliesService";
+  updateApproversCommentsRequest,
+} from '../service/AppliesService';
 import { updateDecisionReq } from '../service/ApproverService';
-import { isApproverAndCanEdit } from "../utils/applies";
+import { isApproverAndCanEdit } from '../utils/applies';
 
 export default class AppliesStore {
   myApplies = [];
@@ -88,11 +89,22 @@ export default class AppliesStore {
     append = false,
     saveToStore = true,
   }) {
-    const myApplies = await getMyApproveRequests({ from, to, searchQuery, status, type, sortField, sortOrder });
+    const myApplies = await getMyApproveRequests({
+      from,
+      to,
+      searchQuery,
+      status,
+      type,
+      sortField,
+      sortOrder,
+    });
 
     if (saveToStore) {
       if (append) {
-        this.approveMyApplies.requests = [...this.approveMyApplies.requests, ...myApplies.requests];
+        this.approveMyApplies.requests = [
+          ...this.approveMyApplies.requests,
+          ...myApplies.requests,
+        ];
       } else {
         this.approveMyApplies = myApplies;
       }
@@ -116,11 +128,22 @@ export default class AppliesStore {
     append = false,
     saveToStore = true,
   }) {
-    const allApplies = await getAllApproveRequests({ from, to, searchQuery, status, type, sortField, sortOrder });
+    const allApplies = await getAllApproveRequests({
+      from,
+      to,
+      searchQuery,
+      status,
+      type,
+      sortField,
+      sortOrder,
+    });
 
     if (saveToStore) {
       if (append) {
-        this.approveAllApplies.requests = [...this.approveAllApplies.requests, ...allApplies.requests];
+        this.approveAllApplies.requests = [
+          ...this.approveAllApplies.requests,
+          ...allApplies.requests,
+        ];
       } else {
         this.approveAllApplies = allApplies;
       }
@@ -134,7 +157,13 @@ export default class AppliesStore {
   }
 
   async getAppliesByPerosn(id, personType, personInfoType, from, to) {
-    const myApplies = await getRequestsByPerson(id, personType, personInfoType, from, to);
+    const myApplies = await getRequestsByPerson(
+      id,
+      personType,
+      personInfoType,
+      from,
+      to
+    );
 
     // this.applies = myApplies.requests;
   }
@@ -145,7 +174,11 @@ export default class AppliesStore {
   }
 
   async searchAppliesBySubmitterDisplayName(displayName, from, to) {
-    const myApplies = await searchRequestsBySubmitterDisplayName(displayName, from, to);
+    const myApplies = await searchRequestsBySubmitterDisplayName(
+      displayName,
+      from,
+      to
+    );
     // this.applies = myApplies.requests;
   }
 
@@ -162,7 +195,9 @@ export default class AppliesStore {
   }
 
   async assignRoleToEntityApply(applyProperties) {
-    const newAssignRoleToEntityApply = await assignRoleToEntityRequest(applyProperties);
+    const newAssignRoleToEntityApply = await assignRoleToEntityRequest(
+      applyProperties
+    );
     this.myApplies.unshift(newAssignRoleToEntityApply);
   }
 
@@ -202,7 +237,8 @@ export default class AppliesStore {
   }
 
   async disconectRoleFromEntityApply(applyProperties) {
-    const newDisconectRoleFromEntityApply = await disconectRoleFromEntityRequest(applyProperties);
+    const newDisconectRoleFromEntityApply =
+      await disconectRoleFromEntityRequest(applyProperties);
     this.myApplies.unshift(newDisconectRoleFromEntityApply);
   }
 
@@ -213,12 +249,16 @@ export default class AppliesStore {
 
   // PUT
   async changeRoleHierarchy(applyProperties) {
-    const changeRoleHierarchyApply = await changeRoleHierarchyRequest(applyProperties);
+    const changeRoleHierarchyApply = await changeRoleHierarchyRequest(
+      applyProperties
+    );
     this.myApplies.unshift(changeRoleHierarchyApply);
   }
 
   async changeRoleHierarchyBulk(applyProperties) {
-    const changeRoleHierarchyBulkApply = await changeRoleHierarchyBulkRequest(applyProperties);
+    const changeRoleHierarchyBulkApply = await changeRoleHierarchyBulkRequest(
+      applyProperties
+    );
     this.myApplies.unshift(changeRoleHierarchyBulkApply);
   }
 
@@ -247,14 +287,9 @@ export default class AppliesStore {
   }
 
   // UTILS
-  updateApplyAndCount = ({
-    user,
-    reqId,
-    apply,
-    removeApply = false
-  }) => {
-    const myApplyIndex = this.getApplyIndexById("approveMyApplies", reqId);
-    const allApplyIndex = this.getApplyIndexById("approveAllApplies", reqId);
+  updateApplyAndCount = ({ user, reqId, apply, removeApply = false }) => {
+    const myApplyIndex = this.getApplyIndexById('approveMyApplies', reqId);
+    const allApplyIndex = this.getApplyIndexById('approveAllApplies', reqId);
 
     const myApplyResponsibleBefore =
       myApplyIndex != -1 ? isApproverAndCanEdit(this.approveMyApplies.requests[myApplyIndex], user) : false;
@@ -268,7 +303,8 @@ export default class AppliesStore {
     const responsibleAfter = !checkIfRequestIsDone(apply) && isApproverAndCanEdit(apply, user);
     if (!responsibleAfter && myApplyResponsibleBefore && removeApply) {
       this.approveMyApplies.requests.splice(myApplyIndex, 1);
-      this.approveMyApplies.waitingForApproveCount = this.approveMyApplies.waitingForApproveCount - 1;
+      this.approveMyApplies.waitingForApproveCount =
+        this.approveMyApplies.waitingForApproveCount - 1;
       this.approveMyAppliesCount = this.approveMyAppliesCount - 1;
     }
     if(!responsibleAfter && allApplyResponsibleBefore && removeApply) {
@@ -278,13 +314,16 @@ export default class AppliesStore {
     if (responsibleAfter && !myApplyResponsibleBefore) {
       this.approveMyApplies.requests.push(apply);
       this.approveMyAppliesCount = this.approveMyAppliesCount + 1;
-      this.approveMyApplies.waitingForApproveCount = this.approveMyApplies.waitingForApproveCount + 1;
+      this.approveMyApplies.waitingForApproveCount =
+        this.approveMyApplies.waitingForApproveCount + 1;
     }
   };
 
   getApplyIndexById = (appliesArr, id) => {
     if (Array.isArray(this[appliesArr].requests)) {
-      const reqIndex = this[appliesArr].requests.findIndex((apply) => apply.id === id);
+      const reqIndex = this[appliesArr].requests.findIndex(
+        (apply) => apply.id === id
+      );
       return reqIndex;
     }
 
