@@ -23,11 +23,12 @@ import { FullRoleInformation } from "../Modals/Role/FullRoleInformation";
 import { PassRequestDialog } from "../Modals/Request/PassRequestDialog";
 import PreviewRequestsDialog from "../Modals/Request/PreviewRequestsDialog1";
 import { TakeRequest } from "../Modals/Request/TakeRequest";
-import PreviewRequestWrapper from "../Modals/Request/PreviewRequestWrapper";
+import { useToast } from '../../context/use-toast';
 
 // TODO: change to reducer?
 const TableActionsModal = forwardRef((_, ref) => {
-  const { toastRef, contextMenuRef } = ref;
+  const { actionPopup, toastRef } = useToast();
+  const { contextMenuRef } = ref;
   const { selectedItem } = useContext(TableContext);
   const {
     actionType,
@@ -37,23 +38,9 @@ const TableActionsModal = forwardRef((_, ref) => {
     currEvent,
   } = useContext(TableActionsContext);
 
-  const actionPopup = (error = null) => {
-    if (error === null) {
-      toastRef.show({
-        severity: "success",
-        summary: "Success Message",
-        detail: `Success in action: ${actionType}`,
-        life: 3000,
-      });
-    } else {
-      toastRef.show({
-        severity: "error",
-        summary: "Error Message",
-        detail: error.message || `action: ${actionType} failed`,
-        life: 3000,
-      });
-    }
-  };
+  const sendActionPopup = (actionName = actionType, error = null) => {
+    actionPopup(actionName, error);
+  }
 
   const renderActionModal = () => {
     if (selectedItem[0] && actionType && isActionModalOpen) {
@@ -66,7 +53,7 @@ const TableActionsModal = forwardRef((_, ref) => {
               isOpen={isActionModalOpen}
               closeFullDetailsModal={closeActionModal}
               edit={false}
-              actionPopup={actionPopup}
+              actionPopup={sendActionPopup}
             />
           );
         case usersTableActionsEnum.EDIT_ENTITY:
@@ -76,7 +63,7 @@ const TableActionsModal = forwardRef((_, ref) => {
               isOpen={isActionModalOpen}
               closeFullDetailsModal={closeActionModal}
               edit={true}
-              actionPopup={actionPopup}
+              actionPopup={sendActionPopup}
             />
           );
 
@@ -88,7 +75,7 @@ const TableActionsModal = forwardRef((_, ref) => {
               isOpen={isActionModalOpen}
               closeModal={closeActionModal}
               edit={false}
-              actionPopup={actionPopup}
+              actionPopup={sendActionPopup}
             />
           );
         case usersTableActionsEnum.EDIT_HIERARCHY:
@@ -98,7 +85,7 @@ const TableActionsModal = forwardRef((_, ref) => {
               isOpen={isActionModalOpen}
               closeModal={closeActionModal}
               edit={true}
-              actionPopup={actionPopup}
+              actionPopup={sendActionPopup}
             />
           );
         case usersTableActionsEnum.DELETE_HIERARCHY:
@@ -107,7 +94,7 @@ const TableActionsModal = forwardRef((_, ref) => {
               hierarchy={selectedItem[0]}
               isOpen={isActionModalOpen}
               closeModal={closeActionModal}
-              actionPopup={actionPopup}
+              actionPopup={sendActionPopup}
             />
           );
 
@@ -119,7 +106,7 @@ const TableActionsModal = forwardRef((_, ref) => {
               isOpen={isActionModalOpen}
               closeModal={closeActionModal}
               edit={false}
-              actionPopup={actionPopup}
+              actionPopup={sendActionPopup}
             />
           );
         case usersTableActionsEnum.EDIT_ROLE:
@@ -129,7 +116,7 @@ const TableActionsModal = forwardRef((_, ref) => {
               isOpen={isActionModalOpen}
               closeModal={closeActionModal}
               edit={true}
-              actionPopup={actionPopup}
+              actionPopup={sendActionPopup}
             />
           );
         case myRequestsTableActionsEnum.VIEW_MY_REQUESTS:
@@ -159,7 +146,7 @@ const TableActionsModal = forwardRef((_, ref) => {
               request={selectedItem[0]}
               isDialogVisible={isActionModalOpen}
               setDialogVisiblity={setIsActionModalOpen}
-              actionPopup={actionPopup}
+              actionPopup={sendActionPopup}
             />
           );
         case TableAppliesActionsEnum.TAKE_APPLY:
@@ -167,7 +154,7 @@ const TableActionsModal = forwardRef((_, ref) => {
           closeActionModal();
           break;
         default:
-          toastRef.show({
+          toastRef.current.show({
             severity: "error",
             summary: "פעולה לא ממומשת",
             detail: `פעולה זו לא ממומשת במערכת עדיין`,

@@ -1,10 +1,10 @@
 import { DateFieldTemplate } from "../components/Fields/DateFieldTemplate";
 import { RequestorFieldTemplate } from "../components/AppliesTable/RequestorFieldTemplate";
-import { ResponsibleFactorFieldTemplate } from "../components/AppliesTable/ResponsibleFactorTemplate";
 import { StatusFieldTemplate } from "../components/Fields/StatusFieldTemplate";
 import { TextFieldTemplate } from "../components/Fields/TextFieldTemplate";
-import { getFormattedDate, getResponsibleFactorFields } from "../utils/applies";
+import { getFormattedDate } from "../utils/applies";
 import { STATUSES } from '.';
+import { ResponsibleFactorWithWaitingFieldTemplate } from '../components/AppliesTable/ResponsibleFactorWithWaitingFieldTemplate';
 
 
 export const TYPES = {
@@ -49,10 +49,11 @@ export const TableTypes = (selectedTab, user) => {
       template: RequestorFieldTemplate,
     },
     {
-      field: getResponsibleFactorFields(user),
+      field: null,
       displayName: "גורם מטפל",
       hide: selectedTab !== TableNames.allreqs.tab,
-      template: ResponsibleFactorFieldTemplate,
+      templateParam: user,
+      template: ResponsibleFactorWithWaitingFieldTemplate,
     },
     {
       field: "createdAt",
@@ -60,6 +61,7 @@ export const TableTypes = (selectedTab, user) => {
       formatter: getFormattedDate,
       sortable: true,
       sortFields: sortFields.CREATED_AT,
+      templateParam: [user, "superSecurityDecision", "securityDecision", "commanderDecision"],
       template: DateFieldTemplate,
     },
     {
@@ -93,8 +95,8 @@ export const sortOrder = {
   DEC: "DEC",
 };
 
-export const pageSize = 100;
-export const itemsPerRow = 50; // must be smaller than the page size
+export const pageSize = 10;
+export const itemsPerRow = 5; // must be smaller than the page size
 
 export const TableAppliesActionsEnum = {
   VIEW_APPLY: "VIEW_APPLY",

@@ -1,4 +1,5 @@
 import { action, makeAutoObservable, observable } from "mobx";
+import { checkIfRequestIsDone } from '../constants';
 import {
   getMyRequests,
   getRequestById,
@@ -222,18 +223,26 @@ export default class AppliesStore {
   }
 
   async transferApprovers({ user, reqId, approvers, approversType, comment }) {
-    const apply = await transferApproverRequest({ reqId, approvers, approversType, comment });
-
-    this.updateApplyAndCount({ user, reqId, apply, removeApply:true });
+    if (Array.isArray(approversType)) {
+      await Promise.all(
+        approversType.map(async (approverType) => {
+          const apply = await transferApproverRequest({ reqId, approvers, type: approverType, comment });
+          this.updateApplyAndCount({ user, reqId, apply, removeApply: true });
+        })
+      )
+    } else {
+      const apply = await transferApproverRequest({ reqId, approvers, type: approversType, comment });
+      this.updateApplyAndCount({ user, reqId, apply, removeApply:true });
+    }
   }
 
   async updateApplyDecision({ user, requestId, decision }) {
     const updatedRequest = await updateDecisionReq(requestId, decision);
-
     this.updateApplyAndCount({
       user,
       reqId: requestId,
       apply: updatedRequest,
+      removeApply: true
     });
   }
 
@@ -250,14 +259,21 @@ export default class AppliesStore {
     const myApplyResponsibleBefore =
       myApplyIndex != -1 ? isApproverAndCanEdit(this.approveMyApplies.requests[myApplyIndex], user) : false;
 
+    const allApplyResponsibleBefore =
+      allApplyIndex != -1 ? isApproverAndCanEdit(this.approveAllApplies.requests[allApplyIndex], user) : false;
+
     if (myApplyIndex != -1) this.updateApply("approveMyApplies", myApplyIndex, apply);
     if (allApplyIndex != -1) this.updateApply("approveAllApplies", allApplyIndex, apply);
 
-    const responsibleAfter = isApproverAndCanEdit(apply, user);
+    const responsibleAfter = !checkIfRequestIsDone(apply) && isApproverAndCanEdit(apply, user);
     if (!responsibleAfter && myApplyResponsibleBefore && removeApply) {
       this.approveMyApplies.requests.splice(myApplyIndex, 1);
       this.approveMyApplies.waitingForApproveCount = this.approveMyApplies.waitingForApproveCount - 1;
       this.approveMyAppliesCount = this.approveMyAppliesCount - 1;
+    }
+    if(!responsibleAfter && allApplyResponsibleBefore && removeApply) {
+       this.approveAllApplies.waitingForApproveCount = this.approveAllApplies.waitingForApproveCount - 1;
+       this.approveAllAppliesCount = this.approveAllAppliesCount - 1;
     }
     if (responsibleAfter && !myApplyResponsibleBefore) {
       this.approveMyApplies.requests.push(apply);

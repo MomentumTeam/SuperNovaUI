@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import CountryStore from "./Country";
+import ToastStore from "./Toast";
 import RolesStore from "./Roles";
 import EntitiesStore from "./Entities";
 import GroupsStore from "./Groups";
@@ -12,7 +12,6 @@ const stores = {
   rolesStore: new RolesStore(),
   entitiesStore: new EntitiesStore(),
   groupsStore: new GroupsStore(),
-  countryStore: new CountryStore(),
   userStore: new UserStore(),
   appliesStore: new AppliesStore(),
   treeStore: new TreeStore(),

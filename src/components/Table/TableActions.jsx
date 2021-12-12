@@ -17,7 +17,7 @@ import { canEditHierarchy } from "../../utils/hierarchy";
 import { useContext } from "react";
 import { TableContext } from ".";
 import { isUserHoldType } from "../../utils/user";
-import { canPassApply } from "../../utils/applies";
+import { canPassApply, isApproverAndCanEdit } from "../../utils/applies";
 
 // TODO: change to reducer
 const TableActions = ({ setActionType, openActionModal, setEvent }) => {
@@ -71,7 +71,7 @@ const TableActions = ({ setActionType, openActionModal, setEvent }) => {
     // Add view action
     if (tableActions.pass && canPassApply(selectedItem[0], user))
       actions.push(getAction("העבר לטיפול גורם אחר", tableActions.pass));
-    if (tableActions.take && canPassApply(selectedItem[0], user))
+    if (tableActions.take && canPassApply(selectedItem[0], user) && !isApproverAndCanEdit(selectedItem[0], user))
       actions.push(getAction("העברה לטיפולי", tableActions.take));
 
     return actions;

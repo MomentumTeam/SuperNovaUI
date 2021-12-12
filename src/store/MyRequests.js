@@ -10,28 +10,23 @@ import {
 
 export default class MyRequestsStore {
   myRequests = [];
-  isSearch = false;
-
+  totalCount = 0;
   constructor() {
     makeAutoObservable(this, {
       myRequests: observable,
-
+      totalCount: observable,
       loadMyRequests: action,
-
       getMyRequestsByType: action,
       getMyRequestsBySearch: action,
       getMyRequestsByStatus: action,
-      setSearch: action,
     });
   }
 
-  setSearch(isSearch) {
-    this.isSearch = isSearch;
-  }
 
   async loadMyRequests(from, to, append = false) {
     const myRequests = await getMyRequests(from, to);
     this.myRequests = append ? [...this.myRequests, ...myRequests.requests] : myRequests.requests;
+    this.totalCount  = myRequests.totalCount;
   }
 
   async loadMyRequestsBySerialNumber(from, to, append = false, value) {

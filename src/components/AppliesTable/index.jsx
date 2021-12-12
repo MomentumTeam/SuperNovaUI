@@ -26,6 +26,9 @@ const AppliesTable = () => {
   const [sortEvent, setSortEvent] = useState({});
 
   const columns = TableTypes(selectedTab, user);
+  const sortActivate = useCallback(async () => {
+    if (sortQuery != {}) await getData({ reset: true });
+  }, [sortQuery]);
 
   const handleFieldChange = (fieldId, value) => {
     if (value !== '' || value === undefined) {
@@ -68,7 +71,7 @@ const AppliesTable = () => {
   
   const onSort = (event) => { 
     let newSort = { ...sortQuery };   
-    newSort.sortOrder = event.order === 1 ? sortOrder.INC : sortOrder.DEC;
+    newSort.sortOrder = event.sortOrder === 1 ? sortOrder.INC : sortOrder.DEC;
 
     const sortField = columns.find((col) => col.field === event.sortField).sortFields;
     if (sortField) newSort.sortField = sortField;
@@ -102,6 +105,10 @@ const AppliesTable = () => {
     }
   };
   
+  useEffect(() => {
+    sortActivate();
+  }, [sortQuery]);
+
   useEffect(() => {
     setTableData(
       selectedTab === TableNames.myreqs.tab ? appliesStore.approveMyApplies : appliesStore.approveAllApplies

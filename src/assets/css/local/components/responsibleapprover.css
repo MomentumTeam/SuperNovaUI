@@ -1,0 +1,24 @@
+.p-chip {
+    max-width: 110px;
+    font-size: 12px;
+    line-height: 0.5;
+ }
+
+.waiting {
+    font-size: 13px;
+    opacity: 0.4;
+}
+
+.more-person {
+ color: black;
+ background: rgb(194, 194, 194);
+ /* opacity: 0.6; */
+ font-size: 10px;
+ margin-right: 11px!important;
+ margin-top: 7px !important;
+}
+
+.person {
+     background: rgb(236, 236, 236);
+
+}

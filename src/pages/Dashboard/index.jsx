@@ -1,7 +1,6 @@
 import { observer } from "mobx-react";
 import { toJS } from "mobx";
-import { useState, useEffect, useRef } from "react";
-import { Toast } from "primereact/toast";
+import { useState, useEffect } from "react";
 
 import "../../assets/css/local/pages/dashboard.min.css";
 
@@ -14,12 +13,12 @@ import FullEntityInformationModal from "../../components/Modals/Entity/FullEntit
 import DecorAnimation from "../../components/decor-animation";
 import { getUserTag, isUserCanSeeAllApproveApplies, isUserCanSeeMyApproveApplies } from "../../utils/user";
 import { AppliesTable } from "../../components/AppliesTable";
+import { useToast } from '../../context/use-toast';
 
 const Dashboard = observer(() => {
+  const {actionPopup} = useToast();
   const { userStore, appliesStore, treeStore } = useStores();
   const [isFullUserInfoModalOpen, setIsFullUserInfoModalOpen] = useState(false);
-  const toast = useRef(null);
-
   const user = toJS(userStore.user);
   const myApplies = toJS(appliesStore.myApplies);
   const approveMyApplies = toJS(appliesStore.approveMyApplies);
@@ -29,24 +28,6 @@ const Dashboard = observer(() => {
   user?.types.map((type) => {
     userType = getUserTag(type);
   });
-
-  const actionPopup = (error = null) => {
-    if (error === null) {
-      toast.current.show({
-        severity: "success",
-        summary: "Success Message",
-        detail: `Success`,
-        life: 3000,
-      });
-    } else {
-      toast.current.show({
-        severity: "error",
-        summary: "Error Message",
-        detail: error.message || `failed`,
-        life: 3000,
-      });
-    }
-  };
 
   useEffect(() => {
     if (userStore.user) {
@@ -107,7 +88,6 @@ const Dashboard = observer(() => {
           </div>
         </div>
       </div>
-      <Toast ref={toast} />
       <SideToolbar recentApplies={myApplies} />
     </>
   );

@@ -7,6 +7,7 @@ import { AutoComplete } from "primereact/autocomplete";
 import { Tooltip } from "primereact/tooltip";
 
 import "../../assets/css/local/components/approver.css";
+import { useStores } from '../../context/use-stores';
 
 const Approver = ({
   setValue,
@@ -20,6 +21,7 @@ const Approver = ({
   isHighRank = false,
   tooltip = "גורם מאשר",
 }) => {
+  const {userStore} = useStores();
   const [ApproverSuggestions, setApproverSuggestions] = useState([]);
   const [selectedApprover, setSelectedApprover] = useState(defaultApprovers);
 
@@ -27,7 +29,8 @@ const Approver = ({
     const result = await (isHighRank
       ? searchHighApproverByDisplayNameReq(event.query)
       : searchApproverByDisplayNameReq(event.query, type));
-    setApproverSuggestions(result.approvers);
+    const filteredResult = result.approvers.filter(approvers => approvers.id === userStore.user.id);
+    setApproverSuggestions(filteredResult);
   };
 
   const itemSelectedTemplate = (item) => {
@@ -84,8 +87,8 @@ const Approver = ({
                 ({ id, displayName, identityCard, personalNumber }) => ({
                   id,
                   displayName,
-                  identityCard,
-                  personalNumber,
+                  ...identityCard,
+                  ...personalNumber,
                 })
               );
 
@@ -100,9 +103,7 @@ const Approver = ({
               if (e.value?.id) {
                 const { id, displayName, identityCard, personalNumber } =
                   e.value;
-                setValue(name, [
-                  { id, displayName, identityCard, personalNumber },
-                ]);
+                setValue(name, [{ id, displayName, ...identityCard, ...personalNumber }]);
               } else {
                 setValue(name, []);
               }
