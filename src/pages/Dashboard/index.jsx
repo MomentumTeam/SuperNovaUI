@@ -3,8 +3,7 @@ import { toJS } from "mobx";
 import { useState, useEffect } from "react";
 
 import "../../assets/css/local/pages/dashboard.min.css";
-
-import { useStores } from "../../context/use-stores";
+import { useStores } from '../../context/use-stores';
 import SearchBox from "../../components/Search/SearchBox";
 import HierarchyTree from "../../components/HierarchyTree";
 import SideToolbar from "../../components/SideToolBar/SideToolbar";

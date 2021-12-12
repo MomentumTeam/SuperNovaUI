@@ -83,10 +83,7 @@ const RenameSingleOGForm = forwardRef(
           roleEntityType: isTafkidan ? 'goalUser' : undefined,
         },
         adParams: {
-          ouDisplayName: `${hierarchy.hierarchy.substring(
-            hierarchy.hierarchy.indexOf('/') + 1,
-            hierarchy.hierarchy.length
-          )}/${hierarchy.name}`,
+          ouDisplayName: hierarchy.name,
           jobTitle: roleName,
           samAccountName: '???', // TODO: check
         },
@@ -107,6 +104,7 @@ const RenameSingleOGForm = forwardRef(
 
     const onRoleNameChange = async (e) => {
       const roleNameToSearch = e.target.value;
+      setValue('roleName', e.target.value);
 
       if (roleNameToSearch && watch('hierarchy')?.id) {
         const isJobTitleAlreadyTakenResponse =
@@ -148,11 +146,13 @@ const RenameSingleOGForm = forwardRef(
               <span className="required-field">*</span>שם תפקיד
             </label>
             <span className="p-input-icon-left">
-              <i>
-                {watch('isJobAlreadyTakenData')?.isJobTitleAlreadyTaken
-                  ? 'תפוס'
-                  : 'פנוי'}
-              </i>
+              {watch('hierarchy') && watch('roleName') && (
+                <i>
+                  {watch('isJobAlreadyTakenData')?.isJobTitleAlreadyTaken
+                    ? 'תפוס'
+                    : 'פנוי'}
+                </i>
+              )}
               <InputText
                 {...register('roleName')}
                 onChange={onRoleNameChange}

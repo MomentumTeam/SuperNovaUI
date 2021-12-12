@@ -1,5 +1,6 @@
 import axiosApiInstance from "../config/axios";
 import { apiBaseUrl } from "../constants/api";
+import { organizeRows } from "../utils/applies";
 import "../assets/css/local/components/status.css";
 
 //GET
@@ -178,7 +179,10 @@ export const searchRequestsBySubmitterDisplayName = async (
 export const getCreateBulkRoleData = async (id) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/bulk/request/createRole/${id}`
+
   );
+
+  response.data.rows = organizeRows(response.data.rows);
 
   return response.data;
 };
@@ -187,6 +191,8 @@ export const getBulkChangeRoleHierarchyData = async (id) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/bulk/request/changeRoleHierarchy/${id}`
   );
+
+  response.data.rows = organizeRows(response.data.rows);
 
   return response.data;
 };
@@ -256,14 +262,19 @@ export const disconectRoleFromEntityRequest = async (applyProperties) => {
   return response.data;
 };
 
-export const uploadBulkFile = async (file) => {
-  const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/bulk/upload`,
-    file,
-    { headers: { "Content-Type": "multipart/form-data" } }
-  );
-
-  return response.data;
+export const uploadBulkFile = async (file, type) => {
+  try{
+    const response = await axiosApiInstance.post(
+      `${apiBaseUrl}/api/bulk/upload?type=${type}`,
+      file,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+    return response.data;
+  } catch (error) {
+    if (error.response.status === 500) {
+      return false;
+    }
+  }
 };
 
 export const createRoleBulkRequest = async (data) => {
@@ -342,6 +353,23 @@ export const transferApproverRequest = async ({
     {
       approvers,
       type,
+      commentForApprovers: comment,
+    }
+  );
+
+  return response.data;
+};
+
+export const updateApproversCommentsRequest = async ({
+  requestId,
+  approversType,
+  comment,
+}) => {
+
+  const response = await axiosApiInstance.put(
+    `${apiBaseUrl}/api/requests/approver/comments/${requestId}`,
+    {
+      type: approversType,
       commentForApprovers: comment,
     }
   );

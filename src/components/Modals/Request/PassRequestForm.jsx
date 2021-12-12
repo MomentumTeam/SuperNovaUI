@@ -71,14 +71,14 @@ const PassRequestForm = forwardRef(({ request, setActionIsDone }, ref) => {
           <div className="p-field">
             {passOptions.length > 1 && (
               <Dropdown
-                {...register("approverType")}
+                {...register('approverType')}
                 className="dropdown-autocomplete"
-                value={watch("approverType")}
+                value={watch('approverType')}
                 options={passOptions}
                 placeholder="סוג גורם מטפל"
                 onChange={(e) => {
-                  setValue("approverType", e.value);
-                  setValue("approvers", []);
+                  setValue('approverType', e.value);
+                  setValue('approvers', []);
                 }}
               />
             )}
@@ -91,7 +91,7 @@ const PassRequestForm = forwardRef(({ request, setActionIsDone }, ref) => {
               )}
             </label>
           </div>
-          <div className="AutoCompleteWrap" style={{ width: "100%" }}>
+          <div className="AutoCompleteWrap" style={{ width: '100%' }}>
             <Approver
               setValue={setValue}
               name="approvers"
@@ -107,14 +107,14 @@ const PassRequestForm = forwardRef(({ request, setActionIsDone }, ref) => {
           </div>
         </div>
       </div>
-      <div className="p-fluid-item" style={{ width: "100%" }}>
+      <div className="p-fluid-item" style={{ width: '100%' }}>
         <div className="p-field">
           <label htmlFor="12024">הערות</label>
           <InputTextarea
-            {...register("comment")}
+            {...register('comment')}
             id="2028"
             type="text"
-            placeholder="הערות"
+            placeholder="הכנס הערות לבקשה..."
           />
         </div>
       </div>

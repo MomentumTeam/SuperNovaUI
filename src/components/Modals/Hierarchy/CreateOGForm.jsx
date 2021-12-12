@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { useStores } from '../../../context/use-stores';
+import { isHierarchyAlreadyTakenRequest } from "../../../service/KartoffelService";
 import Hierarchy from '../Hierarchy';
 import Approver from '../../Fields/Approver';
 import * as Yup from 'yup';
@@ -79,6 +80,21 @@ const CreateOGForm = forwardRef(
       handleSubmit: handleSubmit(onSubmit),
     }));
 
+    const onHierarchyNameChange = async (e) => {
+      const hierarchyNameToSearch = e.target.value;
+      setValue('newHierarchy', e.target.value)
+      
+      if (hierarchyNameToSearch && watch("parentHierarchy")?.id) {
+        const isHierarchyAlreadyTakenResponse =
+          await isHierarchyAlreadyTakenRequest(
+            hierarchyNameToSearch,
+            watch("parentHierarchy").id
+          );
+
+        setValue("isHierarchyAlreadyTakenData", isHierarchyAlreadyTakenResponse);
+      }
+    };
+
     return (
       <div className="p-fluid">
         <div className="p-fluid-item p-fluid-item-flex1">
@@ -96,19 +112,25 @@ const CreateOGForm = forwardRef(
             <label htmlFor="2021">
               <span className="required-field">*</span>שם היררכיה חדשה
             </label>
-            <InputText
-              {...register('newHierarchy')}
-              id="2021"
-              type="text"
-              required
-              placeholder="שם היררכיה חדשה"
-              disabled={onlyForView}
-            />
-            <label>
-              {errors.newHierarchy && (
-                <small style={{ color: 'red' }}>יש למלא ערך</small>
-              )}
-            </label>
+            <span className="p-input-icon-left">
+              {
+                watch('parentHierarchy') && watch('newHierarchy') && <i>{watch("isHierarchyAlreadyTakenData")?.isOGNameAlreadyTaken  ? "תפוס" : "פנוי"}</i>
+              }
+              <InputText
+                {...register('newHierarchy')}
+                id="2021"
+                type="text"
+                required
+                disabled={onlyForView}
+                onChange={onHierarchyNameChange}
+              />
+              <label>{errors.isHierarchyAlreadyTakenData && <small>יש לבחור תפקיד פנוי</small>}</label>
+              <label>
+                {errors.newHierarchy && (
+                  <small style={{ color: 'red' }}>יש למלא ערך</small>
+                  )}
+              </label>
+            </span>
           </div>
         </div>
         <div className="p-fluid-item">
@@ -130,7 +152,7 @@ const CreateOGForm = forwardRef(
               {...register('comments')}
               id="2023"
               type="text"
-              placeholder="הערות"
+              placeholder="הכנס הערות לבקשה..."
               disabled={onlyForView}
             />
           </div>

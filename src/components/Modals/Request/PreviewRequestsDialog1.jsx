@@ -9,7 +9,7 @@ import CreateSpecialEntityForm from '../Entity/CreateSpecialEntityForm';
 import AssignRoleToEntityForm from '../AssignRoleToEntityForm';
 import CreateBulkRoleForm from '../Bulk/CreateBulkRoleForm';
 import RenameBulkOGForm from '../Bulk/RenameBulkOGForm';
-import { TYPES } from '../../../constants/applies';
+import { TYPES, assignRoleToEntityHeader } from '../../../constants/applies';
 
 const PreviewRequestsDialog = ({ request, isDialogVisible, setDialogVisiblity }) => {
   const [dialogContent, setDialogContent] = useState(null);
@@ -29,7 +29,7 @@ const PreviewRequestsDialog = ({ request, isDialogVisible, setDialogVisiblity })
     },
     ASSIGN_ROLE_TO_ENTITY: {
       footer: null,
-      header: `פרטי בקשה ל${TYPES.ASSIGN_ROLE_TO_ENTITY}`,
+      // header: `פרטי בקשה ל${TYPES.ASSIGN_ROLE_TO_ENTITY}`,
       component: AssignRoleToEntityForm,
       dialogClass: 'dialogClass3',
     },
@@ -90,10 +90,21 @@ const PreviewRequestsDialog = ({ request, isDialogVisible, setDialogVisiblity })
     }
   }, [JSON.stringify(request)]);
 
+  const setHeader = (request) => {
+    if (request.type === "ASSIGN_ROLE_TO_ENTITY") {
+      if (request.kartoffelParams.needDisconnect) {
+        return `פרטי בקשה ל${assignRoleToEntityHeader[0]}`;
+      } else {
+        return `פרטי בקשה ל${assignRoleToEntityHeader[1]}`;
+      }
+    }
+    return '';
+  }
+
   return (
     <Dialog
       className={dialogParams[request.type]?.dialogClass || ''}
-      header={dialogParams[request.type]?.header || ''}
+      header={dialogParams[request.type]?.header || setHeader(request)}
       visible={isDialogVisible}
       onHide={() => setDialogVisiblity(false)}
       footer={dialogParams[request.type]?.footer}
