@@ -102,6 +102,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
 
     const onRoleNameChange = async (e) => {
       const roleNameToSearch = e.target.value;
+      setValue("roleName", e.target.value);
 
       if (roleNameToSearch && watch("hierarchy")?.id) {
         const isJobTitleAlreadyTakenResponse =
@@ -143,7 +144,9 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             <span className="required-field">*</span>שם תפקיד
           </label>
           <span className="p-input-icon-left">
-            <i>{watch("isJobAlreadyTakenData")?.isJobTitleAlreadyTaken ? "תפוס" : "פנוי"}</i>
+          {
+              watch('hierarchy') && watch('roleName') && <i>{watch("isJobAlreadyTakenData")?.isJobTitleAlreadyTaken  ? "תפוס" : "פנוי"}</i>
+          }
             <InputText {...register("roleName")} onChange={onRoleNameChange} disabled={onlyForView} />
             <label>{errors.roleName && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
             <label>{errors.isJobAlreadyTakenData && <small>יש לבחור תפקיד פנוי</small>}</label>
