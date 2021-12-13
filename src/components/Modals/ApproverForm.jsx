@@ -11,6 +11,8 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import Hierarchy from './Hierarchy';
 import Approver from '../Fields/Approver';
 import { AutoComplete } from 'primereact/autocomplete';
+import '../../assets/css/local/components/approverForm.css';
+// import { assignRoleToEntityRequest } from '../../service/AppliesService';
 import { useStores } from '../../context/use-stores';
 import { toJS } from 'mobx';
 import {
@@ -19,51 +21,38 @@ import {
 } from '../../service/KartoffelService';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { USER_TYPE } from '../../constants';
-import { isUserHoldType } from '../../utils/user';
-import { GetDefaultApprovers } from '../../utils/approver';
-import '../../assets/css/local/components/approverForm.css';
 
 const approverTypes = [
-  { label: 'גורם מאשר ראשוני', value: USER_TYPE.COMMANDER },
-  { label: 'גורם מאשר יחב"ם', value: USER_TYPE.SECURITY },
-  { label: 'גורם מאשר בטח"ם', value: USER_TYPE.SUPER_SECURITY },
-  { label: 'הרשאת בקשה מרובה', value: USER_TYPE.BULK },
-  { label: 'מחשוב יחידתי', value: USER_TYPE.ADMIN },
+  { label: 'גורם מאשר ראשוני', value: 'COMMANDER' },
+  { label: 'גורם מאשר יחב"ם', value: 'SECURITY' },
+  { label: 'גורם מאשר בטח"ם', value: 'SUPER_SECURITY' },
+  { label: 'הרשאת בקשה מרובה', value: 'BULK' },
+  { label: 'מחשוב יחידתי', value: 'ADMIN' },
 ];
 
 const validationSchema = Yup.object().shape({
-  approverType: Yup.string().required('יש להכניס סוג מאשר'),
-  user: Yup.object().required('יש לבחור משתמש'),
-  hierarchy: Yup.string().required('יש לבחור היררכיה'),
-  isUserApprover: Yup.boolean(),
-  approvers: Yup.array().when('isUserApprover', {
-    is: false,
-    then: Yup.array()
-      .min(1, 'יש לבחור לפחות גורם מאשר אחד')
-      .required('יש לבחור לפחות גורם מאשר אחד'),
-  }),
+  approverType: Yup.string().required(),
+  user: Yup.object().required(),
+  hierarchy: Yup.string().required(),
+  approvers: Yup.array().min(1).required(),
   comments: Yup.string().optional(),
-  userName: Yup.object().required('יש לבחור שם משתמש'),
+  userName: Yup.string().required(),
 });
 
 const ApproverForm = forwardRef(
   ({ onlyForView, requestObject, setIsActionDone }, ref) => {
     const { appliesStore, userStore } = useStores();
     const [approverType, setApproverType] = useState();
-    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
-
     const { register, handleSubmit, setValue, getValues, formState, watch } =
       useForm({
         resolver: yupResolver(validationSchema),
-        defaultValues: { isUserApprover },
       });
     const [userSuggestions, setUserSuggestions] = useState([]);
     const { errors } = formState;
 
     useEffect(() => {
-      setValue('approverType', USER_TYPE.COMMANDER);
-      setApproverType(USER_TYPE.COMMANDER);
+      setValue('approverType', 'COMMANDER');
+      setApproverType('COMMANDER');
 
       if (requestObject) {
         setValue('comments', requestObject.comments);
@@ -83,6 +72,7 @@ const ApproverForm = forwardRef(
         data;
 
       console.log(errors);
+
       try {
         await validationSchema.validate(data);
       } catch (err) {
@@ -95,64 +85,51 @@ const ApproverForm = forwardRef(
         commanders: approvers,
         additionalParams: {
           entityId: user.id,
-          displayName: userName.displayName,
+          displayName: userName,
           domainUsers: (user?.digitalIdentities || []).map(
             ({ uniqueId, mail }) => uniqueId || mail
           ),
+          akaUnit: user.akaUnit,
+          personalNumber: user.personalNumber,
+          identityCard: user.identityCard,
           type: approverType,
           directGroup: hierarchy,
-          ...(user.akaUnit && { akaUnit: user.akaUnit }),
-          ...(user.personalNumber && { personalNumber: user.personalNumber }),
-          ...(user.identityCard && { identityCard: user.identityCard }),
         },
         comments,
         due: Date.now(),
       };
 
-      useImperativeHandle(
-        ref,
-        () => ({
-          handleSubmit: handleSubmit(onSubmit),
-        }),
-        []
-      );
+      await appliesStore.createNewApproverApply(req);
+      setIsActionDone(true);
+    };
 
-      const handleApprover = (e) => {
-        setApproverType(e.value);
-        setValue('approverType', e.value);
-      };
+    useImperativeHandle(
+      ref,
+      () => ({
+        handleSubmit: handleSubmit(onSubmit),
+      }),
+      []
+    );
 
-      const onSearchUserByPersonalNumber = async () => {
-        const userId = getValues('personalNumber');
+    const handleApprover = (e) => {
+      setApproverType(e.value);
+      setValue('approverType', e.value);
+    };
 
-        if (!userId) {
-          return;
-        }
+    const onSearchUserByPersonalNumber = async () => {
+      const userId = getValues('personalNumber');
 
-        const user = await getEntityByIdentifier(userId);
+      if (!userId) {
+        return;
+      }
 
-        if (user) {
-          setValue('user', user);
-          setValue('userName', user.fullName);
-          setValue('hierarchy', user.hierarchy);
-        }
-      };
+      const user = await getEntityByIdentifier(userId);
 
-      const onSearchUser = async (event) => {
-        const result = await searchEntitiesByFullName(event.query);
-        setUserSuggestions(result.entities || []);
-      };
-
-      const setCurrentUser = () => {
-        const user = toJS(userStore.user);
-        setValue('userName', user.displayName);
+      if (user) {
         setValue('user', user);
-        setValue('userName', {
-          fullName: user.fullName,
-          displayName: user.displayName,
-        });
+        setValue('userName', user.fullName);
         setValue('hierarchy', user.hierarchy);
-      };
+      }
     };
 
     const onSearchUser = async (event) => {
@@ -162,10 +139,7 @@ const ApproverForm = forwardRef(
 
     const setCurrentUser = () => {
       const user = toJS(userStore.user);
-      setValue('userName', {
-        displayName: user.displayName,
-        fullName: user.fullName,
-      });
+      setValue('userName', user.displayName);
       setValue('user', user);
       setValue('personalNumber', user.personalNumber || user.identityCard);
       setValue('hierarchy', user.hierarchy);
@@ -230,11 +204,7 @@ const ApproverForm = forwardRef(
               required
               disabled={onlyForView}
             />
-            {errors.user && (
-              <small style={{ color: 'red' }}>
-                {errors.user?.message ? errors.user?.message : 'יש למלא ערך'}
-              </small>
-            )}
+            {errors.user && <small style={{ color: 'red' }}>יש למלא ערך</small>}
           </div>
         </div>
         <div className='p-fluid-item'>
@@ -256,12 +226,7 @@ const ApproverForm = forwardRef(
               }}
               disabled={onlyForView}
             />
-            {errors.user && (
-              <small style={{ color: 'red' }}>
-                {' '}
-                {errors.user?.message ? errors.user?.message : 'יש למלא ערך'}
-              </small>
-            )}
+            {errors.user && <small style={{ color: 'red' }}>יש למלא ערך</small>}
           </div>
         </div>
         <div className='p-fluid-item'>
@@ -275,13 +240,12 @@ const ApproverForm = forwardRef(
         </div>
         <div className='p-fluid-item'>
           <Approver
+            disabled={onlyForView}
             setValue={setValue}
             name='approvers'
+            defaultApprovers={requestObject?.commanders || []}
             multiple={true}
             errors={errors}
-            tooltip={'סא"ל ומעלה ביחידתך'} //todo: ASK
-            disabled={onlyForView || isUserApprover}
-            defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
           />
         </div>
         <div className='p-fluid-item p-fluid-item-flex1'>
@@ -292,20 +256,8 @@ const ApproverForm = forwardRef(
               {...register('comments')}
               id='2016'
               type='text'
-              placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
+              placeholder='הכנס הערות לבקשה...'
             />
-          </div>
-          <div className='p-fluid-item p-fluid-item-flex1'>
-            <div className='p-field'>
-              <label htmlFor='2016'>הערות</label>
-              <InputTextarea
-                disabled={onlyForView}
-                {...register('comments')}
-                id='2016'
-                type='text'
-                placeholder='הערות'
-              />
-            </div>
           </div>
         </div>
       </div>
