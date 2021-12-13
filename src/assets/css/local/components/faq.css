@@ -1,0 +1,69 @@
+.faq-header {
+  margin: 25px;
+}
+
+.accordion-faq .accordion-custom i,
+.accordion-faq .accordion-custom span {
+  vertical-align: middle;
+}
+
+.accordion-faq .accordion-custom span {
+  margin: 0 0.5rem;
+}
+
+.accordion-faq .p-accordion p {
+  line-height: 1.5;
+  margin: 0;
+}
+
+.accordion-faq
+  .p-accordion
+  .p-accordion-tab:first-child
+  .p-accordion-header:not(.p-highlight)
+  .p-accordion-header-link {
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
+
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+
+  margin-bottom: 25px;
+}
+
+.accordion-faq
+  .p-accordion
+  .p-accordion-tab:first-child
+  .p-accordion-header
+  .p-accordion-header-link {
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
+}
+
+.accordion-faq .p-accordion .p-accordion-tab:first-child .p-accordion-content {
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+.accordion-faq
+  .p-accordion
+  .p-accordion-tab:last-child
+  .p-accordion-header:not(.p-highlight)
+  .p-accordion-header-link {
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+.accordion-faq
+  .p-accordion
+  .p-accordion-tab:nth-child(2)
+  .p-accordion-header
+  .p-accordion-header-link {
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
+  border: 1px solid #dee2e6;
+  margin-top: 25px;
+}
+
+.accordion-faq .p-accordion .p-accordion-tab:first-child .p-accordion-content {
+  text-align: center;
+}

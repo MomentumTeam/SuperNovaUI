@@ -28,7 +28,7 @@ const Notifications = ({ notifications }) => {
   }, [setReadNotifications]);
 
   return (
-    <div className="display-flex display-flex-end btns-wrap">
+    <div style={{ display: "inline-block" }}>
       <button
         className="btn btn-notification p-mr-4"
         title="Notification"
@@ -45,16 +45,16 @@ const Notifications = ({ notifications }) => {
         )}
       </button>
       <OverlayPanel
-      showCloseIcon={true}
+        showCloseIcon={true}
         ref={op}
         id="overlay_panel"
         style={{ width: "350px", direction: "rtl", borderRadius: "40px" }}
         className="overlaypanel-demo"
         onHide={async () => {
           isNewNotificationsAvailable &&
-            await userStore.markNotificationsAsRead(
+            (await userStore.markNotificationsAsRead(
               notifications.map(({ id }) => id)
-            );
+            ));
         }}
       >
         <h2 style={{ textAlign: "center" }}>

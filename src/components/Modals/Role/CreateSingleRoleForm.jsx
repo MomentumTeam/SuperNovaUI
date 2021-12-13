@@ -196,7 +196,7 @@ const RenameSingleOGForm = forwardRef(
             </div>
           </div>
         )}
-        <div className="p-fluid-item-flex p-fluid-item">
+        <div className="p-fluid-item p-fluid-item">
           <div className="p-field">
             <label>
               <span className="required-field">*</span>סיווג תפקיד
