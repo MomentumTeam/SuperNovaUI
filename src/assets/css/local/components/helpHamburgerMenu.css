@@ -1,0 +1,51 @@
+.help-speeddial .p-speeddial {
+  position: relative;
+  align-items: center;
+  margin: 0 10px;
+  margin-top: 5px;
+}
+
+.help-speeddial .p-speeddial-button.p-button.p-button-icon-only {
+  width: 40px;
+  height: 40px;
+  -webkit-text-stroke: 1px;
+}
+
+.help-speeddial .p-speeddial-action {
+  width: 40px;
+  height: 40px;
+  background: #2babbc;
+  color: #fff;
+}
+
+.help-speeddial .p-speeddial-list {
+  margin-left: 8px;
+}
+
+.help-speeddial .p-dialog.faq-dialog .p-dialog-header .p-dialog-title::before {
+  background-image: url(../../../images/faq-icon-white.png);
+  background-size: contain;
+}
+
+.help-speeddial
+  .p-dialog.contact-info-dialog
+  .p-dialog-header
+  .p-dialog-title::before {
+  background-image: url(../../../images/contact-icon.png);
+  background-size: contain;
+}
+
+.help-speeddial .p-button.p-button-outlined {
+  border: 3px solid;
+  color: #2babbc;
+}
+.p-button.p-button-outlined:enabled:hover,
+.help-speeddial
+  .p-button.p-button-outlined:not(button):not(a):not(.p-disabled):hover {
+  border: 3px solid;
+  color: #2babbc;
+}
+
+.help-speeddial .pi-bars:before {
+  font-size: 18px;
+}
