@@ -117,6 +117,14 @@ export const isJobTitleAlreadyTakenRequest = async (jobTitle, directGroup) => {
   return response.data;
 };
 
+export const isHierarchyAlreadyTakenRequest = async (name, parent) => {
+  const response = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/kartoffel/groups/name/taken?name=${name}&parent=${parent}`
+  );
+
+  return response;
+};
+
 // Entities
 export const getEntityByRoleId = async (roleId) => {
   const response = await axiosApiInstance.get(
