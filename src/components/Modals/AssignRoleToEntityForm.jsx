@@ -11,13 +11,15 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import Hierarchy from './Hierarchy';
 import Approver from '../Fields/Approver';
 import { useStores } from '../../context/use-stores';
-import { keys, toJS } from 'mobx';
+import { toJS } from 'mobx';
 import { AutoComplete } from 'primereact/autocomplete';
 import { Calendar } from 'primereact/calendar';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import HorizontalLine from '../HorizontalLine';
 import '../../assets/css/local/components/calendar.css';
+import InfoPopup from '../InfoPopup';
+import '../../assets/css/local/components/approverForm.css';
 
 import {
   searchEntitiesByFullName,
@@ -28,6 +30,9 @@ import {
   getEntityByRoleId,
   getEntityByMongoId,
 } from '../../service/KartoffelService';
+import { USER_SOURCE_DI, USER_TYPE } from '../../constants';
+import { isUserHoldType } from '../../utils/user';
+import { GetDefaultApprovers } from '../../utils/approver';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
@@ -35,19 +40,26 @@ const validationSchema = Yup.object().shape({
   personalNumber: Yup.string().required(),
   hierarchy: Yup.object().required(),
   role: Yup.object().required(),
-  roleId: Yup.string()
-    .required()
-    .matches(/^[T]\d{8}$/),
-  approvers: Yup.array().min(1).required(),
+  roleId: Yup.string().required(),
+  isUserApprover: Yup.boolean(),
+  approvers: Yup.array().when('isUserApprover', {
+    is: false,
+    then: Yup.array()
+      .min(1, 'יש לבחור לפחות גורם מאשר אחד')
+      .required('יש לבחור לפחות גורם מאשר אחד'),
+  }),
   comments: Yup.string().optional(),
 });
 
 const AssignRoleToEntityForm = forwardRef(
   ({ showJob = true, setIsActionDone, onlyForView, requestObject }, ref) => {
     const { appliesStore, userStore } = useStores();
+    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
+
     const { register, handleSubmit, setValue, getValues, watch, formState } =
       useForm({
         resolver: yupResolver(validationSchema),
+        defaultValues: { isUserApprover },
       });
     const [userSuggestions, setUserSuggestions] = useState([]);
     const [roles, setRoles] = useState([]);
@@ -55,7 +67,6 @@ const AssignRoleToEntityForm = forwardRef(
 
     useEffect(() => {
       const initializeValues = async () => {
-        console.log(requestObject);
         setValue('userName', requestObject.adParams.fullName);
         setValue('comments', requestObject.comments);
         setValue('roleId', requestObject.adParams.newSAMAccountName);
@@ -72,7 +83,6 @@ const AssignRoleToEntityForm = forwardRef(
 
         // TODO: fix due
         setValue('changeRoleAt', +requestObject.due);
-        console.log(watch('changeRoleAt'));
       };
 
       if (requestObject) {
@@ -93,7 +103,7 @@ const AssignRoleToEntityForm = forwardRef(
         kartoffelParams: {
           id: user.id,
           uniqueId: roleId,
-          needDisconnect: true,
+          needDisconnect: showJob,
         },
         adParams: {
           oldSAMAccountName: userRole?.roleId,
@@ -122,13 +132,14 @@ const AssignRoleToEntityForm = forwardRef(
 
     const getUserRole = () => {
       const user = watch('user');
+      console.log('user', user);
 
       if (!user) {
         return null;
       }
 
       const relevantIdentity = user.digitalIdentities.find(
-        (identity) => identity.source === 'oneTree'
+        (identity) => identity.source === USER_SOURCE_DI
       );
 
       if (relevantIdentity && relevantIdentity.role) {
@@ -151,8 +162,8 @@ const AssignRoleToEntityForm = forwardRef(
     };
 
     const handleOrgSelected = async (org) => {
-      const result = await getRolesUnderOG(org.id);
-      setRoles(result.roles || []);
+      const result = await getRolesUnderOG({ id: org.id });
+      setRoles(result || []);
     };
 
     const onSearchUserById = async () => {
@@ -183,6 +194,8 @@ const AssignRoleToEntityForm = forwardRef(
       const roleId = getValues('roleId');
 
       if (!roleId) {
+        setValue('role', null);
+        setValue('currentRoleUser', '');
         return;
       }
 
@@ -212,23 +225,20 @@ const AssignRoleToEntityForm = forwardRef(
       <div className='p-fluid' style={{ flexDirection: 'column' }}>
         <div style={{ display: 'flex' }}>
           <div className='p-fluid-item-flex p-fluid-item'>
-            <button
-              className='btn-underline left19'
-              onClick={setCurrentUser}
-              type='button'
-              title='עבורי'
-              disabled={onlyForView}
-              style={onlyForView && { display: 'none' }}
-            >
-              עבורי
-            </button>
             <div className='p-field'>
               <label htmlFor='2020'>
-                {' '}
                 <span className='required-field'>*</span>שם משתמש
               </label>
+              <button
+                className='btn-underline left19 approver-fillMe'
+                onClick={setCurrentUser}
+                type='button'
+                title='עבורי'
+                style={onlyForView && { display: 'none' }}
+              >
+                עבורי
+              </button>
               <AutoComplete
-                keyfilter='alpha'
                 value={watch('userName')}
                 suggestions={userSuggestions}
                 completeMethod={onSearchUser}
@@ -243,16 +253,20 @@ const AssignRoleToEntityForm = forwardRef(
                   );
                   setValue('userRole', e.value.jobTitle);
                 }}
-                onKeyPress={(e) => {
-                  if (e.key >= '0' && e.key <= '9') {
-                    e.preventDefault();
-                  }
-                }}
                 onChange={(e) => {
                   setValue(
                     'userName',
                     e.value.displayName ? e.value.displayName : e.value
                   );
+                  if (e.value === '') {
+                    setValue('personalNumber', '');
+                    setValue('user', null);
+                  }
+                }}
+                onKeyPress={(e) => {
+                  if (e.key >= '0' && e.key <= '9') {
+                    e.preventDefault();
+                  }
                 }}
                 required
                 disabled={onlyForView}
@@ -279,8 +293,6 @@ const AssignRoleToEntityForm = forwardRef(
                 id='2021'
                 type='text'
                 required
-                keyfilter='pint'
-                maxLength='9'
                 onBlur={onSearchUserById}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
@@ -313,8 +325,22 @@ const AssignRoleToEntityForm = forwardRef(
           ) : null}
         </div>
         <HorizontalLine />
-        <div className='display-flex title-wrap' style={{ width: 'inherit' }}>
-          <h2>מעבר לתפקיד</h2>
+        <div
+          className='display-flex title-wrap'
+          style={{
+            width: 'inherit',
+            justifyContent: 'start',
+            paddingBottom: '10px',
+          }}
+        >
+          <h2 style={{ padding: 0 }}>מעבר לתפקיד</h2>
+          <InfoPopup
+            infoText='שימו לב❣️ במידה והתפקיד אינו פנוי יש לבחור תאריך ושעה לביצוע ההחלפה בתיאום מראש עם מבצע התפקיד.עבור רס"ן ומעלה הגורם המאשר יהיה מבצע התפקיד.'
+            name='מעבר לתפקיד'
+            visible={!onlyForView}
+            withTitle={false}
+            warning
+          ></InfoPopup>
         </div>
         <div style={{ display: 'flex' }}>
           <div className='p-fluid-item-flex p-fluid-item'>
@@ -354,7 +380,6 @@ const AssignRoleToEntityForm = forwardRef(
                 {...register('role')}
                 inputId='2025'
                 options={roles}
-                placeholder='שם תפקיד'
                 optionLabel='jobTitle'
                 value={watch('role')}
                 onChange={(e) => {
@@ -380,6 +405,8 @@ const AssignRoleToEntityForm = forwardRef(
                 id='2026'
                 type='text'
                 onBlur={onRoleIdChanged}
+                tooltip={'לדוגמה: "T12345678"'}
+                tooltipOptions={{ position: 'top' }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     onRoleIdChanged();
@@ -387,8 +414,9 @@ const AssignRoleToEntityForm = forwardRef(
                 }}
                 disabled={onlyForView}
               />
-              <label>
-                {errors.roleId && watch('roleId').length == 0 && (
+              <label htmlFor='2021'>
+                {' '}
+                {errors.roleId && (
                   <small style={{ color: 'red' }}>יש למלא ערך</small>
                 )}
               </label>
@@ -397,15 +425,18 @@ const AssignRoleToEntityForm = forwardRef(
                   יש למלא בפורמט הבא - Txxxxxxxx (כאשר x זה מספר)
                 </small>
               )}
+              <label></label>
             </div>
           </div>
           <div className='p-fluid-item'>
             <Approver
               setValue={setValue}
               name='approvers'
+              tooltip='רס"ן ומעלה ביחידתך'
               multiple={true}
-              defaultApprovers={requestObject?.commanders || []}
-              disabled={onlyForView}
+              defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
+              disabled={onlyForView || isUserApprover}
+              errors={errors}
             />
           </div>
         </div>
@@ -432,8 +463,6 @@ const AssignRoleToEntityForm = forwardRef(
                   showTime
                   value={watch('changeRoleAt')}
                   onChange={(e) => setValue('changeRoleAt', e.target.value)}
-                  dateFormat='dd/mm/yy'
-                  minDate={new Date()}
                   placeholder='בצע החלפה בתאריך'
                   disabled={onlyForView}
                 />

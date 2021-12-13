@@ -50,18 +50,16 @@ const FullEntityInformationFooter = () => {
           fullName: tempForm.fullName,
         },
       });
-      actionPopup();
+      actionPopup("עריכת משתמש");
       closeFullDetailsModal();
     } catch (error) {
-      actionPopup(error);
+      actionPopup("עריכת משתמש", error);
     }
-
-    // TODO: DO SOMETHING AND TRY AND CATCH
   };
 
   return (
     <div className="display-flex display-flex-end">
-      {canEditEntity(user, connectedUser) ? (
+      {canEditEntity(user, connectedUser) &&
         <>
           <Button
             label={isEdit ? "ביטול" : "עריכה"}
@@ -78,9 +76,7 @@ const FullEntityInformationFooter = () => {
             }}
           />
         </>
-      ) : (
-        <></>
-      )}
+      }
     </div>
   );
 };

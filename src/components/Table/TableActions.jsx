@@ -1,68 +1,78 @@
 import { toJS } from "mobx";
 import { useStores } from "../../context/use-stores";
 
-import { TableActionsTypes, TableNames } from "../../constants/table";
+import { TableAppliesActionsTypes } from "../../constants/applies";
+import {
+  TableActionsTypes as UsersTableActionsTypes,
+  TableNames as UsersTableNames,
+} from "../../constants/usersTable";
+import {
+  TableActionsTypes as MyRequestsTableActionsTypes,
+  TableNames as MyRequestsUsersTableNames,
+} from "../../constants/myRequestsTable";
 import { USER_TYPE } from "../../constants";
 import { canEditEntity } from "../../utils/entites";
 import { canEditRole } from "../../utils/roles";
 import { canEditHierarchy } from "../../utils/hierarchy";
 import { useContext } from "react";
 import { TableContext } from ".";
+import { isUserHoldType } from "../../utils/user";
+import { canPassApply, isApproverAndCanEdit } from "../../utils/applies";
 
 // TODO: change to reducer
-const TableActions = ({ setActionType, openActionModal }) => {
+const TableActions = ({ setActionType, openActionModal, setEvent }) => {
   const { selectedItem, tableType } = useContext(TableContext);
   const { userStore } = useStores();
 
   let actions = [];
   const user = toJS(userStore.user);
-  const tableActions = TableActionsTypes[tableType];
-
-  const viewAction = {
-    label: "צפייה",
-    command: () => {
-      setActionType(tableActions.view);
-      openActionModal();
-    },
+  const dictAction = {
+    ...UsersTableActionsTypes,
+    ...MyRequestsTableActionsTypes,
+    ...TableAppliesActionsTypes,
   };
+  const tableActions = dictAction[tableType];
 
-  const editAction = {
-    label: "עריכה",
-    command: () => {
-      setActionType(tableActions.edit);
-      openActionModal();
-    },
-  };
-
-  const deleteAction = {
-    label: "מחיקה",
-    command: () => {
-      setActionType(tableActions.delete);
-      openActionModal();
-    },
+  const getAction = (labelName, action) => {
+    return {
+      label: labelName,
+      command: (e) => {
+        setActionType(action);
+        setEvent(e);
+        openActionModal();
+      },
+    };
   };
 
   if (tableActions) {
     // Add view action
-    if (tableActions.view) actions.push(viewAction);
+    if (tableActions.view) actions.push(getAction("צפייה", tableActions.view));
 
     // Add edit action
     if (tableActions.edit) {
       if (
-        (tableType === TableNames.entities.tab && canEditEntity(selectedItem, user)) ||
-        (tableType === TableNames.roles.tab && canEditRole(selectedItem, user)) ||
-        (tableType === TableNames.hierarchy.tab && canEditHierarchy(user))
+        (tableType === UsersTableNames.entities.tab &&
+          canEditEntity(selectedItem[0], user)) ||
+        (tableType === UsersTableNames.roles.tab &&
+          canEditRole(selectedItem[0], user)) ||
+        (tableType === UsersTableNames.hierarchy.tab && canEditHierarchy(user))
       ) {
-        actions.push(editAction);
+        actions.push(getAction("עריכה", tableActions.edit));
       }
     }
 
     // Add delete action
     if (tableActions.delete) {
-      if (user.types.includes(USER_TYPE.COMMANDER)) {
-        actions.push(deleteAction);
+      if (isUserHoldType(user, USER_TYPE.COMMANDER)) {
+        actions.push(getAction("מחיקה", tableActions.delete));
       }
     }
+
+    // Add view action
+    if (tableActions.pass && canPassApply(selectedItem[0], user))
+      actions.push(getAction("העבר לטיפול גורם אחר", tableActions.pass));
+    if (tableActions.take && canPassApply(selectedItem[0], user) && !isApproverAndCanEdit(selectedItem[0], user))
+      actions.push(getAction("העברה לטיפולי", tableActions.take));
 
     return actions;
   }

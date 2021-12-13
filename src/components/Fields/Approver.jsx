@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
-import { searchApproverByDisplayNameReq } from '../../service/ApproverService';
+import React, { useState, useEffect } from 'react';
+import {
+  searchApproverByDisplayNameReq,
+  searchHighApproverByDisplayNameReq,
+} from '../../service/ApproverService';
 import { AutoComplete } from 'primereact/autocomplete';
+import { Tooltip } from 'primereact/tooltip';
+
 import '../../assets/css/local/components/approver.css';
+import { useStores } from '../../context/use-stores';
 
 const Approver = ({
   setValue,
@@ -11,17 +17,45 @@ const Approver = ({
   defaultApprovers,
   errors,
   trigger = null,
+  type = 'COMMANDER',
+  isHighRank = false,
+  tooltip = 'גורם מאשר',
 }) => {
+  const { userStore } = useStores();
   const [ApproverSuggestions, setApproverSuggestions] = useState([]);
   const [selectedApprover, setSelectedApprover] = useState(defaultApprovers);
 
   const searchApprover = async (event) => {
-    const result = await searchApproverByDisplayNameReq(
-      event.query,
-      'COMMANDER'
+    const result = await (isHighRank
+      ? searchHighApproverByDisplayNameReq(event.query)
+      : searchApproverByDisplayNameReq(event.query, type));
+    const filteredResult = result.approvers.filter(
+      (approvers) => approvers.id === userStore.user.id
     );
-    setApproverSuggestions(result.approvers);
+    setApproverSuggestions(filteredResult);
   };
+
+  const itemSelectedTemplate = (item) => {
+    const id = Math.random().toString(36).slice(2);
+
+    return (
+      <>
+        <Tooltip
+          target={`.approver-name-${id}`}
+          content={item.displayName}
+          position='top'
+        />
+        <div className={`approver-name approver-name-${id}`}>
+          {item.displayName}
+        </div>
+      </>
+    );
+  };
+
+  useEffect(() => {
+    setSelectedApprover(defaultApprovers);
+    setApproverSuggestions([]);
+  }, [type]);
 
   return (
     <div className='p-field-item'>
@@ -36,7 +70,15 @@ const Approver = ({
             multiple === true ? 'multiple' : 'single'
           } ${disabled ? 'disabled' : ''}`}
           multiple={multiple}
-          value={selectedApprover}
+          tooltip={disabled ? '' : tooltip}
+          tooltipOptions={{ position: 'top' }}
+          value={
+            multiple
+              ? Array.isArray(selectedApprover)
+                ? selectedApprover
+                : []
+              : selectedApprover
+          }
           suggestions={ApproverSuggestions}
           completeMethod={searchApprover}
           field='displayName'
@@ -46,13 +88,13 @@ const Approver = ({
             }
           }}
           onChange={(e) => {
-            if (multiple) {
+            if (multiple && Array.isArray(e.value)) {
               const approvers = e.value.map(
                 ({ id, displayName, identityCard, personalNumber }) => ({
                   id,
                   displayName,
-                  identityCard,
-                  personalNumber,
+                  ...identityCard,
+                  ...personalNumber,
                 })
               );
 
@@ -62,16 +104,29 @@ const Approver = ({
             }
 
             if (!multiple) {
-              const { id, displayName, identityCard, personalNumber } = e.value;
-              setSelectedApprover(displayName);
-              setValue(name, { id, displayName, identityCard, personalNumber });
+              setSelectedApprover(e.value);
+
+              if (e.value?.id) {
+                const { id, displayName, identityCard, personalNumber } =
+                  e.value;
+                setValue(name, [
+                  { id, displayName, ...identityCard, ...personalNumber },
+                ]);
+              } else {
+                setValue(name, []);
+              }
+
               if (trigger) trigger(name);
             }
           }}
         />
         <label htmlFor='2020'>
           {errors?.approvers && (
-            <small style={{ color: 'red' }}>יש למלא ערך</small>
+            <small style={{ color: 'red' }}>
+              {errors.approvers?.message
+                ? errors.approvers?.message
+                : 'יש למלא ערך'}
+            </small>
           )}
         </label>
       </div>

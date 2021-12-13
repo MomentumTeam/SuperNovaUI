@@ -12,7 +12,7 @@ class DatesUtil {
   };
 
   formattedDate = (date) => {
-    return moment(date).format('DD/MM/YYYY');
+    return moment(date).format(this.format);
   };
 
   timeSince = (date) => {
@@ -22,6 +22,10 @@ class DatesUtil {
   absoluteDate = (date) => {
     return this.formattedDate(date).toString();
   };
+
+  now = () => {
+    return moment().format(this.format);
+  }
 
   moment = (date) => {
     return moment(date, this.format);

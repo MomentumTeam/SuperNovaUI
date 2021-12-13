@@ -3,8 +3,18 @@
   border-radius: 57px;
   background-color: #ffffff;
   margin: 0px 32px 0px 0px;
+  min-height: 700px;
 }
 
+.hierarchy-name {
+  max-width: 350px;
+}
+
+@media (max-width: 1400px) {
+  .hierarchy-name {
+  max-width: 100px;
+}
+}
 @media (max-width: 1630px) {
   .main-inner-item2 {
     margin: 0px 15px 0px 0px;
@@ -222,7 +232,7 @@
   background-color: #f7f7f7;
   border-radius: 30px;
   padding: 15px 32px 20px 32px;
-  min-height: 640px;
+  min-height: 500px;
   position: relative;
 }
 

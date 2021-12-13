@@ -11,17 +11,26 @@ import "../../../assets/css/local/components/modal-item.css";
 import Approver from "../../Fields/Approver";
 import { RoleField } from "../../Fields/Role";
 import { InputForm, InputTypes } from "../../Fields/InputForm";
-import { NAME_OG_EXP,USER_CLEARANCE } from "../../../constants";
+import { NAME_OG_EXP,USER_CLEARANCE, USER_TYPE } from "../../../constants";
 import { getEntityByRoleId } from "../../../service/KartoffelService";
 import { FullRoleInformationFooter } from "./FullRoleInformationFooter";
+import { GetDefaultApprovers } from '../../../utils/approver';
+import { isUserHoldType } from '../../../utils/user';
+import { useStores } from '../../../context/use-stores';
 
 const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) => {
+  const {userStore} = useStores();
   const [isEdit, setIsEdit] = useState(edit);
   const [entity, setEntity] = useState({});
   const [isJobTitleFree, setIsJobTitleFree] = useState(true);
+  const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
 
   const validationSchema = Yup.object().shape({
-    approvers: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+    isUserApprover: Yup.boolean(),
+    approvers: Yup.array().when("isUserApprover", {
+      is: false,
+      then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+    }),
     role: Yup.string()
       .matches(NAME_OG_EXP, "תפקיד לא תקין")
       .required("יש לבחור שם תפקיד")
@@ -37,7 +46,13 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
    const methods = useForm({
      mode: "onBlur",
      reValidateMode: "onChange",
-     defaultValues: { role: "" },
+     defaultValues: {
+       role: "",
+       isUserApprover,
+      //  approvers: () => {
+      //    return GetDefaultApprovers([], false);
+      //  },
+     },
      resolver: yupResolver(validationSchema),
    });
   const { errors } = methods.formState;
@@ -63,7 +78,7 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
     },
     {
       fieldName: "digitalIdentityUniqueId",
-      displayName: "יוזר",
+      displayName: "מזהה תפקיד",
       inputType: InputTypes.TEXT,
       additionalClass: "padR",
     },
@@ -78,18 +93,18 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
       displayName: "יחידה",
       inputType: InputTypes.TEXT,
       additionalClass: "padR",
-      force: true
+      force: true,
     },
   ];
 
-   const userInRoleField = [
-     {
-       fieldName: "fullName",
-       displayName: "משתמש בתפקיד",
-       inputType: InputTypes.TEXT,
-       additionalClass: "padL",
-     },
-   ];
+  const userInRoleField = [
+    {
+      fieldName: "fullName",
+      displayName: "משתמש בתפקיד",
+      inputType: InputTypes.TEXT,
+      additionalClass: "padL",
+    },
+  ];
   return (
     <FormProvider {...methods}>
       <Dialog
@@ -98,6 +113,7 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
         visible={isOpen}
         style={{ borderRadius: "30px" }}
         onHide={closeModal}
+        dismissableMask={true}
         footer={
           <FullRoleInformationFooter
             role={role}
@@ -120,7 +136,16 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
 
           {isEdit && (
             <div className="p-fluid-item padR">
-              <Approver setValue={methods.setValue} name="approvers" multiple={true} errors={errors} trigger={methods.trigger} />
+              <Approver
+                setValue={methods.setValue}
+                name="approvers"
+                multiple={true}
+                errors={errors}
+                trigger={methods.trigger}
+                defaultApprovers={GetDefaultApprovers([], false)}
+                disabled={isUserApprover}
+                tooltip='רס"ן ומעלה ביחידתך'
+              />
             </div>
           )}
         </div>

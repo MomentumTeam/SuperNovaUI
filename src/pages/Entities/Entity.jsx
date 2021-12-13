@@ -8,27 +8,45 @@ import AddEntity from "./AddEntity";
 import { itemsInPage, pageSize } from "../../constants/api";
 import { useStores } from "../../context/use-stores";
 import { TableDataContext } from ".";
-import { TableNames } from "../../constants/table";
+import { TableNames, TableTypes } from "../../constants/usersTable";
 
 import "../../assets/css/local/pages/listUsersPage.min.css";
+import { useToast } from '../../context/use-toast';
 
 const Entities = observer(() => {
+  const {actionPopup} = useToast();
   const [first, setFirst] = useState(0);
-  const { tablesStore, userStore } = useStores();
-  const { tableState, tableDispatch, tabId, setTabId } = useContext(TableDataContext);
+  const { entitiesStore, rolesStore, groupsStore, userStore } = useStores();
+  const { tableState, tableDispatch, tabId, setTabId } =
+    useContext(TableDataContext);
 
   const getData = async (append) => {
     if (userStore.user.directGroup) {
       switch (tabId) {
         case TableNames.entities.tab:
-          await tablesStore.loadEntitiesUnderOG(userStore.user.directGroup, tableState.page, pageSize, append);
-          return tablesStore.entities;
+          await entitiesStore.loadEntitiesUnderOG(
+            userStore.user.directGroup,
+            tableState.page,
+            pageSize,
+            append
+          );
+          return entitiesStore.entities;
         case TableNames.roles.tab:
-          await tablesStore.loadRolesUnderOG(userStore.user.directGroup, tableState.page, pageSize, append);
-          return tablesStore.roles;
+          await rolesStore.loadRolesUnderOG(
+            userStore.user.directGroup,
+            tableState.page,
+            pageSize,
+            append
+          );
+          return rolesStore.roles;
         case TableNames.hierarchy.tab:
-          await tablesStore.loadOGChildren(userStore.user.directGroup, tableState.page, pageSize, append);
-          return tablesStore.groups;
+          await groupsStore.loadOGChildren(
+            userStore.user.directGroup,
+            tableState.page,
+            pageSize,
+            append
+          );
+          return groupsStore.groups;
         default:
           break;
       }
@@ -44,17 +62,23 @@ const Entities = observer(() => {
       if (event && event.first !== undefined) {
         append = true;
         setFirst(event.first);
-        if (first >= event.first || tableState.tableData.length / (event.page + 1) > itemsInPage) getNextPage = false;
+        if (
+          first >= event.first ||
+          tableState.tableData.length / (event.page + 1) > itemsInPage
+        )
+          getNextPage = false;
       }
-      
-      if (getNextPage && !tablesStore.isSearch) {
+
+      if (getNextPage && !tableState.isSearch) {
         try {
           tableDispatch({ type: "loading" });
           const data = await getData(append);
           tableDispatch({ type: tabId, results: data });
         } catch (error) {
           tableDispatch({ type: "failedLoading" });
-          console.log(error); // TODO: popup error
+          console.log(error); 
+          actionPopup("הבאת מידע", error);
+
         }
       }
     }
@@ -64,17 +88,15 @@ const Entities = observer(() => {
     // Get table's data
     const firstData = async () => {
       setFirst(0);
-      tablesStore.setSearch(false);
       tableDispatch({ type: "restore" });
       await setData();
     };
     firstData();
   }, [tabId, userStore.user]);
-  
+
   useEffect(() => {
     userStore.fetchUserNotifications(userStore.user?.id);
   }, [userStore.user]);
-
 
   return (
     <>
@@ -89,10 +111,15 @@ const Entities = observer(() => {
               </div>
               <Table
                 data={tableState.tableData}
+                tableTypes={TableTypes[tabId]}
                 tableType={tabId}
                 isLoading={tableState.isLoading}
+                isPaginator={true}
+                isSelectedCol={true}
                 onScroll={setData}
                 first={first}
+                scrollable={true}
+                scrollHeight="300px"
               />
             </div>
           </div>

@@ -10,21 +10,30 @@ import { ContainerRoleList } from "./FullHierarchyContainerRoleList";
 import { FullHierarchyInformationFooter } from "./FullHierarchyInformationFooter";
 import { getLabel, disabledInputStyle } from "../../Fields/InputCommon";
 import { HierarchyDelete } from "./HierarchyDelete";
-import { NAME_OG_EXP } from '../../../constants';
+import { NAME_OG_EXP, USER_TYPE } from '../../../constants';
 
 import "../../../assets/css/local/general/buttons.css";
 import "../../../assets/css/local/components/modal-item.css";
 import Approver from '../../Fields/Approver';
 import { HierarchyField } from '../../Fields/Hierarchy';
+import { GetDefaultApprovers } from '../../../utils/approver';
+import { isUserHoldType } from '../../../utils/user';
+import { useStores } from '../../../context/use-stores';
 
 
 const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit, actionPopup }) => {
+  const {userStore} = useStores();
   const [isEdit, setIsEdit] = useState(edit);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isHierarchyFree, setIsHierarchyFree] = useState(true);
+  const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
 
   const validationSchema = Yup.object().shape({
-    approvers: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+    isUserApprover: Yup.boolean(),
+    approvers: Yup.array().when("isUserApprover", { // TOOD: check
+      is: false,
+      then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+    }),
     hierarchyName: Yup.string()
       .matches(NAME_OG_EXP, "שם לא תקין")
       .required("יש לבחור שם היררכיה")
@@ -40,7 +49,7 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit, actionP
   const methods = useForm({
     mode: "onTouched",
     reValidateMode: "onSubmit",
-    defaultValues: {},
+    defaultValues: {isUserApprover},
     resolver: yupResolver(validationSchema),
   });
 
@@ -57,6 +66,7 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit, actionP
         visible={isOpen}
         style={{ borderRadius: "30px" }}
         onHide={closeModal}
+        dismissableMask={true}
         footer={
           <FullHierarchyInformationFooter
             isEdit={isEdit}
@@ -101,9 +111,12 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit, actionP
               <Approver
                 setValue={methods.setValue}
                 name="approvers"
+                tooltip='רס"ן ומעלה ביחידתך'
                 multiple={true}
                 errors={errors}
                 trigger={methods.trigger}
+                defaultApprovers={GetDefaultApprovers([], false)}
+                disabled={isUserHoldType}
               />
             </div>
           )}

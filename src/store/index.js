@@ -1,16 +1,21 @@
-import { createContext } from 'react';
-import CountryStore from './Country';
-import TablesStore from './Tables';
-import AppliesStore from './Applies';
-import TreeStore from './Tree';
-import UserStore from './User';
+import { createContext } from "react";
+import ToastStore from "./Toast";
+import RolesStore from "./Roles";
+import EntitiesStore from "./Entities";
+import GroupsStore from "./Groups";
+import AppliesStore from "./Applies";
+import TreeStore from "./Tree";
+import UserStore from "./User";
+import MyRequestsStore from "./MyRequests";
 
 const stores = {
-  tablesStore: new TablesStore(),
-  countryStore: new CountryStore(),
+  rolesStore: new RolesStore(),
+  entitiesStore: new EntitiesStore(),
+  groupsStore: new GroupsStore(),
   userStore: new UserStore(),
   appliesStore: new AppliesStore(),
   treeStore: new TreeStore(),
+  myRequestsStore: new MyRequestsStore(),
 };
 
 export const StoresContext = createContext(stores);

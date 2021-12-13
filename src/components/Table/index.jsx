@@ -5,7 +5,6 @@ import { Button } from "primereact/button";
 
 import TableFieldTemplate from "./TableFieldTemplate";
 import PaginatorTemplate from "./TablePaginatorTemplate";
-import { TableTypes } from "../../constants/table";
 import { itemsInPage } from "../../constants/api";
 import { TableActionsMenu } from "./TableActionsMenu";
 import { TableFooter } from "./TableFooter";
@@ -13,19 +12,50 @@ import { toJS } from "mobx";
 import { useStores } from "../../context/use-stores";
 
 import "../../assets/css/local/general/table.min.css";
+import { isUserHoldType } from "../../utils/user";
 
 export const TableContext = createContext(null);
 
-const Table = ({ data, tableType, isLoading, onScroll, first }) => {
+const Table = ({
+  data,
+  tableTypes,
+  tableType,
+  isLoading = false,
+  isPaginator = false,
+  isSelectedCol = false,
+  onScroll = null,
+  first = null,
+  selectionMode = "single",
+  scrollable = false,
+  exportFunction = null,
+  disableActions = false,
+  isVirtualScrollable = false,
+  onVirtualScroll = null,
+  totalRecordsScroll = null,
+  rows = itemsInPage,
+  onSort = null,
+  sortField = null,
+  sortOrder = null,
+  scrollHeight = null,
+}) => {
   const contextMenu = useRef(null);
   const { userStore } = useStores();
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [rowData, setRowData] = useState([]);
+  const [selectedItem, setSelectedItem] = useState([]);
   const [selectedColumns, setSelectedColumns] = useState([]);
 
   const user = toJS(userStore.user);
-  const rowData = TableTypes[tableType];
 
-  const loadingText = <span className="loading-text"></span>;
+  const isAllowed = (col) => {
+    return (
+      col.secured === undefined ||
+      col.secured.some((allowedType) => isUserHoldType(user, allowedType))
+    );
+  };
+
+  const loadingText = () => {
+    return <span className="loading-text"></span>;
+  };
 
   const openContextMenu = (event) => {
     contextMenu.current.show(event);
@@ -37,63 +67,92 @@ const Table = ({ data, tableType, isLoading, onScroll, first }) => {
         icon="pi pi-ellipsis-h"
         className="p-button-rounded p-button-text p-button-secondary"
         onClick={(e) => {
-          setSelectedItem(data);
+          setValue(data);
           openContextMenu(e);
         }}
       />
     );
   };
 
-  const isAllowed = (col) => {
-    return col.secured === undefined || col.secured.some((allowedType) => user?.types.includes(allowedType));
+  const setValue = (value) => {
+    Array.isArray(value) ? setSelectedItem(value) : setSelectedItem([value]);
   };
 
   useEffect(() => {
-    setSelectedItem(null);
+    setSelectedItem([]);
+    setRowData(tableTypes.filter((col) => isAllowed(col)));
   }, [tableType]);
 
   return (
     <>
-      <TableContext.Provider value={{ tableType, selectedItem, setSelectedItem }}>
+      <TableContext.Provider value={{ tableType, selectedItem }}>
         <TableActionsMenu ref={contextMenu} />
 
         <div className="table-wrapper">
           <div className="tableStyle">
             <div className="card">
               <DataTable
+                emptyMessage={"אין תוצאות"}
                 value={data}
                 selection={selectedItem}
-                selectionMode="single"
-                onSelectionChange={(e) => setSelectedItem(e.value)}
+                selectionMode={selectionMode}
+                onSelectionChange={(e) => setValue(e.value)}
                 footer={
                   <TableFooter
+                    isSelectedCol={isSelectedCol}
                     setSelectedColumns={setSelectedColumns}
                     selectedColumns={selectedColumns}
                     rowData={rowData}
+                    exportFunction={exportFunction}
+                    selectedItem={selectedItem}
                   />
                 }
-                paginator // paginator start
+                scrollable={scrollable}
+                scrollHeight={scrollHeight ? scrollHeight : "500px"}
+                loading={isLoading}
+                rows={isPaginator || isVirtualScrollable ? rows : null}
+                paginator={isPaginator} // paginator start
                 paginatorTemplate={PaginatorTemplate}
-                rows={itemsInPage}
                 first={first}
-                onPage={onScroll}
-                loading={isLoading} // paginator end
-                onContextMenuSelectionChange={(e) => setSelectedItem(e.value)}
-                onContextMenu={(e) => contextMenu.current.show(e.originalEvent)}
+                onPage={onScroll} // paginator end
+                virtualScroll={isVirtualScrollable} // virtual scroll start
+                onVirtualScroll={onVirtualScroll}
+                virtualRowHeight={isPaginator || isVirtualScrollable ? rows : null}
+                lazy={isVirtualScrollable}
+                totalRecords={totalRecordsScroll} // virtual scroll end
+                contextMenu={!disableActions}
+                onContextMenuSelectionChange={!disableActions ? (e) => setValue(e.value) : undefined}
+                onContextMenu={!disableActions ? (e) => contextMenu.current.show(e.originalEvent) : undefined}
+                sortField={sortField}
+                sortOrder={sortOrder}
+                onSort={onSort}
               >
-                {selectedColumns.map(
-                  (col) =>
-                    isAllowed(col) && (
-                      <Column
-                        key={col.field}
-                        field={col.field}
-                        header={col.displayName}
-                        loadingBody={loadingText}
-                        body={TableFieldTemplate}
-                      />
-                    )
+                {selectionMode === "multiple" && (
+                  <Column
+                    selectionMode={selectionMode}
+                    headerStyle={{ width: "3em" }}
+                    loadingBody={loadingText}
+                  ></Column>
                 )}
-                <Column loadingBody={loadingText} body={TableActionsTemplate} />
+
+                {selectedColumns.map((col) => (
+                  <Column
+                    key={col.field}
+                    field={col.field}
+                    header={col.displayName}
+                    formatter={col?.formatter}
+                    default={col?.default}
+                    enum={col?.enum}
+                    loadingBody={loadingText}
+                    template={col?.template}
+                    templateParam={col?.templateParam}
+                    body={TableFieldTemplate}
+                    sortable={col?.sortable}
+                    sortFields={col?.sortFields}
+                    // sortFunction={col?.sortable && onSort !== null ? (e) => onSort(e, col) : undefined}
+                  />
+                ))}
+                {!disableActions && <Column loadingBody={loadingText} body={TableActionsTemplate} />}
               </DataTable>
             </div>
           </div>

@@ -1,15 +1,19 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AutoComplete } from "primereact/autocomplete";
 import { EVENT_KEY_UP_CODE_ENTER } from "../../constants/general";
-import { useStores } from "../../context/use-stores";
 import { TableDataContext } from "../../pages/Entities/index";
 
-const SearchField = ({ searchFunc, searchField, searchDisplayName, isSetTable }) => {
-  const { tableDispatch } = useContext(TableDataContext);
+const SearchField = ({
+  searchFunc,
+  searchField,
+  searchDisplayName,
+  isSetTable,
+  TableDataCtx = TableDataContext,
+}) => {
+  const { tableDispatch } = useContext(TableDataCtx);
 
   const [results, setResults] = useState([]);
   const [selected, setSelected] = useState([]);
-  const { tablesStore } = useStores();
 
   useEffect(() => {
     if (selected === "") setSelected([]);
@@ -31,7 +35,11 @@ const SearchField = ({ searchFunc, searchField, searchDisplayName, isSetTable })
         <span className="p-float-label">
           <AutoComplete
             value={selected}
-            suggestions={results}
+            suggestions={[
+              ...new Map(
+                results.map((item) => [item[searchField], item])
+              ).values(),
+            ]}
             completeMethod={async (e) => {
               const searchResults = await searchFunc(e);
               setResults(searchResults);
@@ -41,14 +49,17 @@ const SearchField = ({ searchFunc, searchField, searchDisplayName, isSetTable })
               setSelected(e.value);
 
               if (e.originalEvent.type === "click") {
-                await tableDispatch({ type: "searchResult", results: [e.value] });
-                tablesStore.setSearch(true);
+                await tableDispatch({
+                  type: "searchResult",
+                  results: results.filter(
+                    (r) => r[searchField] === e.value[searchField]
+                  ),
+                });
               }
             }}
             onKeyUp={async (e) => {
               if (e.code === EVENT_KEY_UP_CODE_ENTER) {
                 await tableDispatch({ type: "searchResult", results });
-                tablesStore.setSearch(true);
               }
             }}
           />

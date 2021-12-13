@@ -1,68 +1,109 @@
-import React, { useCallback, useEffect, useState, useRef, useMemo, createRef } from 'react';
-import { Dialog } from 'primereact/dialog';
-import { Button } from 'primereact/button';
-import CreateRoleForm from '../Modals/CreateRoleForm';
-import CreateOGForm from '../Modals/CreateOGForm';
-import RenameOGForm from '../Modals/RenameOGForm';
-import AssignRoleToEntityForm from '../Modals/AssignRoleToEntityForm';
-import CreateEntityForm from '../Modals/CreateEntityForm';
-import { Toast } from 'primereact/toast';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useMemo,
+  createRef,
+} from "react";
+import { Dialog } from "primereact/dialog";
+import { Button } from "primereact/button";
+import CreateRoleForm from "../Modals/Role/CreateRoleForm";
+import CreateOGForm from "../Modals/Hierarchy/CreateOGForm";
+import RenameOGForm from "../Modals/Hierarchy/RenameOGForm";
+import AssignRoleToEntityForm from "../Modals/AssignRoleToEntityForm";
+import CreateEntityForm from "../Modals/Entity/CreateEntityForm";
 
-import '../../assets/css/local/components/modal-item.min.css';
-import ApproverForm from '../Modals/ApproverForm';
+import "../../assets/css/local/components/modal-item.min.css";
+import ApproverForm from "../Modals/ApproverForm";
+
+import InfoPopup from "../InfoPopup";
+import "../../assets/css/local/components/dialog.css";
+import { useToast } from '../../context/use-toast';
 
 const actions = [
   {
     id: 1,
-    className: 'btn-actions btn-actions1',
-    actionName: 'תפקיד חדש',
+    className: "btn-actions btn-actions1",
+    actionName: "תפקיד חדש",
+    infoText: `פתיחת תפקיד חדש תחת היררכיה נבחרת`,
+    infoWithTitle: false,
     displayResponsive: false,
-    dialogClass: 'dialogClass1',
+    dialogClass: "dialogClass1",
     modalName: CreateRoleForm,
   },
   {
     id: 2,
-    className: 'btn-actions btn-actions2',
-    actionName: 'שינוי היררכיה',
+    className: "btn-actions btn-actions2",
+    actionName: "שינוי היררכיה",
+    infoText: `העברת תפקיד נבחר להיררכיה ארגונית אחרת`,
+    infoWithTitle: false,
     displayResponsive: false,
-    dialogClass: 'dialogClass2',
+    dialogClass: "dialogClass2",
     modalName: RenameOGForm,
   },
   {
     id: 3,
-    className: 'btn-actions btn-actions3',
-    actionName: 'מעבר תפקיד',
+    className: "btn-actions btn-actions3",
+    actionName: "מעבר תפקיד",
+    infoText: `מעבר משתמש בין תפקידים:
+    הכנסת פרטי המשתמש שרוצה לעבור תפקיד
+    ▼
+    בחירת ההיררכיה בה נמצא התפקיד הרצוי
+    ▼
+    בחירת התפקיד מרשימת התפקידים (ניתן להכניס מזהה תפקיד להשלמה אוטומטית של הערכים)
+    ▼
+    בחירת גורם מאשר מהיררכית התפקיד לאישור הבקשה 🤓`,
+    infoWithTitle: true,
     displayResponsive: false,
-    dialogClass: 'dialogClass3',
+    dialogClass: "dialogClass3",
     modalName: AssignRoleToEntityForm,
   }, //disconnect true
   {
     id: 4,
-    className: 'btn-actions btn-actions4',
-    actionName: 'משתמש חדש',
+    className: "btn-actions btn-actions4",
+    actionName: "משתמש חדש",
+    infoText: `חיבור משתמש חדש לתפקיד קיים ויצירת אזרח`,
+    infoWithTitle: false,
     displayResponsive: false,
-    dialogClass: 'dialogClass4',
+    dialogClass: "dialogClass4",
     modalName: CreateEntityForm,
   }, //disconnect false
   {
     id: 5,
-    className: 'btn-actions btn-actions5',
-    actionName: 'היררכיה חדשה',
+    className: "btn-actions btn-actions5",
+    actionName: "היררכיה חדשה",
+    infoText: `פתיחת היררכיה חדשה תחת היררכית אב:
+    בחירת היררכית האב להיררכיה חדשה
+    ▼
+    הכנסת שם להיררכיה החדשה
+    ▼
+    בחירת גורם מאשר מיחידתך לאישור הבקשה 🤓`,
+    infoWithTitle: true,
     displayResponsive: false,
-    dialogClass: 'dialogClass5',
+    dialogClass: "dialogClass5",
     modalName: CreateOGForm,
   },
   {
     id: 6,
-    className: 'btn-actions btn-actions6',
-    actionName: 'גורם מאשר',
+    className: "btn-actions btn-actions6",
+    actionName: "גורם מאשר",
+    infoText: `בקשה לקבלת הרשאות שונות במערכת:
+    בחירת סוג הגורם המאשר הרצוי
+    ▼
+    הכנסת פרטי המשתמש עבורו תינתן ההרשאה
+    ▼
+    בחירת ההיררכיה שבה יהיה גורם מאשר
+    ▼
+    בחירת גורם מאשר מיחידתך לאישור הבקשה 🤓`,
+    infoWithTitle: true,
     displayResponsive: false,
-    dialogClass: 'dialogClass6',
+    dialogClass: "dialogClass6",
     modalName: ApproverForm,
   },
 ];
 
 const Action = () => {
+  const { actionPopup } = useToast();
   const [actionList, setActionList] = useState(actions);
   const [isActionDone, setIsActionDone] = useState(false);
   const [currentActionId, setCurrentActionId] = useState(null);
@@ -73,14 +114,18 @@ const Action = () => {
       }),
     []
   );
-  const toast = useRef(null);
 
-  const getRef = useCallback((id) => modalRefs.find((ref) => ref.id === id).ref, [modalRefs]);
+  const getRef = useCallback(
+    (id) => modalRefs.find((ref) => ref.id === id).ref,
+    [modalRefs]
+  );
 
   const onClick = (id) => {
     setActionList(
       actionList.map((action) =>
-        action.id === id ? { ...action, displayResponsive: true } : { ...action }
+        action.id === id
+          ? { ...action, displayResponsive: true }
+          : { ...action }
       )
     );
   };
@@ -96,70 +141,79 @@ const Action = () => {
   };
 
   useEffect(() => {
-    isActionDone && toast.current.show({
-      severity: 'success',
-      summary: 'Success Message',
-      detail: 'Message Content',
-      life: 3000,
-    });
+    if (currentActionId) {
+      const actionName = actionList.find((action) => action.id === currentActionId).actionName;
+      isActionDone && actionName && actionPopup(actionName);
+    }
 
-    isActionDone && setActionList(
-      actionList.map((action) =>
-        action.id === currentActionId
-          ? { ...action, displayResponsive: false }
-          : { ...action }
-      )
-    );
+    isActionDone &&
+      setActionList(
+        actionList.map((action) =>
+          action.id === currentActionId
+            ? { ...action, displayResponsive: false }
+            : { ...action }
+        )
+      );
 
     setIsActionDone(false);
+  }, [actionList, currentActionId, isActionDone]);
 
-  }, [actionList, currentActionId, isActionDone])
+  const handleRequest = useCallback(
+    async (id) => {
+      setCurrentActionId(id);
+      const ref = getRef(id);
+      try {
+        await ref.current.handleSubmit();
+      } catch (e) {
+        const actionName = actionList.find(action => action.id === currentActionId).actionName;
+        actionPopup(actionName, e.message || "Message Content");
+      }
+    },
+    [getRef]
+  );
 
-  const handleRequest = useCallback(async (id) => {
-    setCurrentActionId(id);
-    const ref = getRef(id);
-    try {
-      await ref.current.handleSubmit();
-    } catch (e) {
-      toast.current.show({
-        severity: 'error',
-        summary: 'Error Message',
-        detail: e.message || 'Message Content',
-        life: 3000,
-      });
-    }
-  }, [getRef]);
+  const renderHeader = (actionName, showInfo, infoText, infoWithTitle) => {
+    return (
+      <div className="display-flex dialog-header">
+        <div className="dialog-header-title">{actionName}</div>
+        <InfoPopup
+          name={actionName + " dialog"}
+          infoText={infoText}
+          visible={showInfo}
+          withTitle={infoWithTitle}
+        ></InfoPopup>
+      </div>
+    );
+  };
 
   const renderFooter = (name) => {
     return (
-      <div className='display-flex '>
-        <div className='display-flex'>
-
-        </div>
-        <div className='display-flex '>
+      <div className="display-flex ">
+        <div className="display-flex"></div>
+        <div className="display-flex ">
           <Button
-            label='ביטול'
+            label="ביטול"
             onClick={() => onHide(name)}
-            className='btn-underline'
+            className="btn-underline"
           />
 
           {name === 5 ? (
             <Button
-              label=' שליחת בקשה'
+              label=" שליחת בקשה"
               onClick={() => handleRequest(name)}
-              className='btn-gradient orange'
+              className="btn-gradient orange"
             />
           ) : name === 6 ? (
             <Button
-              label=' שליחת בקשה'
+              label=" שליחת בקשה"
               onClick={() => handleRequest(name)}
-              className='btn-gradient orange'
+              className="btn-gradient orange"
             />
           ) : (
             <Button
-              label='שמירה'
+              label="שליחת בקשה"
               onClick={() => handleRequest(name)}
-              className='btn-gradient orange'
+              className="btn-gradient orange"
             />
           )}
         </div>
@@ -174,13 +228,14 @@ const Action = () => {
   };
 
   return (
-    <ul className='display-flex units-wrap'>
-      <Toast ref={toast} />
+    <ul className="display-flex units-wrap">
       {actionList.map(
         ({
           id,
           className,
           actionName,
+          infoText,
+          infoWithTitle,
           displayResponsive,
           dialogClass,
           modalName,
@@ -194,10 +249,11 @@ const Action = () => {
             />
             <Dialog
               className={dialogClass}
-              header={actionName}
+              header={renderHeader(actionName, true, infoText, infoWithTitle)}
               visible={displayResponsive}
               onHide={() => onHide(id)}
               footer={renderFooter(id)}
+              dismissableMask={true}
             >
               {renderModalForm(modalName, id)}
             </Dialog>
