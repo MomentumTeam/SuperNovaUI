@@ -30,7 +30,7 @@ const Approver = ({
     const result = await (isHighRank
       ? searchHighApproverByDisplayNameReq(event.query)
       : searchApproverByDisplayNameReq(event.query, type));
-    const filteredResult = result.approvers.filter(approvers => approvers.id === userStore.user.id);
+    const filteredResult = result.approvers.filter(approvers => approvers.id !== userStore.user.id);
     setApproverSuggestions(filteredResult);
   };
 
