@@ -250,24 +250,11 @@ const RenameSingleOGForm = forwardRef(
               placeholder="הכנס הערות לבקשה..."
             />
             <label>התפקיד נפתח עבור משתמש תפקידן (מילואים / חמ"ל)</label>
-          </div>
-          <div className="p-fluid-item p-fluid-item-flex1">
-            <div className="p-field">
-              <label>
-                <span></span>הערות
-              </label>
-              <InputTextarea
-                {...register('comments')}
-                type="text"
-                autoResize="false"
-                disabled={onlyForView}
-              />
-              <label>
+               <label>
                 {errors.comments && (
                   <small style={{ color: 'red' }}>יש למלא ערך</small>
                 )}
               </label>
-            </div>
           </div>
         </div>
       </div>

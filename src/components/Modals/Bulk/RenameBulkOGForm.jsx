@@ -3,6 +3,7 @@ import FormData from "form-data";
 import React, { useImperativeHandle, forwardRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { InputTextarea } from "primereact/inputtextarea";
 
 import Hierarchy from "../../Fields/Hierarchy";
 import Approver from "../../Fields/Approver";
