@@ -130,6 +130,7 @@ const AssignRoleToEntityForm = forwardRef(
 
     const getUserRole = () => {
       const user = watch("user");
+      console.log('user', user)
 
       if (!user) {
         return null;
@@ -163,8 +164,8 @@ const AssignRoleToEntityForm = forwardRef(
     };
 
     const handleOrgSelected = async (org) => {
-      const result = await getRolesUnderOG(org.id);
-      setRoles(result.roles || []);
+      const result = await getRolesUnderOG({ id: org.id });
+      setRoles(result || []);
     };
 
     const onSearchUserById = async () => {
@@ -224,8 +225,8 @@ const AssignRoleToEntityForm = forwardRef(
     const userRoleDisplay = userRole ? userRole.jobTitle : " - ";
 
     return (
-      <div className="p-fluid" style={{ flexDirection: "column" }}>
-        <div style={{ display: "flex" }}>
+      <div className="p-fluid" style={{ flexDirection: 'column' }}>
+        <div style={{ display: 'flex' }}>
           <div className="p-fluid-item-flex p-fluid-item">
             <div className="p-field">
               <label htmlFor="2020">
@@ -236,12 +237,12 @@ const AssignRoleToEntityForm = forwardRef(
                 onClick={setCurrentUser}
                 type="button"
                 title="עבורי"
-                style={onlyForView && { display: "none" }}
+                style={onlyForView && { display: 'none' }}
               >
                 עבורי
               </button>
               <AutoComplete
-                value={watch("userName")}
+                value={watch('userName')}
                 suggestions={userSuggestions}
                 completeMethod={onSearchUser}
                 id="2020"
@@ -269,17 +270,17 @@ const AssignRoleToEntityForm = forwardRef(
           <div className="p-fluid-item-flex p-fluid-item" style={{ marginLeft: "10px" }}>
             <div className="p-field">
               <label htmlFor="2021">
-                {" "}
+                {' '}
                 <span className="required-field">*</span>מ"א/ת"ז
               </label>
               <InputText
-                {...register("personalNumber", { required: true })}
+                {...register('personalNumber', { required: true })}
                 id="2021"
                 type="text"
                 required
                 onBlur={onSearchUserById}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") {
+                  if (e.key === 'Enter') {
                     onSearchUserById();
                   }
                 }}
@@ -304,9 +305,9 @@ const AssignRoleToEntityForm = forwardRef(
         <div
           className="display-flex title-wrap"
           style={{
-            width: "inherit",
-            justifyContent: "start",
-            paddingBottom: "10px",
+            width: 'inherit',
+            justifyContent: 'start',
+            paddingBottom: '10px',
           }}
         >
           <h2 style={{ padding: 0 }}>מעבר לתפקיד</h2>
@@ -318,10 +319,10 @@ const AssignRoleToEntityForm = forwardRef(
             warning
           ></InfoPopup>
         </div>
-        <div style={{ display: "flex" }}>
+        <div style={{ display: 'flex' }}>
           <div className="p-fluid-item-flex p-fluid-item">
             <Hierarchy
-              ogValue={watch("hierarchy")}
+              ogValue={watch('hierarchy')}
               setValue={setValue}
               name="hierarchy"
               onOrgSelected={handleOrgSelected}
@@ -329,16 +330,16 @@ const AssignRoleToEntityForm = forwardRef(
               disabled={onlyForView}
             />
           </div>
-          {watch("currentRoleUser") && (
+          {watch('currentRoleUser') && (
             <div className="p-fluid-item-flex p-fluid-item">
               <div className={`p-field ${watch("currentRoleUser") ? "p-field-red" : "p-field-green"}`}>
                 <label htmlFor="2024">סטטוס תפקיד</label>
                 <InputText
-                  {...register("roleStatus")}
+                  {...register('roleStatus')}
                   id="2024"
                   disabled
                   type="text"
-                  placeholder={watch("currentRoleUser") ? "לא פנוי" : "פנוי"}
+                  placeholder={watch('currentRoleUser') ? 'לא פנוי' : 'פנוי'}
                 />
               </div>
             </div>
@@ -349,15 +350,14 @@ const AssignRoleToEntityForm = forwardRef(
             <div className="p-field p-field-blue">
               <label htmlFor="2025">שם תפקיד</label>
               <Dropdown
-                {...register("role")}
+                {...register('role')}
                 inputId="2025"
                 options={roles}
-                placeholder="שם תפקיד"
                 optionLabel="jobTitle"
-                value={watch("role")}
+                value={watch('role')}
                 onChange={(e) => {
-                  setValue("role", e.value);
-                  setValue("roleId", e.value.digitalIdentityUniqueId);
+                  setValue('role', e.value);
+                  setValue('roleId', e.value.digitalIdentityUniqueId);
                   handleRoleSelected(e.value.roleId);
                 }}
                 disabled={onlyForView}
@@ -369,14 +369,14 @@ const AssignRoleToEntityForm = forwardRef(
             <div className="p-field">
               <label htmlFor="2026">מזהה תפקיד (T)</label>
               <InputText
-                {...register("roleId")}
+                {...register('roleId')}
                 id="2026"
                 type="text"
                 onBlur={onRoleIdChanged}
                 tooltip={'לדוגמה: "T12345678"'}
                 tooltipOptions={{ position: "top" }}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") {
+                  if (e.key === 'Enter') {
                     onRoleIdChanged();
                   }
                 }}
@@ -397,9 +397,9 @@ const AssignRoleToEntityForm = forwardRef(
             />
           </div>
         </div>
-        {watch("currentRoleUser") && (
+        {watch('currentRoleUser') && (
           <div className="row3flex">
-            <div className="p-fluid-item" style={{ width: "68%" }}>
+            <div className="p-fluid-item" style={{ width: '68%' }}>
               <div className="p-field">
                 <label htmlFor="2030">מבצע תפקיד</label>
                 <InputText {...register("currentRoleUser")} id="2030" type="text" disabled placeholder="מבצע תפקיד" />
@@ -409,11 +409,11 @@ const AssignRoleToEntityForm = forwardRef(
               <div className="p-field">
                 <label htmlFor="2027">בצע החלפה בתאריך</label>
                 <Calendar
-                  {...register("changeRoleAt")}
+                  {...register('changeRoleAt')}
                   id="2027"
                   showTime
-                  value={watch("changeRoleAt")}
-                  onChange={(e) => setValue("changeRoleAt", e.target.value)}
+                  value={watch('changeRoleAt')}
+                  onChange={(e) => setValue('changeRoleAt', e.target.value)}
                   placeholder="בצע החלפה בתאריך"
                   disabled={onlyForView}
                 />

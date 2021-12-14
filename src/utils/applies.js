@@ -7,6 +7,20 @@ import { isUserHoldType } from './user';
 const fileType =
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 
+
+export const organizeRows = (rows) => {
+  rows.sort((a, b) => {
+    //sort requests by row order.
+    return a.rowNumber - b.rowNumber;
+  });
+
+  rows.forEach((row) => {
+    //fix requests to start from row 1 and not from row 2.
+    row.rowNumber--;
+  });
+  return rows;
+};
+
 export const getFormattedDate = (timestamp) => {
   const newDate = new Date(parseInt(timestamp));
   return datesUtil.formattedDate(newDate);
@@ -16,12 +30,12 @@ export const getFormattedDate = (timestamp) => {
 export const getResponsibleFactor = (apply, user) => {
   const fields = getResponsibleFactorFields(user);
   let responsibles = [];
-  fields.map(field => {
+  fields.map((field) => {
     responsibles = [...responsibles, ...apply[field]];
-  })
+  });
 
   return responsibles;
-}
+};
 
 
 export const getResponsibleFactors = (apply, user) => {
@@ -78,13 +92,29 @@ export const getResponsibleFactorFields = (user) => {
 
 export const getApproverComments = (apply, user) => {
   const comments = [];
-  const applyComments = apply["approversComments"]
+  const applyComments = apply['approversComments'];
 
-  if (isUserHoldType(user, USER_TYPE.COMMANDER) || isUserHoldType(user, USER_TYPE.ADMIN))
-    comments.push({ comment: applyComments["commanderComment"], label: "הערות גורם מאשר" });
+  if (
+    isUserHoldType(user, USER_TYPE.COMMANDER) ||
+    isUserHoldType(user, USER_TYPE.ADMIN)
+  )
+    comments.push({
+      comment: applyComments['commanderComment'],
+      label: 'הערות גורם מאשר',
+      userType: USER_TYPE.COMMANDER,
+    });
   if (isUserHoldType(user, USER_TYPE.SECURITY))
-      comments.push({ comment: applyComments["securityComment"], label: 'הערות יחב"ם' });
-  if (isUserHoldType(user, USER_TYPE.SUPER_SECURITY)) comments.push({comment: applyComments["superSecurityComment"], label: 'הערות בטח"ם'})
+    comments.push({
+      comment: applyComments['securityComment'],
+      label: 'הערות יחב"ם',
+      userType: USER_TYPE.SECURITY,
+    });
+  if (isUserHoldType(user, USER_TYPE.SUPER_SECURITY))
+    comments.push({
+      comment: applyComments['superSecurityComment'],
+      label: 'הערות בטח"ם',
+      userType: USER_TYPE.SUPER_SECURITY,
+    });
 
   return comments;
 };
@@ -105,29 +135,43 @@ export const canEditApply = (apply, user) => {
   return (
     (isUserHoldType(user, USER_TYPE.SUPER_SECURITY) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)) ||
-    (isUserHoldType(user, USER_TYPE.SECURITY) && !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) ||
-    ((isUserHoldType(user, USER_TYPE.COMMANDER) || isUserHoldType(user, USER_TYPE.ADMIN)) && !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER))
+    (isUserHoldType(user, USER_TYPE.SECURITY) &&
+      !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) ||
+    ((isUserHoldType(user, USER_TYPE.COMMANDER) ||
+      isUserHoldType(user, USER_TYPE.ADMIN)) &&
+      !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER))
   );
 };
 
 export const canPassApply = (apply, user) => {
-  if (apply === undefined) return false
+  if (apply === undefined) return false;
   return (
     (isUserHoldType(user, USER_TYPE.SUPER_SECURITY) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)) ||
-    (isUserHoldType(user, USER_TYPE.SECURITY) && !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) ||
-    (isUserHoldType(user, USER_TYPE.ADMIN) && !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER))
+    (isUserHoldType(user, USER_TYPE.SECURITY) &&
+      !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) ||
+    (isUserHoldType(user, USER_TYPE.ADMIN) &&
+      !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER))
   );
 };
 
 export const getUserPassOptions = (apply, user) => {
   let passOptions = [];
 
-  if (isUserHoldType(user, USER_TYPE.ADMIN) && !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER))
-    passOptions.push({ label: "גורם מאשר ראשוני", value: USER_TYPE.COMMANDER });
-  if (isUserHoldType(user, USER_TYPE.SECURITY) && !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY))
+  if (
+    isUserHoldType(user, USER_TYPE.ADMIN) &&
+    !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER)
+  )
+    passOptions.push({ label: 'גורם מאשר ראשוני', value: USER_TYPE.COMMANDER });
+  if (
+    isUserHoldType(user, USER_TYPE.SECURITY) &&
+    !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)
+  )
     passOptions.push({ label: 'יחב"ם', value: USER_TYPE.SECURITY });
-  if (isUserHoldType(user, USER_TYPE.SUPER_SECURITY) && !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY))
+  if (
+    isUserHoldType(user, USER_TYPE.SUPER_SECURITY) &&
+    !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)
+  )
     passOptions.push({ label: 'בטח"ם', value: USER_TYPE.SUPER_SECURITY });
 
   return passOptions;
@@ -135,12 +179,12 @@ export const getUserPassOptions = (apply, user) => {
 
 export const isStatusComplete = (status) => {
   switch (status) {
-    case "DECISION_UNKNOWN":
-      return false  
+    case 'DECISION_UNKNOWN':
+      return false;
     default:
-      return true
+      return true;
   }
-}
+};
 
 export const IsRequestCompleteForApprover = (apply, approverType) => {
   const isReqDone = checkIfRequestIsDone(apply);
@@ -181,7 +225,6 @@ export const processApprovalTableData = (tableData) => {
   });
 };
 
-
 /**
  * Check if d2 is greater than d1
  * @param {String|Object} d1 Datestring or Date object
@@ -190,5 +233,5 @@ export const processApprovalTableData = (tableData) => {
 export const isDateGreater = (d1, days) => {
   d1 = datesUtil.moment(d1);
   const d2 = datesUtil.moment(datesUtil.now());
-  return d2.diff(d1, "days") > (days || 0);
-}
+  return d2.diff(d1, 'days') > (days || 0);
+};

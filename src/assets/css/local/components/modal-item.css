@@ -1054,6 +1054,8 @@ max-width: 500px;
 }
 .p-dialog.dialogClass9 .p-dialog-content .card {
   padding-bottom: 20px;
+    display: flex;
+  white-space: nowrap;
 }
 .p-dialog.dialogClass9 .p-dialog-content .card .p-tree {
   border: 0;
@@ -1061,6 +1063,7 @@ max-width: 500px;
   color: #495057;
   padding: 16px;
   border-radius: 3px;
+  flex:1
 }
 @media (max-width: 599px) {
   .p-dialog.dialogClass9 .p-dialog-content .card .p-tree {
@@ -1873,7 +1876,7 @@ max-width: 500px;
 }
 
 .p-dialog .p-dialog-content::-webkit-scrollbar-thumb {
-  background: #9b9b9b;
+   background: #d6d6d6;
   border-radius: 30px;
 }
 

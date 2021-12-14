@@ -124,3 +124,31 @@ export const TableAppliesActionsTypes = {
     take: TableAppliesActionsEnum.TAKE_APPLY,
   },
 };
+
+export const ROLE_CLEARANCE = [
+  'בלמ"ס',
+  'בלמ"ס',
+  'שמור',
+  'סודי',
+  'סודי ביותר',
+  'לבן',
+  'אדום',
+  'סגול',
+  'סגול טאבו',
+  'סגול מצומצם',
+  'סמ"צ',
+  'כחול',
+];
+
+export const BulkTypes = [
+  'CREATE_ROLE_REQUEST',
+  'CHANGE_ROLE_HIERARCHY_REQUEST',
+  'UNRECOGNIZED',
+]
+  ;
+export const bulkExampleFileName = [
+  'createRoleBulkExample',
+  'renameOGBulkExample',
+];
+
+export const assignRoleToEntityHeader = ['מעבר תפקיד', 'חיבור משתמש חדש לתפקיד'];

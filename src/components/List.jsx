@@ -1,4 +1,4 @@
-import { STATUSES, TYPES } from "../constants";
+import { STATUSES, TYPES , assignRoleToEntityHeader } from "../constants";
 import datesUtil from "../utils/dates";
 import { useState } from "react";
 import PreviewRequestsDialog from "./Modals/Request/PreviewRequestsDialog1";
@@ -25,7 +25,10 @@ const List = ({ list }) => {
             </td>
             <td>
               <div className="td-inner">
-                {TYPES[request.type]}
+                {request.type === 'ASSIGN_ROLE_TO_ENTITY' && //in case of ASSIGN_ROLE_TO_ENTITY requests (מעבר תפקיד או חיבור משתמש חדש לתפקיד)
+                request.kartoffelParams.needDisconnect
+                  ? assignRoleToEntityHeader[0] //מעבר תפקיד
+                  : TYPES[request.type]}
                 {"  "}
                 {"(" + request.serialNumber + ")"}
               </div>
