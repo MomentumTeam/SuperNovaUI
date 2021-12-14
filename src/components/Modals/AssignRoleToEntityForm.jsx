@@ -322,22 +322,6 @@ const AssignRoleToEntityForm = forwardRef(
               disabled={onlyForView}
             />
           </div>
-          {watch('currentRoleUser') && (
-            <div className="p-fluid-item-flex p-fluid-item">
-              <div className={`p-field ${watch("currentRoleUser") ? "p-field-red" : "p-field-green"}`}>
-                <label htmlFor="2024">סטטוס תפקיד</label>
-                <InputText
-                  {...register('roleStatus')}
-                  id="2024"
-                  disabled
-                  type="text"
-                  placeholder={watch('currentRoleUser') ? 'לא פנוי' : 'פנוי'}
-                />
-              </div>
-            </div>
-          )}
-        </div>
-        <div className="row3flex">
           <div className="p-fluid-item ">
             <div className="p-field p-field-blue">
               <label htmlFor="2025">שם תפקיד</label>
@@ -357,6 +341,8 @@ const AssignRoleToEntityForm = forwardRef(
               <label htmlFor="2021"> {errors.role && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
             </div>
           </div>
+        </div>
+        <div style={{display:'flex'}}>
           <div className="p-fluid-item">
             <div className="p-field">
               <label htmlFor="2026">מזהה תפקיד (T)</label>
@@ -377,26 +363,27 @@ const AssignRoleToEntityForm = forwardRef(
               <label htmlFor="2021"> {errors.roleId && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
             </div>
           </div>
-          <div className="p-fluid-item">
-            <Approver
-              setValue={setValue}
-              name="approvers"
-              tooltip='רס"ן ומעלה ביחידתך'
-              multiple={true}
-              defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
-              disabled={onlyForView || isUserApprover}
-              errors={errors}
+          {watch('currentRoleUser') && (
+            <div className="p-fluid-item-flex p-fluid-item">
+              <div className={`p-field ${watch("currentRoleUser") ? "p-field-red" : "p-field-green"}`} style={{marginLeft:'10px'}} >
+                <label htmlFor="2024">סטטוס תפקיד</label>
+                <InputText
+                  {...register('roleStatus')}
+                  id="2024"
+                  disabled
+                  type="text"
+                  placeholder={watch('currentRoleUser') ? 'לא פנוי' : 'פנוי'}
             />
           </div>
-        </div>
-        {watch('currentRoleUser') && (
-          <div className="row3flex">
-            <div className="p-fluid-item" style={{ width: '68%' }}>
-              <div className="p-field">
+              <div className="p-field" >
                 <label htmlFor="2030">מבצע תפקיד</label>
                 <InputText {...register("currentRoleUser")} id="2030" type="text" disabled placeholder="מבצע תפקיד" />
               </div>
             </div>
+          )}
+        </div>
+        <div className="row3flex">
+        {watch('currentRoleUser') && (
             <div className="p-fluid-item">
               <div className="p-field">
                 <label htmlFor="2027">בצע החלפה בתאריך</label>
@@ -415,8 +402,22 @@ const AssignRoleToEntityForm = forwardRef(
                 </label>
               </div>
             </div>
-          </div>
         )}
+        <div className="p-fluid-item">
+            <Approver
+              setValue={setValue}
+              name="approvers"
+              tooltip='רס"ן ומעלה ביחידתך'
+              multiple={true}
+              defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
+              disabled={onlyForView || isUserApprover}
+              errors={errors}
+            />
+            <label htmlFor="2021">
+              {watch('approverErrorMessage') && <small style={{ color: "red" }}>{watch('approverErrorMessage')}</small>}
+            </label>
+          </div>
+        </div>
         <div className="p-fluid-item p-fluid-item-flex1">
           <div className="p-field">
             <label htmlFor="2028">סיבת מעבר</label>
