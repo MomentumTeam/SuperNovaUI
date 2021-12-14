@@ -61,7 +61,15 @@ export const TableTypes = (selectedTab, user) => {
       formatter: getFormattedDate,
       sortable: true,
       sortFields: sortFields.CREATED_AT,
-      templateParam: [user, "superSecurityDecision", "securityDecision", "commanderDecision"],
+      templateParam: [
+        user,
+        "status",
+        "needSecurityDecision",
+        "needSuperSecurityDecision",
+        "superSecurityDecision",
+        "securityDecision",
+        "commanderDecision",
+      ],
       template: DateFieldTemplate,
     },
     {

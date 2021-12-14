@@ -9,6 +9,7 @@
 .start {
   color: #8f8f8f!important;
   background-color: rgba(190, 190, 190, 0.267)!important;
+  min-height: 47px!important
 }
 .neutral {
   color: deepskyblue !important;

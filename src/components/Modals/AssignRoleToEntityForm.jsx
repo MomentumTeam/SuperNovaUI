@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
-import Hierarchy from "./Hierarchy";
+import Hierarchy from "../Fields/Hierarchy";
 import Approver from "../Fields/Approver";
 import { useStores } from "../../context/use-stores";
 import { toJS } from "mobx";
@@ -136,10 +136,12 @@ const AssignRoleToEntityForm = forwardRef(
         return null;
       }
 
-      const relevantIdentity = user.digitalIdentities.find((identity) => identity.source === USER_SOURCE_DI);
+      if (user?.digitalIdentities && Array.isArray(user?.digitalIdentities)) {
+        const relevantIdentity = user.digitalIdentities.find((identity) => identity.source === USER_SOURCE_DI);
+        if (relevantIdentity && relevantIdentity.role) {
+          return relevantIdentity.role;
+        }
 
-      if (relevantIdentity && relevantIdentity.role) {
-        return relevantIdentity.role;
       }
 
       return null;
@@ -148,13 +150,17 @@ const AssignRoleToEntityForm = forwardRef(
     const setCurrentUser = () => {
       const user = toJS(userStore.user);
       setValue("user", user);
-      setValue("userName", user.displayName);
+      setValue("userName", user.fullName);
       setValue("personalNumber", user.personalNumber || user.identityCard);
     };
 
     const onSearchUser = async (event) => {
-      const result = await searchEntitiesByFullName(event.query);
-      setUserSuggestions(result.entities || []);
+      if (event.query.length > 1) {
+        const result = await searchEntitiesByFullName(event.query);
+        setUserSuggestions(result.entities || []);
+      } else {
+        setUserSuggestions([]);
+      }
     };
 
     const handleOrgSelected = async (org) => {
@@ -214,6 +220,7 @@ const AssignRoleToEntityForm = forwardRef(
       handleRoleSelected(role.roleId);
     };
 
+    const itemTemplate = (item) => <>{item.displayName}</>
     const userRole = getUserRole();
     const userRoleDisplay = userRole ? userRole.jobTitle : " - ";
 
@@ -240,6 +247,7 @@ const AssignRoleToEntityForm = forwardRef(
                 completeMethod={onSearchUser}
                 id="2020"
                 type="text"
+                itemTemplate={itemTemplate}
                 field="fullName"
                 onSelect={(e) => {
                   setValue("user", e.value);
@@ -247,7 +255,7 @@ const AssignRoleToEntityForm = forwardRef(
                   setValue("userRole", e.value.jobTitle);
                 }}
                 onChange={(e) => {
-                  setValue("userName", e.value.displayName ? e.value.displayName : e.value);
+                  setValue("userName", e.value.fullName ? e.value.fullName : e.value);
                   if (e.value === "") {
                     setValue("personalNumber", "");
                     setValue("user", null);

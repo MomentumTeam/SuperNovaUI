@@ -165,8 +165,8 @@ const Action = () => {
       try {
         await ref.current.handleSubmit();
       } catch (e) {
-        const actionName = actionList.find(action => action.id === currentActionId).actionName;
-        actionPopup(actionName, e.message || "Message Content");
+        const actionName = actionList.find(action => action.id === currentActionId);
+        actionPopup(actionName?.actionName, e.message || "Message Content");
       }
     },
     [getRef]
