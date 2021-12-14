@@ -1,17 +1,17 @@
-import React, { useImperativeHandle, forwardRef, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { Button } from 'primereact/button';
-import { Checkbox } from 'primereact/checkbox';
-import { InputTextarea } from 'primereact/inputtextarea';
-import Hierarchy from '../Hierarchy';
-import Approver from '../../Fields/Approver';
-import { useStores } from '../../../context/use-stores';
-import * as Yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { isJobTitleAlreadyTakenRequest } from '../../../service/KartoffelService';
-import { isUserHoldType } from '../../../utils/user';
+import React, { useImperativeHandle, forwardRef, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { InputText } from "primereact/inputtext";
+import { Dropdown } from "primereact/dropdown";
+import { Button } from "primereact/button";
+import { Checkbox } from "primereact/checkbox";
+import { InputTextarea } from "primereact/inputtextarea";
+import Hierarchy from "../../Fields/Hierarchy";
+import Approver from "../../Fields/Approver";
+import { useStores } from "../../../context/use-stores";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { isJobTitleAlreadyTakenRequest } from "../../../service/KartoffelService";
+import {isUserHoldType} from '../../../utils/user';
 import { USER_SOURCE_DI, USER_TYPE } from '../../../constants';
 import { GetDefaultApprovers } from '../../../utils/approver';
 
@@ -71,6 +71,7 @@ const RenameSingleOGForm = forwardRef(
         roleName,
         isTafkidan,
       } = data;
+
       const req = {
         commanders: approvers,
         kartoffelParams: {
@@ -85,11 +86,11 @@ const RenameSingleOGForm = forwardRef(
         adParams: {
           ouDisplayName: hierarchy.name,
           jobTitle: roleName,
-          samAccountName: '???', // TODO: check
         },
         comments,
         due: Date.now(),
       };
+
       await appliesStore.createRoleApply(req);
       setIsActionDone(true);
     };
@@ -249,24 +250,11 @@ const RenameSingleOGForm = forwardRef(
               placeholder="הכנס הערות לבקשה..."
             />
             <label>התפקיד נפתח עבור משתמש תפקידן (מילואים / חמ"ל)</label>
-          </div>
-          <div className="p-fluid-item p-fluid-item-flex1">
-            <div className="p-field">
-              <label>
-                <span></span>הערות
-              </label>
-              <InputTextarea
-                {...register('comments')}
-                type="text"
-                autoResize="false"
-                disabled={onlyForView}
-              />
-              <label>
+               <label>
                 {errors.comments && (
                   <small style={{ color: 'red' }}>יש למלא ערך</small>
                 )}
               </label>
-            </div>
           </div>
         </div>
       </div>

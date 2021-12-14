@@ -6,3 +6,7 @@
 .disabled {
     background-color:#faf8fd;
 }
+
+.approver-name {
+    pointer-events: all !important;
+}

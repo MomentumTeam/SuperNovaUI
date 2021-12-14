@@ -1,14 +1,16 @@
-import React, { useImperativeHandle, forwardRef, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import * as Yup from "yup";
+import React, { useImperativeHandle, forwardRef, useEffect } from "react";
+import FormData from "form-data";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { InputTextarea } from 'primereact/inputtextarea';
-import { useStores } from '../../../context/use-stores';
-import Hierarchy from '../Hierarchy';
-import Approver from '../../Fields/Approver';
-import BulkRowsPopup from './BulkRowsPopup';
-import BulkFileArea from './BulkFileArea';
-import * as Yup from 'yup';
-import FormData from 'form-data';
-import { yupResolver } from '@hookform/resolvers/yup';
+
+import Hierarchy from "../../Fields/Hierarchy";
+import Approver from "../../Fields/Approver";
+import BulkRowsPopup from "./BulkRowsPopup";
+import BulkFileArea from "./BulkFileArea";
+
+import { useStores } from "../../../context/use-stores";
 import { BulkTypes } from '../../../constants/applies';
 import {
   uploadBulkFile,

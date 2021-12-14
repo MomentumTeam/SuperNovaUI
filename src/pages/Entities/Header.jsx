@@ -1,9 +1,9 @@
 import { useEffect } from "react";
+import { toJS } from "mobx";
 
 import { TableNames } from "../../constants/usersTable";
 import { useStores } from "../../context/use-stores";
 import Norifications from "../../components/Notifications/Notifications";
-import { toJS } from "mobx";
 
 import "../../assets/css/main.css";
 
@@ -18,7 +18,7 @@ const Header = ({ setTab, selectedTab }) => {
   return (
     <div className="display-flex title-wrap">
       <div className="display-flex h-wrap" style={{ cursor: "pointer" }}>
-        {Object.entries(TableNames).map(([tableKey, tableValue]) => {
+        {Object.entries(TableNames).map(([_, tableValue]) => {
           return (
             <h3
               style={{ color: selectedTab === tableValue.tab && "#201961" }}

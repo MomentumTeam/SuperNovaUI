@@ -1,6 +1,6 @@
 
 export const STATUSES = {
-    SUBMITTED: "הוגש",
+    SUBMITTED: "ממתין לאישור",
     APPROVED_BY_COMMANDER: "בתהליך",
     APPROVED_BY_SECURITY: "בתהליך",
     IN_PROGRESS: "אושר",

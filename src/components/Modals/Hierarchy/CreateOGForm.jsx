@@ -1,13 +1,14 @@
+import * as Yup from 'yup';
 import React, { useImperativeHandle, forwardRef, useEffect } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { useStores } from '../../../context/use-stores';
-import { isHierarchyAlreadyTakenRequest } from "../../../service/KartoffelService";
-import Hierarchy from '../Hierarchy';
+
+import Hierarchy from '../../Fields/Hierarchy';
 import Approver from '../../Fields/Approver';
-import * as Yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { isHierarchyAlreadyTakenRequest } from "../../../service/KartoffelService";
+import { useStores } from '../../../context/use-stores';
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { isUserHoldType } from '../../../utils/user';
 import { USER_SOURCE_DI, USER_TYPE } from '../../../constants';
