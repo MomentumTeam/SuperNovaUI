@@ -15,7 +15,7 @@ import { NAME_OG_EXP, USER_TYPE } from '../../../constants';
 import "../../../assets/css/local/general/buttons.css";
 import "../../../assets/css/local/components/modal-item.css";
 import Approver from '../../Fields/Approver';
-import { HierarchyField } from '../../Fields/Hierarchy';
+import { HierarchyField } from '../../Fields/HierarchyChangeField';
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { isUserHoldType } from '../../../utils/user';
 import { useStores } from '../../../context/use-stores';

@@ -1975,9 +1975,6 @@ max-width: 500px;
   flex-wrap: nowrap;
 }
 
-.approver-name {
-    pointer-events: all !important;
-}
 
 .p-dialog
   .p-dialog-content
@@ -2010,7 +2007,8 @@ max-width: 500px;
   overflow: hidden;
   white-space: nowrap;
   text-align: center;
-  max-width: 40px;
+  max-width: 190px;
+  min-width: max-content;
   margin: 0 auto;
 }
 

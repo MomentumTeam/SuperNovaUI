@@ -5,19 +5,19 @@ export const ToastStoreContext = createContext();
 const ToastProvider = ({children}) => {
   const toastRef = useRef(null);
 
-  const actionPopup = (actionType, error = null) => {
+  const actionPopup = (actionType = "זו", error = null) => {
     if (error === null) {
       toastRef.current.show({
         severity: "success",
         summary: "Success Message",
-        detail: `Success in action: ${actionType}`,
+        detail: `פעולה ${actionType} הצליחה`,
         life: 3000,
       });
     } else {
       toastRef.current.show({
         severity: "error",
         summary: "Error Message",
-        detail: error.message || `action: ${actionType} failed`,
+        detail: error.message || `פעולה ${actionType} נכשלה`,
         life: 3000,
       });
     }

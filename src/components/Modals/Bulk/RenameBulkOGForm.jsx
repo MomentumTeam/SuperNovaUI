@@ -1,6 +1,6 @@
 import React, { useImperativeHandle, forwardRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import Hierarchy from "../Hierarchy";
+import Hierarchy from "../../Fields/Hierarchy";
 import Approver from "../../Fields/Approver";
 import BulkFileArea from "./BulkFileArea";
 import BulkRowsPopup from "./BulkRowsPopup";

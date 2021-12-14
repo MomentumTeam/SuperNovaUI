@@ -5,7 +5,7 @@ import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { InputTextarea } from "primereact/inputtextarea";
-import Hierarchy from "../Hierarchy";
+import Hierarchy from "../../Fields/Hierarchy";
 import Approver from "../../Fields/Approver";
 import { useStores } from "../../../context/use-stores";
 import * as Yup from "yup";
@@ -83,7 +83,6 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
       adParams: {
         ouDisplayName: hierarchy.name,
         jobTitle: roleName,
-        samAccountName: "???", // TODO: check
       },
       comments,
       due: Date.now(),

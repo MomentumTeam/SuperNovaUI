@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { useStores } from '../../../context/use-stores';
-import Hierarchy from '../Hierarchy';
+import Hierarchy from '../../Fields/Hierarchy';
 import Approver from '../../Fields/Approver';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';

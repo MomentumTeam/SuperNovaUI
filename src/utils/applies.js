@@ -143,13 +143,16 @@ export const isStatusComplete = (status) => {
 }
 
 export const IsRequestCompleteForApprover = (apply, approverType) => {
+  const isReqDone = checkIfRequestIsDone(apply);
+  if (isReqDone) return true;
+
   switch (approverType) {
     case USER_TYPE.SUPER_SECURITY:
-     return isStatusComplete(apply["superSecurityDecision"]["decision"]) 
+      return isStatusComplete(apply["superSecurityDecision"]["decision"]);
     case USER_TYPE.SECURITY:
-     return isStatusComplete(apply["securityDecision"]["decision"]); 
+      return !apply.needSecurityDecision || isStatusComplete(apply["securityDecision"]["decision"]);
     case USER_TYPE.COMMANDER:
-     return isStatusComplete(apply["commanderDecision"]["decision"]); 
+      return !apply.needSuperSecurityDecision || isStatusComplete(apply["commanderDecision"]["decision"]);
     default:
       break;
   }

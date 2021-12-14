@@ -5,6 +5,9 @@ const DateFieldTemplate = (date, props) => {
     commanderDecision: props.commanderDecision,
     superSecurityDecision: props.superSecurityDecision,
     securityDecision: props.securityDecision,
+    status: props.status,
+    needSecurityDecision: props.needSecurityDecision,
+    needSuperSecurityDecision: props.needSuperSecurityDecision,
   };
 
   let isReqDone = true;
