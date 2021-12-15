@@ -52,8 +52,8 @@ const HelpHamburgerMenu = () => {
           header="צור קשר"
           visible={displayContactInfo}
           onHide={onContactInfoHide}
-          breakpoints={{ "960px": "75vw" }}
-          style={{ width: "60vw" }}
+          breakpoints={{ "960px": "50vw" }}
+          style={{ width: "35vw", minHeight: "250px", height: "250px" }}
           className="contact-info-dialog"
         >
           <ContactInfo />
