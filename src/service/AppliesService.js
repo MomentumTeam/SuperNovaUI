@@ -245,6 +245,12 @@ export const disconectRoleFromEntityRequest = async (applyProperties) => {
   return response.data;
 };
 
+export const deleteRequest = async (requestId) => {
+  const response = await axiosApiInstance.delete(`${apiBaseUrl}/api/requests/${requestId}`);
+
+  return response.data;
+};
+
 export const uploadBulkFile = async (file, type) => {
   try {
     const response = await axiosApiInstance.post(
