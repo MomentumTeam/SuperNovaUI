@@ -80,14 +80,14 @@ export const TableSearch = (tableType) => {
         searchFunc: entitiesStore.getEntitiesByEntity,
       },
       {
-        searchField: "displayName",
+        searchField: "hierarchy",
         searchDisplayName: "היררכיה",
         searchFunc: entitiesStore.getEntitiesByHierarchy,
       },
       {
-        searchField: "displayName",
+        searchField: "uniqueIdSearch",
         searchDisplayName: "חיפוש לפי מזהה תפקיד (T)",
-        searchFunc: entitiesStore.getEntitiesByDI,
+        searchFunc: entitiesStore.searchEntitiesByDI,
       },
     ],
     hierarchy: [
@@ -98,10 +98,10 @@ export const TableSearch = (tableType) => {
         searchTemplate: hierarchyItemTemplate,
       },
       {
-        searchField: "id",
+        searchField: "uniqueIdSearch",
         searchDisplayName: "חיפוש לפי מזהה תפקיד (T)",
         searchFunc: groupsStore.getHierarchyByDI,
-        searchTemplate: hierarchyItemTemplate,
+        // searchTemplate: hierarchyItemTemplate,
       },
     ],
     roles: [
@@ -116,7 +116,7 @@ export const TableSearch = (tableType) => {
         searchFunc: rolesStore.getRolesByHierarchy,
       },
       {
-        searchField: "digitalIdentityUniqueId",
+        searchField: "displayName",
         searchDisplayName: 'שם/מ"א/ת"ז',
         searchFunc: rolesStore.getRolesByEntity,
       },

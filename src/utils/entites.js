@@ -23,6 +23,6 @@ export const CanSeeUserClearance = () => {
 };
 
 export const getSamAccountName = (entity) => {
-  return entity.digitalIdentities.find((di) => di.source === USER_SOURCE_DI)
-    .uniqueId;
+  const di = entity.digitalIdentities.find((di) => di.source === USER_SOURCE_DI);
+  return di.uniqueId;
 };

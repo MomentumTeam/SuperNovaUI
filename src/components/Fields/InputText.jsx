@@ -1,26 +1,26 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect } from "react";
 import { InputText } from "primereact/inputtext";
 
 import { getLabel, disabledInputStyle } from "./InputCommon";
-import { InputFormContext } from './InputForm';
 
 const InputTextField = ({
+  item,
   fieldName,
   displayName,
+  methods,
+  errors,
+  isEdit,
   canEdit = false,
   type = "text",
   keyFilter = null,
   additionalClass = "",
-  validator = null,
 }) => {
-  const { item, isEdit, changeForm, errors, changeErrors } = useContext(InputFormContext);
-  const [value, setValue] = useState("");
   const disabled = !canEdit || !isEdit;
 
-
   useEffect(() => {
-    setValue("");
-  }, [isEdit]);
+    methods.setValue(fieldName, item[fieldName]);
+    methods.clearErrors();
+  }, [isEdit, item]);
 
   return (
     <div className={`p-fluid-item ${additionalClass}`}>
@@ -29,24 +29,19 @@ const InputTextField = ({
 
         <InputText
           id="2011"
-          className={
-            errors === null || errors[fieldName] === undefined || errors[fieldName] === null ? "" : "p-invalid"
-          }
-          type={type}
-          keyfilter={keyFilter}
+          {...methods.register(fieldName)}
+          className={errors[fieldName] ? "p-invalid" : ""}
           disabled={disabled}
           style={disabled ? disabledInputStyle : {}}
-          placeholder={item[fieldName]}
+          value={methods.watch(fieldName)}
+          type={type}
+          keyfilter={keyFilter}
           onChange={(e) => {
-            const errormsg = e.target.value === "" ? null : validator ? validator(e.target.value) : null;
-            errormsg ? changeErrors(fieldName, errormsg) : changeErrors(fieldName);
-            setValue(e.target.value);
-            changeForm(fieldName, e.target.value);
+            methods.setValue(fieldName, e.target.value, { shouldValidate: true });
           }}
-          value={value}
         />
 
-        {errors !== null && errors[fieldName] !== null && <small className="p-error p-d-block">{errors[fieldName]}</small>}
+        {errors[fieldName] && <small className="p-error p-d-block">{errors[fieldName].message}</small>}
       </div>
     </div>
   );

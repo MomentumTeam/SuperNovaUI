@@ -1,15 +1,10 @@
 import * as Yup from "yup";
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import { classNames } from "primereact/utils";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { ContainerRoleList } from "./FullHierarchyContainerRoleList";
-import { FullHierarchyInformationFooter } from "./FullHierarchyInformationFooter";
 import { getLabel, disabledInputStyle } from "../../Fields/InputCommon";
-import { HierarchyDelete } from "./HierarchyDelete";
 import { NAME_OG_EXP, USER_TYPE } from "../../../constants";
 
 import "../../../assets/css/local/general/buttons.css";

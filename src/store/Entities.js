@@ -6,6 +6,7 @@ import {
   searchEntitiesByFullName,
   getEntityByIdentifier,
   getEntityByDI,
+  searchDIByUniqueId,
 } from "../service/KartoffelService";
 
 export default class EntitiesStore {
@@ -80,6 +81,33 @@ export default class EntitiesStore {
       try {
         filteredResults = await getEntityByDI(query);
         filteredResults = [filteredResults];
+      } catch (error) {}
+    }
+
+    return filteredResults;
+  }
+
+  async searchEntitiesByDI(event) {
+    let filteredResults = [];
+    const { query } = event;
+
+    if (query.trim().length) {
+      try {
+         const dis = await searchDIByUniqueId(query);
+
+         if (dis.length > 0) {
+           filteredResults = await Promise.all(
+             dis.map(async(di) => {
+               try {
+                 let entity = await getEntityByDI(di.uniqueId);
+                 entity.uniqueIdSearch = di.uniqueId;
+                 return entity;
+               } catch (error) {
+                 
+               }
+             })
+           );
+         }
       } catch (error) {}
     }
 

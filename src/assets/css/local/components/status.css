@@ -15,3 +15,8 @@
   color: deepskyblue !important;
   background-color: rgba(0, 191, 255, 0.15) !important;
 }
+
+.neutralplus {
+  color: purple !important;
+  background-color: rgba(183, 0, 255, 0.15) !important;
+}
