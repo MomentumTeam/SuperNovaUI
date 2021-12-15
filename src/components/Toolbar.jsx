@@ -18,7 +18,7 @@ const Toolbar = () => {
       {
         id: '2',
         className: 'btn-actions btn-actions2',
-        actionName: 'שינוי היררכיה',
+        actionName: 'מעבר היררכיה',
       },
       {
         id: '3',

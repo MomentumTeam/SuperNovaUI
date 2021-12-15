@@ -1,7 +1,7 @@
-import axiosApiInstance from "../config/axios";
-import { apiBaseUrl } from "../constants/api";
-import { organizeRows } from "../utils/applies";
-import "../assets/css/local/components/status.css";
+import axiosApiInstance from '../config/axios';
+import { apiBaseUrl } from '../constants/api';
+import { organizeRows } from '../utils/applies';
+import '../assets/css/local/components/status.css';
 
 //GET
 
@@ -179,7 +179,7 @@ export const searchRequestsBySubmitterDisplayName = async (
 export const getCreateBulkRoleData = async (id) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/bulk/request/createRole/${id}`
-
+    
   );
 
   response.data.rows = organizeRows(response.data.rows);
@@ -267,7 +267,7 @@ export const uploadBulkFile = async (file, type) => {
     const response = await axiosApiInstance.post(
       `${apiBaseUrl}/api/bulk/upload?type=${type}`,
       file,
-      { headers: { "Content-Type": "multipart/form-data" } }
+      { headers: { 'Content-Type': 'multipart/form-data' } }
     );
     return response.data;
   } catch (error) {
@@ -365,7 +365,7 @@ export const updateApproversCommentsRequest = async ({
   approversType,
   comment,
 }) => {
-
+  
   const response = await axiosApiInstance.put(
     `${apiBaseUrl}/api/requests/approver/comments/${requestId}`,
     {

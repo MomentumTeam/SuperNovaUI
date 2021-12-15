@@ -44,7 +44,7 @@ const RenameOGForm = forwardRef(({ setIsActionDone }, ref) => {
         });
       }}
     >
-      <AccordionTab header={renderHeader("שינוי היררכיה לתפקיד", true)}>
+      <AccordionTab header={renderHeader("מעבר היררכיה לתפקיד", true)}>
         <RenameSingleOGForm
           ref={formRefs[0]}
           showJob={false}

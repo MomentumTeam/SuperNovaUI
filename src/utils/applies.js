@@ -1,7 +1,7 @@
 import * as filesaver from 'file-saver';
 import * as xlsx from 'xlsx';
-import { USER_TYPE, STATUSES, TYPES, checkIfRequestIsDone } from "../constants";
-import datesUtil from "../utils/dates";
+import { USER_TYPE, STATUSES, TYPES, checkIfRequestIsDone } from '../constants';
+import datesUtil from '../utils/dates';
 import { isUserHoldType } from './user';
 
 const fileType =
@@ -46,46 +46,68 @@ export const getResponsibleFactors = (apply, user) => {
 
   if (!isReqDone) {
     if (!IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER)) {
-      fields = apply["commanders"];
+      fields = apply['commanders'];
       return fields;
     }
 
-    if (isSecurityNeeded && !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) {
-      if (apply["securityApprovers"].length > 0) {
-        fields = apply["securityApprovers"];
+    if (
+      isSecurityNeeded &&
+      !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)
+    ) {
+      if (apply['securityApprovers'].length > 0) {
+        fields = apply['securityApprovers'];
       } else {
-        fields = [...fields, isUserHoldType(user, USER_TYPE.SECURITY) ? "---" : 'ממתין לאישור ע"י יחב"ם'];
+        fields = [
+          ...fields,
+          isUserHoldType(user, USER_TYPE.SECURITY)
+            ? '---'
+            : 'ממתין לאישור ע"י יחב"ם',
+        ];
       }
 
       return fields;
-    } 
+    }
 
-    if (isSuperSecurityNeeded && !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)) {
-      if (apply["superSecurityApprovers"].length > 0) {
-        fields = apply["superSecurityApprovers"];
+    if (
+      isSuperSecurityNeeded &&
+      !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)
+    ) {
+      if (apply['superSecurityApprovers'].length > 0) {
+        fields = apply['superSecurityApprovers'];
       } else {
-        fields = [...fields, isUserHoldType(user, USER_TYPE.SUPER_SECURITY) ? "---" : 'ממתין לאישור ע"י בטח"ם'];
+        fields = [
+          ...fields,
+          isUserHoldType(user, USER_TYPE.SUPER_SECURITY)
+            ? '---'
+            : 'ממתין לאישור ע"י בטח"ם',
+        ];
       }
 
       return fields;
     }
   } else {
-    fields = [...fields, ...apply["commanders"]];
-    fields = [...fields, ...apply["securityApprovers"]];
-    fields = [...fields, ...apply["superSecurityApprovers"]];
+    fields = [...fields, ...apply['commanders']];
+    fields = [...fields, ...apply['securityApprovers']];
+    fields = [...fields, ...apply['superSecurityApprovers']];
   }
 
 
-
+  
   return fields;
 };
 
 export const getResponsibleFactorFields = (user) => {
   const fields = [];
-  if (user === undefined || isUserHoldType(user, USER_TYPE.SUPER_SECURITY)) fields.push("superSecurityApprovers");
-  if (user === undefined || isUserHoldType(user, USER_TYPE.SECURITY)) fields.push("securityApprovers");
-  if (user === undefined ||  isUserHoldType(user, USER_TYPE.ADMIN) || isUserHoldType(user, USER_TYPE.COMMANDER))
-    fields.push("commanders");
+  if (user === undefined || isUserHoldType(user, USER_TYPE.SUPER_SECURITY))
+    fields.push('superSecurityApprovers');
+  if (user === undefined || isUserHoldType(user, USER_TYPE.SECURITY))
+    fields.push('securityApprovers');
+  if (
+    user === undefined ||
+    isUserHoldType(user, USER_TYPE.ADMIN) ||
+    isUserHoldType(user, USER_TYPE.COMMANDER)
+  )
+    fields.push('commanders');
 
   return fields;
 };
@@ -120,15 +142,15 @@ export const getApproverComments = (apply, user) => {
 };
 
 export const isApproverAndCanEdit = (apply, user) => {
-  return isApprover(apply, user) && canEditApply(apply,user)
-}
+  return isApprover(apply, user) && canEditApply(apply, user);
+};
 
 export const isApprover = (apply, user) => {
   if (apply === undefined) return false;
   const approvers = getResponsibleFactor(apply, user);
-  const isApprover = approvers.some(approver => approver.id === user.id)
+  const isApprover = approvers.some((approver) => approver.id === user.id);
   return isApprover;
-}
+};
 
 export const canEditApply = (apply, user) => {
   if (apply === undefined) return false;
@@ -231,4 +253,17 @@ export const isDateGreater = (d1, days) => {
   d1 = datesUtil.moment(d1);
   const d2 = datesUtil.moment(datesUtil.now());
   return d2.diff(d1, 'days') > (days || 0);
+};
+
+export const getDenyReason = (apply) => {
+  const commanderReason = apply['commanderDecision']['reason'];
+  const securityReason = apply['securityDecision']['reason'];
+  const superSecurityReason = apply['superSecurityDecision']['reason'];
+
+  if (commanderReason && commanderReason !== '') return commanderReason;
+
+  if (securityReason && securityReason !== '') return securityReason;
+
+  if (superSecurityReason && superSecurityReason !== '')
+    return superSecurityReason;
 };

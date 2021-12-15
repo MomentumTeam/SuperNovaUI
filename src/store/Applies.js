@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, observable } from "mobx";
+import { action, makeAutoObservable, observable } from 'mobx';
 import { checkIfRequestIsDone } from '../constants';
 import {
   getMyRequests,
@@ -266,14 +266,43 @@ export default class AppliesStore {
     if (Array.isArray(approversType)) {
       await Promise.all(
         approversType.map(async (approverType) => {
-          const apply = await transferApproverRequest({ reqId, approvers, type: approverType, comment });
+          const apply = await transferApproverRequest({
+            reqId,
+            approvers,
+            type: approverType,
+            comment,
+          });
           this.updateApplyAndCount({ user, reqId, apply, removeApply: true });
         })
-      )
+      );
     } else {
-      const apply = await transferApproverRequest({ reqId, approvers, type: approversType, comment });
-      this.updateApplyAndCount({ user, reqId, apply, removeApply:true });
+      const apply = await transferApproverRequest({
+        reqId,
+        approvers,
+        type: approversType,
+        comment,
+      });
+      this.updateApplyAndCount({ user, reqId, apply, removeApply: true });
     }
+  }
+
+  async updateApproversComments({ requestId, approversType, comment }) {
+    const updateReq = await updateApproversCommentsRequest({
+      requestId,
+      approversType,
+      comment,
+    });
+
+    const myApplyIndex = this.getApplyIndexById('approveMyApplies', requestId);
+    const allApplyIndex = this.getApplyIndexById(
+      'approveAllApplies',
+      requestId
+    );
+
+    if (myApplyIndex != -1)
+      this.updateApply('approveMyApplies', myApplyIndex, updateReq);
+    if (allApplyIndex != -1)
+      this.updateApply('approveAllApplies', allApplyIndex, updateReq);
   }
 
   async updateApplyDecision({ user, requestId, decision }) {
@@ -286,30 +315,46 @@ export default class AppliesStore {
     });
   }
 
+
+
   // UTILS
   updateApplyAndCount = ({ user, reqId, apply, removeApply = false }) => {
     const myApplyIndex = this.getApplyIndexById('approveMyApplies', reqId);
     const allApplyIndex = this.getApplyIndexById('approveAllApplies', reqId);
 
     const myApplyResponsibleBefore =
-      myApplyIndex != -1 ? isApproverAndCanEdit(this.approveMyApplies.requests[myApplyIndex], user) : false;
+      myApplyIndex != -1
+        ? isApproverAndCanEdit(
+            this.approveMyApplies.requests[myApplyIndex],
+            user
+          )
+        : false;
 
     const allApplyResponsibleBefore =
-      allApplyIndex != -1 ? isApproverAndCanEdit(this.approveAllApplies.requests[allApplyIndex], user) : false;
+      allApplyIndex != -1
+        ? isApproverAndCanEdit(
+            this.approveAllApplies.requests[allApplyIndex],
+            user
+          )
+        : false;
 
-    if (myApplyIndex != -1) this.updateApply("approveMyApplies", myApplyIndex, apply);
-    if (allApplyIndex != -1) this.updateApply("approveAllApplies", allApplyIndex, apply);
+    if (myApplyIndex != -1)
+      this.updateApply('approveMyApplies', myApplyIndex, apply);
+    if (allApplyIndex != -1)
+      this.updateApply('approveAllApplies', allApplyIndex, apply);
 
-    const responsibleAfter = !checkIfRequestIsDone(apply) && isApproverAndCanEdit(apply, user);
+    const responsibleAfter =
+      !checkIfRequestIsDone(apply) && isApproverAndCanEdit(apply, user);
     if (!responsibleAfter && myApplyResponsibleBefore && removeApply) {
       this.approveMyApplies.requests.splice(myApplyIndex, 1);
       this.approveMyApplies.waitingForApproveCount =
         this.approveMyApplies.waitingForApproveCount - 1;
       this.approveMyAppliesCount = this.approveMyAppliesCount - 1;
     }
-    if(!responsibleAfter && allApplyResponsibleBefore && removeApply) {
-       this.approveAllApplies.waitingForApproveCount = this.approveAllApplies.waitingForApproveCount - 1;
-       this.approveAllAppliesCount = this.approveAllAppliesCount - 1;
+    if (!responsibleAfter && allApplyResponsibleBefore && removeApply) {
+      this.approveAllApplies.waitingForApproveCount =
+        this.approveAllApplies.waitingForApproveCount - 1;
+      this.approveAllAppliesCount = this.approveAllAppliesCount - 1;
     }
     if (responsibleAfter && !myApplyResponsibleBefore) {
       this.approveMyApplies.requests.push(apply);
