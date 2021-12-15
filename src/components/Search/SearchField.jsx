@@ -1,17 +1,16 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { AutoComplete } from "primereact/autocomplete";
 import { EVENT_KEY_UP_CODE_ENTER } from "../../constants/general";
-import { TableDataContext } from "../../pages/Entities/index";
 
 const SearchField = ({
   searchFunc,
   searchField,
   searchDisplayName,
+  searchTemplate,
   isSetTable,
-  TableDataCtx = TableDataContext,
+  setTableData,
+  getData,
 }) => {
-  const { tableDispatch } = useContext(TableDataCtx);
-
   const [results, setResults] = useState([]);
   const [selected, setSelected] = useState([]);
 
@@ -25,9 +24,10 @@ const SearchField = ({
 
   useEffect(() => {
     if (isSetTable && results.length > 0) {
-      tableDispatch({ type: "searchResult", results });
+      setTableData(results);
     }
   }, [isSetTable]);
+
 
   return (
     <div className="autocomplete-wrap">
@@ -35,31 +35,30 @@ const SearchField = ({
         <span className="p-float-label">
           <AutoComplete
             value={selected}
-            suggestions={[
-              ...new Map(
-                results.map((item) => [item[searchField], item])
-              ).values(),
-            ]}
+            suggestions={[...new Map(results.map((item) => [item[searchField], item])).values()]}
             completeMethod={async (e) => {
-              const searchResults = await searchFunc(e);
-              setResults(searchResults);
+              if (e.query.length > 1) {
+                const searchResults = await searchFunc(e);
+                setResults(searchResults);
+              } else {
+                setResults([]);
+              }
             }}
+            itemTemplate={searchTemplate}
             field={searchField}
             onChange={async (e) => {
               setSelected(e.value);
 
               if (e.originalEvent.type === "click") {
-                await tableDispatch({
-                  type: "searchResult",
-                  results: results.filter(
-                    (r) => r[searchField] === e.value[searchField]
-                  ),
-                });
+                const filteredResults = results.filter((r) => r[searchField] === e.value[searchField]);
+                setTableData(filteredResults);
               }
             }}
             onKeyUp={async (e) => {
               if (e.code === EVENT_KEY_UP_CODE_ENTER) {
-                await tableDispatch({ type: "searchResult", results });
+                Array.isArray(selected) && selected.length === 0
+                  ? await getData({ reset: true })
+                  : setTableData(results);
               }
             }}
           />

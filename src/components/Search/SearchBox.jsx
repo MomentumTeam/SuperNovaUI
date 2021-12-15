@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SearchField } from "./SearchField";
 
-const SearchBox = ({ searchFields, TableDataContext }) => {
+const SearchBox = ({ searchFields, setTableData, getData }) => {
   const [isSetTable, setIsSetTable] = useState(false);
 
   return (
@@ -13,23 +13,14 @@ const SearchBox = ({ searchFields, TableDataContext }) => {
               searchFunc={async (e) => await searchField.searchFunc(e)}
               searchField={searchField.searchField}
               searchDisplayName={searchField.searchDisplayName}
+              searchTemplate={searchField?.searchTemplate}
               isSetTable={isSetTable}
               setIsSetTable={setIsSetTable}
-              TableDataCtx={TableDataContext}
+              setTableData={setTableData}
+              getData={getData}
             />
           );
         })}
-
-      {/* <button
-        className="btn btn-search-wite"
-        title="Print"
-        type="button"
-        onClick={() => {
-          setIsSetTable(true);
-        }}
-      >
-        <span className="for-screnReader">Print</span>
-      </button> */}
     </div>
   );
 };

@@ -175,6 +175,44 @@ $linkColor0: #2979f4;
                         }
                     }
 
+                .btn-add-group {
+                    background-color: $bgcolor0;
+                    height: 74px;
+                    padding: 10px 20px;
+                    border: 0;
+                    border-radius: 14px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-right: 20px;
+
+                    @media (max-width: 1023px) {
+                        margin-top: 15px;
+                        width: 100%;
+                        margin-right: 0px;
+                    }
+
+                    @media (max-width: 599px) {
+                        border: 1px solid #d7d7d7;
+                    }
+
+                    .decoration {
+                        width: 50px;
+                        height: 49px;
+                        border-radius: 50%;
+                        transition: all 0.3s ease;
+                        background: transparent linear-gradient(180deg, #dccdfe 0%, #9c93ca 100%) 0% 0% no-repeat padding-box;
+
+                        .img {
+                            width: 50px;
+                            height: 49px;
+                            background-repeat: no-repeat;
+                            background-position: center;
+                            background-image: url(../../../images/actions-icon5.svg);
+                            background-size: 23px;
+                        }
+                    }
+
                     p {
                         font-size: 14px;
                         line-height: 18px;

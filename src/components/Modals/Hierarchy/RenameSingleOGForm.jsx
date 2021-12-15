@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
-import Hierarchy from "../Hierarchy";
+import Hierarchy from "../../Fields/Hierarchy";
 import Approver from "../../Fields/Approver";
 import { useStores } from "../../../context/use-stores";
 import * as Yup from "yup";
@@ -24,7 +24,7 @@ const validationSchema = Yup.object().shape({
     then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
   }),
   comments: Yup.string().optional(),
-  identifier: Yup.string().email("יש להכניס מזהה תקין").required("יש למלא ערך"),
+  identifier: Yup.string("יש להכניס מזהה תקין").required("יש למלא ערך").matches(/.*@.*/, "יש להכניס מזהה תקין"),
 });
 
 const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestObject }, ref) => {

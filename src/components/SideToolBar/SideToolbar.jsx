@@ -1,12 +1,14 @@
-import { useEffect } from 'react';
-import { toJS } from 'mobx';
-import { useStores } from '../../context/use-stores';
-import Actions from './Actions';
-import List from '../List';
-import Notifications from '../Notifications/Notifications';
-import '../../assets/css/local/components/aside.min.css';
-import { StatCount } from './StatCount';
-import { Link } from 'react-router-dom';
+import { useEffect } from "react";
+import { toJS } from "mobx";
+import { useStores } from "../../context/use-stores";
+import Actions from "./Actions";
+import List from "../List";
+import Notifications from "../Notifications/Notifications";
+import "../../assets/css/local/components/aside.min.css";
+import { StatCount } from "./StatCount";
+import { Link } from "react-router-dom";
+import HelpHamburgerMenu from "../HelpMenu/HelpHamburgerMenu";
+import "../../assets/css/local/components/aside.min.css";
 
 const SideToolbar = ({ recentApplies }) => {
   const { userStore } = useStores();
@@ -19,7 +21,10 @@ const SideToolbar = ({ recentApplies }) => {
   return (
     <div className="main-inner-item main-inner-item3">
       <div className="main-inner-item3-content">
-        <Notifications notifications={notifications} />
+        <div className="display-flex display-flex-end btns-wrap">
+          <HelpHamburgerMenu />
+          <Notifications notifications={notifications} />
+        </div>
         <StatCount />
         <div className="actions-inner-wrap">
           <h2>פעולות</h2>

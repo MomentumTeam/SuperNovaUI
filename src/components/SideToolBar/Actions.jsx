@@ -20,7 +20,7 @@ import InfoPopup from "../InfoPopup";
 import "../../assets/css/local/components/dialog.css";
 import { useToast } from '../../context/use-toast';
 
-const actions = [
+export const actions = [
   {
     id: 1,
     className: "btn-actions btn-actions1",
@@ -165,8 +165,8 @@ const Action = () => {
       try {
         await ref.current.handleSubmit();
       } catch (e) {
-        const actionName = actionList.find(action => action.id === currentActionId).actionName;
-        actionPopup(actionName, e.message || "Message Content");
+        const actionName = actionList.find(action => action.id === currentActionId);
+        actionPopup(actionName?.actionName, e.message || "Message Content");
       }
     },
     [getRef]

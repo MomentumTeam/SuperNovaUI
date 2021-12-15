@@ -1,8 +1,12 @@
 import { action, makeAutoObservable, observable } from "mobx";
 import {
   getRolesUnderOG,
-  getRoleByRoleId,
   getRolesByHierarchy,
+  searchRolesByRoleId,
+  getEntityByIdentifier,
+  searchEntitiesByFullName,
+  getRoleByRoleId,
+  searchDIByUniqueId,
 } from "../service/KartoffelService";
 
 export default class RolesStore {
@@ -21,30 +25,97 @@ export default class RolesStore {
     this.roles = append ? [...this.roles, ...roles] : roles;
   }
 
+  //   async searchRolesByRoleId(event) {
+  //     let filteredResults;
+  //     const { query } = event;
+  //
+  //     if (!query.trim().length) {
+  //       filteredResults = [];
+  //     } else {
+  //       filteredResults = await searchRolesByRoleId(query);
+  //       filteredResults = filteredResults;
+  //     }
+  //
+  //     return filteredResults;
+  //   }
 
-  async getRolesByRoleId(event) {
-    let filteredResults;
+  async searchRolesByDI(event) {
+    let filteredResults = [];
     const { query } = event;
 
-    if (!query.trim().length) {
-      filteredResults = [];
-    } else {
-      filteredResults = await getRoleByRoleId(query);
-      filteredResults = [filteredResults];
+    if (query.trim().length) {
+      try {
+        const dis = await searchDIByUniqueId(query);
+
+        if (dis.length > 0) {
+          let diRoles = [];
+          dis.map((di) => {
+            if (di?.role && di.role?.roleId) {
+              diRoles = [...diRoles, di.role];
+            }
+          });
+          filteredResults = diRoles;
+        }
+      } catch (error) {
+        
+      }
     }
 
     return filteredResults;
   }
 
   async getRolesByHierarchy(event) {
-    let filteredResults;
+    let filteredResults = [];
     const { query } = event;
 
-    if (!query.trim().length) {
-      filteredResults = [];
-    } else {
-      filteredResults = await getRolesByHierarchy(query);
-      filteredResults = [filteredResults];
+    if (query.trim().length) {
+      try {
+        filteredResults = await getRolesByHierarchy({ hierarchy: query });
+        filteredResults = filteredResults;
+      } catch (error) {}
+    }
+
+    return filteredResults;
+  }
+
+  async getRolesByEntity(event) {
+    let filteredResults = [];
+
+    const getEntitiesByEntity = async (event) => {
+      let filteredResults = [];
+      const { query } = event;
+
+      if (query.trim().length) {
+        try {
+          if (query.match("[0-9]+") && query.length >= 6) {
+            filteredResults = await getEntityByIdentifier(query);
+            filteredResults = [filteredResults];
+          } else {
+            filteredResults = await searchEntitiesByFullName(query);
+            filteredResults = filteredResults.entities;
+          }
+        } catch (error) {}
+      }
+      return filteredResults;
+    };
+
+    const entities = await getEntitiesByEntity(event);
+    if (entities.length > 0) {
+      let entityRoles = [];
+      entities.map((entity) => {
+        if (entity?.digitalIdentities && entity?.digitalIdentities.length > 0) {
+          entity?.digitalIdentities.map((di) => {
+            if (di?.role) entityRoles = [...entityRoles, di.role];
+          });
+        }
+      });
+
+      filteredResults = await Promise.all(
+        entityRoles.map(async (entityRole) => {
+          const role = getRoleByRoleId(entityRole.roleId);
+          return role;
+        })
+      );
     }
 
     return filteredResults;

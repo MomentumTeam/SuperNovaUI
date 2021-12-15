@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
-import Hierarchy from "./Hierarchy";
+import Hierarchy from "../Fields/Hierarchy";
 import Approver from "../Fields/Approver";
 import { AutoComplete } from "primereact/autocomplete";
 import { useStores } from "../../context/use-stores";

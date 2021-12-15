@@ -81,10 +81,6 @@ const Requests = observer(() => {
   }, [myRequestsStore.myRequests, myRequestsStore.totalCount]);
 
   useEffect(() => {
-    userStore.fetchUserNotifications(userStore.user?.id);
-  }, [userStore.user]);
-
-  useEffect(() => {
     searchActivate();
   }, [searchQuery]);
 
