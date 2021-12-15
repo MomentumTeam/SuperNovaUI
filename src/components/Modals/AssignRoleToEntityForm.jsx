@@ -30,6 +30,7 @@ import {
   getEntityByRoleId,
   getEntityByMongoId,
 } from "../../service/KartoffelService";
+import { isApproverValid } from "../../service/ApproverService";
 import { USER_SOURCE_DI, USER_TYPE } from '../../constants';
 import { isUserHoldType } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
@@ -47,6 +48,7 @@ const validationSchema = Yup.object().shape({
     then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
   }),
   comments: Yup.string().optional(),
+  approverErrorMessage: Yup.string().length(0),
 });
 
 const AssignRoleToEntityForm = forwardRef(
@@ -221,6 +223,32 @@ const AssignRoleToEntityForm = forwardRef(
     };
 
     const itemTemplate = (item) => <>{item.displayName}</>
+
+    const setApproverValue = async (name, data) => {
+      const newGroupId = watch("hierarchy")?.id;
+  
+      if (!newGroupId) {
+        setValue('approverErrorMessage', "יש לבחור היררכיה");
+      } else { 
+        data.forEach(async (item) => {
+          try {
+            const { isValid } = await isApproverValid(item.id, newGroupId);
+            if (!isValid) {
+              setValue('approverErrorMessage', "יש לבחור מאשרים תקינים (מהיחידה בלבד)");
+            } else {
+              setValue('approverErrorMessage', "");
+            }
+          } catch (err) {
+            if (err) {
+              setValue('approverErrorMessage', "יש לבחור מאשרים תקינים (מהיחידה בלבד)");
+            }
+          }
+        });       
+      }
+
+      return setValue(name, data);
+    };
+
     const userRole = getUserRole();
     const userRoleDisplay = userRole ? userRole.jobTitle : " - ";
 
@@ -381,8 +409,8 @@ const AssignRoleToEntityForm = forwardRef(
                   disabled
                   type="text"
                   placeholder={watch('currentRoleUser') ? 'לא פנוי' : 'פנוי'}
-            />
-          </div>
+                />
+              </div>
               <div className="p-field" >
                 <label htmlFor="2030">מבצע תפקיד</label>
                 <InputText {...register("currentRoleUser")} id="2030" type="text" disabled placeholder="מבצע תפקיד" />
@@ -413,7 +441,7 @@ const AssignRoleToEntityForm = forwardRef(
         )}
         <div className="p-fluid-item">
             <Approver
-              setValue={setValue}
+              setValue={setApproverValue}
               name="approvers"
               tooltip='רס"ן ומעלה ביחידתך'
               multiple={true}
