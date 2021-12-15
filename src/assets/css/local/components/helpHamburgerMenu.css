@@ -22,15 +22,12 @@
   margin-left: 8px;
 }
 
-.help-speeddial .p-dialog.faq-dialog .p-dialog-header .p-dialog-title::before {
+.p-dialog.faq-dialog .p-dialog-header .p-dialog-title::before {
   background-image: url(../../../images/faq-icon-white.png);
   background-size: contain;
 }
 
-.help-speeddial
-  .p-dialog.contact-info-dialog
-  .p-dialog-header
-  .p-dialog-title::before {
+.p-dialog.contact-info-dialog .p-dialog-header .p-dialog-title::before {
   background-image: url(../../../images/contact-icon.png);
   background-size: contain;
 }
