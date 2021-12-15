@@ -1,14 +1,14 @@
 import React, {  useEffect, useState } from "react";
 import { observer } from "mobx-react";
 
-import { useToast } from '../../context/use-toast';
-import { itemsInPage, pageSize } from "../../constants/api";
-import { useStores } from "../../context/use-stores";
-import { TableNames, TableTypes } from "../../constants/usersTable";
 import Table from "../../components/Table";
 import Header from "./Header";
 import SearchEntity from "./SearchEntity";
 import AddEntity from "./AddEntity";
+import { useToast } from '../../context/use-toast';
+import { useStores } from "../../context/use-stores";
+import { itemsInPage, pageSize } from "../../constants/api";
+import { TableNames, TableTypes } from "../../constants/usersTable";
 
 import "../../assets/css/local/pages/listUsersPage.min.css";
 
@@ -20,15 +20,17 @@ const Entities = observer(() => {
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
+  const [isSearch, setIsSearch] = useState(false);
 
   const getData = async ({ append = false, reset = false }) => {
+    setIsSearch(false);
+
     let data = [];
     if (reset) {
       setFirst(0);
       setPage(0);
     }
 
-    console.log(reset, page, first)
     if (userStore.user.directGroup) {
       switch (tabId) {
         case TableNames.entities.tab:
@@ -66,7 +68,7 @@ const Entities = observer(() => {
           getNextPage = false;
       }
 
-      if (getNextPage) {
+      if (getNextPage && !isSearch) {
         setIsLoading(true);
         try {
           await getData({ append: getNextPage });
@@ -90,6 +92,12 @@ const Entities = observer(() => {
   }, [tabId, userStore.user]);
 
 
+  const setSearchData = (data) => {
+    setIsSearch(true);
+    setTableData(data);
+    setFirst(0);
+    setPage(0);
+  };
 
   useEffect(() => {
     if (tabId === TableNames.entities.tab) setTableData(entitiesStore.entities);
@@ -107,8 +115,13 @@ const Entities = observer(() => {
           <div className="content-unit-wrap">
             <div className="content-unit-inner">
               <div className="display-flex search-row-wrap-flex">
-                <SearchEntity tableType={tabId} setTableData={setTableData} />
-                <AddEntity />
+                <SearchEntity
+                  tableType={tabId}
+                  setTableData={setSearchData}
+                  getData={getData}
+                />
+                {/* TODO */}
+                <AddEntity tableType={tabId} />
               </div>
               <Table
                 data={tableData}

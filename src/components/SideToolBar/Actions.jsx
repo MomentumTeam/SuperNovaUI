@@ -20,7 +20,7 @@ import InfoPopup from "../InfoPopup";
 import "../../assets/css/local/components/dialog.css";
 import { useToast } from '../../context/use-toast';
 
-const actions = [
+export const actions = [
   {
     id: 1,
     className: "btn-actions btn-actions1",

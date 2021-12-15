@@ -1,6 +1,9 @@
 import { USER_TYPE } from ".";
 import { useStores } from "../context/use-stores";
 import { TextFieldTemplate } from "../components/Fields/TextFieldTemplate";
+import { concatHierarchy, hierarchyItemTemplate } from '../utils/hierarchy';
+import { actions } from '../components/SideToolBar/Actions';
+import { roleItemTemplate } from '../utils/roles';
 
 export const TableTypes = {
   entities: [
@@ -19,13 +22,13 @@ export const TableTypes = {
     { field: "serviceType", displayName: "סוג שירות" },
   ],
   hierarchy: [
-    { field: "hierarchy", displayName: "היררכיה" },
+    { field: ["hierarchy", "name"], displayName: "היררכיה", formatter: concatHierarchy},
     { field: "id", displayName: "מזהה היררכיה", hide: true },
     { field: "directRoles.length", displayName: "מספר תפקידים", default: 0 },
   ],
   roles: [
     { field: "jobTitle", displayName: "שם תפקיד" },
-    { field: "hierarchy", displayName: "היררכיה" },
+    { field: "hierarchy", displayName: "היררכיה", template: TextFieldTemplate },
     { field: "clearance", displayName: "סיווג התפקיד" },
     { field: "digitalIdentityUniqueId", displayName: "מזהה תפקיד" },
   ],
@@ -69,6 +72,7 @@ export const TableSearch = (tableType) => {
   const { entitiesStore, rolesStore, groupsStore } = useStores();
 
   const searchFields = {
+    // ASK: LIRON
     entities: [
       {
         searchField: "displayName",
@@ -83,33 +87,67 @@ export const TableSearch = (tableType) => {
       {
         searchField: "displayName",
         searchDisplayName: "חיפוש לפי מזהה תפקיד (T)",
-        searchFunc: entitiesStore.getEntitiesByRoleId,
+        searchFunc: entitiesStore.getEntitiesByDI,
       },
     ],
     hierarchy: [
       {
-        searchField: "hierarchy",
+        searchField: "id",
         searchDisplayName: "היררכיה",
         searchFunc: groupsStore.getHierarchyByHierarchy,
+        searchTemplate: hierarchyItemTemplate,
       },
       {
-        searchField: "hierarchy",
+        searchField: "id",
         searchDisplayName: "חיפוש לפי מזהה תפקיד (T)",
-        searchFunc: groupsStore.getHierarchyByRoleId,
+        searchFunc: groupsStore.getHierarchyByDI,
+        searchTemplate: hierarchyItemTemplate,
       },
     ],
     roles: [
       {
-        searchField: "roleId",
-        searchDisplayName: 'שם/מ"א/ת"ז',
-        searchFunc: rolesStore.getRolesByRoleId,
+        searchField: "digitalIdentityUniqueId",
+        searchDisplayName: "חיפוש לפי מזהה תפקיד (T)",
+        searchFunc: rolesStore.searchRolesByDI,
       },
       {
-        searchField: "roleId",
+        searchField: "digitalIdentityUniqueId",
         searchDisplayName: "היררכיה",
         searchFunc: rolesStore.getRolesByHierarchy,
+      },
+      {
+        searchField: "digitalIdentityUniqueId",
+        searchDisplayName: 'שם/מ"א/ת"ז',
+        searchFunc: rolesStore.getRolesByEntity,
       },
     ],
   };
   return searchFields[tableType] ? searchFields[tableType] : [];
+};
+
+export const TableAdd = {
+  entities: {
+    actionName: "משתמש חדש",
+    addClass: "btn-add-user",
+    dialogClass: actions[3].dialogClass,
+    infoText: actions[3].infoText,
+    infoWithTitle: actions[3].infoWithTitle,
+    modalName: actions[3].modalName,
+  },
+  hierarchy: {
+    actionName: "היררכיה חדשה",
+    addClass: "btn-add-group",
+    dialogClass: actions[4].dialogClass,
+    infoText: actions[4].infoText,
+    infoWithTitle: actions[4].infoWithTitle,
+    modalName: actions[4].modalName,
+  },
+  roles: {
+    actionName: "תפקיד חדש",
+    addClass: "btn-add-role",
+    dialogClass: actions[0].dialogClass,
+    infoText: actions[0].infoText,
+    infoWithTitle: actions[0].infoWithTitle,
+    modalName: actions[0].modalName,
+  },
 };

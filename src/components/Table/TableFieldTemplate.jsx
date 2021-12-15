@@ -45,7 +45,7 @@ const TableFieldTemplate = (data, props) => {
       }
 
       if (formatter != undefined) {
-        value = mapFunc(value, getDataFormatterByValue, true);
+        value = getDataFormatterByValue(value);
       }
 
       return value;

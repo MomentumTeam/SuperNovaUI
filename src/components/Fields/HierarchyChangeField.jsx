@@ -1,76 +1,87 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useFormContext } from "react-hook-form";
+import { debounce } from "lodash";
+import { InputText } from "primereact/inputtext";
+
 import { getOGByHierarchy } from "../../service/KartoffelService";
-import { getHierarchy } from "../../utils/hierarchy";
-import { AutoComplete } from "primereact/autocomplete";
-import { disabledInputStyle } from "./InputCommon";
+import "../../assets/css/local/components/hierarchyChange.css";
 
 const HierarchyField = ({ hierarchy, isEdit, setIsHierarchyFree }) => {
   const {
     register,
     formState: { errors },
     setValue,
-    reset,
     watch,
-    getValues
   } = useFormContext();
+
   const [hierarchyFind, setHierarchyFind] = useState(null);
-  const [oldHierarchy, setOldHierarchy] = useState("");
   const fieldName = "hierarchyName";
 
-  const searchHierarchy = async (event) => {
+  const searchHierarchy = async (hierarchyName) => {
     let hierarchyResult = null;
-    if (event.query !== undefined) {
-      const hierarchyName = `${oldHierarchy.hierarchyPrefix}/${event.query}`;
-      hierarchyResult = await getOGByHierarchy(hierarchyName);
+    if (hierarchyName !== undefined) {
+      try {
+        const hierarchyFull = `${hierarchy.hierarchy}/${hierarchyName}`;
+        hierarchyResult = await getOGByHierarchy(hierarchyFull);
+      } catch (error) {}
     }
     setHierarchyFind(hierarchyResult);
     return;
   };
 
-  useEffect(() => {
-    const { hierarchyReadOnly, hierarchyName } = getHierarchy(hierarchy.hierarchy);
-    const hierarchyold = {};
-    hierarchyold.oldName = hierarchyName;
-    hierarchyold.hierarchyPrefix = hierarchyReadOnly;
-
-    setOldHierarchy(hierarchyold);
-  }, [isEdit]);
+  const debouncedHierarchyName = useRef(
+    debounce(async (hierarchyQuery) => {
+      searchHierarchy(hierarchyQuery);
+    }, 100)
+  );
 
   useEffect(() => {
     setIsHierarchyFree(hierarchyFind === null);
   }, [hierarchyFind]);
 
   return (
-    <div>
-      <AutoComplete
-        {...register(fieldName)}
-        suggestions={[]}
-        disabled={!isEdit}
-        value={watch(fieldName)}
-        completeMethod={searchHierarchy}
-        placeholder={oldHierarchy.oldName}
-        className={!errors[fieldName] ? "" : "p-invalid"}
-        style={(isEdit ? {} : disabledInputStyle, { border: "none" })}
-        onChange={(e) => {
-          setValue(fieldName, e.value);
-          if (e.value === "") {
-            setHierarchyFind(null);
-            reset(
-              { [fieldName]: oldHierarchy.oldName },
-              {
-                keepDirty: false,
-                keepTouched: false,
-              }
-            );
-          }
-        }}
-      />
+    <>
+      {/* TODO: ADD LIMIT and test in show*/}
+      {!isEdit ? (
+        <InputText
+          {...register(fieldName)}
+          disabled={!isEdit}
+          className="input"
+          value={`${hierarchy.hierarchy}/${hierarchy.name}`}
+        />
+      ) : (
+        <>
+          <div class="input-box">
+            <InputText
+              {...register(fieldName)}
+              disabled={!isEdit}
+              className="input"
+              value={watch(fieldName)}
+              onChange={(e) => {
+                const hierarchyToSearch = e.target.value;
+                setValue(fieldName, hierarchyToSearch);
+
+                if (hierarchyToSearch === "") {
+                  setHierarchyFind(null);
+                  setValue(fieldName, hierarchy.name);
+                } else {
+                  debouncedHierarchyName.current(hierarchyToSearch);
+                }
+              }}
+            />
+            <span class="prefix">/{hierarchy.hierarchy}</span>
+          </div>
+          <span className="hinthierarchy cut-text">
+            {hierarchy.hierarchy}/{watch(fieldName)}
+          </span>
+        </>
+      )}
+
       {errors[fieldName] && <small className="p-error p-d-block">{errors[fieldName].message}</small>}
-      <label htmlFor="hierarchyInput" style={{ paddingTop: "3px" }}>{`${oldHierarchy.hierarchyPrefix}/${
-        getValues(fieldName) ? getValues(fieldName) : oldHierarchy.oldName
-      }`}</label>
-    </div>
+      {hierarchyFind !== null && watch(fieldName) !== hierarchy.name && (
+        <small className="p-error p-d-block">{"היררכיה קיימת"}</small>
+      )}
+    </>
   );
 };
 

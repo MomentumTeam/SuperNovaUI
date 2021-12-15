@@ -1,8 +1,11 @@
 import { action, makeAutoObservable, observable } from "mobx";
 import {
+  getOGByHierarchy,
   getOGChildren,
   getRoleByRoleId,
+  searchDIByUniqueId,
   searchOG,
+  searchRolesByRoleId,
 } from "../service/KartoffelService";
 
 export default class GroupsStore {
@@ -17,39 +20,72 @@ export default class GroupsStore {
     });
   }
 
-
   async loadOGChildren(id, page, pageSize, append = false) {
     const groups = await getOGChildren({ id, page, pageSize });
     this.groups = append ? [...this.groups, ...groups] : groups;
   }
 
   async getHierarchyByHierarchy(event) {
-    let filteredResults;
+    let filteredResults = [];
     const { query } = event;
 
-    if (!query.trim().length) {
-      filteredResults = [];
-    } else {
-      filteredResults = await searchOG(query);
+    if (query.trim().length) {
+      try {
+        filteredResults = await searchOG(query);
+      } catch (error) {}
     }
 
     return filteredResults;
   }
 
-  async getHierarchyByRoleId(event) {
-    let filteredResults;
+  async getHierarchyByDI(event) {
+    let filteredResults = [];
     const { query } = event;
 
-    if (!query.trim().length) {
-      filteredResults = [];
-    } else {
-      const role = await getRoleByRoleId(query);
+    if (query.trim().length) {
+      const dis = await searchDIByUniqueId(query);
 
-      if (role && role.hierarchy) {
-        filteredResults = await searchOG(role.hierarchy);
+      if (dis.length > 0) {
+        let hierarchies = [];
+        hierarchies = dis.map((di) => {
+          if (di?.role && di.role?.hierarchy) return di.role.hierarchy;
+        });
+        const uniqueHierarchy = [...new Set(hierarchies)];
+
+        filteredResults = await Promise.all(
+          uniqueHierarchy.map((hierarchy) => {
+            const res = getOGByHierarchy(hierarchy);
+            return res;
+          })
+        );
       }
     }
 
     return filteredResults;
   }
+
+  //   async getHierarchyByRoleId(event) {
+  //     let filteredResults = [];
+  //     const { query } = event;
+  //
+  //     if (query.trim().length) {
+  //       const roles = await searchRolesByRoleId(query);
+  //
+  //       if (roles.length > 0) {
+  //         let hierarchies = [];
+  //         hierarchies = roles.map((role) => {
+  //           if (role?.hierarchy) return role.hierarchy;
+  //         });
+  //         const uniqueHierarchy = [...new Set(hierarchies)];
+  //
+  //         filteredResults = await Promise.all(uniqueHierarchy.map((hierarchy) => {
+  //           const res = getOGByHierarchy(hierarchy);
+  //           return res;
+  //         }))
+  //       }
+  //
+  //     }
+  //
+  //     return filteredResults;
+  //   }
 }

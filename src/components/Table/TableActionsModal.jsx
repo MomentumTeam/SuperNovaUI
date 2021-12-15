@@ -18,6 +18,7 @@ import { HierarchyDelete } from "../Modals/Hierarchy/HierarchyDelete";
 
 // Role
 import { FullRoleInformation } from "../Modals/Role/FullRoleInformation";
+import { FullRoleInformationForm } from "../Modals/Role/FullRoleInformationForm";
 
 // Request
 import { PassRequestDialog } from "../Modals/Request/PassRequestDialog";
