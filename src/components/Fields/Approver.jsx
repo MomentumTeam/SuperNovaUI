@@ -25,7 +25,10 @@ const Approver = ({
 }) => {
   const {userStore} = useStores();
   const [ApproverSuggestions, setApproverSuggestions] = useState([]);
+  console.log('defaultApprovers', defaultApprovers);
+
   const [selectedApprover, setSelectedApprover] = useState(defaultApprovers);
+  console.log('selectedApprover', selectedApprover)
 
   const searchApprover = async (event) => {
     if (event.query.length > 1) {
@@ -40,6 +43,7 @@ const Approver = ({
   };
 
   const itemSelectedTemplate = (item) => {
+    console.log('item', item)
     const id = Math.random().toString(36).slice(2);
     const userFullName = getUserNameFromDisplayName(item.displayName)
     return (
@@ -59,7 +63,7 @@ const Approver = ({
   useEffect(() => {
     setSelectedApprover(defaultApprovers);
     setApproverSuggestions([]);
-  }, [type]);
+  }, [type, defaultApprovers]);
 
   return (
     <div className="p-field-item">

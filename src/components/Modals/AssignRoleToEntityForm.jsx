@@ -3,23 +3,23 @@ import React, {
   useImperativeHandle,
   forwardRef,
   useEffect,
-} from "react";
-import { useForm } from "react-hook-form";
-import { InputText } from "primereact/inputtext";
-import { Dropdown } from "primereact/dropdown";
-import { InputTextarea } from "primereact/inputtextarea";
-import Hierarchy from "../Fields/Hierarchy";
-import Approver from "../Fields/Approver";
-import { useStores } from "../../context/use-stores";
-import { toJS } from "mobx";
-import { AutoComplete } from "primereact/autocomplete";
-import { Calendar } from "primereact/calendar";
-import * as Yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import HorizontalLine from "../HorizontalLine";
-import "../../assets/css/local/components/calendar.css";
-import InfoPopup from "../InfoPopup";
-import "../../assets/css/local/components/approverForm.css";
+} from 'react';
+import { useForm } from 'react-hook-form';
+import { InputText } from 'primereact/inputtext';
+import { Dropdown } from 'primereact/dropdown';
+import { InputTextarea } from 'primereact/inputtextarea';
+import Hierarchy from '../Fields/Hierarchy';
+import Approver from '../Fields/Approver';
+import { useStores } from '../../context/use-stores';
+import { toJS } from 'mobx';
+import { AutoComplete } from 'primereact/autocomplete';
+import { Calendar } from 'primereact/calendar';
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import HorizontalLine from '../HorizontalLine';
+import '../../assets/css/local/components/calendar.css';
+import InfoPopup from '../InfoPopup';
+import '../../assets/css/local/components/approverForm.css';
 
 import {
   searchEntitiesByFullName,
@@ -55,6 +55,11 @@ const AssignRoleToEntityForm = forwardRef(
   ({ showJob = true, setIsActionDone, onlyForView, requestObject }, ref) => {
     const { appliesStore, userStore } = useStores();
     const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
+    const [approvers,setApprovers] = useState(GetDefaultApprovers(
+      requestObject,
+      onlyForView,
+      showJob,
+    ));
 
     const { register, handleSubmit, setValue, getValues, watch, formState } =
       useForm({
@@ -63,6 +68,7 @@ const AssignRoleToEntityForm = forwardRef(
       });
     const [userSuggestions, setUserSuggestions] = useState([]);
     const [roles, setRoles] = useState([]);
+    const [replaceApprover, setReplaceApprover] = useState([]);
     const { errors } = formState;
 
     useEffect(() => {
@@ -112,7 +118,7 @@ const AssignRoleToEntityForm = forwardRef(
           firstName: user.firstName,
           lastName: user.lastName,
           fullName: user.fullName,
-          rank: user.rank,
+          rank: 'user.rank',
           roleSerialCode: '???', // TODO: WTF is this??,
         },
         comments,
@@ -132,18 +138,18 @@ const AssignRoleToEntityForm = forwardRef(
 
     const getUserRole = () => {
       const user = watch('user');
-      console.log('user', user);
 
       if (!user) {
         return null;
       }
 
       if (user?.digitalIdentities && Array.isArray(user?.digitalIdentities)) {
-        const relevantIdentity = user.digitalIdentities.find((identity) => identity.source === USER_SOURCE_DI);
+        const relevantIdentity = user.digitalIdentities.find(
+          (identity) => identity.source === USER_SOURCE_DI
+        );
         if (relevantIdentity && relevantIdentity.role) {
           return relevantIdentity.role;
         }
-
       }
 
       return null;
@@ -151,9 +157,9 @@ const AssignRoleToEntityForm = forwardRef(
 
     const setCurrentUser = () => {
       const user = toJS(userStore.user);
-      setValue("user", user);
-      setValue("userName", user.fullName);
-      setValue("personalNumber", user.personalNumber || user.identityCard);
+      setValue('user', user);
+      setValue('userName', user.fullName);
+      setValue('personalNumber', user.personalNumber || user.identityCard);
     };
 
     const onSearchUser = async (event) => {
@@ -167,6 +173,7 @@ const AssignRoleToEntityForm = forwardRef(
 
     const handleOrgSelected = async (org) => {
       const result = await getRolesUnderOG({ id: org.id });
+      console.log('result', result);
       setRoles(result || []);
     };
 
@@ -188,9 +195,12 @@ const AssignRoleToEntityForm = forwardRef(
 
     const handleRoleSelected = async (roleId) => {
       const entity = await getEntityByRoleId(roleId);
+      console.log('entity', entity);
 
       if (entity) {
         setValue('currentRoleUser', entity.fullName);
+        setReplaceApprover(entity);
+        setApprovers([entity]);
       }
     };
 
@@ -222,7 +232,7 @@ const AssignRoleToEntityForm = forwardRef(
       handleRoleSelected(role.roleId);
     };
 
-    const itemTemplate = (item) => <>{item.displayName}</>
+    const itemTemplate = (item) => <>{item.displayName}</>;
     const userRole = getUserRole();
     const userRoleDisplay = userRole ? userRole.jobTitle : ' - ';
 
@@ -263,10 +273,13 @@ const AssignRoleToEntityForm = forwardRef(
                   setValue('userRole', e.value.jobTitle);
                 }}
                 onChange={(e) => {
-                  setValue("userName", e.value.fullName ? e.value.fullName : e.value);
-                  if (e.value === "") {
-                    setValue("personalNumber", "");
-                    setValue("user", null);
+                  setValue(
+                    'userName',
+                    e.value.fullName ? e.value.fullName : e.value
+                  );
+                  if (e.value === '') {
+                    setValue('personalNumber', '');
+                    setValue('user', null);
                   }
                 }}
                 required
@@ -379,7 +392,7 @@ const AssignRoleToEntityForm = forwardRef(
             </div>
           </div>
         </div>
-        <div style={{display:'flex'}}>
+        <div style={{ display: 'flex' }}>
           <div className="p-fluid-item">
             <div className="p-field">
               <label htmlFor="2026">מזהה תפקיד (T)</label>
@@ -407,7 +420,12 @@ const AssignRoleToEntityForm = forwardRef(
           </div>
           {watch('currentRoleUser') && (
             <div className="p-fluid-item-flex p-fluid-item">
-              <div className={`p-field ${watch("currentRoleUser") ? "p-field-red" : "p-field-green"}`} style={{marginLeft:'10px'}} >
+              <div
+                className={`p-field ${
+                  watch('currentRoleUser') ? 'p-field-red' : 'p-field-green'
+                }`}
+                style={{ marginLeft: '10px' }}
+              >
                 <label htmlFor="2024">סטטוס תפקיד</label>
                 <InputText
                   {...register('roleStatus')}
@@ -415,10 +433,10 @@ const AssignRoleToEntityForm = forwardRef(
                   disabled
                   type="text"
                   placeholder={watch('currentRoleUser') ? 'לא פנוי' : 'פנוי'}
-            />
-          </div>
-              <div className="p-field" >
-                <label htmlFor="2030">מבצע תפקיד</label>
+                />
+              </div>
+              <div className="p-field">
+                <label htmlFor="2030">מבצע תפקיד נוכחי</label>
                 <InputText
                   {...register('currentRoleUser')}
                   id="2030"
@@ -431,7 +449,7 @@ const AssignRoleToEntityForm = forwardRef(
           )}
         </div>
         <div className="row3flex">
-        {watch('currentRoleUser') && (
+          {watch('currentRoleUser') && (
             <div className="p-fluid-item">
               <div className="p-field">
                 <label htmlFor="2027">בצע החלפה בתאריך</label>
@@ -452,19 +470,23 @@ const AssignRoleToEntityForm = forwardRef(
                 </label>
               </div>
             </div>
-        )}
-        <div className="p-fluid-item">
+          )}
+          <div className="p-fluid-item">
             <Approver
               setValue={setValue}
               name="approvers"
               tooltip='רס"ן ומעלה ביחידתך'
               multiple={true}
-              defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
+              defaultApprovers={approvers}
               disabled={onlyForView || isUserApprover}
               errors={errors}
             />
             <label htmlFor="2021">
-              {watch('approverErrorMessage') && <small style={{ color: "red" }}>{watch('approverErrorMessage')}</small>}
+              {watch('approverErrorMessage') && (
+                <small style={{ color: 'red' }}>
+                  {watch('approverErrorMessage')}
+                </small>
+              )}
             </label>
           </div>
         </div>
