@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import ModalHierarchy from "../Modals/Hierarchy/ModalHierarchy";
 import { searchOG } from "../../service/KartoffelService";
 import { AutoComplete } from "primereact/autocomplete";
+import { hierarchyItemTemplate } from '../../utils/hierarchy';
 
 const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText = "היררכיה", errors }) => {
   const [ogSuggestions, setOgSuggestions] = useState([]);
@@ -10,10 +11,6 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
   useEffect(() => {
     setSelectedOg(ogValue);
   }, [ogValue]);
-
-  const itemTemplate = (item) => {
-    return <>{item.hierarchy != "" && item.hierarchy+'/'}{item.name}</>
-  };
 
   
   const searchOg = async (event) => {
@@ -40,15 +37,15 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
           id="2020"
           type="text"
           field="name"
-          itemTemplate={itemTemplate}
+          itemTemplate={hierarchyItemTemplate}
           onSelect={(e) => {
             if (onOrgSelected) {
               onOrgSelected(e.value);
             }
           }}
           onChange={(e) => {
-             setSelectedOg(e.value);
-             setValue(name, e.value);
+            setSelectedOg(e.value);
+            setValue(name, e.value);
           }}
           required
           forceSelection

@@ -2,7 +2,15 @@ import React, { useState, useEffect } from "react";
 import { AutoComplete } from "primereact/autocomplete";
 import { EVENT_KEY_UP_CODE_ENTER } from "../../constants/general";
 
-const SearchField = ({ searchFunc, searchField, searchDisplayName, isSetTable, setTableData }) => {
+const SearchField = ({
+  searchFunc,
+  searchField,
+  searchDisplayName,
+  searchTemplate,
+  isSetTable,
+  setTableData,
+  getData,
+}) => {
   const [results, setResults] = useState([]);
   const [selected, setSelected] = useState([]);
 
@@ -20,6 +28,7 @@ const SearchField = ({ searchFunc, searchField, searchDisplayName, isSetTable, s
     }
   }, [isSetTable]);
 
+
   return (
     <div className="autocomplete-wrap">
       <div className="p-fluid">
@@ -28,9 +37,14 @@ const SearchField = ({ searchFunc, searchField, searchDisplayName, isSetTable, s
             value={selected}
             suggestions={[...new Map(results.map((item) => [item[searchField], item])).values()]}
             completeMethod={async (e) => {
-              const searchResults = await searchFunc(e);
-              setResults(searchResults);
+              if (e.query.length > 1) {
+                const searchResults = await searchFunc(e);
+                setResults(searchResults);
+              } else {
+                setResults([]);
+              }
             }}
+            itemTemplate={searchTemplate}
             field={searchField}
             onChange={async (e) => {
               setSelected(e.value);
@@ -42,7 +56,9 @@ const SearchField = ({ searchFunc, searchField, searchDisplayName, isSetTable, s
             }}
             onKeyUp={async (e) => {
               if (e.code === EVENT_KEY_UP_CODE_ENTER) {
-                setTableData(results);
+                Array.isArray(selected) && selected.length === 0
+                  ? await getData({ reset: true })
+                  : setTableData(results);
               }
             }}
           />

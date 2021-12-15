@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { useToast } from "../../../context/use-toast";
+import { FullRoleInformation } from "../Role/FullRoleInformation";
 
 const StyledContainerRoleList = styled.div`
   width: 100%;
@@ -93,21 +95,52 @@ const Status = styled.p`
 `;
 
 const ContainerRoleList = ({ roles }) => {
+  const { actionPopup } = useToast();
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [isActionModalOpen, setIsActionModalOpen] = useState(false);
+
+  const sendActionPopup = (actionName = "עריכת תפקיד", error = null) => {
+    actionPopup(actionName, error);
+  };
+
+  const onClick = (role) => {
+    setSelectedRole(role);
+    setIsActionModalOpen(true);
+  }
+
+  const closeActionModal = () => {
+    setIsActionModalOpen(false);
+    setSelectedRole(null);
+  };
+
   return (
-    <StyledContainerRoleList>
+    <>
+      <StyledContainerRoleList>
         <StyledList>
-      {roles && roles.map((role) => {
-        return (
-            <StyledListItem>
-              <StyledItemContent>
-                <Text>{role.jobTitle}</Text>
-                {/* <Status>פנוי</Status> */}
-              </StyledItemContent>
-            </StyledListItem>
-        )
-      })}
-      </StyledList>
-    </StyledContainerRoleList>
+          {roles &&
+            roles.map((role) => {
+              return (
+                <StyledListItem>
+                  <StyledItemContent>
+                    <Text onClick={() => onClick(role)}>
+                      {role?.jobTitle && role.jobTitle != "unknown" ? role.jobTitle : role.roleId}
+                    </Text>
+                    {/* <Status>פנוי</Status> */}
+                  </StyledItemContent>
+                </StyledListItem>
+              );
+            })}
+        </StyledList>
+      </StyledContainerRoleList>
+
+      {selectedRole != null && <FullRoleInformation
+        role={selectedRole}
+        isOpen={isActionModalOpen}
+        closeModal={closeActionModal}
+        edit={false}
+        actionPopup={sendActionPopup}
+      />}
+    </>
   );
 };
 
