@@ -29,13 +29,13 @@ export default class MyRequestsStore {
     this.totalCount  = myRequests.totalCount;
   }
 
-  async loadMyRequestsBySerialNumber(from, to, append = false, value) {
+  async loadMyRequestsBySerialNumber(_from, _to, append = false, value) {
     let filteredResults;
 
     if (!value?.trim().length) {
       filteredResults = [];
     } else {
-      filteredResults = await getMyRequestsBySerialNumber(from, to, value);
+      filteredResults = await getMyRequestsBySerialNumber(value);
       this.myRequests = append ? [...this.myRequests, ...filteredResults] : filteredResults;
     }
   }
