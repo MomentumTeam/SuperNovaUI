@@ -10,21 +10,25 @@ export const getMyRequests = async (from, to) => {
     params: {
       from,
       to,
+      sortField: "UPDATED_AT",
     },
   });
 
   return response.data;
 };
 
-export const getRequestById = async (id) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/requests/${id}`
-  );
+export const getMyRequestsWithParams = async (params) => {
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/my`, {
+    params: { ...params, sortField: "UPDATED_AT" },
+  });
 
-  return response.data;
+  if (Array.isArray(response.data.requests)) {
+    return response.data.requests;
+  }
+  return [];
 };
 
-export const getMyRequestsBySerialNumber = async (from, to, serialNumber) => {
+export const getMyRequestsBySerialNumber = async (serialNumber) => {
   try {
     return [await getRequestBySerialNumber(serialNumber)];
   } catch (error) {
@@ -33,43 +37,23 @@ export const getMyRequestsBySerialNumber = async (from, to, serialNumber) => {
 };
 
 export const getMyRequestsByType = async (from, to, type) => {
-  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/my`, {
-    params: {
-      from,
-      to,
-      type,
-    },
-  });
-  if (Array.isArray(response.data.requests)) {
-    return response.data.requests;
-  }
-  return [];
+  return getMyRequestsWithParams({ from, to, type });
 };
 
 export const getMyRequestsBySearch = async (from, to, value) => {
-  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/my`, {
-    params: {
-      searchQuery: value,
-    },
-  });
-  if (Array.isArray(response.data.requests)) {
-    return response.data.requests;
-  }
-  return [];
+  return getMyRequestsWithParams({ from, to, searchQuery: value });
 };
 
 export const getMyRequestsByStatus = async (from, to, status) => {
-  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/my`, {
-    params: {
-      from,
-      to,
-      status,
-    },
-  });
-  if (Array.isArray(response.data.requests)) {
-    return response.data.requests;
-  }
-  return [];
+  return getMyRequestsWithParams({ from, to, status });
+};
+
+export const getRequestById = async (id) => {
+  const response = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/requests/${id}`
+  );
+
+  return response.data;
 };
 
 export const getMyApproveRequests = async ({
@@ -179,7 +163,6 @@ export const searchRequestsBySubmitterDisplayName = async (
 export const getCreateBulkRoleData = async (id) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/bulk/request/createRole/${id}`
-
   );
 
   response.data.rows = organizeRows(response.data.rows);
@@ -262,8 +245,14 @@ export const disconectRoleFromEntityRequest = async (applyProperties) => {
   return response.data;
 };
 
+export const deleteRequest = async (requestId) => {
+  const response = await axiosApiInstance.delete(`${apiBaseUrl}/api/requests/${requestId}`);
+
+  return response.data;
+};
+
 export const uploadBulkFile = async (file, type) => {
-  try{
+  try {
     const response = await axiosApiInstance.post(
       `${apiBaseUrl}/api/bulk/upload?type=${type}`,
       file,
@@ -365,7 +354,6 @@ export const updateApproversCommentsRequest = async ({
   approversType,
   comment,
 }) => {
-
   const response = await axiosApiInstance.put(
     `${apiBaseUrl}/api/requests/approver/comments/${requestId}`,
     {
