@@ -106,6 +106,7 @@ const CreateOGForm = forwardRef(
             labelText={'היררכיית אב'}
             ogValue={watch('parentHierarchy')}
             disabled={onlyForView}
+            userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
           />
         </div>
         <div className="p-fluid-item">
