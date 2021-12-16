@@ -16,7 +16,13 @@ import { USER_TYPE } from "../../../constants";
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
-  hierarchy: Yup.object().required(),
+  hierarchy: Yup.object().required("יש למלא ערך").test("does-user-already-exist-in-hierarchy","שם התפקיד קיים בהיררכיה שבחרת. יש לערוך את שמו דרך טבלת התפקידים", function(hierarchy) {
+    if(!Array.isArray(hierarchy?.directRoles)) {
+      return false
+    }
+    return !hierarchy.directRoles.map(role => role.jobTitle).includes(this.parent.role.jobTitle)
+  }),
+  currentHierarchy: Yup.object().required("יש למלא ערך"),
   role: Yup.object().required(),
   isUserApprover: Yup.boolean(),
   approvers: Yup.array().when("isUserApprover", {

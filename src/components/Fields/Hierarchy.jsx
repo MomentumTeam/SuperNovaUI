@@ -50,7 +50,7 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
           required
           forceSelection
         />
-        <label htmlFor="2020"> {errors?.hierarchy && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
+        <label htmlFor="2020"> {errors[name] && <small style={{ color: "red" }}>{(errors[name].type !== "typeError" && errors[name].message) || "יש למלא ערך"}</small>}</label>
       </div>
       {(!disabled || true) && (
         <ModalHierarchy
