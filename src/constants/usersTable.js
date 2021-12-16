@@ -2,7 +2,7 @@ import { USER_TYPE } from ".";
 import { useStores } from "../context/use-stores";
 import { TextFieldTemplate } from "../components/Fields/TextFieldTemplate";
 import { concatHierarchy, hierarchyItemTemplate } from '../utils/hierarchy';
-import { actions } from '../components/SideToolBar/Actions';
+import { actions } from './actions';
 
 export const TableTypes = {
   entities: [

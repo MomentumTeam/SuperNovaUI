@@ -14,6 +14,7 @@ import { GetDefaultApprovers } from "../../../utils/approver";
 import { isUserHoldType } from "../../../utils/user";
 import { USER_TYPE } from "../../../constants";
 import { getOuDisplayName } from '../../../utils/hierarchy';
+import { getSamAccountNameFromUniqueId } from '../../../utils/fields';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
@@ -31,6 +32,8 @@ const validationSchema = Yup.object().shape({
 const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestObject }, ref) => {
   const { appliesStore, userStore } = useStores();
   const [hierarchyByIdentifier, setHierarchyByIdentifier] = useState(null);
+  const [uniqueId, setUniqueId] = useState("");
+
   const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
 
   const { register, handleSubmit, setValue, watch, formState } = useForm({
@@ -47,6 +50,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
       setValue("hierarchy", requestObject.adParams.ouDisplayName);
       const role = await getRoleByRoleId(requestObject.kartoffelParams.roleId);
       setHierarchyByIdentifier(role.hierarchy);
+      setUniqueId(role.digitalIdentityUniqueId);
       setValue("role", role);
       setRoles([role]);
     };
@@ -69,10 +73,10 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
       kartoffelParams: {
         roleId: identifier,
         directGroup: hierarchy.id,
-        jobTitle: role.jobTitle,
+        currentJobTitle: role.jobTitle,
       },
       adParams: {
-        samAccountName: identifier,
+        samAccountName: getSamAccountNameFromUniqueId(uniqueId),
         ouDisplayName: getOuDisplayName(hierarchy.hierarchy, hierarchy.name),
       },
     };
@@ -112,6 +116,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
         setValue("role", role);
         setRoles([role]);
         setHierarchyByIdentifier(role.hierarchy);
+        setUniqueId(role.digitalIdentityUniqueId);
       } catch (e) {
         initializeIdentifierDependencies();
       }

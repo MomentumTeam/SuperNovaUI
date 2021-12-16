@@ -56,7 +56,6 @@ const CreateOGForm = forwardRef(
       }
 
       const req = {
-        // status: 'SUBMITTED',
         commanders: approvers,
         kartoffelParams: {
           name: newHierarchy,
@@ -64,7 +63,7 @@ const CreateOGForm = forwardRef(
           source: USER_SOURCE_DI,
         },
         adParams: {
-          ouDisplayName: getOuDisplayName(hierarchy.hierarchy, hierarchy.name),
+          ouDisplayName: getOuDisplayName(parentHierarchy.hierarchy, parentHierarchy.name),
           ouName: parentHierarchy.name,
           name: newHierarchy,
         },

@@ -4,13 +4,14 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import datesUtil from "../../../utils/dates";
-import { CanSeeUserClearance, getSamAccountName } from "../../../utils/entites";
+import { CanSeeUserClearance } from "../../../utils/entites";
 import { NAME_REG_EXP, PHONE_REG_EXP, USER_CLEARANCE } from "../../../constants";
 import { InputForm, InputTypes } from "../../Fields/InputForm";
 import { useStores } from "../../../context/use-stores";
 
 import "../../../assets/css/local/general/buttons.css";
 import "../../../assets/css/local/components/modal-item.css";
+import { getSamAccountNameFromEntity } from '../../../utils/fields';
 
 
 const validationSchema = Yup.object().shape({
@@ -69,7 +70,7 @@ const FullEntityInformationForm = forwardRef(({ setIsActionDone, onlyForView, re
         ...(tempForm.identityCard && { identityCard: tempForm.identityCard }),
       };
 
-      const samAccountName = getSamAccountName(tempForm);
+      const samAccountName = getSamAccountNameFromEntity(tempForm);
 
       await appliesStore.editEntityApply({
         kartoffelParams,
