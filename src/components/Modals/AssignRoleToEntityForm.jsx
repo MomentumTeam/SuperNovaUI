@@ -3,23 +3,23 @@ import React, {
   useImperativeHandle,
   forwardRef,
   useEffect,
-} from "react";
-import { useForm } from "react-hook-form";
-import { InputText } from "primereact/inputtext";
-import { Dropdown } from "primereact/dropdown";
-import { InputTextarea } from "primereact/inputtextarea";
-import Hierarchy from "../Fields/Hierarchy";
-import Approver from "../Fields/Approver";
-import { useStores } from "../../context/use-stores";
-import { toJS } from "mobx";
-import { AutoComplete } from "primereact/autocomplete";
-import { Calendar } from "primereact/calendar";
-import * as Yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import HorizontalLine from "../HorizontalLine";
-import "../../assets/css/local/components/calendar.css";
-import InfoPopup from "../InfoPopup";
-import "../../assets/css/local/components/approverForm.css";
+} from 'react';
+import { useForm } from 'react-hook-form';
+import { InputText } from 'primereact/inputtext';
+import { Dropdown } from 'primereact/dropdown';
+import { InputTextarea } from 'primereact/inputtextarea';
+import Hierarchy from '../Fields/Hierarchy';
+import Approver from '../Fields/Approver';
+import { useStores } from '../../context/use-stores';
+import { toJS } from 'mobx';
+import { AutoComplete } from 'primereact/autocomplete';
+import { Calendar } from 'primereact/calendar';
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import HorizontalLine from '../HorizontalLine';
+import '../../assets/css/local/components/calendar.css';
+import InfoPopup from '../InfoPopup';
+import '../../assets/css/local/components/approverForm.css';
 
 import {
   searchEntitiesByFullName,
@@ -43,9 +43,11 @@ const validationSchema = Yup.object().shape({
   role: Yup.object().required(),
   roleId: Yup.string().required(),
   isUserApprover: Yup.boolean(),
-  approvers: Yup.array().when("isUserApprover", {
+  approvers: Yup.array().when('isUserApprover', {
     is: false,
-    then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+    then: Yup.array()
+      .min(1, 'יש לבחור לפחות גורם מאשר אחד')
+      .required('יש לבחור לפחות גורם מאשר אחד'),
   }),
   comments: Yup.string().optional(),
   approverErrorMessage: Yup.string().length(0),
@@ -55,40 +57,43 @@ const AssignRoleToEntityForm = forwardRef(
   ({ showJob = true, setIsActionDone, onlyForView, requestObject }, ref) => {
     const { appliesStore, userStore } = useStores();
     const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
+    const [approvers, setApprovers] = useState(
+      GetDefaultApprovers(requestObject, onlyForView, showJob)
+    );
 
-    const { register, handleSubmit, setValue, getValues, watch, formState } = useForm({
-      resolver: yupResolver(validationSchema),
-      defaultValues: { isUserApprover },
-    });
+    const { register, handleSubmit, setValue, getValues, watch, formState } =
+      useForm({
+        resolver: yupResolver(validationSchema),
+        defaultValues: { isUserApprover },
+      });
     const [userSuggestions, setUserSuggestions] = useState([]);
     const [roles, setRoles] = useState([]);
     const { errors } = formState;
 
     useEffect(() => {
       const initializeValues = async () => {
-        setValue("userName", requestObject.adParams.fullName);
-        setValue("comments", requestObject.comments);
-        setValue("roleId", requestObject.adParams.newSAMAccountName);
+        setValue('userName', requestObject.adParams.fullName);
+        setValue('comments', requestObject.comments);
+        setValue('roleId', requestObject.adParams.newSAMAccountName);
         const user = await getEntityByMongoId(requestObject.kartoffelParams.id);
-        setValue("user", user);
-        setValue("personalNumber", user.personalNumber || user.identityCard);
+        setValue('user', user);
+        setValue('personalNumber', user.personalNumber || user.identityCard);
         const role = await getRoleByRoleId(
           requestObject.adParams.newSAMAccountName
         );
-        setValue("hierarchy", role.hierarchy);
-        setValue("role", role);
+        setValue('hierarchy', role.hierarchy);
+        setValue('role', role);
         setRoles([role]);
         await handleRoleSelected(requestObject.adParams.newSAMAccountName);
 
         // TODO: fix due
-        setValue("changeRoleAt", +requestObject.due);
+        setValue('changeRoleAt', +requestObject.due);
       };
 
       if (requestObject) {
         initializeValues();
       }
     }, []);
-
 
     const onSubmit = async (data) => {
       try {
@@ -97,6 +102,7 @@ const AssignRoleToEntityForm = forwardRef(
         throw new Error(err.errors);
       }
       const { changeRoleAt, approvers, roleId, comments, user } = data;
+      console.log('approvers', approvers);
       const userRole = getUserRole();
       const req = {
         commanders: approvers,
@@ -108,12 +114,12 @@ const AssignRoleToEntityForm = forwardRef(
         adParams: {
           oldSAMAccountName: userRole?.roleId,
           newSAMAccountName: roleId,
-          upn: "???", // TODO: WTF is this??
+          upn: '???', // TODO: WTF is this??
           firstName: user.firstName,
           lastName: user.lastName,
           fullName: user.fullName,
           rank: user.rank,
-          roleSerialCode: "???", // TODO: WTF is this??,
+          roleSerialCode: '???', // TODO: WTF is this??,
         },
         comments,
         due: changeRoleAt ? new Date(changeRoleAt).getTime() : Date.now(),
@@ -131,19 +137,19 @@ const AssignRoleToEntityForm = forwardRef(
     );
 
     const getUserRole = () => {
-      const user = watch("user");
-      console.log('user', user)
+      const user = watch('user');
 
       if (!user) {
         return null;
       }
 
       if (user?.digitalIdentities && Array.isArray(user?.digitalIdentities)) {
-        const relevantIdentity = user.digitalIdentities.find((identity) => identity.source === USER_SOURCE_DI);
+        const relevantIdentity = user.digitalIdentities.find(
+          (identity) => identity.source === USER_SOURCE_DI
+        );
         if (relevantIdentity && relevantIdentity.role) {
           return relevantIdentity.role;
         }
-
       }
 
       return null;
@@ -151,9 +157,9 @@ const AssignRoleToEntityForm = forwardRef(
 
     const setCurrentUser = () => {
       const user = toJS(userStore.user);
-      setValue("user", user);
-      setValue("userName", user.fullName);
-      setValue("personalNumber", user.personalNumber || user.identityCard);
+      setValue('user', user);
+      setValue('userName', user.fullName);
+      setValue('personalNumber', user.personalNumber || user.identityCard);
     };
 
     const onSearchUser = async (event) => {
@@ -171,7 +177,7 @@ const AssignRoleToEntityForm = forwardRef(
     };
 
     const onSearchUserById = async () => {
-      const userId = getValues("personalNumber");
+      const userId = getValues('personalNumber');
 
       if (!userId) {
         return;
@@ -180,9 +186,9 @@ const AssignRoleToEntityForm = forwardRef(
       const user = await getEntityByIdentifier(userId);
 
       if (user) {
-        setValue("user", user);
-        setValue("userName", user.fullName);
-        setValue("userRole", user.jobTitle);
+        setValue('user', user);
+        setValue('userName', user.fullName);
+        setValue('userRole', user.jobTitle);
       }
     };
 
@@ -190,16 +196,26 @@ const AssignRoleToEntityForm = forwardRef(
       const entity = await getEntityByRoleId(roleId);
 
       if (entity) {
-        setValue("currentRoleUser", entity.fullName);
+        setValue('currentRoleUser', entity.fullName);
+        console.log('isUserApprover', isUserApprover);
+        if (isUserApprover) {
+          setApprovers([entity]);
+          if (entity.identityCard === "") delete entity.identityCard
+          if (entity.personalNumber === '') delete entity.personalNumber;
+          setValue('approvers',[entity])
+        }
       }
     };
 
     const onRoleIdChanged = async () => {
-      const roleId = getValues("roleId");
+      const roleId = getValues('roleId');
 
       if (!roleId) {
-        setValue("role", null);
-        setValue("currentRoleUser", "");
+        setValue('role', null);
+        setValue('currentRoleUser', '');
+        if (isUserApprover) {
+          setApprovers([]);
+        }
         return;
       }
 
@@ -209,15 +225,15 @@ const AssignRoleToEntityForm = forwardRef(
         role = await getRoleByRoleId(roleId);
       }
 
-      let hierarchy = getValues("hierarchy");
+      let hierarchy = getValues('hierarchy');
 
       if (!hierarchy) {
         hierarchy = await getOGById(role.directGroup);
       }
 
-      setValue("hierarchy", hierarchy);
+      setValue('hierarchy', hierarchy);
       setRoles(Array.from(new Set([...roles, role])));
-      setValue("role", role);
+      setValue('role', role);
 
       handleRoleSelected(role.roleId);
     };
@@ -250,7 +266,7 @@ const AssignRoleToEntityForm = forwardRef(
     };
 
     const userRole = getUserRole();
-    const userRoleDisplay = userRole ? userRole.jobTitle : " - ";
+    const userRoleDisplay = userRole ? userRole.jobTitle : ' - ';
 
     return (
       <div className="p-fluid" style={{ flexDirection: 'column' }}>
@@ -260,15 +276,18 @@ const AssignRoleToEntityForm = forwardRef(
               <label htmlFor="2020">
                 <span className="required-field">*</span>שם משתמש
               </label>
-              <button
-                className="btn-underline left19 approver-fillMe"
-                onClick={setCurrentUser}
-                type="button"
-                title="עבורי"
-                style={onlyForView && { display: 'none' }}
-              >
-                עבורי
-              </button>
+
+              {showJob && (
+                <button
+                  className="btn-underline left19 approver-fillMe"
+                  onClick={setCurrentUser}
+                  type="button"
+                  title="עבורי"
+                  style={onlyForView && { display: 'none' }}
+                >
+                  עבורי
+                </button>
+              )}
               <AutoComplete
                 value={watch('userName')}
                 suggestions={userSuggestions}
@@ -278,24 +297,38 @@ const AssignRoleToEntityForm = forwardRef(
                 itemTemplate={itemTemplate}
                 field="fullName"
                 onSelect={(e) => {
-                  setValue("user", e.value);
-                  setValue("personalNumber", e.value.personalNumber || e.value.identityCard);
-                  setValue("userRole", e.value.jobTitle);
+                  setValue('user', e.value);
+                  setValue(
+                    'personalNumber',
+                    e.value.personalNumber || e.value.identityCard
+                  );
+                  setValue('userRole', e.value.jobTitle);
                 }}
                 onChange={(e) => {
-                  setValue("userName", e.value.fullName ? e.value.fullName : e.value);
-                  if (e.value === "") {
-                    setValue("personalNumber", "");
-                    setValue("user", null);
+                  setValue(
+                    'userName',
+                    e.value.fullName ? e.value.fullName : e.value
+                  );
+                  if (e.value === '') {
+                    setValue('personalNumber', '');
+                    setValue('user', null);
                   }
                 }}
                 required
                 disabled={onlyForView}
               />
-              <label htmlFor="2020"> {errors.userName && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
+              <label htmlFor="2020">
+                {' '}
+                {errors.userName && (
+                  <small style={{ color: 'red' }}>יש למלא ערך</small>
+                )}
+              </label>
             </div>
           </div>
-          <div className="p-fluid-item-flex p-fluid-item" style={{ marginLeft: "10px" }}>
+          <div
+            className="p-fluid-item-flex p-fluid-item"
+            style={{ marginLeft: '10px' }}
+          >
             <div className="p-field">
               <label htmlFor="2021">
                 {' '}
@@ -315,8 +348,10 @@ const AssignRoleToEntityForm = forwardRef(
                 disabled={onlyForView}
               />
               <label htmlFor="2021">
-                {" "}
-                {errors.personalNumber && <small style={{ color: "red" }}>יש למלא ערך</small>}
+                {' '}
+                {errors.personalNumber && (
+                  <small style={{ color: 'red' }}>יש למלא ערך</small>
+                )}
               </label>
             </div>
           </div>
@@ -324,7 +359,13 @@ const AssignRoleToEntityForm = forwardRef(
             <div className="p-fluid-item">
               <div className="p-field p-field-blue">
                 <label htmlFor="2022">תפקיד</label>
-                <InputText id="2022" disabled type="text" placeholder="תפקיד" value={userRoleDisplay} />
+                <InputText
+                  id="2022"
+                  disabled
+                  type="text"
+                  placeholder="תפקיד"
+                  value={userRoleDisplay}
+                />
               </div>
             </div>
           ) : null}
@@ -374,11 +415,16 @@ const AssignRoleToEntityForm = forwardRef(
                 }}
                 disabled={onlyForView}
               />
-              <label htmlFor="2021"> {errors.role && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
+              <label htmlFor="2021">
+                {' '}
+                {errors.role && (
+                  <small style={{ color: 'red' }}>יש למלא ערך</small>
+                )}
+              </label>
             </div>
           </div>
         </div>
-        <div style={{display:'flex'}}>
+        <div style={{ display: 'flex' }}>
           <div className="p-fluid-item">
             <div className="p-field">
               <label htmlFor="2026">מזהה תפקיד (T)</label>
@@ -388,7 +434,7 @@ const AssignRoleToEntityForm = forwardRef(
                 type="text"
                 onBlur={onRoleIdChanged}
                 tooltip={'לדוגמה: "T12345678"'}
-                tooltipOptions={{ position: "top" }}
+                tooltipOptions={{ position: 'top' }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     onRoleIdChanged();
@@ -396,12 +442,22 @@ const AssignRoleToEntityForm = forwardRef(
                 }}
                 disabled={onlyForView}
               />
-              <label htmlFor="2021"> {errors.roleId && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
+              <label htmlFor="2021">
+                {' '}
+                {errors.roleId && (
+                  <small style={{ color: 'red' }}>יש למלא ערך</small>
+                )}
+              </label>
             </div>
           </div>
           {watch('currentRoleUser') && (
             <div className="p-fluid-item-flex p-fluid-item">
-              <div className={`p-field ${watch("currentRoleUser") ? "p-field-red" : "p-field-green"}`} style={{marginLeft:'10px'}} >
+              <div
+                className={`p-field ${
+                  watch('currentRoleUser') ? 'p-field-red' : 'p-field-green'
+                }`}
+                style={{ marginLeft: '10px' }}
+              >
                 <label htmlFor="2024">סטטוס תפקיד</label>
                 <InputText
                   {...register('roleStatus')}
@@ -419,7 +475,7 @@ const AssignRoleToEntityForm = forwardRef(
           )}
         </div>
         <div className="row3flex">
-        {watch('currentRoleUser') && (
+          {watch('currentRoleUser') && (
             <div className="p-fluid-item">
               <div className="p-field">
                 <label htmlFor="2027">בצע החלפה בתאריך</label>
@@ -433,31 +489,43 @@ const AssignRoleToEntityForm = forwardRef(
                   disabled={onlyForView}
                 />
                 <label htmlFor="2021">
-                  {" "}
-                  {errors.changeRoleAt && <small style={{ color: "red" }}>יש למלא ערך</small>}
+                  {' '}
+                  {errors.changeRoleAt && (
+                    <small style={{ color: 'red' }}>יש למלא ערך</small>
+                  )}
                 </label>
               </div>
             </div>
-        )}
-        <div className="p-fluid-item">
+          )}
+          <div className="p-fluid-item">
             <Approver
               setValue={setApproverValue}
               name="approvers"
               tooltip='רס"ן ומעלה ביחידתך'
               multiple={true}
-              defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
+              defaultApprovers={approvers}
               disabled={onlyForView || isUserApprover}
               errors={errors}
             />
             <label htmlFor="2021">
-              {watch('approverErrorMessage') && <small style={{ color: "red" }}>{watch('approverErrorMessage')}</small>}
+              {watch('approverErrorMessage') && (
+                <small style={{ color: 'red' }}>
+                  {watch('approverErrorMessage')}
+                </small>
+              )}
             </label>
           </div>
         </div>
         <div className="p-fluid-item p-fluid-item-flex1">
           <div className="p-field">
             <label htmlFor="2028">סיבת מעבר</label>
-            <InputTextarea {...register("comments")} id="2028" type="text" placeholder="הערות" disabled={onlyForView} />
+            <InputTextarea
+              {...register('comments')}
+              id="2028"
+              type="text"
+              placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
+              disabled={onlyForView}
+            />
           </div>
         </div>
       </div>

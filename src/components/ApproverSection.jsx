@@ -4,7 +4,12 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import '../assets/css/local/components/modal-item.min.css';
 import { useStores } from '../context/use-stores';
 import { toJS } from 'mobx';
-import { getApproverComments, isApproverAndCanEdit } from '../utils/applies';
+import { DECISIONS } from '../constants/decisions';
+import {
+  getApproverComments,
+  isApproverAndCanEdit,
+  getDenyReason,
+} from '../utils/applies';
 
 const ApproverSection = ({ request, setDialogVisiblity }) => {
   const { appliesStore, userStore } = useStores();
@@ -53,8 +58,7 @@ const ApproverSection = ({ request, setDialogVisiblity }) => {
 
   const submit = async () => {
     if (approverMode.denyMode) {
-      changeDecisionRequest('DENIED');
-      //TODO
+      changeDecisionRequest(DECISIONS.DECLINED);
     } else if (approverMode.commentMode) {
       for (let comment of approverComments) {
         let newCommentObject = {
@@ -93,6 +97,21 @@ const ApproverSection = ({ request, setDialogVisiblity }) => {
             );
           })}
 
+          {request.status === DECISIONS.DECLINED && (
+            <div className="p-field">
+              <label>
+                <span></span>
+                סיבת דחייה
+              </label>
+              <InputTextarea
+                disabled={true}
+                value={getDenyReason(request)}
+                type="text"
+                autoResize="false"
+              />
+            </div>
+          )}
+
           {enabledChange && approverMode.denyMode && (
             <div className="p-field">
               <label>
@@ -128,7 +147,7 @@ const ApproverSection = ({ request, setDialogVisiblity }) => {
               <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
                 <Button
                   label="אישור"
-                  onClick={() => changeDecisionRequest('APPROVED')}
+                  onClick={() => changeDecisionRequest(DECISIONS.APPROVED)}
                   className="btn-gradient green"
                   style={{ marginRight: '20px' }}
                 />

@@ -1,21 +1,21 @@
-import * as Yup from "yup";
-import React, { useImperativeHandle, forwardRef, useEffect } from "react";
-import FormData from "form-data";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from 'yup';
+import React, { useImperativeHandle, forwardRef, useEffect } from 'react';
+import FormData from 'form-data';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { InputTextarea } from 'primereact/inputtextarea';
 
-import Hierarchy from "../../Fields/Hierarchy";
-import Approver from "../../Fields/Approver";
-import BulkRowsPopup from "./BulkRowsPopup";
-import BulkFileArea from "./BulkFileArea";
+import Hierarchy from '../../Fields/Hierarchy';
+import Approver from '../../Fields/Approver';
+import BulkRowsPopup from './BulkRowsPopup';
+import BulkFileArea from './BulkFileArea';
 
-import { useStores } from "../../../context/use-stores";
+import { useStores } from '../../../context/use-stores';
 import { BulkTypes } from '../../../constants/applies';
 import {
   uploadBulkFile,
   getCreateBulkRoleData,
-} from "../../../service/AppliesService";
+} from '../../../service/AppliesService';
 import { USER_TYPE } from '../../../constants';
 import { isUserHoldType } from '../../../utils/user';
 import { GetDefaultApprovers } from '../../../utils/approver';
@@ -25,9 +25,11 @@ const validationSchema = Yup.object().shape({
   comments: Yup.string().optional(),
   hierarchy: Yup.object().required(),
   isUserApprover: Yup.boolean(),
-  approvers: Yup.array().when("isUserApprover", {
+  approvers: Yup.array().when('isUserApprover', {
     is: false,
-    then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+    then: Yup.array()
+      .min(1, 'יש לבחור לפחות גורם מאשר אחד')
+      .required('יש לבחור לפחות גורם מאשר אחד'),
   }),
   bulkFile: Yup.mixed()
     .test('required', 'יש להעלות קובץ!', (value) => {
@@ -68,7 +70,6 @@ const RenameBulkOGForm = forwardRef(
         getBulkData();
       }
     }, []);
-
 
     const onSubmit = async (data) => {
       try {
@@ -111,7 +112,10 @@ const RenameBulkOGForm = forwardRef(
     );
 
     return (
-      <div className="p-fluid" style={{ display: "flex", flexDirection: "column" }}>
+      <div
+        className="p-fluid"
+        style={{ display: 'flex', flexDirection: 'column' }}
+      >
         <div className="p-fluid-item-flex p-fluid-item">
           <div className="p-field">
             <Hierarchy
@@ -125,11 +129,7 @@ const RenameBulkOGForm = forwardRef(
           </div>
         </div>
         {!requestObject && (
-          <BulkFileArea
-            register={register}
-            bulkType={0}
-            errors={errors}
-          />
+          <BulkFileArea register={register} bulkType={0} errors={errors} />
         )}
         {!!requestObject && (
           <BulkRowsPopup

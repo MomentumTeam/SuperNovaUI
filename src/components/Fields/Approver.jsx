@@ -1,15 +1,14 @@
-  
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   searchApproverByDisplayNameReq,
   searchHighApproverByDisplayNameReq,
-} from "../../service/ApproverService";
-import { AutoComplete } from "primereact/autocomplete";
-import { Tooltip } from "primereact/tooltip";
+} from '../../service/ApproverService';
+import { AutoComplete } from 'primereact/autocomplete';
+import { Tooltip } from 'primereact/tooltip';
 
 import { useStores } from '../../context/use-stores';
-import {getUserNameFromDisplayName} from '../../utils/user';
-import "../../assets/css/local/components/approver.css";
+import { getUserNameFromDisplayName } from '../../utils/user';
+import '../../assets/css/local/components/approver.css';
 
 const Approver = ({
   setValue,
@@ -19,12 +18,13 @@ const Approver = ({
   defaultApprovers,
   errors,
   trigger = null,
-  type = "COMMANDER",
+  type = 'COMMANDER',
   isHighRank = false,
-  tooltip = "גורם מאשר",
+  tooltip = 'גורם מאשר',
 }) => {
-  const {userStore} = useStores();
+  const { userStore } = useStores();
   const [ApproverSuggestions, setApproverSuggestions] = useState([]);
+
   const [selectedApprover, setSelectedApprover] = useState(defaultApprovers);
 
   const searchApprover = async (event) => {
@@ -32,7 +32,9 @@ const Approver = ({
       const result = await (isHighRank
         ? searchHighApproverByDisplayNameReq(event.query)
         : searchApproverByDisplayNameReq(event.query, type));
-      const filteredResult = result.approvers.filter(approvers => approvers.id !== userStore.user.id);
+      const filteredResult = result.approvers.filter(
+        (approvers) => approvers.id !== userStore.user.id
+      );
       setApproverSuggestions(filteredResult);
     } else {
       setApproverSuggestions([]);
@@ -41,7 +43,7 @@ const Approver = ({
 
   const itemSelectedTemplate = (item) => {
     const id = Math.random().toString(36).slice(2);
-    const userFullName = getUserNameFromDisplayName(item.displayName)
+    const userFullName = getUserNameFromDisplayName(item.displayName);
     return (
       <>
         <Tooltip
@@ -59,34 +61,44 @@ const Approver = ({
   useEffect(() => {
     setSelectedApprover(defaultApprovers);
     setApproverSuggestions([]);
-  }, [type]);
+  }, [type, defaultApprovers]);
 
   return (
     <div className="p-field-item">
-      <div className={multiple ? "AutoCompleteWrap" : ""}>
+      <div className={multiple ? 'AutoCompleteWrap' : ''}>
         <label htmlFor="2022">
           <span className="required-field">*</span>גורם מאשר
         </label>
         <AutoComplete
           disabled={disabled}
           id="2022"
-          className={`approver-selection-${multiple === true ? "multiple" : "single"} ${disabled ? "disabled" : ""}`}
+          className={`approver-selection-${
+            multiple === true ? 'multiple' : 'single'
+          } ${disabled ? 'disabled' : ''}`}
           multiple={multiple}
-          tooltip={disabled ? "" : tooltip}
-          tooltipOptions={{ position: "top" }}
-          value={multiple ? (Array.isArray(selectedApprover) ? selectedApprover : []) : selectedApprover}
+          tooltip={disabled ? '' : tooltip}
+          tooltipOptions={{ position: 'top' }}
+          value={
+            multiple
+              ? Array.isArray(selectedApprover)
+                ? selectedApprover
+                : []
+              : selectedApprover
+          }
           suggestions={ApproverSuggestions}
           completeMethod={searchApprover}
           selectedItemTemplate={multiple && itemSelectedTemplate}
           field="displayName"
           onChange={(e) => {
             if (multiple && Array.isArray(e.value)) {
-              const approvers = e.value.map(({ id, displayName, identityCard, personalNumber }) => ({
-                id,
-                displayName,
-                ...identityCard,
-                ...personalNumber,
-              }));
+              const approvers = e.value.map(
+                ({ id, displayName, identityCard, personalNumber }) => ({
+                  id,
+                  displayName,
+                  ...identityCard,
+                  ...personalNumber,
+                })
+              );
 
               setSelectedApprover(approvers);
               setValue(name, approvers);
@@ -97,8 +109,11 @@ const Approver = ({
               setSelectedApprover(e.value);
 
               if (e.value?.id) {
-                const { id, displayName, identityCard, personalNumber } = e.value;
-                setValue(name, [{ id, displayName, ...identityCard, ...personalNumber }]);
+                const { id, displayName, identityCard, personalNumber } =
+                  e.value;
+                setValue(name, [
+                  { id, displayName, ...identityCard, ...personalNumber },
+                ]);
               } else {
                 setValue(name, []);
               }
@@ -109,8 +124,10 @@ const Approver = ({
         />
         <label htmlFor="2020">
           {errors?.approvers && (
-            <small style={{ color: "red" }}>
-              {errors.approvers?.message ? errors.approvers?.message : "יש למלא ערך"}
+            <small style={{ color: 'red' }}>
+              {errors.approvers?.message
+                ? errors.approvers?.message
+                : 'יש למלא ערך'}
             </small>
           )}
         </label>
