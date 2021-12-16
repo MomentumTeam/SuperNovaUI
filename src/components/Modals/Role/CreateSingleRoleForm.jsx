@@ -249,7 +249,6 @@ const RenameSingleOGForm = forwardRef(
               disabled={onlyForView}
               placeholder="הכנס הערות לבקשה..."
             />
-            <label>התפקיד נפתח עבור משתמש תפקידן (מילואים / חמ"ל)</label>
             <label>
               {errors.comments && (
                 <small style={{ color: 'red' }}>יש למלא ערך</small>

@@ -55,11 +55,9 @@ const AssignRoleToEntityForm = forwardRef(
   ({ showJob = true, setIsActionDone, onlyForView, requestObject }, ref) => {
     const { appliesStore, userStore } = useStores();
     const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
-    const [approvers,setApprovers] = useState(GetDefaultApprovers(
-      requestObject,
-      onlyForView,
-      showJob,
-    ));
+    const [approvers, setApprovers] = useState(
+      GetDefaultApprovers(requestObject, onlyForView, showJob)
+    );
 
     const { register, handleSubmit, setValue, getValues, watch, formState } =
       useForm({
@@ -68,7 +66,6 @@ const AssignRoleToEntityForm = forwardRef(
       });
     const [userSuggestions, setUserSuggestions] = useState([]);
     const [roles, setRoles] = useState([]);
-    const [replaceApprover, setReplaceApprover] = useState([]);
     const { errors } = formState;
 
     useEffect(() => {
@@ -103,6 +100,7 @@ const AssignRoleToEntityForm = forwardRef(
         throw new Error(err.errors);
       }
       const { changeRoleAt, approvers, roleId, comments, user } = data;
+      console.log('approvers', approvers);
       const userRole = getUserRole();
       const req = {
         commanders: approvers,
@@ -118,7 +116,7 @@ const AssignRoleToEntityForm = forwardRef(
           firstName: user.firstName,
           lastName: user.lastName,
           fullName: user.fullName,
-          rank: 'user.rank',
+          rank: user.rank,
           roleSerialCode: '???', // TODO: WTF is this??,
         },
         comments,
@@ -173,7 +171,6 @@ const AssignRoleToEntityForm = forwardRef(
 
     const handleOrgSelected = async (org) => {
       const result = await getRolesUnderOG({ id: org.id });
-      console.log('result', result);
       setRoles(result || []);
     };
 
@@ -195,12 +192,16 @@ const AssignRoleToEntityForm = forwardRef(
 
     const handleRoleSelected = async (roleId) => {
       const entity = await getEntityByRoleId(roleId);
-      console.log('entity', entity);
 
       if (entity) {
         setValue('currentRoleUser', entity.fullName);
-        setReplaceApprover(entity);
-        setApprovers([entity]);
+        console.log('isUserApprover', isUserApprover);
+        if (isUserApprover) {
+          setApprovers([entity]);
+          if (entity.identityCard === "") delete entity.identityCard
+          if (entity.personalNumber === '') delete entity.personalNumber;
+          setValue('approvers',[entity])
+        }
       }
     };
 
@@ -210,6 +211,9 @@ const AssignRoleToEntityForm = forwardRef(
       if (!roleId) {
         setValue('role', null);
         setValue('currentRoleUser', '');
+        if (isUserApprover) {
+          setApprovers([]);
+        }
         return;
       }
 
@@ -497,7 +501,7 @@ const AssignRoleToEntityForm = forwardRef(
               {...register('comments')}
               id="2028"
               type="text"
-              placeholder="הערות"
+              placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
               disabled={onlyForView}
             />
           </div>
