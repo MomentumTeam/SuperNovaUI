@@ -2,6 +2,7 @@ import React from 'react';
 import { Checkbox } from 'primereact/checkbox';
 import { Tree } from 'primereact/tree';
 import { Toast } from 'primereact/toast';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import { getOGChildren } from '../service/KartoffelService';
 
 
@@ -14,24 +15,37 @@ class ChartForTree extends React.Component {
         super(props);
         this.state = {
             loading: true,
+            visible: false,
             nodes: null,
             selectedNodeKey: null,
             selectedNode: null,
+            expandedKeys: {},
             checked: false,
         };
     }
 
     async componentDidMount() {
         const groupsUnderAman = await this.getDirectGroupChildren();
+        const userHierarchy = this.props.userHierarchy;
+        const mappdGroupsNodesUnderAman = this.mapGroupsToNodes(groupsUnderAman);
 
-        this.setState({
-            nodes: this.mapGroupsToNodes(groupsUnderAman),
-            loading: false
-        });
+        // If user hierarchy is given, need to select and open it from top to bottom
+        if (userHierarchy) {
+            this.setState({
+                nodes: mappdGroupsNodesUnderAman
+            })
+            this.expandToNode(userHierarchy);
+        } else {
+            this.setState({
+                nodes: mappdGroupsNodesUnderAman,
+                loading: false,
+                visible: true
+            });
+        }
     }
 
     getDirectGroupChildren = async (groupId) => {
-        const response = await getOGChildren({ id:groupId, direct:true});
+        const response = await getOGChildren({ id: groupId, direct: true });
         return response;
     }
 
@@ -71,7 +85,7 @@ class ChartForTree extends React.Component {
      * Where indexLevel is the index in the array from the top nodes array.
      * In that way we can travel across the tree without problem.
      */
-     updateFullTree(nodes, newNode) {
+    updateFullTree(nodes, newNode) {
 
         // Get array of index path through the tree
         let treePath = newNode.key.split('-');
@@ -96,7 +110,7 @@ class ChartForTree extends React.Component {
             // Update the branch in the nodes tree
             newNodes[parseInt(treePath[0], 0)] = updatedBranch;
         }
-        
+
         return newNodes;
     }
 
@@ -107,7 +121,7 @@ class ChartForTree extends React.Component {
         return (
             <div className={options.className}>
                 <div className="p-field-checkbox">
-                    <Checkbox 
+                    <Checkbox
                         inputId={"binary"}
                         value={node.key}
                         checked={node.key === this.state.selectedNodeKey}
@@ -119,15 +133,39 @@ class ChartForTree extends React.Component {
         )
     }
 
+    async expandToNode(hierarchy) {
+
+        // Extract the hierarchy levels and navigate through the groups tree
+        const hierarchyLevels = hierarchy.split('/');
+        let currentGroupTree = this.state.nodes;
+
+        for (let hierarchyIndex = 0; hierarchyIndex < hierarchyLevels.length; hierarchyIndex++) {
+            let currentHierarchy = hierarchyLevels[hierarchyIndex];
+
+            for (let index = 0; index < currentGroupTree.length; index++) {
+                if (currentGroupTree[index].data.name === currentHierarchy || index === 1) {
+                    await this.expandMoreNodes({ node: currentGroupTree[index] });
+                    currentGroupTree = this.getNodeByKey(this.state.nodes, currentGroupTree[index].key).children;
+                    break;
+                }
+            }
+        }
+
+        this.setState({
+            loading: false,
+            visible: true
+        });
+    }
+
     async expandMoreNodes(event) {
+        let newExpandedNodes = this.state.expandedKeys;
+        newExpandedNodes[event.node.key] = true;
+
         if (!event.node.children) {
-            this.setState({
-                loading: true
-            });
 
             let currentNode = { ...event.node, children: [] };
 
-            const nodeChildren = await this.getDirectGroupChildren('615a0bb3bc71c74638d25914');
+            const nodeChildren = await this.getDirectGroupChildren(currentNode.data.id);
 
             if (nodeChildren.length === 0) {
                 currentNode.leaf = true;
@@ -146,9 +184,18 @@ class ChartForTree extends React.Component {
 
             this.setState({
                 nodes: updateSearchNodes,
-                loading: false
+                expandedKeys: newExpandedNodes
             });
         }
+    }
+
+    collapseNode = (event) => {
+        const newExapndedKeys = this.state.expandedKeys;
+        newExapndedKeys[event.node.key] = false;
+
+        this.setState({
+            expandedKeys: newExapndedKeys
+        });
     }
 
     selectNode(nodeKey) {
@@ -170,17 +217,32 @@ class ChartForTree extends React.Component {
             <div>
                 <Toast ref={(el) => this.toast = el} />
                 <div className="card">
-                    <Tree
-                        propagateSelectionUp={false}
-                        propagateSelectionDown={false}
-                        loading={this.state.loading}
-                        nodeTemplate={this.nodeTemplate}
-                        value={this.state.nodes}
-                        onExpand={async (event) => await this.expandMoreNodes(event)}
-                        selectionMode="single"
-                        selectionKeys={this.state.selectedNodeKey}
-                        onSelectionChange={(event) => this.selectNode(event.value)}
-                    />
+                    {(!this.state.visible || this.state.loading) && <ProgressSpinner className="tree-loading-spinner" />}
+                    {
+                        this.state.visible &&
+                        <Tree
+                            propagateSelectionUp={false}
+                            propagateSelectionDown={false}
+                            nodeTemplate={this.nodeTemplate}
+                            value={this.state.nodes}
+                            onExpand={
+                                async (event) => {
+                                    this.setState({
+                                        loading: true
+                                    });
+                                    await this.expandMoreNodes(event);
+                                    this.setState({
+                                        loading: false
+                                    });
+                                }
+                            }
+                            onCollapse={this.collapseNode}
+                            selectionMode="single"
+                            selectionKeys={this.state.selectedNodeKey}
+                            expandedKeys={this.state.expandedKeys}
+                            onSelectionChange={(event) => this.selectNode(event)}
+                        />
+                    }
                 </div>
             </div>
         );

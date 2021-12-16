@@ -121,6 +121,7 @@ const RenameBulkOGForm = forwardRef(
               errors={errors}
               ogValue={watch('hierarchy')}
               disabled={onlyForView}
+              userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
             />
           </div>
         </div>

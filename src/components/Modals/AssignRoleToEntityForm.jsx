@@ -356,6 +356,7 @@ const AssignRoleToEntityForm = forwardRef(
               onOrgSelected={handleOrgSelected}
               errors={errors}
               disabled={onlyForView}
+              userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
             />
           </div>
           <div className="p-fluid-item ">

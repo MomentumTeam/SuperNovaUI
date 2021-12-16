@@ -60,7 +60,7 @@ class ModalHierarchy extends React.Component {
                 <Dialog className="dialogClass9" header="היררכיה" dismissableMask={true} visible={this.state.visible} footer={this.renderFooter()} onHide={() => this.toggleModalVisibility(false)}>
                     <div>
                         <div>
-                            <ChartForTree onSelectNode={this.setHierarchySelected}/>
+                            <ChartForTree onSelectNode={this.setHierarchySelected} userHierarchy={this.props.userHierarchy}/>
                         </div>
                     </div>
                 </Dialog>

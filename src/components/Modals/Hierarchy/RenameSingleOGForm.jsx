@@ -132,6 +132,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             ogValue={hierarchyByIdentifier}
             errors={errors}
             disabled={onlyForView}
+            userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
           />
         </div>
       </div>
@@ -191,6 +192,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             errors={errors}
             ogValue={watch("hierarchy")}
             disabled={onlyForView}
+            userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
           />
         </div>
       </div>
