@@ -143,7 +143,7 @@ class ChartForTree extends React.Component {
             let currentHierarchy = hierarchyLevels[hierarchyIndex];
 
             for (let index = 0; index < currentGroupTree.length; index++) {
-                if (currentGroupTree[index].data.name === currentHierarchy || index === 1) {
+                if (currentGroupTree[index].data.name === currentHierarchy) {
                     await this.expandMoreNodes({ node: currentGroupTree[index] });
                     currentGroupTree = this.getNodeByKey(this.state.nodes, currentGroupTree[index].key).children;
                     break;
