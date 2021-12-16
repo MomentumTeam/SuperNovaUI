@@ -3,47 +3,58 @@ import { useForm } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
-import Hierarchy from "../Hierarchy";
+import Hierarchy from "../../Fields/Hierarchy";
 import Approver from "../../Fields/Approver";
 import { useStores } from "../../../context/use-stores";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  getRolesUnderOG,
-  getRoleByRoleId,
-} from "../../../service/KartoffelService";
+import { getRolesUnderOG, getRoleByRoleId } from "../../../service/KartoffelService";
 import HorizontalLine from "../../HorizontalLine";
+import { GetDefaultApprovers } from "../../../utils/approver";
+import { isUserHoldType } from "../../../utils/user";
+import { USER_TYPE } from "../../../constants";
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
-  hierarchy: Yup.object().required(),
+  hierarchy: Yup.object().required("יש למלא ערך").test("does-user-already-exist-in-hierarchy","שם התפקיד קיים בהיררכיה שבחרת. יש לערוך את שמו דרך טבלת התפקידים", function(hierarchy) {
+    if(!Array.isArray(hierarchy?.directRoles)) {
+      return false
+    }
+    return !hierarchy.directRoles.map(role => role.jobTitle).includes(this.parent.role.jobTitle)
+  }),
+  currentHierarchy: Yup.object().required("יש למלא ערך"),
   role: Yup.object().required(),
-  approvers: Yup.array().min(1).required(),
+  isUserApprover: Yup.boolean(),
+  approvers: Yup.array().when("isUserApprover", {
+    is: false,
+    then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+  }),
   comments: Yup.string().optional(),
-  identifier: Yup.string().email().required(),
+  identifier: Yup.string("יש להכניס מזהה תקין").required("יש למלא ערך").matches(/.*@.*/, "יש להכניס מזהה תקין"),
 });
 
 const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestObject }, ref) => {
-  const { appliesStore } = useStores();
+  const { appliesStore, userStore } = useStores();
   const [hierarchyByIdentifier, setHierarchyByIdentifier] = useState(null);
+  const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
 
   const { register, handleSubmit, setValue, watch, formState } = useForm({
     resolver: yupResolver(validationSchema),
+    defaultValues: { isUserApprover },
   });
   const [roles, setRoles] = useState([]);
   const { errors } = formState;
 
-
   useEffect(() => {
     const initializeValues = async () => {
-      setValue('comments', requestObject.comments);
-      setValue('identifier', requestObject.kartoffelParams.roleId);
-      setValue('hierarchy', requestObject.adParams.ouDisplayName);
+      setValue("comments", requestObject.comments);
+      setValue("identifier", requestObject.kartoffelParams.roleId);
+      setValue("hierarchy", requestObject.adParams.ouDisplayName);
       const role = await getRoleByRoleId(requestObject.kartoffelParams.roleId);
       setHierarchyByIdentifier(role.hierarchy);
-      setValue('role', role);
+      setValue("role", role);
       setRoles([role]);
-    }
+    };
 
     if (requestObject) {
       initializeValues();
@@ -86,7 +97,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
     setValue(name, value);
 
     if (value?.id) {
-      const roles = await getRolesUnderOG({id:value.id});
+      const roles = await getRolesUnderOG({ id: value.id });
       setRoles(roles);
     }
   };
@@ -117,7 +128,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
   return (
     <div className="p-fluid">
       <div className="display-flex title-wrap" style={{ width: "inherit" }}>
-        <h2>היררכיה נכחית</h2>
+        <h2>היררכיה נוכחית</h2>
       </div>
       <div className="p-fluid-item p-fluid-item-flex1">
         <div className="p-field">
@@ -162,8 +173,16 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             required
             placeholder="מזהה תפקיד"
             disabled={onlyForView}
+            tooltip={'לדוגמה: "T12345678"'}
+            tooltipOptions={{ position: "top" }}
           />
-          <label>{errors.identifier && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
+          <label>
+            {errors.identifier && (
+              <small style={{ color: "red" }}>
+                {errors.identifier?.message ? errors.identifier?.message : "יש למלא ערך"}
+              </small>
+            )}
+          </label>
         </div>
       </div>
       <HorizontalLine />
@@ -172,7 +191,13 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
       </div>
       <div className="p-fluid-item-flex p-fluid-item">
         <div className="p-field">
-          <Hierarchy setValue={setValue} name="hierarchy" errors={errors} ogValue={watch('hierarchy')} disabled={onlyForView} />
+          <Hierarchy
+            setValue={setValue}
+            name="hierarchy"
+            errors={errors}
+            ogValue={watch("hierarchy")}
+            disabled={onlyForView}
+          />
         </div>
       </div>
       <div className="p-fluid-item">
@@ -181,8 +206,9 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
           name="approvers"
           multiple={true}
           errors={errors}
-          defaultApprovers={requestObject?.commanders || []}
-          disabled={onlyForView}
+          tooltip='רס"ן ומעלה ביחידתך'
+          disabled={onlyForView || isUserApprover}
+          defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
         />
       </div>
       <div className="p-fluid-item p-fluid-item-flex1">
@@ -195,7 +221,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             type="text"
             autoResize="false"
             disabled={onlyForView}
-            placeholder='הכנס הערות לבקשה...'
+            placeholder="הכנס הערות לבקשה..."
           />
         </div>
       </div>

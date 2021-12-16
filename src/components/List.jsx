@@ -1,7 +1,8 @@
-import { STATUSES, TYPES } from "../constants";
+import { STATUSES, TYPES , assignRoleToEntityHeader } from "../constants";
 import datesUtil from "../utils/dates";
 import { useState } from "react";
 import PreviewRequestsDialog from "./Modals/Request/PreviewRequestsDialog1";
+import { StatusFieldTemplate } from './Fields/StatusFieldTemplate';
 
 const List = ({ list }) => {
   const [dialogRequest, setDialogRequest] = useState({});
@@ -15,36 +16,26 @@ const List = ({ list }) => {
   };
 
   return (
-    <table className='tableStyle'>
+    <table className="tableStyle">
       <tbody>
         {list.map((request, index) => (
-          <tr
-            key={request.id}
-            onClick={() => onClick(request, index)}
-            style={{ cursor: 'pointer' }}
-          >
+          <tr key={request.id} onClick={() => onClick(request, index)} style={{ cursor: "pointer" }}>
             <td>
-              <div className='td-inner'>
-                {datesUtil.formattedDate(Number(request.createdAt))}
+              <div className="td-inner">{datesUtil.formattedDate(Number(request.createdAt))}</div>
+            </td>
+            <td>
+              <div className="td-inner">
+                {request.type === 'ASSIGN_ROLE_TO_ENTITY' && //in case of ASSIGN_ROLE_TO_ENTITY requests (מעבר תפקיד או חיבור משתמש חדש לתפקיד)
+                request.kartoffelParams.needDisconnect
+                  ? assignRoleToEntityHeader[0] //מעבר תפקיד
+                  : TYPES[request.type]}
+                {"  "}
+                {"(" + request.serialNumber + ")"}
               </div>
             </td>
             <td>
-              <div className='td-inner'>{TYPES[request.type]}</div>
-            </td>
-            <td>
-              <div className='td-inner td-inner-btn'>
-                <button
-                  className={
-                    'btn-status ' +
-                    (request.status === STATUSES.SENT
-                      ? 'btn-sent'
-                      : ' btn-rejected')
-                  }
-                  type='button'
-                  title={request.status}
-                >
-                  {STATUSES[request.status]}
-                </button>
+              <div className="td-inner td-inner-btn">
+                <StatusFieldTemplate status={STATUSES[request.status]} />
               </div>
             </td>
           </tr>

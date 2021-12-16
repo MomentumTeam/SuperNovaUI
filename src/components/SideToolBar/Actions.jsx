@@ -2,7 +2,6 @@ import React, {
   useCallback,
   useEffect,
   useState,
-  useRef,
   useMemo,
   createRef,
 } from "react";
@@ -13,20 +12,20 @@ import CreateOGForm from "../Modals/Hierarchy/CreateOGForm";
 import RenameOGForm from "../Modals/Hierarchy/RenameOGForm";
 import AssignRoleToEntityForm from "../Modals/AssignRoleToEntityForm";
 import CreateEntityForm from "../Modals/Entity/CreateEntityForm";
-import { Toast } from "primereact/toast";
 
 import "../../assets/css/local/components/modal-item.min.css";
 import ApproverForm from "../Modals/ApproverForm";
 
 import InfoPopup from "../InfoPopup";
 import "../../assets/css/local/components/dialog.css";
+import { useToast } from '../../context/use-toast';
 
-const actions = [
+export const actions = [
   {
     id: 1,
     className: "btn-actions btn-actions1",
     actionName: "תפקיד חדש",
-    infoText: `חיבור משתמש חדש לתפקיד קיים ויצירת אזרח`,
+    infoText: `פתיחת תפקיד חדש תחת היררכיה נבחרת`,
     infoWithTitle: false,
     displayResponsive: false,
     dialogClass: "dialogClass1",
@@ -35,7 +34,7 @@ const actions = [
   {
     id: 2,
     className: "btn-actions btn-actions2",
-    actionName: "שינוי היררכיה",
+    actionName: "מעבר היררכיה",
     infoText: `העברת תפקיד נבחר להיררכיה ארגונית אחרת`,
     infoWithTitle: false,
     displayResponsive: false,
@@ -104,6 +103,7 @@ const actions = [
 ];
 
 const Action = () => {
+  const { actionPopup } = useToast();
   const [actionList, setActionList] = useState(actions);
   const [isActionDone, setIsActionDone] = useState(false);
   const [currentActionId, setCurrentActionId] = useState(null);
@@ -114,7 +114,6 @@ const Action = () => {
       }),
     []
   );
-  const toast = useRef(null);
 
   const getRef = useCallback(
     (id) => modalRefs.find((ref) => ref.id === id).ref,
@@ -142,13 +141,10 @@ const Action = () => {
   };
 
   useEffect(() => {
-    isActionDone &&
-      toast.current.show({
-        severity: "success",
-        summary: "Success Message",
-        detail: "Message Content",
-        life: 3000,
-      });
+    if (currentActionId) {
+      const actionName = actionList.find((action) => action.id === currentActionId).actionName;
+      isActionDone && actionName && actionPopup(actionName);
+    }
 
     isActionDone &&
       setActionList(
@@ -169,12 +165,8 @@ const Action = () => {
       try {
         await ref.current.handleSubmit();
       } catch (e) {
-        toast.current.show({
-          severity: "error",
-          summary: "Error Message",
-          detail: e.message || "Message Content",
-          life: 3000,
-        });
+        const actionName = actionList.find(action => action.id === currentActionId);
+        actionPopup(actionName?.actionName, e.message || "Message Content");
       }
     },
     [getRef]
@@ -237,7 +229,6 @@ const Action = () => {
 
   return (
     <ul className="display-flex units-wrap">
-      <Toast ref={toast} />
       {actionList.map(
         ({
           id,

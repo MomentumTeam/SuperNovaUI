@@ -1,5 +1,7 @@
 import axiosApiInstance from '../config/axios';
 import { apiBaseUrl } from '../constants/api';
+import { organizeRows } from '../utils/applies';
+import '../assets/css/local/components/status.css';
 
 //GET
 
@@ -8,10 +10,42 @@ export const getMyRequests = async (from, to) => {
     params: {
       from,
       to,
+      sortField: "UPDATED_AT",
     },
   });
 
   return response.data;
+};
+
+export const getMyRequestsWithParams = async (params) => {
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/my`, {
+    params: { ...params, sortField: "UPDATED_AT" },
+  });
+
+  if (Array.isArray(response.data.requests)) {
+    return response.data.requests;
+  }
+  return [];
+};
+
+export const getMyRequestsBySerialNumber = async (serialNumber) => {
+  try {
+    return [await getRequestBySerialNumber(serialNumber)];
+  } catch (error) {
+    return [];
+  }
+};
+
+export const getMyRequestsByType = async (from, to, type) => {
+  return getMyRequestsWithParams({ from, to, type });
+};
+
+export const getMyRequestsBySearch = async (from, to, value) => {
+  return getMyRequestsWithParams({ from, to, searchQuery: value });
+};
+
+export const getMyRequestsByStatus = async (from, to, status) => {
+  return getMyRequestsWithParams({ from, to, status });
 };
 
 export const getRequestById = async (id) => {
@@ -22,19 +56,29 @@ export const getRequestById = async (id) => {
   return response.data;
 };
 
-
-export const getMyApproveRequests = async ({from, to, searchQuery = null, status = null, type = null, sortField = null, sortOrder = null}) => {
-  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/approve/my`, {
-    params: {
-      from,
-      to,
-      searchQuery,
-      status,
-      type,
-      sortField,
-      sortOrder
-    },
-  });
+export const getMyApproveRequests = async ({
+  from,
+  to,
+  searchQuery = null,
+  status = null,
+  type = null,
+  sortField = null,
+  sortOrder = null,
+}) => {
+  const response = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/requests/approve/my`,
+    {
+      params: {
+        from,
+        to,
+        searchQuery,
+        status,
+        type,
+        sortField,
+        sortOrder,
+      },
+    }
+  );
 
   return response.data;
 };
@@ -48,17 +92,20 @@ export const getAllApproveRequests = async ({
   sortField = null,
   sortOrder = null,
 }) => {
-  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/approve/all`, {
-    params: {
-      from,
-      to,
-      searchQuery,
-      status,
-      type,
-      sortField,
-      sortOrder,
-    },
-  });
+  const response = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/requests/approve/all`,
+    {
+      params: {
+        from,
+        to,
+        searchQuery,
+        status,
+        type,
+        sortField,
+        sortOrder,
+      },
+    }
+  );
 
   return response.data;
 };
@@ -118,6 +165,8 @@ export const getCreateBulkRoleData = async (id) => {
     `${apiBaseUrl}/api/bulk/request/createRole/${id}`
   );
 
+  response.data.rows = organizeRows(response.data.rows);
+
   return response.data;
 };
 
@@ -125,6 +174,8 @@ export const getBulkChangeRoleHierarchyData = async (id) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/bulk/request/changeRoleHierarchy/${id}`
   );
+
+  response.data.rows = organizeRows(response.data.rows);
 
   return response.data;
 };
@@ -194,14 +245,25 @@ export const disconectRoleFromEntityRequest = async (applyProperties) => {
   return response.data;
 };
 
-export const uploadBulkFile = async (file) => {
-  const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/bulk/upload`,
-    file,
-    { headers: { 'Content-Type': 'multipart/form-data' } }
-  );
+export const deleteRequest = async (requestId) => {
+  const response = await axiosApiInstance.delete(`${apiBaseUrl}/api/requests/${requestId}`);
 
   return response.data;
+};
+
+export const uploadBulkFile = async (file, type) => {
+  try {
+    const response = await axiosApiInstance.post(
+      `${apiBaseUrl}/api/bulk/upload?type=${type}`,
+      file,
+      { headers: { 'Content-Type': 'multipart/form-data' } }
+    );
+    return response.data;
+  } catch (error) {
+    if (error.response.status === 500) {
+      return false;
+    }
+  }
 };
 
 export const createRoleBulkRequest = async (data) => {
@@ -251,7 +313,6 @@ export const assignRoleToEntityRequest = async (applyProperties) => {
   return response.data;
 };
 
-
 export const changeRoleHierarchyRequest = async (data) => {
   const response = await axiosApiInstance.put(
     `${apiBaseUrl}/api/requests/request/role/og`,
@@ -270,13 +331,37 @@ export const changeRoleHierarchyBulkRequest = async (data) => {
   return response.data;
 };
 
-
-export const transferApproverRequest = async ({reqId, approvers, approversType, comment}) => {  
-  const response = await axiosApiInstance.put(`${apiBaseUrl}/api/requests/approver/transfer/${reqId}`, {
+export const transferApproverRequest = async ({
+  reqId,
+  approvers,
+  type,
+  comment,
+}) => {
+  const response = await axiosApiInstance.put(
+    `${apiBaseUrl}/api/requests/approver/transfer/${reqId}`,
+    {
       approvers,
+      type,
+      commentForApprovers: comment,
+    }
+  );
+
+  return response.data;
+};
+
+export const updateApproversCommentsRequest = async ({
+  requestId,
+  approversType,
+  comment,
+}) => {
+  
+  const response = await axiosApiInstance.put(
+    `${apiBaseUrl}/api/requests/approver/comments/${requestId}`,
+    {
       type: approversType,
       commentForApprovers: comment,
-  });
+    }
+  );
 
   return response.data;
 };

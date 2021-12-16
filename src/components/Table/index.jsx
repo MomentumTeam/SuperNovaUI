@@ -47,7 +47,10 @@ const Table = ({
   const user = toJS(userStore.user);
 
   const isAllowed = (col) => {
-    return col.secured === undefined || col.secured.some((allowedType) => isUserHoldType(user, allowedType));
+    return (
+      col.secured === undefined ||
+      col.secured.some((allowedType) => isUserHoldType(user, allowedType))
+    );
   };
 
   const loadingText = () => {
@@ -89,6 +92,7 @@ const Table = ({
           <div className="tableStyle">
             <div className="card">
               <DataTable
+                emptyMessage={"אין תוצאות"}
                 value={data}
                 selection={selectedItem}
                 selectionMode={selectionMode}
@@ -141,6 +145,7 @@ const Table = ({
                     enum={col?.enum}
                     loadingBody={loadingText}
                     template={col?.template}
+                    templateParam={col?.templateParam}
                     body={TableFieldTemplate}
                     sortable={col?.sortable}
                     sortFields={col?.sortFields}

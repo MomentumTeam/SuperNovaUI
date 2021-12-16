@@ -1,8 +1,10 @@
-import React from "react";
-import { InputText } from "primereact/inputtext";
-import "../../../assets/css/local/components/modal-item.min.css";
-import ApproverSection from "../../ApproverSection";
+import React from 'react';
+import { InputText } from 'primereact/inputtext';
+import '../../../assets/css/local/components/modal-item.min.css';
+import ApproverSection from '../../ApproverSection';
 import RequestFlowChart from './RequestFlowChart';
+import { DeleteSection } from './DeleteSection';
+import HorizontalLine from '../../HorizontalLine';
 
 // TODO: add progress bar
 
@@ -16,30 +18,33 @@ const PreviewRequestWrapper = ({
     <>
       <RequestFlowChart request={request} />
       <h2>פרטי מגיש הבקשה</h2>
-      <div className='p-fluid'>
-        <div className='p-fluid-item'>
-          <div className='p-field'>
-            <label htmlFor='2020'>
-              <span className='required-field'>*</span>שם משתמש
+      <div className="p-fluid">
+        <div className="p-fluid-item">
+          <div className="p-field">
+            <label htmlFor="2020">
+              <span className="required-field">*</span>שם משתמש
             </label>
             <InputText
-              id='2022'
+              id="2022"
               disabled={true}
               value={request?.submittedBy?.displayName}
-              field='displayName'
+              field="displayName"
             />
           </div>
         </div>
-        <div className='p-fluid-item'>
-          <div className='p-field'>
-            <label htmlFor='2013'>
-              <span className='required-field'>*</span>מ"א/ת"ז
+        <div className="p-fluid-item">
+          <div className="p-field">
+            <label htmlFor="2013">
+              <span className="required-field">*</span>מ"א/ת"ז
             </label>
             <InputText
-              value={request?.submittedBy?.personalNumber || request?.submittedBy?.identityCard}
+              value={
+                request?.submittedBy?.personalNumber ||
+                request?.submittedBy?.identityCard
+              }
               disabled={true}
-              id='2013'
-              type='text'
+              id="2013"
+              type="text"
               required
               placeholder="מ''א/ת''ז"
             />
@@ -53,7 +58,13 @@ const PreviewRequestWrapper = ({
         requestObject={request}
         showJob={showJob}
       />
-      <ApproverSection request={request} setDialogVisiblity={setDialogVisiblity} />
+      <HorizontalLine />
+
+      <ApproverSection
+        request={request}
+        setDialogVisiblity={setDialogVisiblity}
+      />
+      <DeleteSection requestId={request.id} setDialogVisiblity={setDialogVisiblity} />
     </>
   );
 };

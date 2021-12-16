@@ -4,10 +4,12 @@ import { TableContext } from ".";
 import { TableActionsContext } from "./TableActionsMenu";
 
 // Table
-import { tableActionsEnum } from "../../constants/table";
 import { TableAppliesActionsEnum } from "../../constants";
 
 // Entity
+import { tableActionsEnum as usersTableActionsEnum } from "../../constants/usersTable";
+import { tableActionsEnum as myRequestsTableActionsEnum } from "../../constants/myRequestsTable";
+
 import FullEntityInformationModal from "../Modals/Entity/FullEntityInformationModal";
 
 // Hierarchy
@@ -16,112 +18,117 @@ import { HierarchyDelete } from "../Modals/Hierarchy/HierarchyDelete";
 
 // Role
 import { FullRoleInformation } from "../Modals/Role/FullRoleInformation";
+import { FullRoleInformationForm } from "../Modals/Role/FullRoleInformationForm";
 
 // Request
 import { PassRequestDialog } from "../Modals/Request/PassRequestDialog";
 import PreviewRequestsDialog from "../Modals/Request/PreviewRequestsDialog1";
-import { TakeRequest } from '../Modals/Request/TakeRequest';
+import { TakeRequest } from "../Modals/Request/TakeRequest";
+import { useToast } from '../../context/use-toast';
 
 // TODO: change to reducer?
 const TableActionsModal = forwardRef((_, ref) => {
-  const {toastRef, contextMenuRef} = ref;
+  const { actionPopup, toastRef } = useToast();
+  const { contextMenuRef } = ref;
   const { selectedItem } = useContext(TableContext);
-  const { actionType, isActionModalOpen, closeActionModal, setIsActionModalOpen, currEvent } =
-    useContext(TableActionsContext);
+  const {
+    actionType,
+    isActionModalOpen,
+    closeActionModal,
+    setIsActionModalOpen,
+    currEvent,
+  } = useContext(TableActionsContext);
 
-  const actionPopup = (error = null) => {
-    if (error === null) {
-      toastRef.show({
-        severity: "success",
-        summary: "Success Message",
-        detail: `Success in action: ${actionType}`,
-        life: 3000,
-      });
-    } else {
-      toastRef.show({
-        severity: "error",
-        summary: "Error Message",
-        detail: error.message || `action: ${actionType} failed`,
-        life: 3000,
-      });
-    }
-  };
+  const sendActionPopup = (actionName = actionType, error = null) => {
+    actionPopup(actionName, error);
+  }
 
   const renderActionModal = () => {
     if (selectedItem[0] && actionType && isActionModalOpen) {
       switch (actionType) {
         // ENTITY
-        case tableActionsEnum.VIEW_ENTITY:
+        case usersTableActionsEnum.VIEW_ENTITY:
           return (
             <FullEntityInformationModal
               user={selectedItem[0]}
               isOpen={isActionModalOpen}
               closeFullDetailsModal={closeActionModal}
               edit={false}
-              actionPopup={actionPopup}
+              actionPopup={sendActionPopup}
             />
           );
-        case tableActionsEnum.EDIT_ENTITY:
+        case usersTableActionsEnum.EDIT_ENTITY:
           return (
             <FullEntityInformationModal
               user={selectedItem[0]}
               isOpen={isActionModalOpen}
               closeFullDetailsModal={closeActionModal}
               edit={true}
-              actionPopup={actionPopup}
+              actionPopup={sendActionPopup}
             />
           );
 
         // HIERARCHY
-        case tableActionsEnum.VIEW_HIERARCHY:
+        case usersTableActionsEnum.VIEW_HIERARCHY:
           return (
             <FullHierarchyInformation
               hierarchy={selectedItem[0]}
               isOpen={isActionModalOpen}
               closeModal={closeActionModal}
               edit={false}
-              actionPopup={actionPopup}
+              actionPopup={sendActionPopup}
             />
           );
-        case tableActionsEnum.EDIT_HIERARCHY:
+        case usersTableActionsEnum.EDIT_HIERARCHY:
           return (
             <FullHierarchyInformation
               hierarchy={selectedItem[0]}
               isOpen={isActionModalOpen}
               closeModal={closeActionModal}
               edit={true}
-              actionPopup={actionPopup}
+              actionPopup={sendActionPopup}
             />
           );
-        case tableActionsEnum.DELETE_HIERARCHY:
+        case usersTableActionsEnum.DELETE_HIERARCHY:
           return (
             <HierarchyDelete
               hierarchy={selectedItem[0]}
               isOpen={isActionModalOpen}
               closeModal={closeActionModal}
-              actionPopup={actionPopup}
+              actionPopup={sendActionPopup}
             />
           );
 
         // ROLE
-        case tableActionsEnum.VIEW_ROLE:
+        case usersTableActionsEnum.VIEW_ROLE:
           return (
             <FullRoleInformation
               role={selectedItem[0]}
               isOpen={isActionModalOpen}
               closeModal={closeActionModal}
               edit={false}
-              actionPopup={actionPopup}
+              actionPopup={sendActionPopup}
             />
           );
-        case tableActionsEnum.EDIT_ROLE:
+        case usersTableActionsEnum.EDIT_ROLE:
           return (
             <FullRoleInformation
               role={selectedItem[0]}
               isOpen={isActionModalOpen}
               closeModal={closeActionModal}
               edit={true}
-              actionPopup={actionPopup}
+              actionPopup={sendActionPopup}
+            />
+          );
+        case myRequestsTableActionsEnum.VIEW_MY_REQUESTS:
+          return (
+            <PreviewRequestsDialog
+              isDialogVisible={isActionModalOpen}
+              setDialogVisiblity={setIsActionModalOpen}
+              request={selectedItem[0]}
+              isApprover={
+                actionType === myRequestsTableActionsEnum.VIEW_MY_REQUESTS
+              }
             />
           );
         case TableAppliesActionsEnum.VIEW_APPLY:
@@ -133,21 +140,22 @@ const TableActionsModal = forwardRef((_, ref) => {
               request={selectedItem[0]}
             />
           );
+        case myRequestsTableActionsEnum.PASS_MY_REQUESTS:
         case TableAppliesActionsEnum.PASS_APPLY:
           return (
             <PassRequestDialog
               request={selectedItem[0]}
               isDialogVisible={isActionModalOpen}
               setDialogVisiblity={setIsActionModalOpen}
-              actionPopup={actionPopup}
+              actionPopup={sendActionPopup}
             />
           );
         case TableAppliesActionsEnum.TAKE_APPLY:
-          TakeRequest({request: selectedItem[0], actionPopup: actionPopup})
+          TakeRequest({ request: selectedItem[0], actionPopup: actionPopup });
           closeActionModal();
           break;
         default:
-          toastRef.show({
+          toastRef.current.show({
             severity: "error",
             summary: "פעולה לא ממומשת",
             detail: `פעולה זו לא ממומשת במערכת עדיין`,

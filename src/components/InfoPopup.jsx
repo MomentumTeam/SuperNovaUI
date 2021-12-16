@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import ReactTooltip from "react-tooltip";
-import img from "../assets/images/info-icon.svg";
+import infoIcon from "../assets/images/info-icon.svg";
+import warningIcon from "../assets/images/warning-icon.svg";
 
 const InfoIcon = styled.div`
   background-color: transparent;
@@ -10,7 +11,18 @@ const InfoIcon = styled.div`
   background-size: contain;
   opacity: 1;
   margin: 0 10px;
-  background-image: url(${img});
+  background-image: url(${infoIcon});
+  position: relative;
+`;
+
+const WarningIcon = styled.div`
+  background-color: transparent;
+  width: 16px;
+  height: 16px;
+  background-size: contain;
+  opacity: 1;
+  margin: 0 10px;
+  background-image: url(${warningIcon});
   position: relative;
 `;
 
@@ -38,11 +50,21 @@ const mapToParagraphsWithNewLines = (text, withTitle) =>
     </p>
   ));
 
-const InfoPopup = ({ name, infoText, visible = false, withTitle = true }) => {
+const InfoPopup = ({
+  name,
+  infoText,
+  visible = false,
+  withTitle = true,
+  warning = false,
+}) => {
   if (visible) {
     return (
       <div>
-        <InfoIcon data-tip data-for={name}></InfoIcon>
+        {warning ? (
+          <WarningIcon data-tip data-for={name}></WarningIcon>
+        ) : (
+          <InfoIcon data-tip data-for={name}></InfoIcon>
+        )}
         <StyledReactTooltip id={name} effect="solid" place="left" type="light">
           {mapToParagraphsWithNewLines(infoText, withTitle)}
         </StyledReactTooltip>

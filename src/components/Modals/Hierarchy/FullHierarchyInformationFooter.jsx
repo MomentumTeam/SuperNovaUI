@@ -1,52 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useFormContext } from "react-hook-form";
+import React from "react";
 import { Button } from "primereact/button";
 import { toJS } from "mobx";
 
 import { useStores } from "../../../context/use-stores";
-import { canEditHierarchy, getHierarchy } from "../../../utils/hierarchy";
+import { canEditHierarchy } from "../../../utils/hierarchy";
 
-const FullHierarchyInformationFooter = ({ isEdit, closeModal, setIsEdit, openDeleteModal, hierarchy, actionPopup }) => {
-  const { formState, getValues, watch, reset } = useFormContext();
-  const { userStore,appliesStore } = useStores();
-  const [disabled, setDisabled] = useState(false);
-
-  const { errors } = formState;
-  const watchFields = watch(["hierarchyName", "approvers"]);
-  const { hierarchyReadOnly, hierarchyName } = getHierarchy(hierarchy.hierarchy);
-  const newHierarchyName = getValues("hierarchyName");
+const FullHierarchyInformationFooter = ({ isEdit, closeModal, setIsEdit, handleRequest }) => {
+  const { userStore } = useStores();
   const connectedUser = toJS(userStore.user);
-
-  useEffect(() => {
-    Object.keys(errors).length > 0 || hierarchyName === newHierarchyName || newHierarchyName === undefined
-      ? setDisabled(true)
-      : setDisabled(false);
-  }, [watchFields, isEdit]);
-
-  const saveForm = async () => {
-    const kartoffelParams = {
-      id: hierarchy.id,
-      name: newHierarchyName,
-    };
-
-    // ASK: if this is correct
-    const adParams = {
-      ouDisplayName: `${hierarchyReadOnly}/${newHierarchyName}`,
-      oldOuName: hierarchyName,
-      newOuName: newHierarchyName,
-    };
-
-    try {
-      const res = await appliesStore.renameOGApply({
-        kartoffelParams,
-        adParams,
-      });
-      actionPopup();
-      closeModal();
-    } catch (error) {
-      actionPopup(error);
-    }
-  };
 
   return (
     <>
@@ -59,8 +20,8 @@ const FullHierarchyInformationFooter = ({ isEdit, closeModal, setIsEdit, openDel
               label={isEdit ? "ביטול" : "עריכה"}
               className={isEdit ? "btn-underline" : "btn-border orange"}
               onClick={() => {
+                // if (isEdit) resetForm();
                 setIsEdit(!isEdit);
-                reset({ hierarchyName: hierarchyName });
               }}
             />
           )}
@@ -68,8 +29,7 @@ const FullHierarchyInformationFooter = ({ isEdit, closeModal, setIsEdit, openDel
           <Button
             label={isEdit ? "שליחת בקשה" : "סגור"}
             className="btn-orange-gradient"
-            disabled={isEdit ? disabled : false}
-            onClick={isEdit ? saveForm : closeModal}
+            onClick={() => (isEdit ? handleRequest() : closeModal())}
           />
         </div>
       </div>

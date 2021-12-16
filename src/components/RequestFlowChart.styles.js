@@ -328,13 +328,6 @@ export const ModalContent = styled.div`
                       }
                     }
 
-                    &.DECISION_UNKNOWN .UNRECOGNIZED {
-                        background-image: url(${img4}) !important;
-                    }
-
-                    &.APPROVED {
-                        background-image: url(${img3}) !important;
-                    }
                     
                     &.DENIED::before {
                         background-image: url(${img6}) !important;
@@ -372,7 +365,7 @@ export const ModalContent = styled.div`
                             padding-box;
                     }
 
-                    &.process {
+                    &.DECISION_UNKNOWN, .UNRECOGNIZED {
                         &::after {
                             background: transparent linear-gradient(180deg, #ffffff 0%, #ffffff 100%) 0% 0% no-repeat
                                 padding-box;

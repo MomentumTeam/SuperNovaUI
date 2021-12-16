@@ -161,7 +161,7 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit,
           <div className="userpic-wrap">
             <img
               style={{ borderRadius: "50%", width: "142px" }}
-              src={user && userPic !== USER_NO_PICTURE ? `data:image/jpeg;base64,${userPic}` : blankProfilePic}
+              src={user && userPic && userPic !== USER_NO_PICTURE ? `data:image/jpeg;base64,${userPic}` : blankProfilePic}
               alt="userpic"
             />
           </div>

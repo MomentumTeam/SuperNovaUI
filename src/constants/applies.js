@@ -1,36 +1,28 @@
-import { DateFieldTemplate } from '../components/AppliesTable/DateFieldTemplate';
-import { RequestorFieldTemplate } from '../components/AppliesTable/RequestorFieldTemplate';
-import { ResponsibleFactorFieldTemplate } from '../components/AppliesTable/ResponsibleFactorTemplate';
-import { StatusFieldTemplate } from '../components/AppliesTable/StatusFieldTemplate';
-import { TextFieldTemplate } from '../components/AppliesTable/TextFieldTemplate';
-import { getFormattedDate, getResponsibleFactorFields } from "../utils/applies";
+import { DateFieldTemplate } from "../components/Fields/DateFieldTemplate";
+import { RequestorFieldTemplate } from "../components/AppliesTable/RequestorFieldTemplate";
+import { StatusFieldTemplate } from "../components/Fields/StatusFieldTemplate";
+import { TextFieldTemplate } from "../components/Fields/TextFieldTemplate";
+import { getFormattedDate } from "../utils/applies";
+import { STATUSES } from '.';
+import { ResponsibleFactorWithWaitingFieldTemplate } from '../components/AppliesTable/ResponsibleFactorWithWaitingFieldTemplate';
 
-export const STATUSES = {
-  SUBMITTED: "הוגש",
-  APPROVED_BY_COMMANDER: "בתהליך",
-  APPROVED_BY_SECURITY: "בתהליך",
-  IN_PROGRESS: "אושר",
-  DECLINED: "סורב",
-  DONE: "בוצע",
-  FAILED: "נכשל",
-};
 
 export const TYPES = {
-  CREATE_OG: "יצירת היררכיה חדשה",
-  CREATE_ROLE: "יצירת תפקיד חדש",
-  ASSIGN_ROLE_TO_ENTITY: "חיבור משתמש חדש לתפקיד",
-  CREATE_ENTITY: "יצירת משתמש מיוחד",
-  RENAME_OG: "עריכת שם היררכיה",
-  RENAME_ROLE: "עריכת שם תפקיד",
-  EDIT_ENTITY: "עריכת משתמש מיוחד",
-  DELETE_OG: "מחיקת היררכיה",
-  DELETE_ROLE: "מחיקת תפקיד",
-  DELETE_ENTITY: "מחיקת משתמש",
-  DISCONNECT_ROLE: "ניתוק תפקיד",
-  ADD_APPROVER: "יצירת גורם מאשר",
-  CHANGE_ROLE_HIERARCHY: "שינוי היררכיה לתפקיד",
-  CREATE_ROLE_BULK: "יצירת תפקידים חדשים",
-  CHANGE_ROLE_HIERARCHY_BULK: "שינוי היררכיה לתפקידים",
+  CREATE_OG: 'יצירת היררכיה חדשה',
+  CREATE_ROLE: 'יצירת תפקיד חדש',
+  ASSIGN_ROLE_TO_ENTITY: 'חיבור משתמש חדש לתפקיד',
+  CREATE_ENTITY: 'יצירת משתמש מיוחד',
+  RENAME_OG: 'עריכת שם היררכיה',
+  RENAME_ROLE: 'עריכת שם תפקיד',
+  EDIT_ENTITY: 'עריכת משתמש מיוחד',
+  // DELETE_OG: "מחיקת היררכיה",
+  // DELETE_ROLE: "מחיקת תפקיד",
+  // DELETE_ENTITY: "מחיקת משתמש",
+  // DISCONNECT_ROLE: "ניתוק תפקיד",
+  ADD_APPROVER: 'יצירת גורם מאשר',
+  CHANGE_ROLE_HIERARCHY: 'מעבר היררכיה לתפקיד',
+  CREATE_ROLE_BULK: 'יצירת תפקידים חדשים',
+  CHANGE_ROLE_HIERARCHY_BULK: 'מעבר היררכיה לתפקידים',
 };
 
 export const TableNames = {
@@ -57,10 +49,11 @@ export const TableTypes = (selectedTab, user) => {
       template: RequestorFieldTemplate,
     },
     {
-      field: getResponsibleFactorFields(user),
+      field: null,
       displayName: "גורם מטפל",
       hide: selectedTab !== TableNames.allreqs.tab,
-      template: ResponsibleFactorFieldTemplate,
+      templateParam: user,
+      template: ResponsibleFactorWithWaitingFieldTemplate,
     },
     {
       field: "createdAt",
@@ -68,9 +61,22 @@ export const TableTypes = (selectedTab, user) => {
       formatter: getFormattedDate,
       sortable: true,
       sortFields: sortFields.CREATED_AT,
+      templateParam: [
+        user,
+        "status",
+        "needSecurityDecision",
+        "needSuperSecurityDecision",
+        "superSecurityDecision",
+        "securityDecision",
+        "commanderDecision",
+      ],
       template: DateFieldTemplate,
     },
-    { field: "additionalParams.directGroup", displayName: "היררכיה", template: TextFieldTemplate },
+    {
+      field: "additionalParams.directGroup",
+      displayName: "היררכיה",
+      template: TextFieldTemplate,
+    },
     { field: "comments", displayName: "סיבה", template: TextFieldTemplate },
     {
       field: "status",
@@ -83,8 +89,8 @@ export const TableTypes = (selectedTab, user) => {
   ];
 };
 
-export const searchFields = ["שם", "מספר אישי", 'ת"ז', "מספר בקשה"]
-export const searchTooltipMessage = `ניתן לחפש לפי השדות הבאים: ${searchFields.join(', ')}`;
+export const searchFields = ["שם", "מספר אישי", 'ת"ז', "מספר בקשה"];
+export const searchTooltipMessage = `ניתן לחפש לפי השדות הבאים: ${searchFields.join(", ")}`;
 
 export const sortFields = {
   REQUEST_TYPE: "REQUEST_TYPE",
@@ -94,12 +100,11 @@ export const sortFields = {
 };
 export const sortOrder = {
   INC: "INC",
-  DEC: "DEC"
-}
+  DEC: "DEC",
+};
 
 export const pageSize = 10;
 export const itemsPerRow = 5; // must be smaller than the page size
-
 
 export const TableAppliesActionsEnum = {
   VIEW_APPLY: "VIEW_APPLY",
@@ -119,3 +124,31 @@ export const TableAppliesActionsTypes = {
     take: TableAppliesActionsEnum.TAKE_APPLY,
   },
 };
+
+export const ROLE_CLEARANCE = [
+  'בלמ"ס',
+  'בלמ"ס',
+  'שמור',
+  'סודי',
+  'סודי ביותר',
+  'לבן',
+  'אדום',
+  'סגול',
+  'סגול טאבו',
+  'סגול מצומצם',
+  'סמ"צ',
+  'כחול',
+];
+
+export const BulkTypes = [
+  'CREATE_ROLE_REQUEST',
+  'CHANGE_ROLE_HIERARCHY_REQUEST',
+  'UNRECOGNIZED',
+]
+  ;
+export const bulkExampleFileName = [
+  'createRoleBulkExample',
+  'renameOGBulkExample',
+];
+
+export const assignRoleToEntityHeader = ['מעבר תפקיד', 'חיבור משתמש חדש לתפקיד'];

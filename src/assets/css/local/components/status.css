@@ -1,0 +1,17 @@
+.bad {
+  color: lightcoral !important;
+  background-color: rgba(240, 128, 128, 0.15) !important;
+}
+.good {
+  color: limegreen !important;
+  background-color: rgba(144, 238, 144, 0.3) !important;
+}
+.start {
+  color: #8f8f8f!important;
+  background-color: rgba(190, 190, 190, 0.267)!important;
+  min-height: 47px!important
+}
+.neutral {
+  color: deepskyblue !important;
+  background-color: rgba(0, 191, 255, 0.15) !important;
+}

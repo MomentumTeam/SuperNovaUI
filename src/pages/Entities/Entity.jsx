@@ -1,80 +1,112 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import { observer } from "mobx-react";
 
 import Table from "../../components/Table";
 import Header from "./Header";
 import SearchEntity from "./SearchEntity";
 import AddEntity from "./AddEntity";
-import { itemsInPage, pageSize } from "../../constants/api";
+import { useToast } from '../../context/use-toast';
 import { useStores } from "../../context/use-stores";
-import { TableDataContext } from ".";
-import { TableNames, TableTypes } from "../../constants/table";
+import { itemsInPage, pageSize } from "../../constants/api";
+import { TableNames, TableTypes } from "../../constants/usersTable";
 
 import "../../assets/css/local/pages/listUsersPage.min.css";
 
 const Entities = observer(() => {
-  const [first, setFirst] = useState(0);
+  const { actionPopup } = useToast();
   const { entitiesStore, rolesStore, groupsStore, userStore } = useStores();
-  const { tableState, tableDispatch, tabId, setTabId } = useContext(TableDataContext);
+  const [tabId, setTabId] = useState(TableNames.entities.tab);
+  const [first, setFirst] = useState(0);
+  const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [tableData, setTableData] = useState([]);
+  const [isSearch, setIsSearch] = useState(false);
 
-  const getData = async (append) => {
+  const getData = async ({ append = false, reset = false }) => {
+    setIsSearch(false);
+
+    let data = [];
+    if (reset) {
+      setFirst(0);
+      setPage(0);
+    }
+
     if (userStore.user.directGroup) {
       switch (tabId) {
         case TableNames.entities.tab:
-          await entitiesStore.loadEntitiesUnderOG(userStore.user.directGroup, tableState.page, pageSize, append);
-          return entitiesStore.entities;
+          await entitiesStore.loadEntitiesUnderOG(userStore.user.directGroup, reset? 1: page+1, pageSize, append);
+          data = entitiesStore.entities;
+          break;
         case TableNames.roles.tab:
-          await rolesStore.loadRolesUnderOG(userStore.user.directGroup, tableState.page, pageSize, append);
-          return rolesStore.roles;
+          await rolesStore.loadRolesUnderOG(userStore.user.directGroup, reset ? 1 : page + 1, pageSize, append);
+          data = rolesStore.roles;
+          break;
         case TableNames.hierarchy.tab:
-          await groupsStore.loadOGChildren(userStore.user.directGroup, tableState.page, pageSize, append);
-          return groupsStore.groups;
+          await groupsStore.loadOGChildren(userStore.user.directGroup, reset ? 1 : page + 1, pageSize, append);
+          data =  groupsStore.groups;
+          break;
         default:
           break;
       }
+
+      setPage(reset? 1: page +1);
     }
-
-    return [];
+    
+    setTableData(data);
   };
+    
 
-  const setData = async (event) => {
-    let append;
+  const onVirtualScroll = async (event) => {
     let getNextPage = true;
     if (tabId && userStore.user) {
       if (event && event.first !== undefined) {
-        append = true;
         setFirst(event.first);
-        if (first >= event.first || tableState.tableData.length / (event.page + 1) > itemsInPage) getNextPage = false;
+        if (
+          first >= event.first ||
+          tableData.length / (event.page + 1) > itemsInPage
+        )
+          getNextPage = false;
       }
-      
-      if (getNextPage && !tableState.isSearch) {
+
+      if (getNextPage && !isSearch) {
+        setIsLoading(true);
         try {
-          tableDispatch({ type: "loading" });
-          const data = await getData(append);
-          tableDispatch({ type: tabId, results: data });
+          await getData({ append: getNextPage });
         } catch (error) {
-          tableDispatch({ type: "failedLoading" });
-          console.log(error); // TODO: popup error
+          console.log(error);
+          actionPopup("הבאת מידע", error);
         }
+
+        setIsLoading(false);
       }
     }
   };
+
 
   useEffect(() => {
     // Get table's data
     const firstData = async () => {
-      setFirst(0);
-      tableDispatch({ type: "restore" });
-      await setData();
+      await getData({reset: true});
     };
     firstData();
   }, [tabId, userStore.user]);
-  
+
+
+  const setSearchData = (data) => {
+    setIsSearch(true);
+    setTableData(data);
+    setFirst(0);
+    setPage(0);
+  };
+
   useEffect(() => {
-    userStore.fetchUserNotifications(userStore.user?.id);
-  }, [userStore.user]);
-
-
+    if (tabId === TableNames.entities.tab) setTableData(entitiesStore.entities);
+    else if (tabId === TableNames.roles.tab) setTableData(rolesStore.roles);
+    else if (tabId === TableNames.hierarchy.tab) setTableData(groupsStore.groups);
+    
+    setFirst(0);
+    setPage(0);
+  }, [tabId])
   return (
     <>
       <div className="main-inner-item main-inner-item2 main-inner-item2-table">
@@ -83,17 +115,22 @@ const Entities = observer(() => {
           <div className="content-unit-wrap">
             <div className="content-unit-inner">
               <div className="display-flex search-row-wrap-flex">
-                <SearchEntity tableType={tabId} />
-                <AddEntity />
+                <SearchEntity
+                  tableType={tabId}
+                  setTableData={setSearchData}
+                  getData={getData}
+                />
+                {/* TODO */}
+                <AddEntity tableType={tabId} />
               </div>
               <Table
-                data={tableState.tableData}
+                data={tableData}
                 tableTypes={TableTypes[tabId]}
                 tableType={tabId}
-                isLoading={tableState.isLoading}
+                isLoading={isLoading}
                 isPaginator={true}
                 isSelectedCol={true}
-                onScroll={setData}
+                onScroll={onVirtualScroll}
                 first={first}
                 scrollable={true}
                 scrollHeight="300px"

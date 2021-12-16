@@ -5,7 +5,7 @@ export default class TreeStore {
   tree = [
     {
       label: '',
-      expanded: false,
+      expanded: true,
       children: [],
     },
   ];
