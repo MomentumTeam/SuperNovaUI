@@ -1069,3 +1069,15 @@ main .main-wrap .main-inner-wrap {
   margin-top: 40px !important;
   margin-left: 5px !important;
 }
+
+.flex-container {
+    display: flex;
+}
+
+.flex-child {
+    flex: 1;
+}  
+
+.flex-child:first-child {
+    margin-right: 20px;
+} 

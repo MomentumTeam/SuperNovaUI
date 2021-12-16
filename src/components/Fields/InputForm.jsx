@@ -1,12 +1,14 @@
 import React, { createContext } from "react";
 import { InputCalanderField } from "./InputCalander";
 import { InputDropdown } from "./InputDropdown";
+import { InputListBox } from './InputListBox';
 import { InputTextField } from "./InputText";
 
 export const InputTypes = {
   TEXT: "TEXT",
   CALANDER: "CALANDER",
   DROPDOWN: "DROPDOWN",
+  LISTBOX: "LISTBOX",
 };
 
 export const InputFormContext = createContext(null);
@@ -52,6 +54,19 @@ const InputForm = ({ fields, item, methods, isEdit, errors }) => {
             isEdit={isEdit}
             canEdit={field?.canEdit}
             additionalClass={field?.additionalClass}
+          />
+        );
+      case InputTypes.LISTBOX:
+        return (
+          <InputListBox
+            item={item}
+            methods={methods}
+            fieldName={field.fieldName}
+            displayName={field.displayName}
+            isEdit={isEdit}
+            canEdit={field?.canEdit}
+            additionalClass={field?.additionalClass}
+            validator={field?.validator}
           />
         );
       default:
