@@ -14,6 +14,7 @@ import { isJobTitleAlreadyTakenRequest } from "../../../service/KartoffelService
 import {isUserHoldType} from '../../../utils/user';
 import { USER_SOURCE_DI, USER_TYPE } from '../../../constants';
 import { GetDefaultApprovers } from '../../../utils/approver';
+import { getOuDisplayName } from '../../../utils/hierarchy';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
@@ -79,12 +80,12 @@ const RenameSingleOGForm = forwardRef(
           directGroup: hierarchy.id,
           isRoleAttachable: true,
           source: USER_SOURCE_DI,
-          type: 'domainUser',
+          type: "domainUser",
           clearance,
-          roleEntityType: isTafkidan ? 'goalUser' : undefined,
+          roleEntityType: isTafkidan ? "goalUser" : undefined,
         },
         adParams: {
-          ouDisplayName: hierarchy.name,
+          ouDisplayName: getOuDisplayName(hierarchy.hierarchy, hierarchy.name),
           jobTitle: roleName,
         },
         comments,

@@ -13,6 +13,7 @@ import HorizontalLine from "../../HorizontalLine";
 import { GetDefaultApprovers } from "../../../utils/approver";
 import { isUserHoldType } from "../../../utils/user";
 import { USER_TYPE } from "../../../constants";
+import { getOuDisplayName } from '../../../utils/hierarchy';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
@@ -72,7 +73,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
       },
       adParams: {
         samAccountName: identifier,
-        ouDisplayName: hierarchy.name,
+        ouDisplayName: getOuDisplayName(hierarchy.hierarchy, hierarchy.name),
       },
     };
     await appliesStore.changeRoleHierarchy(req);

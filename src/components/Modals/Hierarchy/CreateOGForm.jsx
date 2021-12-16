@@ -12,6 +12,7 @@ import { useStores } from '../../../context/use-stores';
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { isUserHoldType } from '../../../utils/user';
 import { USER_SOURCE_DI, USER_TYPE } from '../../../constants';
+import { getOuDisplayName } from '../../../utils/hierarchy';
 
 const validationSchema = Yup.object().shape({
   newHierarchy: Yup.string().required(),
@@ -63,10 +64,7 @@ const CreateOGForm = forwardRef(
           source: USER_SOURCE_DI,
         },
         adParams: {
-          ouDisplayName: `${parentHierarchy.hierarchy.substring(
-            parentHierarchy.hierarchy.indexOf('/') + 1,
-            parentHierarchy.hierarchy.length
-          )}/${parentHierarchy.name}`,
+          ouDisplayName: getOuDisplayName(hierarchy.hierarchy, hierarchy.name),
           ouName: parentHierarchy.name,
           name: newHierarchy,
         },

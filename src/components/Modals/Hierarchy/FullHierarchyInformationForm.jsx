@@ -14,7 +14,7 @@ import { HierarchyField } from "../../Fields/HierarchyChangeField";
 import { GetDefaultApprovers } from "../../../utils/approver";
 import { isUserHoldType } from "../../../utils/user";
 import { useStores } from "../../../context/use-stores";
-import { getHierarchy } from "../../../utils/hierarchy";
+import { getHierarchy, getOuDisplayName } from "../../../utils/hierarchy";
 import { InputTextarea } from "primereact/inputtextarea";
 
 const FullHierarchyInformationForm = forwardRef(
@@ -94,7 +94,7 @@ const FullHierarchyInformationForm = forwardRef(
           name: hierarchyName,
         },
         adParams: {
-          ouDisplayName: `${hierarchy.hierarchy}/${hierarchyName}`,
+          ouDisplayName: getOuDisplayName(hierarchy.hierarchy, hierarchyName),
           oldOuName: hierarchy.name,
           newOuName: hierarchyName,
         },
