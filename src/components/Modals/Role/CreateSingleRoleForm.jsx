@@ -1,18 +1,18 @@
-import React, { useImperativeHandle, forwardRef, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { InputText } from "primereact/inputtext";
-import { Dropdown } from "primereact/dropdown";
-import { Button } from "primereact/button";
-import { Checkbox } from "primereact/checkbox";
-import { InputTextarea } from "primereact/inputtextarea";
-import Hierarchy from "../../Fields/Hierarchy";
-import Approver from "../../Fields/Approver";
-import { useStores } from "../../../context/use-stores";
-import * as Yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { isJobTitleAlreadyTakenRequest } from "../../../service/KartoffelService";
-import {isUserHoldType} from '../../../utils/user';
-import { USER_SOURCE_DI, USER_TYPE } from '../../../constants';
+import React, { useImperativeHandle, forwardRef, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { InputText } from 'primereact/inputtext';
+import { Dropdown } from 'primereact/dropdown';
+import { Button } from 'primereact/button';
+import { Checkbox } from 'primereact/checkbox';
+import { InputTextarea } from 'primereact/inputtextarea';
+import Hierarchy from '../../Fields/Hierarchy';
+import Approver from '../../Fields/Approver';
+import { useStores } from '../../../context/use-stores';
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { isJobTitleAlreadyTakenRequest } from '../../../service/KartoffelService';
+import { isUserHoldType } from '../../../utils/user';
+import { USER_SOURCE_DI, USER_TYPE, ROLE_CLEARANCE } from '../../../constants';
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { getOuDisplayName } from '../../../utils/hierarchy';
 
@@ -139,6 +139,7 @@ const RenameSingleOGForm = forwardRef(
               errors={errors}
               ogValue={watch('hierarchy')}
               disabled={onlyForView}
+              userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
             />
           </div>
         </div>
@@ -204,7 +205,7 @@ const RenameSingleOGForm = forwardRef(
               <span className="required-field">*</span>סיווג תפקיד
             </label>
             <Dropdown
-              options={['אדום', 'כחול', 'סגול']}
+              options={ROLE_CLEARANCE}
               placeholder="סיווג תפקיד"
               {...register('clearance')}
               value={watch('clearance')}
@@ -250,12 +251,11 @@ const RenameSingleOGForm = forwardRef(
               disabled={onlyForView}
               placeholder="הכנס הערות לבקשה..."
             />
-            <label>התפקיד נפתח עבור משתמש תפקידן (מילואים / חמ"ל)</label>
-               <label>
-                {errors.comments && (
-                  <small style={{ color: 'red' }}>יש למלא ערך</small>
-                )}
-              </label>
+            <label>
+              {errors.comments && (
+                <small style={{ color: 'red' }}>יש למלא ערך</small>
+              )}
+            </label>
           </div>
         </div>
       </div>

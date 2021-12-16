@@ -201,7 +201,7 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
       {!reqView && (
         <div className="p-fluid-item-flex p-fluid-item">
           <div className="p-field">
-            <Hierarchy disabled={true} name="hierarchy" labelText="היררכיה" errors={errors} ogValue={role?.hierarchy} />
+            <Hierarchy disabled={true} name="hierarchy" labelText="היררכיה" errors={errors} ogValue={role?.hierarchy} userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null} />
           </div>
         </div>
       )}

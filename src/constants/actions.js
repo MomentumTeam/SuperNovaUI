@@ -19,7 +19,7 @@ export const actions = [
   {
     id: 2,
     className: "btn-actions btn-actions2",
-    actionName: "שינוי היררכיה",
+    actionName: "מעבר היררכיה",
     infoText: `העברת תפקיד נבחר להיררכיה ארגונית אחרת`,
     infoWithTitle: false,
     displayResponsive: false,
