@@ -23,6 +23,7 @@ const routeGenerator = (routes) => {
         routePaths.push(
           <ProtectedRouteWrapper
             path={route.path}
+            roles={route.roles}
             component={() => <route.component {...route.componentParams} />}
           />
         );
