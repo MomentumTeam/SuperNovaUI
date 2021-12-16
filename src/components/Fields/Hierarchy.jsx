@@ -22,6 +22,10 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
     }
   };
 
+  function hierarchyConverse(user)  {
+    return user?.hierarchy? user?.name? `${user.hierarchy}/${user.name}`: user.hierarchy: undefined;
+  }
+
   return (
     <>
       <div className="p-field">
@@ -36,7 +40,7 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
           completeMethod={searchOg}
           id="2020"
           type="text"
-          field="name"
+          field={hierarchyConverse}
           itemTemplate={hierarchyItemTemplate}
           onSelect={(e) => {
             if (onOrgSelected) {

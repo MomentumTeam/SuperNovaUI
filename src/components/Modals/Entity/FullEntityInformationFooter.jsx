@@ -12,7 +12,7 @@ const FullEntityInformationFooter = ({ entity, isEdit, closeModal, setIsEdit, ha
 
   return (
     <div className="display-flex display-flex-end">
-      {!canEditEntity(entity, connectedUser) && (
+      {canEditEntity(entity, connectedUser) && (
         <>
           <Button
             label={isEdit ? "ביטול" : "עריכה"}
