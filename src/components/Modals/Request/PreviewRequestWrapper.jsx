@@ -3,6 +3,7 @@ import { InputText } from 'primereact/inputtext';
 import '../../../assets/css/local/components/modal-item.min.css';
 import ApproverSection from '../../ApproverSection';
 import RequestFlowChart from './RequestFlowChart';
+import { DeleteSection } from './DeleteSection';
 import HorizontalLine from '../../HorizontalLine';
 
 // TODO: add progress bar
@@ -63,6 +64,7 @@ const PreviewRequestWrapper = ({
         request={request}
         setDialogVisiblity={setDialogVisiblity}
       />
+      <DeleteSection requestId={request.id} setDialogVisiblity={setDialogVisiblity} />
     </>
   );
 };

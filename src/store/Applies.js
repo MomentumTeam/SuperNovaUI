@@ -78,6 +78,10 @@ export default class AppliesStore {
     // this.applies = myApplies.requests;
   }
 
+  async removeApplyById(id) {
+    this.myApplies = this.myApplies.filter(apply => apply.id !== id);
+  }
+
   async getMyApproveRequests({
     from,
     to,
