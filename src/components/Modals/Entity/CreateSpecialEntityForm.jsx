@@ -75,14 +75,16 @@ const CreateSpecialEntityForm = forwardRef(
           lastName,
           identityCard: identityNumber,
           mobilePhone: [phone],
+          phone: [phone],
           clearance: classification,
           sex,
+          // TOOO: add birthdate
           // TODO: put it correct type
           entityType: "civillian", //TODO: what should this be??
           serviceType: "???", //TODO: what should this be??
         },
         comments,
-        adParams: {}, // IS THIS NEEDED???
+        adParams: {},
       };
 
       await appliesStore.createEntityApply(req);
