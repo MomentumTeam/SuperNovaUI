@@ -13,7 +13,7 @@ export const STATUSES_CLASS = {
   [STATUSES.SUBMITTED]: "start",
   [STATUSES.APPROVED_BY_COMMANDER]: "neutral",
   [STATUSES.APPROVED_BY_SECURITY]: "neutral",
-  [STATUSES.IN_PROGRESS]: "neutral",
+  [STATUSES.IN_PROGRESS]: "neutralplus",
   [STATUSES.DECLINED]: "bad",
   [STATUSES.DONE]: "good",
   [STATUSES.FAILED]: "bad",

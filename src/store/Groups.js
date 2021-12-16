@@ -48,13 +48,14 @@ export default class GroupsStore {
       if (dis.length > 0) {
         let hierarchies = [];
         hierarchies = dis.map((di) => {
-          if (di?.role && di.role?.hierarchy) return di.role.hierarchy;
+          if (di?.role && di.role?.hierarchy) return {hierarchy: di.role.hierarchy, uniqueId: di.uniqueId};
         });
         const uniqueHierarchy = [...new Set(hierarchies)];
 
         filteredResults = await Promise.all(
-          uniqueHierarchy.map((hierarchy) => {
-            const res = getOGByHierarchy(hierarchy);
+          uniqueHierarchy.map(async(hierarchy) => {
+            const res = await getOGByHierarchy(hierarchy.hierarchy);
+            res.uniqueIdSearch = hierarchy.uniqueId;
             return res;
           })
         );

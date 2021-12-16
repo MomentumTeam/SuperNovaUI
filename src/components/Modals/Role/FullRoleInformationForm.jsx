@@ -15,6 +15,7 @@ import Approver from "../../Fields/Approver";
 import { GetDefaultApprovers } from "../../../utils/approver";
 import { Button } from "primereact/button";
 import { InputTextarea } from "primereact/inputtextarea";
+import { getSamAccountNameFromUniqueId } from '../../../utils/fields';
 
 const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requestObject, reqView = true }, ref) => {
   const { appliesStore, userStore } = useStores();
@@ -109,7 +110,7 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
         oldJobTitle: requestObject.jobTitle,
       },
       adParams: {
-        samAccountName: requestObject.digitalIdentityUniqueId,
+        samAccountName: getSamAccountNameFromUniqueId(requestObject.digitalIdentityUniqueId),
         jobTitle: roleName,
       },
       comments,

@@ -1,0 +1,25 @@
+
+
+.listitem {
+  font-size: 14px;
+  max-height: 20px;
+}
+
+.listitem-button {
+    width: 20px !important;
+    height: 20px !important;
+}
+
+.listitem-button * {
+    font-size: 10px;  
+}
+
+.listitem-name {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.p-button.p-button-info, .p-buttonset.p-button-danger > .p-button, .p-splitbutton.p-button-danger > .p-button, .p-fileupload-choose.p-button-danger {
+  background: #2f7bd3 !important;
+}
+

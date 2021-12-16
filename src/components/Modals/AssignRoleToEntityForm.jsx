@@ -34,6 +34,7 @@ import { isApproverValid } from "../../service/ApproverService";
 import { USER_SOURCE_DI, USER_TYPE } from '../../constants';
 import { isUserHoldType } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
+import { getSamAccountNameFromUniqueId } from '../../utils/fields';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
@@ -41,7 +42,7 @@ const validationSchema = Yup.object().shape({
   personalNumber: Yup.string().required(),
   hierarchy: Yup.object().required(),
   role: Yup.object().required(),
-  roleId: Yup.string().required(),
+  roleId: Yup.string().required(), // TODO: talk with liron
   isUserApprover: Yup.boolean(),
   approvers: Yup.array().when('isUserApprover', {
     is: false,
@@ -112,9 +113,7 @@ const AssignRoleToEntityForm = forwardRef(
           needDisconnect: showJob,
         },
         adParams: {
-          oldSAMAccountName: userRole?.roleId,
           newSAMAccountName: roleId,
-          upn: '???', // TODO: WTF is this??
           firstName: user.firstName,
           lastName: user.lastName,
           fullName: user.fullName,
@@ -124,6 +123,11 @@ const AssignRoleToEntityForm = forwardRef(
         comments,
         due: changeRoleAt ? new Date(changeRoleAt).getTime() : Date.now(),
       };
+
+      if (userRole?.digitalIdentityUniqueId && userRole?.digitalIdentityUniqueId !== "") {
+        req.adParams.oldSAMAccountName = getSamAccountNameFromUniqueId(userRole?.digitalIdentityUniqueId)
+      }
+      
       await appliesStore.assignRoleToEntityApply(req);
       setIsActionDone(true);
     };
@@ -137,7 +141,7 @@ const AssignRoleToEntityForm = forwardRef(
     );
 
     const getUserRole = () => {
-      const user = watch('user');
+      const user = watch("user");
 
       if (!user) {
         return null;

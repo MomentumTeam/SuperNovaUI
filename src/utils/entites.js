@@ -22,7 +22,3 @@ export const CanSeeUserClearance = () => {
   return field.secured.some((allowedType) => isUserHoldType(user, allowedType));
 };
 
-export const getSamAccountName = (entity) => {
-  return entity.digitalIdentities.find((di) => di.source === USER_SOURCE_DI)
-    .uniqueId;
-};
