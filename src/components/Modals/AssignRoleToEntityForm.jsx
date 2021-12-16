@@ -455,14 +455,12 @@ const AssignRoleToEntityForm = forwardRef(
               </label>
             </div>
           </div>
-          {watch('currentRoleUser') && (
-            <div className="p-fluid-item-flex p-fluid-item">
+          <div className="p-fluid-item-flex p-fluid-item">
+            {watch('roleId') &&
               <div
-                className={`p-field ${
-                  watch('currentRoleUser') ? 'p-field-red' : 'p-field-green'
-                }`}
+                className={`p-field ${watch('currentRoleUser') ? 'p-field-red' : 'p-field-green'}`}
                 style={{ marginLeft: '10px' }}
-              >
+                >
                 <label htmlFor="2024">סטטוס תפקיד</label>
                 <InputText
                   {...register('roleStatus')}
@@ -470,14 +468,16 @@ const AssignRoleToEntityForm = forwardRef(
                   disabled
                   type="text"
                   placeholder={watch('currentRoleUser') ? 'לא פנוי' : 'פנוי'}
-                />
+                  />
               </div>
+            }
+            {watch('currentRoleUser') && (
               <div className="p-field" >
                 <label htmlFor="2030">מבצע תפקיד</label>
                 <InputText {...register("currentRoleUser")} id="2030" type="text" disabled placeholder="מבצע תפקיד" />
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
         <div className="row3flex">
           {watch('currentRoleUser') && (
