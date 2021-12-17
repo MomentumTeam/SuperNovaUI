@@ -197,18 +197,21 @@ const AssignRoleToEntityForm = forwardRef(
     };
 
     const handleRoleSelected = async (roleId) => {
-      const entity = await getEntityByRoleId(roleId);
-
-      if (entity) {
-        setValue('currentRoleUser', entity.fullName);
-        console.log('isUserApprover', isUserApprover);
-        if (isUserApprover) {
-          setApprovers([entity]);
-          if (entity.identityCard === "") delete entity.identityCard
-          if (entity.personalNumber === '') delete entity.personalNumber;
-          setValue('approvers',[entity])
+      try {
+        const entity = await getEntityByRoleId(roleId);
+        if (entity) {
+          setValue('currentRoleUser', entity.fullName);
+          console.log('isUserApprover', isUserApprover);
+          if (isUserApprover) {
+            setApprovers([entity]);
+            if (entity.identityCard === "") delete entity.identityCard
+            if (entity.personalNumber === '') delete entity.personalNumber;
+            setValue('approvers',[entity])
+          }
         }
-      }
+      } catch (err) {
+        setValue('roleId', roleId)
+      }      
     };
 
     const onRoleIdChanged = async () => {
