@@ -29,8 +29,8 @@ import {
   getEntityByIdentifier,
   getEntityByRoleId,
   getEntityByMongoId,
-} from "../../service/KartoffelService";
-import { isApproverValid } from "../../service/ApproverService";
+} from '../../service/KartoffelService';
+import { isApproverValid } from '../../service/ApproverService';
 import { USER_SOURCE_DI, USER_TYPE } from '../../constants';
 import { isUserHoldType } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
@@ -200,9 +200,9 @@ const AssignRoleToEntityForm = forwardRef(
         console.log('isUserApprover', isUserApprover);
         if (isUserApprover) {
           setApprovers([entity]);
-          if (entity.identityCard === "") delete entity.identityCard
+          if (entity.identityCard === '') delete entity.identityCard;
           if (entity.personalNumber === '') delete entity.personalNumber;
-          setValue('approvers',[entity])
+          setValue('approvers', [entity]);
         }
       }
     };
@@ -238,28 +238,34 @@ const AssignRoleToEntityForm = forwardRef(
       handleRoleSelected(role.roleId);
     };
 
-    const itemTemplate = (item) => <>{item.displayName}</>
+    const itemTemplate = (item) => <>{item.displayName}</>;
 
     const setApproverValue = async (name, data) => {
-      const newGroupId = watch("hierarchy")?.id;
-  
+      const newGroupId = watch('hierarchy')?.id;
+
       if (!newGroupId) {
-        setValue('approverErrorMessage', "יש לבחור היררכיה");
-      } else { 
+        setValue('approverErrorMessage', 'יש לבחור היררכיה');
+      } else {
         data.forEach(async (item) => {
           try {
             const { isValid } = await isApproverValid(item.id, newGroupId);
             if (!isValid) {
-              setValue('approverErrorMessage', "יש לבחור מאשרים תקינים (מהיחידה בלבד)");
+              setValue(
+                'approverErrorMessage',
+                'יש לבחור מאשרים תקינים (מהיחידה בלבד)'
+              );
             } else {
-              setValue('approverErrorMessage', "");
+              setValue('approverErrorMessage', '');
             }
           } catch (err) {
             if (err) {
-              setValue('approverErrorMessage', "יש לבחור מאשרים תקינים (מהיחידה בלבד)");
+              setValue(
+                'approverErrorMessage',
+                'יש לבחור מאשרים תקינים (מהיחידה בלבד)'
+              );
             }
           }
-        });       
+        });
       }
 
       return setValue(name, data);
@@ -467,9 +473,15 @@ const AssignRoleToEntityForm = forwardRef(
                   placeholder={watch('currentRoleUser') ? 'לא פנוי' : 'פנוי'}
                 />
               </div>
-              <div className="p-field" >
+              <div className="p-field">
                 <label htmlFor="2030">מבצע תפקיד</label>
-                <InputText {...register("currentRoleUser")} id="2030" type="text" disabled placeholder="מבצע תפקיד" />
+                <InputText
+                  {...register('currentRoleUser')}
+                  id="2030"
+                  type="text"
+                  disabled
+                  placeholder="מבצע תפקיד"
+                />
               </div>
             </div>
           )}
