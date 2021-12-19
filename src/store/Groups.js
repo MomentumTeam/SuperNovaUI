@@ -2,8 +2,6 @@ import { action, makeAutoObservable, observable } from "mobx";
 import {
   getOGByHierarchy,
   getOGChildren,
-  getRoleByRoleId,
-  searchDIByUniqueId,
   searchOG,
   searchRolesByRoleId,
 } from "../service/KartoffelService";
@@ -21,7 +19,7 @@ export default class GroupsStore {
   }
 
   async loadOGChildren(id, page, pageSize, append = false) {
-    const groups = await getOGChildren({ id, page, pageSize });
+    const groups = await getOGChildren({ id, page, pageSize, withRoles: true });
     this.groups = append ? [...this.groups, ...groups] : groups;
   }
 

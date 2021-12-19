@@ -105,15 +105,14 @@ const AssignRoleToEntityForm = forwardRef(
       } catch (err) {
         throw new Error(err.errors);
       }
-      const { changeRoleAt, approvers, roleId, comments, user } = data;
+      const { changeRoleAt, approvers, roleId, comments, user, role } = data;
  
-      
       const userRole = getUserRole();
       const req = {
         commanders: approvers,
         kartoffelParams: {
           id: user.id,
-          uniqueId: roleId, // ASK: unique id or role id
+          uniqueId: role.digitalIdentityUniqueId,
           needDisconnect: showJob,
         },
         adParams: {
