@@ -64,6 +64,7 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
           onSelectHierarchy={(hierarchySelected) => {
             setSelectedOg(hierarchySelected.name);
             setValue(name, hierarchySelected);
+            onOrgSelected(hierarchySelected);
           }}
           userHierarchy={userHierarchy}
           disabled={disabled}

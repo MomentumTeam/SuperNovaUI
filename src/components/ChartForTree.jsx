@@ -240,7 +240,7 @@ class ChartForTree extends React.Component {
                             selectionMode="single"
                             selectionKeys={this.state.selectedNodeKey}
                             expandedKeys={this.state.expandedKeys}
-                            onSelectionChange={(event) => this.selectNode(event)}
+                            onSelectionChange={(event) => this.selectNode(event.value)}
                         />
                     }
                 </div>
