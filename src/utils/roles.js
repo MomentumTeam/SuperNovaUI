@@ -13,7 +13,7 @@ export const roleItemTemplate = (item) => {
 //     }
 //   }
 
-  const getRole = () => {return item.digitalIdentityUniqueId};
+  const getRole = () => {return item.roleId};
   return (
     <>
     {getRole()}

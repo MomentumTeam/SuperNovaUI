@@ -110,7 +110,7 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
         oldJobTitle: requestObject.jobTitle,
       },
       adParams: {
-        samAccountName: getSamAccountNameFromUniqueId(requestObject.digitalIdentityUniqueId),
+        samAccountName: getSamAccountNameFromUniqueId(requestObject.roleId),
         jobTitle: roleName,
       },
       comments,
@@ -209,7 +209,7 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
       <div className="p-fluid-item p-fluid-item">
         <div className="p-field">
           <label> מזהה תפקיד </label>
-          <InputText value={role?.digitalIdentityUniqueId || "---"} disabled={true} />
+          <InputText value={role?.roleId || "---"} disabled={true} />
         </div>
       </div>
 

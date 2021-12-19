@@ -1,27 +1,31 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useFormContext } from "react-hook-form";
 import { debounce } from "lodash";
 import { InputText } from "primereact/inputtext";
 
 import { getOGByHierarchy } from "../../service/KartoffelService";
 import "../../assets/css/local/components/hierarchyChange.css";
+import { getLabel } from "./InputCommon";
+import { useFirstRender } from '../../utils/firstrender';
 
-const HierarchyField = ({ hierarchy, isEdit, setIsHierarchyFree }) => {
-  const {
-    register,
-    formState: { errors },
-    setValue,
-    watch,
-  } = useFormContext();
-
+const HierarchyField = ({
+  item,
+  fieldName,
+  displayName,
+  methods,
+  errors,
+  isEdit,
+  canEdit = false,
+  additionalClass = "",
+  setIsHierarchyFree = null,
+}) => {
+  const firstRender = useFirstRender();
   const [hierarchyFind, setHierarchyFind] = useState(null);
-  const fieldName = "hierarchyName";
 
   const searchHierarchy = async (hierarchyName) => {
     let hierarchyResult = null;
     if (hierarchyName !== undefined) {
       try {
-        const hierarchyFull = `${hierarchy.hierarchy}/${hierarchyName}`;
+        const hierarchyFull = `${item.hierarchy}/${hierarchyName}`;
         hierarchyResult = await getOGByHierarchy(hierarchyFull);
       } catch (error) {}
     }
@@ -36,52 +40,63 @@ const HierarchyField = ({ hierarchy, isEdit, setIsHierarchyFree }) => {
   );
 
   useEffect(() => {
-    setIsHierarchyFree(hierarchyFind === null);
+    if (setIsHierarchyFree) setIsHierarchyFree(hierarchyFind === null);
   }, [hierarchyFind]);
 
+  useEffect(() => {
+    if (isEdit && firstRender) {
+      methods.setValue(fieldName, item.name);
+      methods.clearErrors();
+      setHierarchyFind(null);
+    }
+  }, [isEdit, item]);
+
   return (
-    <>
-      {/* TODO: ADD LIMIT and test in show*/}
-      {!isEdit ? (
-        <InputText
-          {...register(fieldName)}
-          disabled={!isEdit}
-          className="input"
-          value={`${hierarchy.hierarchy}/${hierarchy.name}`}
-        />
-      ) : (
-        <>
-          <div class="input-box">
-            <InputText
-              {...register(fieldName)}
-              disabled={!isEdit}
-              className="input"
-              value={watch(fieldName)}
-              onChange={(e) => {
-                const hierarchyToSearch = e.target.value;
-                setValue(fieldName, hierarchyToSearch);
+    <div className={`p-fluid-item ${additionalClass}`}>
+      <div className="p-field">
+        {getLabel({ canEdit, isEdit, labelName: displayName })}
 
-                if (hierarchyToSearch === "") {
-                  setHierarchyFind(null);
-                  setValue(fieldName, hierarchy.name);
-                } else {
-                  debouncedHierarchyName.current(hierarchyToSearch);
-                }
-              }}
-            />
-            <span class="prefix">/{hierarchy.hierarchy}</span>
-          </div>
-          <span className="hinthierarchy cut-text">
-            {hierarchy.hierarchy}/{watch(fieldName)}
-          </span>
-        </>
-      )}
+        {/* TODO: ADD LIMIT and test in show*/}
+        {!isEdit ? (
+          <InputText
+            disabled={!isEdit}
+            className="input"
+            placeholder={item.hierarchy !== "" ? `${item.hierarchy}/${item.name}` : item.name}
+          />
+        ) : (
+          <>
+            <div class="input-box">
+              <InputText
+                {...methods.register(fieldName)}
+                disabled={!isEdit}
+                className={hierarchyFind !== null || errors[fieldName] ? "p-invalid" : "input"}
+                value={methods.watch(fieldName)}
+                onChange={(e) => {
+                  const hierarchyToSearch = e.target.value;
+                  methods.setValue(fieldName, hierarchyToSearch, { shouldValidate: true });
 
-      {errors[fieldName] && <small className="p-error p-d-block">{errors[fieldName].message}</small>}
-      {hierarchyFind !== null && watch(fieldName) !== hierarchy.name && (
-        <small className="p-error p-d-block">{"היררכיה קיימת"}</small>
-      )}
-    </>
+                  if (hierarchyToSearch === "") {
+                    setHierarchyFind(null);
+                    methods.setValue(fieldName, item.name, { shouldValidate: true });
+                  } else {
+                    debouncedHierarchyName.current(hierarchyToSearch);
+                  }
+                }}
+              />
+              <span class="prefix">{item.hierarchy !== "" ? `/${item.hierarchy}` : ""}</span>
+            </div>
+            <span className="hinthierarchy cut-text">
+              {item.hierarchy !== "" ? `${item.hierarchy}/${methods.watch(fieldName)}` : methods.watch(fieldName)}
+            </span>
+          </>
+        )}
+
+        {errors[fieldName] && <small className="p-error p-d-block">{errors[fieldName].message}</small>}
+        {isEdit && !errors[fieldName] && hierarchyFind !== null && methods.watch(fieldName) !== item.name && (
+          <small className="p-error p-d-block">{"היררכיה קיימת"}</small>
+        )}
+      </div>
+    </div>
   );
 };
 

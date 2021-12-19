@@ -7,6 +7,7 @@ import {
   getEntityByIdentifier,
   getEntityByDI,
   searchDIByUniqueId,
+  searchRolesByRoleId,
 } from "../service/KartoffelService";
 
 export default class EntitiesStore {
@@ -87,27 +88,50 @@ export default class EntitiesStore {
     return filteredResults;
   }
 
+  async searchEntitiesByRoleId(event) {
+    let filteredResults = [];
+    const { query } = event;
+
+    if (query.trim().length) {
+      try {
+        const roles = await searchRolesByRoleId(query);
+
+        if (roles.length > 0) {
+          filteredResults = await Promise.all(
+            roles.map(async (role) => {
+              try {
+                let entity = await getEntityByRoleId(role.roleId);
+                entity.roleIdSearch = role.roleId;
+                return entity;
+              } catch (error) {}
+            })
+          );
+        }
+      } catch (error) {}
+    }
+
+    return filteredResults;
+  }
+
   async searchEntitiesByDI(event) {
     let filteredResults = [];
     const { query } = event;
 
     if (query.trim().length) {
       try {
-         const dis = await searchDIByUniqueId(query);
+        const dis = await searchDIByUniqueId(query);
 
-         if (dis.length > 0) {
-           filteredResults = await Promise.all(
-             dis.map(async(di) => {
-               try {
-                 let entity = await getEntityByDI(di.uniqueId);
-                 entity.uniqueIdSearch = di.uniqueId;
-                 return entity;
-               } catch (error) {
-                 
-               }
-             })
-           );
-         }
+        if (dis.length > 0) {
+          filteredResults = await Promise.all(
+            dis.map(async (di) => {
+              try {
+                let entity = await getEntityByDI(di.uniqueId);
+                entity.uniqueIdSearch = di.uniqueId;
+                return entity;
+              } catch (error) {}
+            })
+          );
+        }
       } catch (error) {}
     }
 

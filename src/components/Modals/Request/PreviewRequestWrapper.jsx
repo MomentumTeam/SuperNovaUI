@@ -6,7 +6,6 @@ import RequestFlowChart from './RequestFlowChart';
 import { DeleteSection } from './DeleteSection';
 import HorizontalLine from '../../HorizontalLine';
 
-// TODO: add progress bar
 
 const PreviewRequestWrapper = ({
   ModalComponent,
