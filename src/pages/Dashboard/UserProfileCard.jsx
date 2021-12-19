@@ -35,7 +35,7 @@ const UserProfileCard = ({ user, userType, openFullDetailsModal }) => (
         <dl>
           <dt>מייל</dt>
           <dd>
-            <a href="mailto:iron@dynaamic.com" className="" title="צלם מומחה1">
+            <a href={`mailto:${user?.mail}`} className="" title={user?.mail}>
               {user?.mail}
             </a>
           </dd>
@@ -45,9 +45,7 @@ const UserProfileCard = ({ user, userType, openFullDetailsModal }) => (
         <dl>
           <dt>תפקיד</dt>
           <dd>
-            <a href="#role" className="" title="צלם מומחה1">
               {user?.jobTitle}
-            </a>
           </dd>
         </dl>
       </div>
