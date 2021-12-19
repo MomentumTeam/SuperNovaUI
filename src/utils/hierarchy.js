@@ -33,3 +33,11 @@ export const hierarchyItemTemplate = (item) => {
     </>
   );
 };
+
+export const getOuDisplayName = (hierarchy, name) => {
+  let ouDisplayName = `${hierarchy}/${name}`;
+  ouDisplayName = ouDisplayName.split('/');
+  ouDisplayName.shift();
+
+  return ouDisplayName;
+}

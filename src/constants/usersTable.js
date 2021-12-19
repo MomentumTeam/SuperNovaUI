@@ -2,8 +2,7 @@ import { USER_TYPE } from ".";
 import { useStores } from "../context/use-stores";
 import { TextFieldTemplate } from "../components/Fields/TextFieldTemplate";
 import { concatHierarchy, hierarchyItemTemplate } from '../utils/hierarchy';
-import { actions } from '../components/SideToolBar/Actions';
-import { roleItemTemplate } from '../utils/roles';
+import { actions } from './actions';
 
 export const TableTypes = {
   entities: [
@@ -80,14 +79,14 @@ export const TableSearch = (tableType) => {
         searchFunc: entitiesStore.getEntitiesByEntity,
       },
       {
-        searchField: "displayName",
+        searchField: "hierarchy",
         searchDisplayName: "היררכיה",
         searchFunc: entitiesStore.getEntitiesByHierarchy,
       },
       {
-        searchField: "displayName",
+        searchField: "uniqueIdSearch",
         searchDisplayName: "חיפוש לפי מזהה תפקיד (T)",
-        searchFunc: entitiesStore.getEntitiesByDI,
+        searchFunc: entitiesStore.searchEntitiesByDI,
       },
     ],
     hierarchy: [
@@ -98,10 +97,10 @@ export const TableSearch = (tableType) => {
         searchTemplate: hierarchyItemTemplate,
       },
       {
-        searchField: "id",
+        searchField: "uniqueIdSearch",
         searchDisplayName: "חיפוש לפי מזהה תפקיד (T)",
         searchFunc: groupsStore.getHierarchyByDI,
-        searchTemplate: hierarchyItemTemplate,
+        // searchTemplate: hierarchyItemTemplate,
       },
     ],
     roles: [
@@ -111,12 +110,12 @@ export const TableSearch = (tableType) => {
         searchFunc: rolesStore.searchRolesByDI,
       },
       {
-        searchField: "digitalIdentityUniqueId",
+        searchField: "hierarchy",
         searchDisplayName: "היררכיה",
         searchFunc: rolesStore.getRolesByHierarchy,
-      },
+      },  
       {
-        searchField: "digitalIdentityUniqueId",
+        searchField: "displayName",
         searchDisplayName: 'שם/מ"א/ת"ז',
         searchFunc: rolesStore.getRolesByEntity,
       },

@@ -1,33 +1,31 @@
 import React, { createContext } from "react";
 import { InputCalanderField } from "./InputCalander";
 import { InputDropdown } from "./InputDropdown";
+import { InputListBox } from './InputListBox';
 import { InputTextField } from "./InputText";
 
 export const InputTypes = {
   TEXT: "TEXT",
   CALANDER: "CALANDER",
   DROPDOWN: "DROPDOWN",
+  LISTBOX: "LISTBOX",
 };
 
 export const InputFormContext = createContext(null);
 
-const InputForm = ({
-  fields,
-  item,
-  isEdit = false,
-  changeForm = null,
-  errors = null,
-  changeErrors = null,
-}) => {
+const InputForm = ({ fields, item, methods, isEdit, errors }) => {
   const getField = (field) => {
     switch (field.inputType) {
       case InputTypes.TEXT:
         return (
           <InputTextField
+            item={item}
+            methods={methods}
+            errors={errors}
             fieldName={field.fieldName}
             displayName={field.displayName}
+            isEdit={isEdit}
             canEdit={field?.canEdit}
-            validator={field?.validator}
             type={field?.type}
             keyFilter={field?.keyFilter}
             additionalClass={field?.additionalClass}
@@ -36,8 +34,11 @@ const InputForm = ({
       case InputTypes.CALANDER:
         return (
           <InputCalanderField
+            item={item}
+            methods={methods}
             fieldName={field.fieldName}
             displayName={field.displayName}
+            isEdit={isEdit}
             canEdit={field?.canEdit}
             additionalClass={field?.additionalClass}
           />
@@ -45,11 +46,27 @@ const InputForm = ({
       case InputTypes.DROPDOWN:
         return (
           <InputDropdown
+            item={item}
+            methods={methods}
             fieldName={field.fieldName}
             displayName={field.displayName}
-            canEdit={field?.canEdit}
             options={field.options}
+            isEdit={isEdit}
+            canEdit={field?.canEdit}
             additionalClass={field?.additionalClass}
+          />
+        );
+      case InputTypes.LISTBOX:
+        return (
+          <InputListBox
+            item={item}
+            methods={methods}
+            fieldName={field.fieldName}
+            displayName={field.displayName}
+            isEdit={isEdit}
+            canEdit={field?.canEdit}
+            additionalClass={field?.additionalClass}
+            validator={field?.validator}
           />
         );
       default:
@@ -57,16 +74,14 @@ const InputForm = ({
     }
   };
   return (
-    <InputFormContext.Provider value={{ item, isEdit, changeForm, errors, changeErrors }}>
-      <>
-        {fields.map(
-          (field) =>
-            (field.secured === undefined || (field.secured && field.secured())) &&
-            (item[field.fieldName] || field.force) &&
-            getField(field)
-        )}
-      </>
-    </InputFormContext.Provider>
+    <>
+      {fields.map(
+        (field) =>
+          (field.secured === undefined || (field?.secured && field.secured())) &&
+          (item[field.fieldName] || field.force) &&
+          getField(field)
+      )}
+    </>
   );
 };
 

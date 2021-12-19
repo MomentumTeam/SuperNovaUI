@@ -244,6 +244,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
           name="hierarchy"
           ogValue={getValues("hierarchy")}
           errors={errors}
+          userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
         />
       </div>
       <div className="p-fluid-item">

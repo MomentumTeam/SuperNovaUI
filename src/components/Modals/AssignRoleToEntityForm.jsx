@@ -34,6 +34,7 @@ import { isApproverValid } from '../../service/ApproverService';
 import { USER_SOURCE_DI, USER_TYPE } from '../../constants';
 import { isUserHoldType } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
+import { getSamAccountNameFromUniqueId } from '../../utils/fields';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
@@ -41,7 +42,7 @@ const validationSchema = Yup.object().shape({
   personalNumber: Yup.string().required(),
   hierarchy: Yup.object().required(),
   role: Yup.object().required(),
-  roleId: Yup.string().required(),
+  roleId: Yup.string().required(), // TODO: talk with liron
   isUserApprover: Yup.boolean(),
   approvers: Yup.array().when('isUserApprover', {
     is: false,
@@ -112,9 +113,7 @@ const AssignRoleToEntityForm = forwardRef(
           needDisconnect: showJob,
         },
         adParams: {
-          oldSAMAccountName: userRole?.roleId,
           newSAMAccountName: roleId,
-          upn: '???', // TODO: WTF is this??
           firstName: user.firstName,
           lastName: user.lastName,
           fullName: user.fullName,
@@ -124,6 +123,11 @@ const AssignRoleToEntityForm = forwardRef(
         comments,
         due: changeRoleAt ? new Date(changeRoleAt).getTime() : Date.now(),
       };
+
+      if (userRole?.digitalIdentityUniqueId && userRole?.digitalIdentityUniqueId !== "") {
+        req.adParams.oldSAMAccountName = getSamAccountNameFromUniqueId(userRole?.digitalIdentityUniqueId)
+      }
+      
       await appliesStore.assignRoleToEntityApply(req);
       setIsActionDone(true);
     };
@@ -137,7 +141,7 @@ const AssignRoleToEntityForm = forwardRef(
     );
 
     const getUserRole = () => {
-      const user = watch('user');
+      const user = watch("user");
 
       if (!user) {
         return null;
@@ -193,18 +197,21 @@ const AssignRoleToEntityForm = forwardRef(
     };
 
     const handleRoleSelected = async (roleId) => {
-      const entity = await getEntityByRoleId(roleId);
-
-      if (entity) {
-        setValue('currentRoleUser', entity.fullName);
-        console.log('isUserApprover', isUserApprover);
-        if (isUserApprover) {
-          setApprovers([entity]);
-          if (entity.identityCard === '') delete entity.identityCard;
-          if (entity.personalNumber === '') delete entity.personalNumber;
-          setValue('approvers', [entity]);
+      try {
+        const entity = await getEntityByRoleId(roleId);
+        if (entity) {
+          setValue('currentRoleUser', entity.fullName);
+          console.log('isUserApprover', isUserApprover);
+          if (isUserApprover) {
+            setApprovers([entity]);
+            if (entity.identityCard === "") delete entity.identityCard
+            if (entity.personalNumber === '') delete entity.personalNumber;
+            setValue('approvers',[entity])
+          }
         }
-      }
+      } catch (err) {
+        setValue('roleId', roleId)
+      }      
     };
 
     const onRoleIdChanged = async () => {
@@ -403,6 +410,7 @@ const AssignRoleToEntityForm = forwardRef(
               onOrgSelected={handleOrgSelected}
               errors={errors}
               disabled={onlyForView}
+              userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
             />
           </div>
           <div className="p-fluid-item ">
@@ -456,14 +464,12 @@ const AssignRoleToEntityForm = forwardRef(
               </label>
             </div>
           </div>
-          {watch('currentRoleUser') && (
-            <div className="p-fluid-item-flex p-fluid-item">
+          <div className="p-fluid-item-flex p-fluid-item">
+            {watch('roleId') &&
               <div
-                className={`p-field ${
-                  watch('currentRoleUser') ? 'p-field-red' : 'p-field-green'
-                }`}
+                className={`p-field ${watch('currentRoleUser') ? 'p-field-red' : 'p-field-green'}`}
                 style={{ marginLeft: '10px' }}
-              >
+                >
                 <label htmlFor="2024">סטטוס תפקיד</label>
                 <InputText
                   {...register('roleStatus')}
@@ -471,9 +477,11 @@ const AssignRoleToEntityForm = forwardRef(
                   disabled
                   type="text"
                   placeholder={watch('currentRoleUser') ? 'לא פנוי' : 'פנוי'}
-                />
+                  />
               </div>
-              <div className="p-field">
+            }
+            {watch('currentRoleUser') && (
+              <div className="p-field" >
                 <label htmlFor="2030">מבצע תפקיד</label>
                 <InputText
                   {...register('currentRoleUser')}
@@ -483,8 +491,8 @@ const AssignRoleToEntityForm = forwardRef(
                   placeholder="מבצע תפקיד"
                 />
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
         <div className="row3flex">
           {watch('currentRoleUser') && (

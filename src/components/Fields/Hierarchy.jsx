@@ -4,7 +4,7 @@ import { searchOG } from "../../service/KartoffelService";
 import { AutoComplete } from "primereact/autocomplete";
 import { hierarchyItemTemplate } from '../../utils/hierarchy';
 
-const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText = "היררכיה", errors }) => {
+const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText = "היררכיה", userHierarchy, errors }) => {
   const [ogSuggestions, setOgSuggestions] = useState([]);
   const [selectedOg, setSelectedOg] = useState(ogValue);
 
@@ -22,6 +22,10 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
     }
   };
 
+  function hierarchyConverse(user)  {
+    return user?.hierarchy? user?.name? `${user.hierarchy}/${user.name}`: user.hierarchy: undefined;
+  }
+
   return (
     <>
       <div className="p-field">
@@ -36,7 +40,7 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
           completeMethod={searchOg}
           id="2020"
           type="text"
-          field="name"
+          field={hierarchyConverse}
           itemTemplate={hierarchyItemTemplate}
           onSelect={(e) => {
             if (onOrgSelected) {
@@ -58,6 +62,7 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
             setSelectedOg(hierarchySelected.name);
             setValue(name, hierarchySelected);
           }}
+          userHierarchy={userHierarchy}
           disabled={disabled}
         />
       )}

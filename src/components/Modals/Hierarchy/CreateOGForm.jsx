@@ -12,6 +12,7 @@ import { useStores } from '../../../context/use-stores';
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { isUserHoldType } from '../../../utils/user';
 import { USER_SOURCE_DI, USER_TYPE } from '../../../constants';
+import { getOuDisplayName } from '../../../utils/hierarchy';
 
 const validationSchema = Yup.object().shape({
   newHierarchy: Yup.string().required(),
@@ -55,7 +56,6 @@ const CreateOGForm = forwardRef(
       }
 
       const req = {
-        // status: 'SUBMITTED',
         commanders: approvers,
         kartoffelParams: {
           name: newHierarchy,
@@ -63,10 +63,7 @@ const CreateOGForm = forwardRef(
           source: USER_SOURCE_DI,
         },
         adParams: {
-          ouDisplayName: `${parentHierarchy.hierarchy.substring(
-            parentHierarchy.hierarchy.indexOf('/') + 1,
-            parentHierarchy.hierarchy.length
-          )}/${parentHierarchy.name}`,
+          ouDisplayName: getOuDisplayName(parentHierarchy.hierarchy, parentHierarchy.name),
           ouName: parentHierarchy.name,
           name: newHierarchy,
         },
@@ -106,6 +103,7 @@ const CreateOGForm = forwardRef(
             labelText={'היררכיית אב'}
             ogValue={watch('parentHierarchy')}
             disabled={onlyForView}
+            userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
           />
         </div>
         <div className="p-fluid-item">

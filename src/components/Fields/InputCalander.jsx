@@ -1,21 +1,22 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Calendar } from "primereact/calendar";
 
 import { getLabel, disabledInputStyle } from "./InputCommon";
-import { InputFormContext } from './InputForm';
 
 const InputCalanderField = ({
+  item,
+  methods,
   fieldName,
   displayName,
+  isEdit,
   canEdit = false,
   additionalClass = "",
 }) => {
-  const { item, isEdit, changeForm } = useContext(InputFormContext);
   const disabled = !canEdit || !isEdit;
-  const [value, setValue] = useState("");
 
   useEffect(() => {
-    setValue("");
+    methods.setValue(fieldName, item[fieldName]);
+    methods.clearErrors();
   }, [isEdit]);
 
   return (
@@ -24,14 +25,14 @@ const InputCalanderField = ({
         {getLabel({ canEdit, isEdit, labelName: displayName })}
         <Calendar
           id="2011"
+          {...methods.register(fieldName)}
           disabled={disabled}
           style={(disabled ? disabledInputStyle : {}, { border: "none" })}
-          placeholder={new Date(item[fieldName]).toDateString()}
+          placeholder={new Date(methods.watch(fieldName)).toDateString()}
           onChange={(e) => {
-            setValue(e.target.value);
-            changeForm(fieldName, e.target.value);
+            methods.setValue(fieldName, e.target.value, { shouldValidate: true });
           }}
-          value={value}
+          value={methods.watch(fieldName)}
         />
       </div>
     </div>

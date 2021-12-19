@@ -12,6 +12,7 @@ import RenameBulkOGForm from '../Bulk/RenameBulkOGForm';
 import { TYPES, assignRoleToEntityHeader } from '../../../constants/applies';
 import { FullRoleInformationForm } from '../Role/FullRoleInformationForm';
 import { FullHierarchyInformationForm } from '../Hierarchy/FullHierarchyInformationForm';
+import { FullEntityInformationForm } from "../Entity/FullEntityInformationForm";
 
 const PreviewRequestsDialog = ({ request, isDialogVisible, setDialogVisiblity }) => {
   const [dialogContent, setDialogContent] = useState(null);
@@ -77,7 +78,12 @@ const PreviewRequestsDialog = ({ request, isDialogVisible, setDialogVisiblity })
       component: FullRoleInformationForm,
       dialogClass: "dialogClass1",
     },
-    // EDIT_ENTITY: { footer: null, header: '' },
+    EDIT_ENTITY: {
+      footer: null,
+      header: `פרטי בקשה ל${TYPES.EDIT_ENTITY}`,
+      component: FullEntityInformationForm,
+      dialogClass: "dialogClass3",
+    },
     // DELETE_OG: { footer: null, header: '' },
     // DELETE_ROLE: { footer: null, header: '' },
     // DELETE_ENTITY: { footer: null, header: '' },

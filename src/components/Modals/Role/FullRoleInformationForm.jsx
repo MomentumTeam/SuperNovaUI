@@ -15,6 +15,7 @@ import Approver from "../../Fields/Approver";
 import { GetDefaultApprovers } from "../../../utils/approver";
 import { Button } from "primereact/button";
 import { InputTextarea } from "primereact/inputtextarea";
+import { getSamAccountNameFromUniqueId } from '../../../utils/fields';
 
 const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requestObject, reqView = true }, ref) => {
   const { appliesStore, userStore } = useStores();
@@ -109,7 +110,7 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
         oldJobTitle: requestObject.jobTitle,
       },
       adParams: {
-        samAccountName: requestObject.digitalIdentityUniqueId,
+        samAccountName: getSamAccountNameFromUniqueId(requestObject.digitalIdentityUniqueId),
         jobTitle: roleName,
       },
       comments,
@@ -200,7 +201,7 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
       {!reqView && (
         <div className="p-fluid-item-flex p-fluid-item">
           <div className="p-field">
-            <Hierarchy disabled={true} name="hierarchy" labelText="היררכיה" errors={errors} ogValue={role?.hierarchy} />
+            <Hierarchy disabled={true} name="hierarchy" labelText="היררכיה" errors={errors} ogValue={role?.hierarchy} userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null} />
           </div>
         </div>
       )}

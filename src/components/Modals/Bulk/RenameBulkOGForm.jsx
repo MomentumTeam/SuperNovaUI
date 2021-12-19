@@ -19,6 +19,7 @@ import {
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { isUserHoldType } from '../../../utils/user';
 import { USER_TYPE } from '../../../constants';
+import { getOuDisplayName } from '../../../utils/hierarchy';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
@@ -88,7 +89,7 @@ const RenameBulkOGForm = forwardRef(
           directGroup: hierarchy.id,
         },
         adParams: {
-          ouDisplayName: hierarchy.name,
+          ouDisplayName: getOuDisplayName(hierarchy.hierarchy, hierarchy.name),
         },
         excelFilePath: uploadFiles[0],
         comments,
@@ -120,6 +121,7 @@ const RenameBulkOGForm = forwardRef(
               labelText="היררכיה נוכחית"
               errors={errors}
               disabled={onlyForView}
+              userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
             />
           </div>
         </div>
@@ -132,6 +134,7 @@ const RenameBulkOGForm = forwardRef(
               errors={errors}
               ogValue={watch('hierarchy')}
               disabled={onlyForView}
+              userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
             />
           </div>
         </div>

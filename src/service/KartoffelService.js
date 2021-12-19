@@ -3,14 +3,12 @@ import { apiBaseUrl } from '../constants/api';
 
 // GROUPS
 export const searchOG = async (nameAndHierarchy) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/groups/search`,
-    {
-      params: {
-        nameAndHierarchy,
-      },
-    }
-  );
+  // TODO: add underGroupId
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/groups/search`, {
+    params: {
+      nameAndHierarchy,
+    },
+  });
 
   return response.data.groups;
 };
@@ -182,14 +180,12 @@ export const getEntitiesUnderOG = async ({ id, direct = false, page, pageSize })
 };
 
 export const searchEntitiesByFullName = async (fullName) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/entities/search`,
-    {
-      params: {
-        fullName,
-      },
-    }
-  );
+  // TODO: add underGroupId
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/entities/search`, {
+    params: {
+      fullName,
+    },
+  });
   return response.data;
 };
 
