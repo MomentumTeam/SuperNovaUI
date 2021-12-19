@@ -25,19 +25,19 @@ export default class RolesStore {
     this.roles = append ? [...this.roles, ...roles] : roles;
   }
 
-  //   async searchRolesByRoleId(event) {
-  //     let filteredResults;
-  //     const { query } = event;
-  //
-  //     if (!query.trim().length) {
-  //       filteredResults = [];
-  //     } else {
-  //       filteredResults = await searchRolesByRoleId(query);
-  //       filteredResults = filteredResults;
-  //     }
-  //
-  //     return filteredResults;
-  //   }
+    async searchRolesByRoleId(event) {
+      let filteredResults;
+      const { query } = event;
+  
+      if (!query.trim().length) {
+        filteredResults = [];
+      } else {
+        filteredResults = await searchRolesByRoleId(query);
+        filteredResults = filteredResults;
+      }
+  
+      return filteredResults;
+    }
 
   async searchRolesByDI(event) {
     let filteredResults = [];

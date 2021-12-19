@@ -29,7 +29,7 @@ export const TableTypes = {
     { field: "jobTitle", displayName: "שם תפקיד" },
     { field: "hierarchy", displayName: "היררכיה", template: TextFieldTemplate },
     { field: "clearance", displayName: "סיווג התפקיד" },
-    { field: "digitalIdentityUniqueId", displayName: "מזהה תפקיד" },
+    { field: "roleId", displayName: "מזהה תפקיד" },
   ],
 };
 
@@ -84,9 +84,9 @@ export const TableSearch = (tableType) => {
         searchFunc: entitiesStore.getEntitiesByHierarchy,
       },
       {
-        searchField: "uniqueIdSearch",
+        searchField: "roleIdSearch",
         searchDisplayName: "חיפוש לפי מזהה תפקיד (T)",
-        searchFunc: entitiesStore.searchEntitiesByDI,
+        searchFunc: entitiesStore.searchEntitiesByRoleId,
       },
     ],
     hierarchy: [
@@ -97,27 +97,27 @@ export const TableSearch = (tableType) => {
         searchTemplate: hierarchyItemTemplate,
       },
       {
-        searchField: "uniqueIdSearch",
+        searchField: "roleIdSearch",
         searchDisplayName: "חיפוש לפי מזהה תפקיד (T)",
-        searchFunc: groupsStore.getHierarchyByDI,
+        searchFunc: groupsStore.getHierarchyByRoleId,
         // searchTemplate: hierarchyItemTemplate,
       },
     ],
     roles: [
       {
-        searchField: "digitalIdentityUniqueId",
-        searchDisplayName: "חיפוש לפי מזהה תפקיד (T)",
-        searchFunc: rolesStore.searchRolesByDI,
+        searchField: "displayName",
+        searchDisplayName: 'שם/מ"א/ת"ז',
+        searchFunc: rolesStore.getRolesByEntity,
       },
       {
         searchField: "hierarchy",
         searchDisplayName: "היררכיה",
         searchFunc: rolesStore.getRolesByHierarchy,
-      },  
+      },
       {
-        searchField: "displayName",
-        searchDisplayName: 'שם/מ"א/ת"ז',
-        searchFunc: rolesStore.getRolesByEntity,
+        searchField: "roleId",
+        searchDisplayName: "חיפוש לפי מזהה תפקיד (T)",
+        searchFunc: rolesStore.searchRolesByRoleId,
       },
     ],
   };

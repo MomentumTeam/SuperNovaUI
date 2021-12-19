@@ -22,8 +22,11 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
     }
   };
 
-  function hierarchyConverse(user)  {
-    return user?.hierarchy? user?.name? `${user.hierarchy}/${user.name}`: user.hierarchy: undefined;
+  function hierarchyConverse(hierarchy)  {
+    if (hierarchy?.name) {
+      return hierarchy?.hierarchy ? `${hierarchy.hierarchy}/${hierarchy.name}` : hierarchy.name;
+    }
+    return undefined;
   }
 
   return (
