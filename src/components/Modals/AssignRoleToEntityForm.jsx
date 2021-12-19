@@ -29,8 +29,8 @@ import {
   getEntityByIdentifier,
   getEntityByRoleId,
   getEntityByMongoId,
-} from "../../service/KartoffelService";
-import { isApproverValid } from "../../service/ApproverService";
+} from '../../service/KartoffelService';
+import { isApproverValid } from '../../service/ApproverService';
 import { USER_SOURCE_DI, USER_TYPE } from '../../constants';
 import { isUserHoldType } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
@@ -124,10 +124,14 @@ const AssignRoleToEntityForm = forwardRef(
         due: changeRoleAt ? new Date(changeRoleAt).getTime() : Date.now(),
       };
 
-      if (userRole?.digitalIdentityUniqueId && userRole?.digitalIdentityUniqueId !== "") {
-        req.adParams.oldSAMAccountName = getSamAccountNameFromUniqueId(userRole?.digitalIdentityUniqueId)
+      if (
+        userRole?.digitalIdentityUniqueId &&
+        userRole?.digitalIdentityUniqueId !== ''
+      ) {
+        req.adParams.oldSAMAccountName = getSamAccountNameFromUniqueId(
+          userRole?.digitalIdentityUniqueId
+        );
       }
-      
       await appliesStore.assignRoleToEntityApply(req);
       setIsActionDone(true);
     };
@@ -141,7 +145,7 @@ const AssignRoleToEntityForm = forwardRef(
     );
 
     const getUserRole = () => {
-      const user = watch("user");
+      const user = watch('user');
 
       if (!user) {
         return null;
@@ -201,17 +205,19 @@ const AssignRoleToEntityForm = forwardRef(
         const entity = await getEntityByRoleId(roleId);
         if (entity) {
           setValue('currentRoleUser', entity.fullName);
-          console.log('isUserApprover', isUserApprover);
           if (isUserApprover) {
             setApprovers([entity]);
-            if (entity.identityCard === "") delete entity.identityCard
+            if (entity.identityCard === '') delete entity.identityCard;
             if (entity.personalNumber === '') delete entity.personalNumber;
-            setValue('approvers',[entity])
+            setValue('approvers', [entity]);
           }
         }
       } catch (err) {
-        setValue('roleId', roleId)
-      }      
+        setValue('roleId', roleId);
+        if (isUserApprover) {
+          setApprovers([userStore.user]);
+        }
+      }
     };
 
     const onRoleIdChanged = async () => {
@@ -245,28 +251,34 @@ const AssignRoleToEntityForm = forwardRef(
       handleRoleSelected(role.roleId);
     };
 
-    const itemTemplate = (item) => <>{item.displayName}</>
+    const itemTemplate = (item) => <>{item.displayName}</>;
 
     const setApproverValue = async (name, data) => {
-      const newGroupId = watch("hierarchy")?.id;
-  
+      const newGroupId = watch('hierarchy')?.id;
+
       if (!newGroupId) {
-        setValue('approverErrorMessage', "יש לבחור היררכיה");
-      } else { 
+        setValue('approverErrorMessage', 'יש לבחור היררכיה');
+      } else {
         data.forEach(async (item) => {
           try {
             const { isValid } = await isApproverValid(item.id, newGroupId);
             if (!isValid) {
-              setValue('approverErrorMessage', "יש לבחור מאשרים תקינים (מהיחידה בלבד)");
+              setValue(
+                'approverErrorMessage',
+                'יש לבחור מאשרים תקינים (מהיחידה בלבד)'
+              );
             } else {
-              setValue('approverErrorMessage', "");
+              setValue('approverErrorMessage', '');
             }
           } catch (err) {
             if (err) {
-              setValue('approverErrorMessage', "יש לבחור מאשרים תקינים (מהיחידה בלבד)");
+              setValue(
+                'approverErrorMessage',
+                'יש לבחור מאשרים תקינים (מהיחידה בלבד)'
+              );
             }
           }
-        });       
+        });
       }
 
       return setValue(name, data);
@@ -404,7 +416,11 @@ const AssignRoleToEntityForm = forwardRef(
               onOrgSelected={handleOrgSelected}
               errors={errors}
               disabled={onlyForView}
-              userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
+              userHierarchy={
+                userStore.user && userStore.user.hierarchy
+                  ? userStore.user.hierarchy
+                  : null
+              }
             />
           </div>
           <div className="p-fluid-item ">
@@ -459,11 +475,13 @@ const AssignRoleToEntityForm = forwardRef(
             </div>
           </div>
           <div className="p-fluid-item-flex p-fluid-item">
-            {watch('roleId') &&
+            {watch('roleId') && (
               <div
-                className={`p-field ${watch('currentRoleUser') ? 'p-field-red' : 'p-field-green'}`}
+                className={`p-field ${
+                  watch('currentRoleUser') ? 'p-field-red' : 'p-field-green'
+                }`}
                 style={{ marginLeft: '10px' }}
-                >
+              >
                 <label htmlFor="2024">סטטוס תפקיד</label>
                 <InputText
                   {...register('roleStatus')}
@@ -471,13 +489,19 @@ const AssignRoleToEntityForm = forwardRef(
                   disabled
                   type="text"
                   placeholder={watch('currentRoleUser') ? 'לא פנוי' : 'פנוי'}
-                  />
+                />
               </div>
-            }
+            )}
             {watch('currentRoleUser') && (
-              <div className="p-field" >
+              <div className="p-field">
                 <label htmlFor="2030">מבצע תפקיד</label>
-                <InputText {...register("currentRoleUser")} id="2030" type="text" disabled placeholder="מבצע תפקיד" />
+                <InputText
+                  {...register('currentRoleUser')}
+                  id="2030"
+                  type="text"
+                  disabled
+                  placeholder="מבצע תפקיד"
+                />
               </div>
             )}
           </div>

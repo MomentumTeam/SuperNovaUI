@@ -8,15 +8,14 @@ export const GetDefaultApprovers = (request, onlyForView, showJob = false) => {
   if (request?.commanders) return request?.commanders;
   if (onlyForView) return [];
 
-  //happens in BackEnd--->
 
-  // if (isUserHoldType(userStore.user, USER_TYPE.COMMANDER)) {
-  //   // if (showJob) {
-  //   //   return [];
-  //   // }
-  //   // else {
-  //     // return [userStore.user];
-  //   // }
-  // }
+  if (isUserHoldType(userStore.user, USER_TYPE.COMMANDER)) {
+    if (showJob) {
+      return [];
+    }
+    else {
+      return [userStore.user];
+    }
+  }
   return [];
 };
