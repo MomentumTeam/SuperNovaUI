@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { InputText } from "primereact/inputtext";
 
 import { getLabel, disabledInputStyle } from "./InputCommon";
+import { InputTextarea } from 'primereact/inputtextarea';
 
-const InputTextField = ({
+const InputTextAreaField = ({
   item,
   fieldName,
   displayName,
@@ -14,7 +14,8 @@ const InputTextField = ({
   type = "text",
   keyFilter = null,
   additionalClass = "",
-  placeholder = ""
+  placeholder = "",
+  required = false
 }) => {
   const disabled = !canEdit || !isEdit;
 
@@ -26,9 +27,9 @@ const InputTextField = ({
   return (
     <div className={`p-fluid-item ${additionalClass}`}>
       <div className="p-field">
-        {getLabel({ canEdit, isEdit, labelName: displayName })}
+        {getLabel({ required, isEdit, labelName: displayName })}
 
-        <InputText
+        <InputTextarea
           id="2011"
           {...methods.register(fieldName)}
           className={errors[fieldName] ? "p-invalid" : ""}
@@ -49,4 +50,4 @@ const InputTextField = ({
   );
 };
 
-export { InputTextField };
+export { InputTextAreaField };

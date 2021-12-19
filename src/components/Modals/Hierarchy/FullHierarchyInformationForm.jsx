@@ -1,21 +1,17 @@
 import * as Yup from "yup";
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { InputText } from "primereact/inputtext";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { getLabel, disabledInputStyle } from "../../Fields/InputCommon";
 import { NAME_OG_EXP, USER_TYPE } from "../../../constants";
 
 import "../../../assets/css/local/general/buttons.css";
 import "../../../assets/css/local/components/modal-item.css";
-import Approver from "../../Fields/Approver";
-import { HierarchyField } from "../../Fields/HierarchyChangeField";
 import { GetDefaultApprovers } from "../../../utils/approver";
 import { isUserHoldType } from "../../../utils/user";
 import { useStores } from "../../../context/use-stores";
 import { getHierarchy, getOuDisplayName } from "../../../utils/hierarchy";
-import { InputTextarea } from "primereact/inputtextarea";
+import { InputForm, InputTypes } from '../../Fields/InputForm';
 
 const FullHierarchyInformationForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject, reqView = true }, ref) => {
@@ -86,6 +82,7 @@ const FullHierarchyInformationForm = forwardRef(
         throw new Error(err.errors);
       }
       const { approvers, comments, hierarchyName } = data;
+      const ouDisplayName = getOuDisplayName(hierarchy.hierarchy, hierarchyName);
 
       const req = {
         commanders: approvers,
@@ -94,7 +91,7 @@ const FullHierarchyInformationForm = forwardRef(
           name: hierarchyName,
         },
         adParams: {
-          ouDisplayName: getOuDisplayName(hierarchy.hierarchy, hierarchyName),
+          ouDisplayName: ouDisplayName,
           oldOuName: hierarchy.name,
           newOuName: hierarchyName,
         },
@@ -102,7 +99,7 @@ const FullHierarchyInformationForm = forwardRef(
         due: Date.now(),
       };
 
-      const res = await appliesStore.renameOGApply(req);
+      await appliesStore.renameOGApply(req);
       setIsActionDone(true);
     };
 
@@ -110,103 +107,66 @@ const FullHierarchyInformationForm = forwardRef(
       ref,
       () => ({
         handleSubmit: methods.handleSubmit(onSubmit),
-        resetForm: () => {
-          // TODO: SET DEFAULT
-        },
       }),
       []
     );
 
+    const formFields = [
+      {
+        fieldName: "hierarchyName",
+        displayName: reqView ? "היררכיה חדשה" : "היררכיה",
+        inputType: InputTypes.HIERARCHY_CHANGE,
+        force: true,
+        canEdit: true,
+        setFunc: (value) => setIsHierarchyFree(value),
+      },
+      {
+        fieldName: "hierarchyName",
+        displayName: "היררכיה ישנה",
+        inputType: InputTypes.HIERARCHY_CHANGE,
+        force: true,
+        secured: () => reqView,
+        item: { hierarchy: hierarchy.hierarchy, name: hierarchy.oldName },
+      },
+      {
+        fieldName: "jobnum",
+        displayName: "מספר תפקידים",
+        inputType: InputTypes.TEXT,
+        secured: () => !reqView,
+        force: true,
+        placeholder: hierarchy?.directRoles ? hierarchy.directRoles?.length : 0,
+      },
+      {
+        fieldName: "id",
+        displayName: "מזהה היררכיה",
+        inputType: InputTypes.TEXT,
+        force: true,
+      },
+      {
+        fieldName: "approvers",
+        inputType: InputTypes.APPROVER,
+        tooltip: 'רס"ן ומעלה ביחידתך',
+        default: GetDefaultApprovers(requestObject, onlyForView),
+        disabled: onlyForView || isUserHoldType,
+        force: true,
+        secured: () => !onlyForView || reqView,
+      },
+      {
+        fieldName: "comments",
+        displayName: "הערות",
+        inputType: InputTypes.TEXTAREA,
+        force: true,
+        secured: () => reqView || !onlyForView,
+        placeholder: "הכנס הערות לבקשה...",
+        additionalClass: "p-fluid-item-flex1",
+        canEdit: true,
+      },
+    ];
+
     return (
-      <FormProvider {...methods}>
         <div className="p-fluid">
-          <div className="p-fluid-item p-fluid-item">
-            <div className="p-field">
-              <label>
-                <span className="required-field">*</span>
-                {reqView ? "היררכיה חדשה" : "היררכיה"}
-              </label>
-              <HierarchyField
-                isEdit={!onlyForView}
-                hierarchy={hierarchy}
-                setIsHierarchyFree={setIsHierarchyFree}
-                methods={methods}
-              />
-            </div>
-          </div>
-
-          {reqView && (
-            <div className="p-fluid-item p-fluid-item">
-              <div className="p-field">
-                <label>
-                  <span className="required-field">*</span>
-                  היררכיה ישנה
-                </label>
-                <HierarchyField
-                  isEdit={!onlyForView}
-                  hierarchy={{ hierarchy: hierarchy.hierarchy, name: hierarchy.oldName }}
-                  setIsHierarchyFree={setIsHierarchyFree}
-                  methods={methods}
-                />
-              </div>
-            </div>
-          )}
-
-          {!reqView && (
-            <div className="p-fluid-item p-fluid-item">
-              <div className="p-field">
-                {getLabel({ labelName: "מספר תפקידים" })}
-                <InputText
-                  id="2011"
-                  type="text"
-                  disabled
-                  style={disabledInputStyle}
-                  placeholder={hierarchy?.directRoles ? hierarchy.directRoles?.length : 0}
-                />
-              </div>
-            </div>
-          )}
-
-          <div className="p-fluid-item p-fluid-item">
-            <div className="p-field">
-              {getLabel({ labelName: "מזהה היררכיה" })}
-              <InputText id="2011" type="text" disabled style={disabledInputStyle} placeholder={hierarchy.id} />
-            </div>
-          </div>
-
-          {(!onlyForView || reqView) && (
-            <div className="p-fluid-item">
-              <Approver
-                setValue={methods.setValue}
-                name="approvers"
-                tooltip='רס"ן ומעלה ביחידתך'
-                multiple={true}
-                errors={errors}
-                trigger={methods.trigger}
-                defaultApprovers={GetDefaultApprovers([], false)}
-                disabled={isUserHoldType}
-              />
-            </div>
-          )}
-
-          {(reqView || !onlyForView) && (
-            <div className="p-fluid-item p-fluid-item-flex1">
-              <div className="p-field">
-                <label>
-                  <span></span>הערות
-                </label>
-                <InputTextarea
-                  {...methods.register("comments")}
-                  id="2028"
-                  type="text"
-                  placeholder="הכנס הערות לבקשה..."
-                  disabled={onlyForView}
-                />
-              </div>
-            </div>
-          )}
+          <InputForm fields={formFields} item={hierarchy} isEdit={!onlyForView} errors={errors} methods={methods} />
         </div>
-      </FormProvider>
     );
   }
 );

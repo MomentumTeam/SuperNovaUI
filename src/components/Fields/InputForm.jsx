@@ -1,14 +1,20 @@
 import React, { createContext } from "react";
+import Approver from './Approver';
+import { HierarchyField } from './HierarchyChangeField';
 import { InputCalanderField } from "./InputCalander";
 import { InputDropdown } from "./InputDropdown";
 import { InputListBox } from './InputListBox';
 import { InputTextField } from "./InputText";
+import { InputTextAreaField } from './InputTextArea';
 
 export const InputTypes = {
   TEXT: "TEXT",
+  TEXTAREA: "TEXTAREA",
   CALANDER: "CALANDER",
   DROPDOWN: "DROPDOWN",
   LISTBOX: "LISTBOX",
+  HIERARCHY_CHANGE: "HIERARCHY_CHANGE",
+  APPROVER: "APPROVER"
 };
 
 export const InputFormContext = createContext(null);
@@ -29,6 +35,7 @@ const InputForm = ({ fields, item, methods, isEdit, errors }) => {
             type={field?.type}
             keyFilter={field?.keyFilter}
             additionalClass={field?.additionalClass}
+            placeholder={field?.placeholder}
           />
         );
       case InputTypes.CALANDER:
@@ -68,6 +75,51 @@ const InputForm = ({ fields, item, methods, isEdit, errors }) => {
             additionalClass={field?.additionalClass}
             validator={field?.validator}
           />
+        );
+      case InputTypes.TEXTAREA:
+        return (
+          <InputTextAreaField
+            item={item}
+            methods={methods}
+            errors={errors}
+            fieldName={field.fieldName}
+            displayName={field.displayName}
+            isEdit={isEdit}
+            canEdit={field?.canEdit}
+            type={field?.type}
+            keyFilter={field?.keyFilter}
+            additionalClass={field?.additionalClass}
+            placeholder={field?.placeholder}
+            required={field?.required}
+          />
+        );
+      case InputTypes.HIERARCHY_CHANGE:
+        return (
+          <HierarchyField
+            item={field?.item ? field.item : item}
+            setIsHierarchyFree={field?.setFunc}
+            methods={methods}
+            errors={errors}
+            fieldName={field.fieldName}
+            displayName={field.displayName}
+            isEdit={isEdit}
+            canEdit={field?.canEdit}
+            additionalClass={field?.additionalClass}
+          />
+        );
+      case InputTypes.APPROVER:
+        return (
+          <div className="p-fluid-item">
+            <Approver
+              setValue={methods.setValue}
+              name={field.fieldName}
+              tooltip={field?.tooltip}
+              multiple={true}
+              errors={errors}
+              defaultApprovers={field?.default}
+              disabled={field?.disabled}
+            />
+          </div>
         );
       default:
         return <></>;
