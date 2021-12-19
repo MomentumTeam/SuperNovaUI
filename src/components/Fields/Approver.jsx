@@ -57,11 +57,10 @@ const Approver = ({
     );
   };
 
-  // useEffect(() => {
-  //   // setSelectedApprover(defaultApprovers);
-  //   setApproverSuggestions([]);
-  //   console.log(defaultApprovers)
-  // }, [type]);
+  useEffect(() => {
+    setSelectedApprover(defaultApprovers);
+    setApproverSuggestions([]);
+  }, [type, defaultApprovers]);
 
 
   return (
@@ -93,18 +92,15 @@ const Approver = ({
           onChange={(e) => {
             console.log(e)
             if (multiple && Array.isArray(e.value)) {
-              const approvers = e.value.map(
-                ({ id, displayName, identityCard, personalNumber }) => ({
-                  id,
-                  displayName,
-                  ...identityCard,
-                  ...personalNumber,
-                })
-              );
+              const approvers = e.value.map(({ id, displayName, identityCard, personalNumber }) => ({
+                id,
+                displayName,
+                ...(identityCard && { identityCard }),
+                ...(personalNumber && { personalNumber }),
+              }));
 
               setSelectedApprover(approvers);
               setValue(name, approvers);
-              // if (trigger) trigger(name);
             }
 
             if (!multiple) {
@@ -113,12 +109,12 @@ const Approver = ({
               if (e.value?.id) {
                 const { id, displayName, identityCard, personalNumber } =
                   e.value;
-               setValue(name, [{ id, displayName, ...identityCard, ...personalNumber }]);
+               setValue(name, [
+                 { id, displayName, ...(identityCard && { identityCard }), ...(personalNumber && { personalNumber }) },
+               ]);
               } else {
                 setValue(name, []);
               }
-
-              // if (trigger) trigger(name);
             }
           }}
         />
