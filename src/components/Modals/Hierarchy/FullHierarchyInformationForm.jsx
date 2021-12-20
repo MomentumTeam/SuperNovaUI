@@ -20,6 +20,7 @@ const FullHierarchyInformationForm = forwardRef(
     const [isHierarchyFree, setIsHierarchyFree] = useState(true);
     const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
     const [hierarchy, setHierarchy] = useState(requestObject);
+    const [defaultApprovers, setDefaultApprovers] = useState([]);
 
     const validationSchema = Yup.object().shape({
       isUserApprover: Yup.boolean(),
@@ -59,6 +60,8 @@ const FullHierarchyInformationForm = forwardRef(
     const { errors } = methods.formState;
 
     useEffect(async () => {
+      let groupId; 
+
       if (requestObject) {
         if (reqView) {
           const { hierarchyReadOnly, hierarchyName } = getHierarchy(requestObject.adParams.ouDisplayName);
@@ -68,11 +71,17 @@ const FullHierarchyInformationForm = forwardRef(
             oldName: requestObject.adParams.oldOuName,
             id: requestObject.kartoffelParams.id,
           });
+          groupId = requestObject.kartoffelParams.id;
         } else {
           setHierarchy(requestObject);
+          groupId = requestObject.id;
         }
       }
-    }, [requestObject]);
+
+      const result = await GetDefaultApprovers({ request: requestObject, onlyForView, user: userStore.user, groupId });
+      setDefaultApprovers(result || []);
+      methods.setValue("isUserApprover", result.length > 0)
+    }, []);
 
     const onSubmit = async (data) => {
       try {
@@ -82,7 +91,7 @@ const FullHierarchyInformationForm = forwardRef(
         throw new Error(err.errors);
       }
       const { approvers, comments, hierarchyName } = data;
-      const ouDisplayName = getOuDisplayName(hierarchy.hierarchy, hierarchyName);
+      const ouDisplayName = getOuDisplayName(hierarchy.hierarchy, hierarchy.name);
 
       const req = {
         commanders: approvers,
@@ -146,8 +155,8 @@ const FullHierarchyInformationForm = forwardRef(
         fieldName: "approvers",
         inputType: InputTypes.APPROVER,
         tooltip: 'רס"ן ומעלה ביחידתך',
-        default: GetDefaultApprovers(requestObject, onlyForView),
-        disabled: onlyForView || isUserHoldType,
+        default: defaultApprovers,
+        disabled: onlyForView || methods.watch("isUserApprover"),
         force: true,
         secured: () => !onlyForView || reqView,
       },

@@ -3,7 +3,7 @@ import { apiBaseUrl } from '../constants/api';
 
 export const getUserTypeReq = async (entityId) => {
   const userType = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/approver/userType/${entityId}`
+    `${apiBaseUrl}/api/approvers/userType/${entityId}`
   );
   return userType.data;
 };

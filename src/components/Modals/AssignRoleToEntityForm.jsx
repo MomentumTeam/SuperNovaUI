@@ -31,7 +31,7 @@ import {
   getEntityByMongoId,
   searchRolesByRoleId,
 } from "../../service/KartoffelService";
-import { isApproverValid } from "../../service/ApproverService";
+import { getUserTypeReq, isApproverValid } from "../../service/ApproverService";
 import { USER_SOURCE_DI, USER_TYPE } from '../../constants';
 import { isUserHoldType } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
@@ -64,17 +64,17 @@ const validationSchema = Yup.object().shape({
 const AssignRoleToEntityForm = forwardRef(
   ({ showJob = true, setIsActionDone, onlyForView, requestObject }, ref) => {
     const { appliesStore, userStore } = useStores();
-    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
-    const [approvers, setApprovers] = useState(GetDefaultApprovers(requestObject, onlyForView, showJob));
+    const [roles, setRoles] = useState([]);
+    const [userSuggestions, setUserSuggestions] = useState([]);
+    const [roleSuggestions, setRoleSuggestions] = useState([]);
+    const [defaultApprovers, setDefaultApprovers] = useState([]);
 
+    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
 
     const { register, handleSubmit, setValue, getValues, watch, formState } = useForm({
       resolver: yupResolver(validationSchema),
       defaultValues: { isUserApprover },
     });
-    const [userSuggestions, setUserSuggestions] = useState([]);
-    const [roles, setRoles] = useState([]);
-    const [roleSuggestions, setRoleSuggestions] = useState([]);
 
     const { errors } = formState;
 
@@ -90,8 +90,8 @@ const AssignRoleToEntityForm = forwardRef(
 
         const roleId = requestObject.kartoffelParams.roleId;
         setValue("roleId", roleId);
-        
-        // TODO: ask if this is right to get this from api
+
+        // TODO: change in req
         const role = await getRoleByRoleId(roleId);
         setValue("hierarchy", role.hierarchy);
         setValue("role", role, { shouldValidate: true });
@@ -104,6 +104,9 @@ const AssignRoleToEntityForm = forwardRef(
 
         // TODO: fix due
         setValue("changeRoleAt", +requestObject.due);
+  
+        const result = await GetDefaultApprovers({ request: requestObject, onlyForView, user: userStore.user });
+        setDefaultApprovers(result || []);
       };
 
       if (requestObject) {
@@ -212,25 +215,42 @@ const AssignRoleToEntityForm = forwardRef(
     };
 
     const handleRoleSelected = async (roleId) => {
+      let approver = [], entity;
+
       try {
-        const entity = await getEntityByRoleId(roleId);
+        entity = await getEntityByRoleId(roleId);
+    
         if (entity) {
+          // If role is taken
           setValue("currentRoleUser", entity.fullName);
 
-          if (isUserApprover) {
-            setApprovers([entity]);
-            if (entity.identityCard === "") delete entity.identityCard;
-            if (entity.personalNumber === "") delete entity.personalNumber;
-            setValue("approvers", [entity]);
-          }
-        }
+          // Check if the entity is approver, if not, set the 
+          const { type } = await getUserTypeReq(entity.id);
+          const isEntityApprover = type.includes(USER_TYPE.COMMANDER)
+          
+          if (isEntityApprover) approver = [entity];
+        } 
+
       } catch (err) {
         setValue("currentRoleUser", "");
         setValue("roleId", roleId);
-        if (isUserApprover) {
-          setApprovers([userStore.user]);
-        }
       }
+
+      try {    
+        if ((isUserApprover && !entity) || (isUserApprover && approver.length === 0)) {
+            const result = await GetDefaultApprovers({
+              request: requestObject,
+              onlyForView,
+              user: userStore.user,
+              groupId: getValues("hierarchy").id,
+            });
+            approver = result;
+          }
+      } catch (error) {
+      }
+      setDefaultApprovers(approver);
+      setValue("approvers", approver);
+      setValue("isUserApprover", approver.length > 0);
     };
 
     const onSearchRoleId = async (event) => {
@@ -251,7 +271,7 @@ const AssignRoleToEntityForm = forwardRef(
         setValue("currentRoleUser", "");
 
         if (isUserApprover) {
-          setApprovers([]);
+          setDefaultApprovers([]);
         }
         return;
       }
@@ -278,7 +298,7 @@ const AssignRoleToEntityForm = forwardRef(
       handleRoleSelected(role.roleId);
     };
 
-    const itemTemplate = (item) => <>{item.displayName}</>;
+    const itemTemplate = (item) => <>{item.displayName? item.displayName: item.fullName + `${item.jobTitle?'-' +item.jobTitle:""}`}</>;
 
     const setApproverValue = async (name, data) => {
       const newGroupId = watch("hierarchy")?.id;
@@ -443,7 +463,9 @@ const AssignRoleToEntityForm = forwardRef(
                 onChange={(e) => {
                   setValue("role", e.value, { shouldValidate: true });
                   setValue("roleId", e.value.roleId);
-
+                  setValue("approvers", [])
+                  setDefaultApprovers([])
+                  
                   onRoleIdSelected();
                 }}
                 disabled={onlyForView}
@@ -473,8 +495,11 @@ const AssignRoleToEntityForm = forwardRef(
                 onSelect={() => onRoleIdSelected()}
                 onChange={(e) => {
                   setValue("roleId", e.value.roleId ? e.value.roleId : e.value);
+
                   setValue("currentRoleUser", "");
                   setValue("role", "");
+                  setValue("approvers", []);
+                  setDefaultApprovers([]);
                 }}
                 disabled={onlyForView}
               />
@@ -538,8 +563,8 @@ const AssignRoleToEntityForm = forwardRef(
               name="approvers"
               tooltip='רס"ן ומעלה ביחידתך'
               multiple={true}
-              defaultApprovers={approvers}
-              disabled={onlyForView || isUserApprover}
+              defaultApprovers={defaultApprovers}
+              disabled={onlyForView || watch("isUserApprover")}
               errors={errors}
             />
             <label htmlFor="2021">

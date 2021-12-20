@@ -39,6 +39,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
   const { appliesStore, userStore } = useStores();
   const [hierarchyByRoleId, setHierarchyByRoleId] = useState(null);
   const [roleSuggestions, setRoleSuggestions] = useState([]);
+  const [defaultApprovers, setDefaultApprovers] = useState([]);
 
   const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
 
@@ -54,6 +55,8 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
       setValue("comments", requestObject.comments);
       setValue("roleId", requestObject.kartoffelParams.roleId);
       setValue("hierarchy", requestObject.adParams.ouDisplayName);
+
+      // TODO: change in req
       const role = await getRoleByRoleId(requestObject.kartoffelParams.roleId);
       setHierarchyByRoleId(role.hierarchy);
       setValue("role", role);
@@ -98,6 +101,15 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
   );
 
   const handleOrgSelected = async (org) => {
+    const result = await GetDefaultApprovers({
+      request: requestObject,
+      user: userStore.user,
+      onlyForView,
+      groupId: org.id,
+    });
+    setDefaultApprovers(result || []);
+    setValue("isUserApprover", result.length > 0);
+
     const roles = await getRolesUnderOG({ id: org.id });
     setRoles(roles || []);
   };
@@ -249,8 +261,8 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
           multiple={true}
           errors={errors}
           tooltip='רס"ן ומעלה ביחידתך'
-          disabled={onlyForView || isUserApprover}
-          defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
+          disabled={onlyForView || watch("isUserApprover")}
+          defaultApprovers={defaultApprovers}
         />
       </div>
       <div className="p-fluid-item p-fluid-item-flex1">

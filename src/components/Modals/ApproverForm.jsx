@@ -49,6 +49,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
   const { appliesStore, userStore } = useStores();
   const [approverType, setApproverType] = useState();
   const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
+  const [defaultApprovers, setDefaultApprovers] = useState([]);
 
   const { register, handleSubmit, setValue, getValues, formState, watch } =
     useForm({
@@ -58,7 +59,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
   const [userSuggestions, setUserSuggestions] = useState([]);
   const { errors } = formState;
 
-  useEffect(() => {
+  useEffect(async() => {
     setValue("approverType", USER_TYPE.COMMANDER);
     setApproverType(USER_TYPE.COMMANDER);
 
@@ -69,6 +70,9 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
       setValue('personalNumber', requestObject.additionalParams.personalNumber || requestObject.additionalParams.identityCard);
       setApproverType(requestObject.additionalParams.type);
     }
+
+    const result = await GetDefaultApprovers({ request: requestObject, onlyForView, user: userStore.user });
+    setDefaultApprovers(result || [])
   }, []);
   
   const onSubmit = async (data) => {
@@ -255,7 +259,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
           errors={errors}
           tooltip={'סא"ל ומעלה ביחידתך'} //todo: ASK
           disabled={onlyForView || isUserApprover}
-          defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
+          defaultApprovers={defaultApprovers}
         />
       </div>
       <div className="p-fluid-item p-fluid-item-flex1">
