@@ -23,6 +23,7 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
   const [jobTitleSuggestions, setJobTitleSuggestions] = useState([]);
   const [entity, setEntity] = useState({});
   const [role, setRole] = useState();
+  const [defaultApprovers, setDefaultApprovers] = useState([]);
 
   const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
 
@@ -80,12 +81,22 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
       setValue("roleName", reqView ? requestObject?.kartoffelParams?.jobTitle : requestObject.jobTitle);
 
       if (reqView) {
+        // TODO: change in req
         const role = await getRoleByRoleId(requestObject.kartoffelParams.roleId);
         setRole(role);
       } else {
         setRole(requestObject);
       }
     }
+
+    const result = await GetDefaultApprovers({
+      request: requestObject,
+      onlyForView,
+      user: userStore.user,
+      groupId: role?.directGroup,
+    });
+    setDefaultApprovers(result || []);
+    setValue("isUserApprover", result.length > 0);
   }, [requestObject]);
 
   useEffect(async () => {
@@ -257,8 +268,8 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
             tooltip='רס"ן ומעלה ביחידתך'
             multiple={true}
             errors={errors}
-            disabled={onlyForView || isUserApprover}
-            defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
+            disabled={onlyForView || watch("isUserApprover")}
+            defaultApprovers={defaultApprovers}
           />
         </div>
       )}

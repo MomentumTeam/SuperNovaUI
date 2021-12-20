@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import React, { useImperativeHandle, forwardRef, useEffect } from 'react';
+import React, { useImperativeHandle, forwardRef, useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
@@ -30,6 +30,8 @@ const validationSchema = Yup.object().shape({
 const CreateOGForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject }, ref) => {
     const { appliesStore, userStore } = useStores();
+    const [defaultApprovers, setDefaultApprovers] = useState([]);
+
     const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
     const { register, handleSubmit, setValue, formState, watch } = useForm({
       resolver: yupResolver(validationSchema),
@@ -93,6 +95,17 @@ const CreateOGForm = forwardRef(
       }
     };
 
+    const handleOrgSelected = async (org) => {
+      const result = await GetDefaultApprovers({
+        request: requestObject,
+        user: userStore.user,
+        onlyForView,
+        groupId: org.id,
+      });
+      setDefaultApprovers(result || []);
+      setValue("isUserApprover", result.length > 0);
+    };
+
     return (
       <div className="p-fluid">
         <div className="p-fluid-item p-fluid-item-flex1">
@@ -100,10 +113,11 @@ const CreateOGForm = forwardRef(
             setValue={setValue}
             name="parentHierarchy"
             errors={errors}
-            labelText={'היררכיית אב'}
-            ogValue={watch('parentHierarchy')}
+            labelText={"היררכיית אב"}
+            ogValue={watch("parentHierarchy")}
             disabled={onlyForView}
             userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
+            onOrgSelected={handleOrgSelected}
           />
         </div>
         <div className="p-fluid-item">
@@ -112,11 +126,11 @@ const CreateOGForm = forwardRef(
               <span className="required-field">*</span>שם היררכיה חדשה
             </label>
             <span className="p-input-icon-left">
-              {
-                watch('parentHierarchy') && watch('newHierarchy') && <i>{watch("isHierarchyAlreadyTakenData")?.isOGNameAlreadyTaken  ? "תפוס" : "פנוי"}</i>
-              }
+              {watch("parentHierarchy") && watch("newHierarchy") && (
+                <i>{watch("isHierarchyAlreadyTakenData")?.isOGNameAlreadyTaken ? "תפוס" : "פנוי"}</i>
+              )}
               <InputText
-                {...register('newHierarchy')}
+                {...register("newHierarchy")}
                 id="2021"
                 type="text"
                 required
@@ -124,11 +138,7 @@ const CreateOGForm = forwardRef(
                 onChange={onHierarchyNameChange}
               />
               <label>{errors.isHierarchyAlreadyTakenData && <small>יש לבחור תפקיד פנוי</small>}</label>
-              <label>
-                {errors.newHierarchy && (
-                  <small style={{ color: 'red' }}>יש למלא ערך</small>
-                  )}
-              </label>
+              <label>{errors.newHierarchy && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
             </span>
           </div>
         </div>
@@ -140,15 +150,15 @@ const CreateOGForm = forwardRef(
             errors={errors}
             isHighRank={true}
             tooltip='סא"ל ומעלה ביחידתך'
-            disabled={onlyForView || isUserApprover}
-            defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
+            disabled={onlyForView || watch("isUserApprover")}
+            defaultApprovers={defaultApprovers}
           />
         </div>
         <div className="p-fluid-item p-fluid-item-flex1">
           <div className="p-field">
             <label htmlFor="2023">הערות</label>
             <InputTextarea
-              {...register('comments')}
+              {...register("comments")}
               id="2023"
               type="text"
               placeholder="הכנס הערות לבקשה..."

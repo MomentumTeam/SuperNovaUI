@@ -1,4 +1,4 @@
-import React, { useEffect, forwardRef, useImperativeHandle } from 'react';
+import React, { useEffect, forwardRef, useImperativeHandle, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
@@ -31,6 +31,7 @@ const CreateSpecialEntityForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject }, ref) => {
     const { appliesStore, userStore} = useStores();
     const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
+    const [defaultApprovers, setDefaultApprovers] = useState([]);
 
     const { register, handleSubmit, watch, setValue, formState } = useForm({
       resolver: yupResolver(validationSchema),
@@ -38,7 +39,7 @@ const CreateSpecialEntityForm = forwardRef(
     });
     const { errors } = formState;
 
-    useEffect(() => {
+    useEffect(async() => {
       if (requestObject) {
         setValue("comments", requestObject.comments);
         setValue("firstName", requestObject.kartoffelParams.firstName);
@@ -47,7 +48,11 @@ const CreateSpecialEntityForm = forwardRef(
         setValue("phone", requestObject.kartoffelParams.mobilePhone[0]);
         setValue("classification", requestObject.kartoffelParams.clearance);
         setValue("sex", requestObject.kartoffelParams.sex);
+
       }
+
+      const result = await GetDefaultApprovers({ request: requestObject, onlyForView, user: userStore.user });
+      setDefaultApprovers(result || []);
     }, []);
 
     const onSubmit = async (data) => {
@@ -181,7 +186,7 @@ const CreateSpecialEntityForm = forwardRef(
             multiple={true}
             tooltip='רס"ן ומעלה ביחידתך'
             disabled={onlyForView || isUserApprover}
-            defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
+            defaultApprovers={defaultApprovers}
           />
         </div>
         <div className="p-fluid-item p-fluid-item-flex1">
