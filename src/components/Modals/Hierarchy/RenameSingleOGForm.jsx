@@ -97,14 +97,20 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
     []
   );
 
-  const setCurrentHierarchyFunction = async (name, value) => {
-    setValue(name, value);
-
-    if (value?.id) {
-      const roles = await getRolesUnderOG({ id: value.id });
-      setRoles(roles);
-    }
+  const handleOrgSelected = async (org) => {
+    const roles = await getRolesUnderOG({ id: org.id });
+    setRoles(roles || []);
   };
+
+
+//   const setCurrentHierarchyFunction = async (name, value) => {
+//     setValue(name, value);
+// 
+//     if (value?.id) {
+//       const roles = await getRolesUnderOG({ id: value.id });
+//       setRoles(roles);
+//     }
+//   };
 
   const initializeRoleIdDependencies = () => {
     setValue("currentHierarchy", "");
@@ -162,9 +168,10 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
       <div className="p-fluid-item p-fluid-item-flex1">
         <div className="p-field">
           <Hierarchy
-            setValue={setCurrentHierarchyFunction}
+            setValue={setValue}
             name="currentHierarchy"
-            ogValue={hierarchyByRoleId}
+            onOrgSelected={handleOrgSelected}
+            ogValue={watch("currentHierarchy")}
             errors={errors}
             disabled={onlyForView}
             userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}

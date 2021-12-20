@@ -22,15 +22,27 @@ const UserProfileCard = ({ user, userType, openFullDetailsModal }) => (
       <div className="personal-information-item">
         <dl>
           <dt>שם</dt>
-          <dd>{user?.firstName}</dd>
+          <dd>
+            {user?.firstName}
+            {user?.lastName ? " " + user.lastName : ""}
+          </dd>
         </dl>
       </div>
-      <div className="personal-information-item">
-        <dl>
-          <dt>מ'א</dt>
-          <dd>{user?.personalNumber}</dd>
-        </dl>
-      </div>
+      {user?.personalNumber ? (
+        <div className="personal-information-item">
+          <dl>
+            <dt>מ"א</dt>
+            <dd>{user.personalNumber}</dd>
+          </dl>
+        </div>
+      ) : (
+        user?.identityCard && <div className="personal-information-item">
+          <dl>
+            <dt>ת"ז</dt>
+            <dd>{user?.identityCard}</dd>
+          </dl>
+        </div>
+      )}
       <div className="personal-information-item">
         <dl>
           <dt>מייל</dt>
@@ -44,9 +56,7 @@ const UserProfileCard = ({ user, userType, openFullDetailsModal }) => (
       <div className="personal-information-item">
         <dl>
           <dt>תפקיד</dt>
-          <dd>
-              {user?.jobTitle}
-          </dd>
+          <dd>{user?.jobTitle}</dd>
         </dl>
       </div>
       <div className="personal-information-item">
