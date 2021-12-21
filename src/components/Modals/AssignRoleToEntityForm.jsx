@@ -453,7 +453,7 @@ const AssignRoleToEntityForm = forwardRef(
           </div>
           <div className="p-fluid-item ">
             <div className="p-field p-field-blue">
-              <label htmlFor="2025">שם תפקיד</label>
+              <label htmlFor="2025">בחירת תפקיד מתוך רשימה</label>
               <Dropdown
                 {...register("role")}
                 inputId="2025"

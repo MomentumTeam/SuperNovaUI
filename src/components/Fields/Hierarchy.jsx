@@ -34,7 +34,7 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
       <div className="p-field">
         <label htmlFor="2020">
           <span className="required-field">*</span>
-          {labelText}
+          {disabled? labelText:`הכנסת ${labelText}`}
         </label>
         <AutoComplete
           disabled={disabled || false}

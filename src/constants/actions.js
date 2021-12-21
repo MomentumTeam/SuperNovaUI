@@ -71,7 +71,7 @@ export const actions = [
   {
     id: 6,
     className: "btn-actions btn-actions6",
-    actionName: "גורם מאשר",
+    actionName: "בקשה להרשאות",
     infoText: `בקשה לקבלת הרשאות שונות במערכת:
     בחירת סוג הגורם המאשר הרצוי
     ▼
