@@ -21,7 +21,6 @@ const appRoutes = [
     classIcon: "aside-item-btn5",
     label: "Home",
     component: ListUsersPage,
-    roles: [USER_TYPE.ADMIN, USER_TYPE.BULK, USER_TYPE.COMMANDER, USER_TYPE.SECURITY, USER_TYPE.SUPER_SECURITY]
   },
 ];
 

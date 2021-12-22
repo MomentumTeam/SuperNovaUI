@@ -12,35 +12,58 @@ import HorizontalLine from "../../HorizontalLine";
 import { GetDefaultApprovers } from "../../../utils/approver";
 import { isUserHoldType } from "../../../utils/user";
 import { USER_TYPE } from "../../../constants";
-import { getOuDisplayName } from '../../../utils/hierarchy';
+import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { getSamAccountNameFromUniqueId } from '../../../utils/fields';
 import { AutoComplete } from 'primereact/autocomplete';
+import { isApproverValid } from '../../../service/ApproverService';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
-  hierarchy: Yup.object().required("יש למלא ערך").test("does-user-already-exist-in-hierarchy","שם התפקיד קיים בהיררכיה שבחרת. יש לערוך את שמו דרך טבלת התפקידים", function(hierarchy) {
-    if(!Array.isArray(hierarchy?.directRoles)) {
-      return false
-    }
-    return !hierarchy.directRoles.map(role => role.jobTitle).includes(this.parent.role.jobTitle)
-  }),
-  currentHierarchy: Yup.object().required("יש למלא ערך"),
+  hierarchy: Yup.object()
+    .required('יש לבחור היררכיה')
+    .test(
+      'does-user-already-exist-in-hierarchy',
+      'שם התפקיד קיים בהיררכיה שבחרת. יש לערוך את שמו דרך טבלת התפקידים',
+      (hierarchy, context) => {
+        if (!Array.isArray(hierarchy?.directRoles)) return false;
+        return !hierarchy.directRoles.map((role) => role.jobTitle).includes(context.parent.role.jobTitle);
+      }
+    ),
+  currentHierarchy: Yup.object().required('יש לבחור היררכיה'),
   role: Yup.object().required(),
+  roleId: Yup.string('יש להכניס מזהה תקין').required('יש למלא ערך').matches(/.*@.*/, 'יש להכניס מזהה תקין'),
   isUserApprover: Yup.boolean(),
-  approvers: Yup.array().when("isUserApprover", {
-    is: false,
-    then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
-  }),
+  approvers: Yup.array()
+    .when('isUserApprover', {
+      is: false,
+      then: Yup.array().min(1, 'יש לבחור לפחות גורם מאשר אחד').required('יש לבחור לפחות גורם מאשר אחד'),
+    })
+    .test({
+      name: 'check-if-valid',
+      message: 'יש לבחור מאשרים תקינים (מהיחידה בלבד)',
+      test: async (approvers, context) => {
+        let isTotalValid = true;
+
+        if (approvers && Array.isArray(approvers) &&  context.parent?.currentHierarchy?.id) {
+          await Promise.all(
+            approvers.map(async (approver) => {
+              const { isValid } = await isApproverValid(approver.entityId, context.parent.currentHierarchy.id);
+              if (!isValid) isTotalValid = false;
+            })
+          );
+        }
+
+        return isTotalValid;
+      },
+    }),
   comments: Yup.string().optional(),
-  roleId: Yup.string("יש להכניס מזהה תקין").required("יש למלא ערך").matches(/.*@.*/, "יש להכניס מזהה תקין"),
 });
 
 const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestObject }, ref) => {
   const { appliesStore, userStore } = useStores();
-  const [hierarchyByRoleId, setHierarchyByRoleId] = useState(null);
   const [roleSuggestions, setRoleSuggestions] = useState([]);
   const [defaultApprovers, setDefaultApprovers] = useState([]);
-
+  console.log('ddj')
   const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
 
   const { register, handleSubmit, setValue, watch, formState, getValues } = useForm({
@@ -52,15 +75,18 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
 
   useEffect(() => {
     const initializeValues = async () => {
-      setValue("comments", requestObject.comments);
-      setValue("roleId", requestObject.kartoffelParams.roleId);
-      setValue("hierarchy", requestObject.adParams.ouDisplayName);
+      setValue('comments', requestObject.comments);
+      setValue('roleId', requestObject.kartoffelParams.roleId);
+      setValue('hierarchy', requestObject.kartoffelParams.hierarchy); 
+      setValue('currentHierarchy', requestObject.kartoffelParams.oldHierarchy); 
 
       // TODO: change in req
       const role = await getRoleByRoleId(requestObject.kartoffelParams.roleId);
-      setHierarchyByRoleId(role.hierarchy);
       setValue("role", role);
       setRoles([role]);
+
+      const result = await GetDefaultApprovers({ request: requestObject, onlyForView, user: userStore.user });
+      setDefaultApprovers(result || []);
     };
 
     if (requestObject) {
@@ -74,7 +100,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
     } catch (err) {
       throw new Error(err.errors);
     }
-    const { roleId, approvers, hierarchy, comments, role } = data;
+    const { roleId, approvers, hierarchy, comments, role, currentHierarchy } = data;
     const req = {
       comments: comments,
       commanders: approvers,
@@ -82,6 +108,8 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
         roleId: roleId,
         directGroup: hierarchy.id,
         currentJobTitle: role.jobTitle,
+        hierarchy: hierarchyConverse(hierarchy),
+        oldHierarchy: hierarchyConverse(currentHierarchy),
       },
       adParams: {
         samAccountName: getSamAccountNameFromUniqueId(roleId),
@@ -110,25 +138,15 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
     setDefaultApprovers(result || []);
     setValue("isUserApprover", result.length > 0);
 
-    const roles = await getRolesUnderOG({ id: org.id });
+    const roles = await getRolesUnderOG({ id: org.id, direct: true });
     setRoles(roles || []);
   };
 
-
-//   const setCurrentHierarchyFunction = async (name, value) => {
-//     setValue(name, value);
-// 
-//     if (value?.id) {
-//       const roles = await getRolesUnderOG({ id: value.id });
-//       setRoles(roles);
-//     }
-//   };
 
   const initializeRoleIdDependencies = () => {
     setValue("currentHierarchy", "");
     setValue("role", "");
     setRoles([]);
-    setHierarchyByRoleId("");
   };
 
   const onRoleIdSelected = async () => {
@@ -154,7 +172,6 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
         setValue("role", role);
 
         setRoles([role]);
-        setHierarchyByRoleId(role.hierarchy);
       } catch (e) {
         initializeRoleIdDependencies();
       }
@@ -221,6 +238,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             suggestions={roleSuggestions}
             completeMethod={onSearchRoleId}
             onChange={(e) => {
+              setValue("role", null)
               setValue("roleId", e.value.roleId ? e.value.roleId : e.value);
             }}
             onSelect={() => onRoleIdSelected()}
@@ -228,7 +246,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             required
             placeholder="מזהה תפקיד"
             disabled={onlyForView}
-            tooltip={'לדוגמה: "T12345678"'}
+            tooltip={onlyForView?'':'לדוגמה: "T12345678"'}
             tooltipOptions={{ position: "top" }}
           />
           <label>

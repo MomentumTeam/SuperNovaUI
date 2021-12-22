@@ -15,8 +15,8 @@ import { getSamAccountNameFromEntity } from '../../../utils/fields';
 
 
 const validationSchema = Yup.object().shape({
-  firstName: Yup.string().matches(NAME_REG_EXP, "שם לא תקין").required("יש לבחור שם פרטי"),
-  lastName: Yup.string().matches(NAME_REG_EXP, "שם לא תקין").required("יש לבחור שם משפחה"),
+  firstName: Yup.string().required("יש לבחור שם פרטי").matches(NAME_REG_EXP, "שם לא תקין"),
+  lastName: Yup.string().required("יש לבחור שם משפחה").matches(NAME_REG_EXP, "שם לא תקין"),
   hasIdentityCard: Yup.boolean(),
   identityCard: Yup.string().when("hasIdentityCard", {
     is: true,
@@ -189,11 +189,12 @@ const FullEntityInformationForm = forwardRef(({ setIsActionDone, onlyForView, re
     {
       fieldName: "clearance",
       displayName: "סיווג",
-      inputType: InputTypes.DROPDOWN,
       canEdit: true,
-      options: USER_CLEARANCE,
       secured: CanSeeUserClearance,
       force: true,
+      inputType: InputTypes.TEXT,
+      type: "num",
+      keyFilter: "num",
     },
   ];
 

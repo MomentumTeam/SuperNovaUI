@@ -18,13 +18,15 @@ const InputListBox = ({
 }) => {
   const disabled = !canEdit || !isEdit;
 
-  const [listOptions, setListOptions] = useState(item[fieldName]);
+  const [listOptions, setListOptions] = useState(item? item[fieldName]: []);
   const [newOption, setNewOption] = useState("");
   const [validNewOption, setValidNewOption] = useState(true);
 
   useEffect(() => {
-    setListOptions(item[fieldName]);
-    methods.setValue(fieldName, item[fieldName]);
+    if (item) {
+      setListOptions(item[fieldName]);
+      methods.setValue(fieldName, item[fieldName]);
+    }
     methods.clearErrors();
   }, [isEdit]);
 
@@ -72,7 +74,7 @@ const InputListBox = ({
           <div className="p-field p-col-12 p-md-4">
             <span className="p-input-icon-left">
               {validNewOption && newOption && (
-                <i className="pi pi-plus listbox-add" onClick={() => saveOptionInListOptions} />
+                <i className="pi pi-plus listbox-add" onClick={saveOptionInListOptions} />
               )}
               <InputText
                 className={validNewOption || !newOption ? "" : "p-invalid"}

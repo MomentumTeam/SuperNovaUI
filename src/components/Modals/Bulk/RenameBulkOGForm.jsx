@@ -19,17 +19,36 @@ import {
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { isUserHoldType } from '../../../utils/user';
 import { USER_TYPE } from '../../../constants';
-import { getOuDisplayName } from '../../../utils/hierarchy';
+import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
+import { isApproverValid } from '../../../service/ApproverService';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
   comments: Yup.string().optional(),
   hierarchy: Yup.object().required(),
+  currentHierarchy: Yup.object().required('יש לבחור היררכיה'),
   isUserApprover: Yup.boolean(),
-  approvers: Yup.array().when("isUserApprover", {
+  approvers: Yup.array().when('isUserApprover', {
     is: false,
-    then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
-  }),
+    then: Yup.array().min(1, 'יש לבחור לפחות גורם מאשר אחד').required('יש לבחור לפחות גורם מאשר אחד'),
+  }).test({
+      name: 'check-if-valid',
+      message: 'יש לבחור מאשרים תקינים (מהיחידה בלבד)',
+      test: async (approvers, context) => {
+        let isTotalValid = true;
+
+        if (approvers && Array.isArray(approvers) &&  context.parent?.currentHierarchy?.id) {
+          await Promise.all(
+            approvers.map(async (approver) => {
+              const { isValid } = await isApproverValid(approver.entityId, context.parent.currentHierarchy.id);
+              if (!isValid) isTotalValid = false;
+            })
+          );
+        }
+
+        return isTotalValid;
+      },
+    }),
   bulkFile: Yup.mixed()
     .test('required', 'יש להעלות קובץ!', (value) => {
       return value && value.length;
@@ -66,6 +85,9 @@ const RenameBulkOGForm = forwardRef(
         setValue('comments', requestObject.comments);
         setValue('hierarchy', data.request.adParams.ouDisplayName);
         setValue('rows', data.rows);
+        
+        const result = await GetDefaultApprovers({ request: requestObject, onlyForView, user: userStore.user });
+        setDefaultApprovers(result || []);
       };
       if (requestObject) {
         getBulkData();
@@ -78,8 +100,7 @@ const RenameBulkOGForm = forwardRef(
       } catch (err) {
         throw new Error(err.errors);
       }
-      const { hierarchy, approvers, bulkFile, comments } =
-        data;
+      const { hierarchy, approvers, bulkFile, comments, currentHierarchy } = data;
 
       const formData = new FormData();
       formData.append('bulkFiles', bulkFile[0]);
@@ -89,6 +110,8 @@ const RenameBulkOGForm = forwardRef(
         commanders: approvers,
         kartoffelParams: {
           directGroup: hierarchy.id,
+          hierarchy: hierarchyConverse(hierarchy),
+          oldHierarchy: hierarchyConverse(currentHierarchy),
         },
         adParams: {
           ouDisplayName: getOuDisplayName(hierarchy.hierarchy, hierarchy.name),

@@ -127,7 +127,6 @@ export const TableAppliesActionsTypes = {
 
 export const ROLE_CLEARANCE = [
   'בלמ"ס',
-  'בלמ"ס',
   'שמור',
   'סודי',
   'סודי ביותר',

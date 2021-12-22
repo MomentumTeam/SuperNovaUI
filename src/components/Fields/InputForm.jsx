@@ -6,6 +6,7 @@ import { InputDropdown } from "./InputDropdown";
 import { InputListBox } from './InputListBox';
 import { InputTextField } from "./InputText";
 import { InputTextAreaField } from './InputTextArea';
+import Hierarchy from './Hierarchy';
 
 export const InputTypes = {
   TEXT: "TEXT",
@@ -13,13 +14,14 @@ export const InputTypes = {
   CALANDER: "CALANDER",
   DROPDOWN: "DROPDOWN",
   LISTBOX: "LISTBOX",
+  HIERARCHY: "HIERARCHY",
   HIERARCHY_CHANGE: "HIERARCHY_CHANGE",
   APPROVER: "APPROVER"
 };
 
 export const InputFormContext = createContext(null);
 
-const InputForm = ({ fields, item, methods, isEdit, errors }) => {
+const InputForm = ({ fields, item = null, methods, isEdit, errors }) => {
   const getField = (field) => {
     switch (field.inputType) {
       case InputTypes.TEXT:
@@ -42,12 +44,19 @@ const InputForm = ({ fields, item, methods, isEdit, errors }) => {
         return (
           <InputCalanderField
             item={item}
-            methods={methods}
+            setValue={methods.setValue}
+            watch={methods.watch}
+            register={methods.register}
+            clearErrors={methods.clearErrors}
+            errors={errors}
             fieldName={field.fieldName}
             displayName={field.displayName}
             isEdit={isEdit}
             canEdit={field?.canEdit}
             additionalClass={field?.additionalClass}
+            required={field?.required}
+            fromNow={field?.fromNow}
+            showTime={field?.showTime}
           />
         );
       case InputTypes.DROPDOWN:
@@ -61,6 +70,8 @@ const InputForm = ({ fields, item, methods, isEdit, errors }) => {
             isEdit={isEdit}
             canEdit={field?.canEdit}
             additionalClass={field?.additionalClass}
+            errors={errors}
+            required={field?.required}
           />
         );
       case InputTypes.LISTBOX:
@@ -107,6 +118,28 @@ const InputForm = ({ fields, item, methods, isEdit, errors }) => {
             additionalClass={field?.additionalClass}
           />
         );
+      case InputTypes.HIERARCHY:
+        return (
+        <>
+          <div className="display-flex title-wrap" style={{ width: "inherit" }}>
+          <h2>היררכיה</h2>
+        </div>
+        <div className="p-fluid-item p-fluid-item-flex1">
+          <div className="p-field">
+
+          <Hierarchy
+            setValue={methods.setValue}
+            name={field.fieldName}
+            errors={errors}
+            ogValue={methods.watch(field.fieldName)}
+            disabled={field?.disabled}
+            userHierarchy={field.userHierarchy}
+            onOrgSelected={field?.handleOrgSelected}
+          />
+          </div>
+          </div>
+          </>
+        );
       case InputTypes.APPROVER:
         return (
           <div className="p-fluid-item">
@@ -130,7 +163,7 @@ const InputForm = ({ fields, item, methods, isEdit, errors }) => {
       {fields.map(
         (field) =>
           (field.secured === undefined || (field?.secured && field.secured())) &&
-          (item[field.fieldName] || field.force) &&
+          (!item || item[field.fieldName] || field.force) &&
           getField(field)
       )}
     </>

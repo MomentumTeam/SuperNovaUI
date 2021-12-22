@@ -92,9 +92,10 @@ const Approver = ({
           onChange={(e) => {
             console.log(e)
             if (multiple && Array.isArray(e.value)) {
-              const approvers = e.value.map(({ id, displayName, identityCard, personalNumber }) => ({
+              const approvers = e.value.map(({ id, displayName, entityId, identityCard, personalNumber }) => ({
                 id,
                 displayName,
+                entityId,
                 ...(identityCard && { identityCard }),
                 ...(personalNumber && { personalNumber }),
               }));
@@ -107,10 +108,9 @@ const Approver = ({
               setSelectedApprover(e.value);
 
               if (e.value?.id) {
-                const { id, displayName, identityCard, personalNumber } =
-                  e.value;
+                const { id, displayName, entityId, identityCard, personalNumber } = e.value;
                setValue(name, [
-                 { id, displayName, ...(identityCard && { identityCard }), ...(personalNumber && { personalNumber }) },
+                 { id, displayName,entityId, ...(identityCard && { identityCard }), ...(personalNumber && { personalNumber }) },
                ]);
               } else {
                 setValue(name, []);
@@ -122,7 +122,7 @@ const Approver = ({
           {errors?.approvers && (
             <small style={{ color: 'red' }}>
               {errors.approvers?.message
-                ? errors.approvers?.message
+                ? errors.approvers.message
                 : 'יש למלא ערך'}
             </small>
           )}

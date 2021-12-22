@@ -42,14 +42,23 @@ const validationSchema = Yup.object().shape({
     then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
   }),
   comments: Yup.string().optional(),
-  userName: Yup.object().required("יש לבחור שם משתמש"),
+  userName: Yup.string()
+    .required("יש לבחור שם משתמש")
+    .test({
+      name: "valid-user",
+      message: "נא לבחור משתמש",
+      test: (userName, context) => {
+        return userName && context.parent?.user;
+      },
+    }),
+  personalNumber: Yup.string().required("יש למלא ערך"),
 });
 
 const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }, ref) => {
   const { appliesStore, userStore } = useStores();
   const [approverType, setApproverType] = useState();
-  const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
   const [defaultApprovers, setDefaultApprovers] = useState([]);
+  const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
 
   const { register, handleSubmit, setValue, getValues, formState, watch } =
     useForm({
@@ -71,10 +80,9 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
       setApproverType(requestObject.additionalParams.type);
     }
 
-    const result = await GetDefaultApprovers({ request: requestObject, onlyForView, user: userStore.user });
+    const result = await GetDefaultApprovers({ request: requestObject, onlyForView, user: userStore.user, highCommander: true });
     setDefaultApprovers(result || [])
   }, []);
-  
   const onSubmit = async (data) => {
     const {
       approvers,
@@ -98,7 +106,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
       commanders: approvers,
       additionalParams: {
         entityId: user.id,
-        displayName: userName.displayName,
+        displayName: user.fullName,
         domainUsers: (user?.digitalIdentities || []).map(({ uniqueId, mail }) => uniqueId || mail),
         type: approverType,
         directGroup: hierarchy,
@@ -129,28 +137,41 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
 
   const onSearchUserByPersonalNumber = async () => {
     const userId = getValues('personalNumber');
+    if (!userId) return;
 
-    if (!userId) {
-      return;
-    }
-
-    const user = await getEntityByIdentifier(userId);
-
-    if (user) {
-      setValue('user', user);
-      setValue('userName', {fullName: user.fullName, displayName: user.displayName});
-      setValue('hierarchy', user.hierarchy);
+    try {
+      const user = await getEntityByIdentifier(userId);
+  
+      if (user) {
+        setValue('user', user);
+        setValue('userName', user.fullName);
+        setValue('hierarchy', user.hierarchy);
+      }
+      
+    } catch (error) {
+       setValue("user", null);
+       setValue("userName", "");
+       setValue("hierarchy","");
     }
   };
 
-  const onSearchUser = async (event) => {
-    const result = await searchEntitiesByFullName(event.query);
-    setUserSuggestions(result.entities || []);
-  };
+   const onSearchUser = async (event) => {
+     if (event.query.length > 1) {
+       const result = await searchEntitiesByFullName(event.query);
+       setUserSuggestions(result.entities || []);
+     } else {
+       setUserSuggestions([]);
+     }
+   };
+
+    const itemTemplate = (item) => (
+      <>{item.displayName ? item.displayName : item.fullName + `${item.jobTitle ? "-" + item.jobTitle : ""}`}</>
+    );
+
 
   const setCurrentUser = () => {
     const user = toJS(userStore.user);
-    setValue('userName', {displayName: user.displayName, fullName: user.fullName});
+    setValue('userName', user.fullName);
     setValue('user', user);
     setValue('personalNumber', user.personalNumber || user.identityCard);
     setValue('hierarchy', user.hierarchy);
@@ -178,7 +199,6 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
       <div className="p-fluid-item">
         <div className="p-field">
           <label htmlFor="2020">
-            {" "}
             <span className="required-field">*</span>שם מלא
           </label>
           <button
@@ -196,6 +216,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
             completeMethod={onSearchUser}
             id="approverForm-userName"
             type="text"
+            itemTemplate={itemTemplate}
             field="fullName"
             onSelect={(e) => {
               setValue("user", e.value);
@@ -203,17 +224,18 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
               setValue("hierarchy", e.value.hierarchy);
             }}
             onChange={(e) => {
-              setValue("userName", e.value);
-              if (e.value === "") {
-                setValue("personalNumber", "");
-                setValue("hierarchy", "");
-              }
+              setValue("userName", e.value.fullName ? e.value.fullName : e.value);
+              setValue("personalNumber", "");
+              setValue("user", null);
+              setValue("hierarchy", "");
             }}
             required
             disabled={onlyForView}
           />
-          {errors.user && (
-            <small style={{ color: "red" }}>{errors.user?.message ? errors.user?.message : "יש למלא ערך"}</small>
+          {errors.userName && (
+            <small style={{ color: "red" }}>
+              {errors.userName?.message ? errors.userName?.message : "יש למלא ערך"}
+            </small>
           )}
         </div>
       </div>
@@ -227,6 +249,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
             {...register("personalNumber", { required: true })}
             id="2021"
             type="text"
+            keyfilter="pnum"
             required
             onBlur={onSearchUserByPersonalNumber}
             onKeyDown={(e) => {
@@ -234,10 +257,18 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
                 onSearchUserByPersonalNumber();
               }
             }}
+            onInput={() => {
+              setValue("user", null);
+              setValue("userName", "");
+              setValue("hierarchy", "");
+            }}
             disabled={onlyForView}
           />
-          {errors.user && (
-            <small style={{ color: "red" }}> {errors.user?.message ? errors.user?.message : "יש למלא ערך"}</small>
+          {errors.personalNumber && (
+            <small style={{ color: "red" }}>
+              {" "}
+              {errors.personalNumber?.message ? errors.personalNumber.message : "יש למלא ערך"}
+            </small>
           )}
         </div>
       </div>
@@ -258,6 +289,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
           multiple={true}
           errors={errors}
           tooltip={'סא"ל ומעלה ביחידתך'} //todo: ASK
+          isHighRank={true}
           disabled={onlyForView || isUserApprover}
           defaultApprovers={defaultApprovers}
         />

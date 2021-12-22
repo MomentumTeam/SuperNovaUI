@@ -129,7 +129,7 @@ export const isHierarchyAlreadyTakenRequest = async (name, parent) => {
     `${apiBaseUrl}/api/kartoffel/groups/name/taken?name=${name}&parent=${parent}`
   );
 
-  return response;
+  return response.data;
 };
 
 // Entities

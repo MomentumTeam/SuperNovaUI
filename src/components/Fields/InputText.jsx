@@ -19,7 +19,7 @@ const InputTextField = ({
   const disabled = !canEdit || !isEdit;
 
   useEffect(() => {
-    methods.setValue(fieldName, item[fieldName]);
+    if(item) methods.setValue(fieldName, item[fieldName]);
     methods.clearErrors();
   }, [isEdit, item]);
 

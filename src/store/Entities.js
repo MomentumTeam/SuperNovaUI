@@ -101,9 +101,16 @@ export default class EntitiesStore {
             roles.map(async (role) => {
               try {
                 let entity = await getEntityByRoleId(role.roleId);
-                entity.roleIdSearch = role.roleId;
-                return entity;
-              } catch (error) {}
+                
+                if(entity) {
+                  entity.roleIdSearch = role.roleId;
+                  return entity;
+
+                }
+                return {}
+              } catch (error) {
+                return {};
+              }
             })
           );
         }
