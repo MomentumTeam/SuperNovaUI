@@ -214,11 +214,11 @@ export const IsRequestCompleteForApprover = (apply, approverType) => {
 
   switch (approverType) {
     case USER_TYPE.SUPER_SECURITY:
-      return isStatusComplete(apply["superSecurityDecision"]["decision"]);
+      return !apply.needSuperSecurityDecision ||  isStatusComplete(apply["superSecurityDecision"]["decision"]);
     case USER_TYPE.SECURITY:
       return !apply.needSecurityDecision || isStatusComplete(apply["securityDecision"]["decision"]);
     case USER_TYPE.COMMANDER:
-      return !apply.needSuperSecurityDecision || isStatusComplete(apply["commanderDecision"]["decision"]);
+      return isStatusComplete(apply["commanderDecision"]["decision"]);
     default:
       break;
   }
