@@ -12,18 +12,20 @@ const InputDropdown = ({
   isEdit,
   canEdit = false,
   additionalClass = "",
+  errors,
+  required = true,
 }) => {
   const disabled = !canEdit || !isEdit;
 
   useEffect(() => {
-    methods.setValue(fieldName, item[fieldName]);
+    if (item) methods.setValue(fieldName, item[fieldName]);
     methods.clearErrors();
   }, [isEdit]);
 
   return (
     <div className={`p-fluid-item ${additionalClass}`}>
       <div className="p-field">
-        {getLabel({ canEdit, isEdit, labelName: displayName })}
+        {getLabel({ canEdit: required && canEdit, isEdit, labelName: displayName })}
         <Dropdown
           id="2011"
           {...methods.register(fieldName)}
@@ -35,6 +37,7 @@ const InputDropdown = ({
           }}
           value={methods.watch(fieldName)}
         />
+        {errors[fieldName] && <small className="p-error p-d-block">{errors[fieldName].message}</small>}
       </div>
     </div>
   );

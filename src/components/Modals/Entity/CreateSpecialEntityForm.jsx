@@ -1,23 +1,21 @@
 import React, { useEffect, forwardRef, useImperativeHandle, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { Dropdown } from 'primereact/dropdown';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useStores } from '../../../context/use-stores';
-import {PHONE_REG_EXP, USER_TYPE} from '../../../constants';
-import Approver from '../../Fields/Approver';
+import { NAME_REG_EXP, PHONE_REG_EXP, USER_CLEARANCE, USER_TYPE, USER_SEX } from "../../../constants";
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { isUserHoldType } from '../../../utils/user';
+import { InputForm, InputTypes } from '../../Fields/InputForm';
+import datesUtil from "../../../utils/dates";
 
 
 const validationSchema = Yup.object().shape({
-  firstName: Yup.string().required(),
-  lastName: Yup.string().required(),
-  identityNumber: Yup.string().required(),
-  phone: Yup.string().matches(PHONE_REG_EXP, "מספר לא תקין").required(),
-  classification: Yup.string().required(),
+  firstName: Yup.string().required("יש למלא שם פרטי").matches(NAME_REG_EXP, "שם לא תקין"),
+  lastName: Yup.string().required("יש למלא שם משפחה").matches(NAME_REG_EXP, "שם לא תקין"),
+  identityNumber: Yup.string().required('יש להזין ת"ז'),
+  phone: Yup.string().required("יש למלא מספר טלפון").matches(PHONE_REG_EXP, "מספר לא תקין"),
+  classification: Yup.string().required("יש לבחור סיווג"),
   isUserApprover: Yup.boolean(),
   approvers: Yup.array().when("isUserApprover", {
     is: false,
@@ -33,21 +31,21 @@ const CreateSpecialEntityForm = forwardRef(
     const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
-    const { register, handleSubmit, watch, setValue, formState } = useForm({
+    const methods = useForm({
       resolver: yupResolver(validationSchema),
       defaultValues: { isUserApprover },
     });
-    const { errors } = formState;
+    const { errors } = methods.formState;
 
     useEffect(async() => {
       if (requestObject) {
-        setValue("comments", requestObject.comments);
-        setValue("firstName", requestObject.kartoffelParams.firstName);
-        setValue("lastName", requestObject.kartoffelParams.lastName);
-        setValue("identityNumber", requestObject.kartoffelParams.identityCard);
-        setValue("phone", requestObject.kartoffelParams.mobilePhone[0]);
-        setValue("classification", requestObject.kartoffelParams.clearance);
-        setValue("sex", requestObject.kartoffelParams.sex);
+        methods.setValue("comments", requestObject.comments);
+        methods.setValue("firstName", requestObject.kartoffelParams.firstName);
+        methods.setValue("lastName", requestObject.kartoffelParams.lastName);
+        methods.setValue("identityNumber", requestObject.kartoffelParams.identityCard);
+        methods.setValue("phone", requestObject.kartoffelParams.mobilePhone[0]);
+        methods.setValue("classification", requestObject.kartoffelParams.clearance);
+        methods.setValue("sex", requestObject.kartoffelParams.sex);
 
       }
 
@@ -71,6 +69,7 @@ const CreateSpecialEntityForm = forwardRef(
         comments,
         sex,
         approvers,
+        birthDate
       } = data;
 
       const req = {
@@ -82,11 +81,10 @@ const CreateSpecialEntityForm = forwardRef(
           mobilePhone: [phone],
           phone: [phone],
           clearance: classification,
-          sex,
-          // TOOO: add birthdate
-          // TODO: put it correct type
-          entityType: "civillian", //TODO: what should this be??
-          serviceType: "???", //TODO: what should this be??
+          entityType: "civillian", // only civilian
+          serviceType: "???", // TODO: ask
+          ...(sex && sex !== "" && {sex}),
+          ...(birthDate && { birthdate: datesUtil.getTime(birthDate) }),
         },
         comments,
         adParams: {},
@@ -99,108 +97,90 @@ const CreateSpecialEntityForm = forwardRef(
     useImperativeHandle(
       ref,
       () => ({
-        handleSubmit: handleSubmit(onSubmit),
+        handleSubmit: methods.handleSubmit(onSubmit),
       }),
       []
     );
 
+    const formFields = [
+      {
+        fieldName: "firstName",
+        displayName: "שם פרטי",
+        inputType: InputTypes.TEXT,
+        canEdit: true,
+        force: true,
+      },
+      {
+        fieldName: "lastName",
+        displayName: "שם משפחה",
+        inputType: InputTypes.TEXT,
+        canEdit: true,
+        force: true,
+      },
+      {
+        fieldName: "identityNumber",
+        displayName: 'ת"ז',
+        inputType: InputTypes.TEXT,
+        type: "num",
+        keyFilter: "num",
+        canEdit: true,
+        force: true,
+      },
+      {
+        fieldName: "phone",
+        displayName: "טלפון",
+        inputType: InputTypes.TEXT,
+        type: "num",
+        keyFilter: "num",
+        canEdit: true,
+        force: true,
+      },
+      {
+        fieldName: "classification",
+        displayName: "סיווג המשתמש",
+        inputType: InputTypes.DROPDOWN,
+        canEdit: true,
+        options: USER_CLEARANCE,
+        force: true,
+      },
+      {
+        fieldName: "sex",
+        displayName: "מגדר",
+        inputType: InputTypes.DROPDOWN,
+        canEdit: true,
+        options: USER_SEX,
+        force: true,
+        required: false,
+      },
+      {
+        fieldName: "birthdate",
+        displayName: "תאריך לידה",
+        inputType: InputTypes.CALANDER,
+        canEdit: true,
+        force: true,
+        required: false,
+      },
+      {
+        fieldName: "approvers",
+        inputType: InputTypes.APPROVER,
+        tooltip: 'רס"ן ומעלה ביחידתך',
+        default: defaultApprovers,
+        disabled: onlyForView || methods.watch("isUserApprover"),
+        force: true,
+      },
+      {
+        fieldName: "comments",
+        displayName: "הערות",
+        inputType: InputTypes.TEXTAREA,
+        force: true,
+        placeholder: "הכנס הערות לבקשה...",
+        additionalClass: "p-fluid-item-flex1",
+        canEdit: true,
+      },
+    ];
     return (
       <div className="p-fluid">
-        <div className="p-fluid-item-flex p-fluid-item">
-          <div className="p-field">
-            <label htmlFor="1900">
-              <span className="required-field">*</span>שם פרטי
-              <InputText {...register("firstName")} id="firstName" type="text" disabled={onlyForView} />
-              <label htmlFor="2020"> {errors?.firstName && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
-            </label>
-          </div>
-        </div>
-        <div className="p-fluid-item-flex p-fluid-item">
-          <div className="p-field">
-            <label htmlFor="1900">
-              <span className="required-field">*</span>שם משפחה
-              <InputText {...register("lastName")} id="lastName" type="text" disabled={onlyForView} />
-              <label htmlFor="2020"> {errors?.lastName && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
-            </label>
-          </div>
-        </div>
-        <div className="p-fluid-item-flex p-fluid-item">
-          <div className="p-field">
-            <label htmlFor="1900">
-              <span className="required-field">*</span>ת״ז
-              <InputText {...register("identityNumber")} id="identityNumber" type="text" disabled={onlyForView} />
-              <label htmlFor="2020">
-                {" "}
-                {errors?.identityNumber && <small style={{ color: "red" }}> יש למלא ערך חוקי</small>}
-              </label>
-            </label>
-          </div>
-        </div>
-        <div className="p-fluid-item-flex p-fluid-item">
-          <div className="p-field">
-            <label htmlFor="1900">
-              <span className="required-field">*</span>טלפון
-              <InputText {...register("phone")} id="phone" type="text" disabled={onlyForView} />
-              <label htmlFor="2020"> {errors?.phone && <small style={{ color: "red" }}>יש למלא ערך חוקי</small>}</label>
-            </label>
-          </div>
-        </div>
-        <div className="p-fluid-item-flex p-fluid-item">
-          <div className="p-field">
-            <label htmlFor="1900">
-              <span className="required-field">*</span>סיווג המשתמש
-              <InputText {...register("classification")} id="classification" type="text" disabled={onlyForView} />
-              <label htmlFor="2020">
-                {" "}
-                {errors?.classification && <small style={{ color: "red" }}>יש למלא ערך חוקי</small>}
-              </label>
-            </label>
-          </div>
-        </div>
-        <div className="p-fluid-item-flex p-fluid-item">
-          <div className="p-field">
-            <label htmlFor="1900">
-              מגדר
-              <Dropdown
-                {...register("sex")}
-                inputId="sex"
-                options={[
-                  { label: "-", value: null },
-                  { label: "זכר", value: "1" },
-                  { label: "נקבה", value: "2" },
-                ]}
-                disabled={onlyForView}
-                placeholder="מגדר"
-                value={watch("sex")}
-                onChange={(e) => {
-                  setValue("sex", e.value);
-                }}
-              />
-            </label>
-          </div>
-        </div>
-        <div className="p-fluid-item">
-          <Approver
-            setValue={setValue}
-            name="approvers"
-            multiple={true}
-            tooltip='רס"ן ומעלה ביחידתך'
-            disabled={onlyForView || isUserApprover}
-            defaultApprovers={defaultApprovers}
-          />
-        </div>
-        <div className="p-fluid-item p-fluid-item-flex1">
-          <div className="p-field">
-            <label htmlFor="2028">הערות</label>
-            <InputTextarea
-              {...register("comments")}
-              id="comments"
-              type="text"
-              disabled={onlyForView}
-              placeholder="הכנס הערות לבקשה..."
-            />
-          </div>
-        </div>
+        <InputForm fields={formFields} errors={errors} item={requestObject} isEdit={!onlyForView} methods={methods}/>
       </div>
     );
 });

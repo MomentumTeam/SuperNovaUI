@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, forwardRef, useEffect, useState } from 'react';
+import React, { useImperativeHandle, forwardRef, useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
@@ -14,21 +14,48 @@ import { isJobTitleAlreadyTakenRequest } from '../../../service/KartoffelService
 import { isUserHoldType } from '../../../utils/user';
 import { USER_SOURCE_DI, USER_TYPE, ROLE_CLEARANCE } from '../../../constants';
 import { GetDefaultApprovers } from '../../../utils/approver';
-import { getOuDisplayName } from '../../../utils/hierarchy';
+import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
+import { isApproverValid } from '../../../service/ApproverService';
+import { debounce } from "lodash";
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
-  hierarchy: Yup.object().required(),
+  hierarchy: Yup.object().required("יש לבחור היררכיה"),
   isUserApprover: Yup.boolean(),
-  approvers: Yup.array().when('isUserApprover', {
-    is: false,
-    then: Yup.array()
-      .min(1, 'יש לבחור לפחות גורם מאשר אחד')
-      .required('יש לבחור לפחות גורם מאשר אחד'),
-  }),
+  approvers: Yup.array()
+    .when("isUserApprover", {
+      is: false,
+      then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+    })
+    .test({
+      name: "check-if-valid",
+      message: "יש לבחור מאשרים תקינים (מהיחידה בלבד)",
+      test: async (approvers, context) => {
+        let isTotalValid = true;
+
+        if (context.parent?.hierarchy?.id && Array.isArray(approvers)) {
+          await Promise.all(
+            approvers.map(async (approver) => {
+              const { isValid } = await isApproverValid(approver.entityId, context.parent.hierarchy.id);
+              if (!isValid) isTotalValid = false;
+            })
+          );
+        }
+
+        return isTotalValid;
+      },
+    }),
   comments: Yup.string().optional(),
-  clearance: Yup.string().required(),
-  roleName: Yup.string().required(),
+  clearance: Yup.string().required("יש לבחור סיווג"),
+  roleName: Yup.string()
+    .required("יש למלא שם תפקיד")
+    .test({
+      name: "valid-role-name",
+      message: "יש לבחור תפקיד פנוי",
+      test: (roleName, context) => {
+        return roleName && !context.parent?.isJobAlreadyTakenData?.isJobTitleAlreadyTaken;
+      },
+    }),
   isTafkidan: Yup.boolean().default(false),
   isJobAlreadyTakenData: Yup.object()
     .shape({
@@ -43,7 +70,7 @@ const RenameSingleOGForm = forwardRef(
     const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
-    const { register, handleSubmit, setValue, watch, formState } = useForm({
+    const { register, handleSubmit, setValue, watch, formState, getValues, clearErrors } = useForm({
       resolver: yupResolver(validationSchema),
       defaultValues: { isUserApprover },
     });
@@ -54,8 +81,11 @@ const RenameSingleOGForm = forwardRef(
         setValue('comments', requestObject.comments);
         setValue('clearance', requestObject.kartoffelParams.clearance);
         setValue('roleName', requestObject.kartoffelParams.jobTitle);
-        setValue('hierarchy', { name: requestObject.adParams.ouDisplayName });
+        setValue('hierarchy', { name: requestObject.kartoffelParams.hierarchy });
         setValue('isTafkidan', !!requestObject.kartoffelParams.roleEntityType);
+        setValue('roleName', requestObject.kartoffelParams.jobTitle);
+        const result = await GetDefaultApprovers({ request: requestObject, onlyForView, user: userStore.user });
+        setDefaultApprovers(result || []);
       }
 
     }, []);
@@ -82,9 +112,10 @@ const RenameSingleOGForm = forwardRef(
           directGroup: hierarchy.id,
           isRoleAttachable: true,
           source: USER_SOURCE_DI,
-          type: "domainUser",
+          type: 'domainUser',
           clearance,
-          roleEntityType: isTafkidan ? "goalUser" : undefined,
+          roleEntityType: isTafkidan ? 'goalUser' : undefined,
+          hierarchy: hierarchyConverse(hierarchy)
         },
         adParams: {
           ouDisplayName: getOuDisplayName(hierarchy.hierarchy, hierarchy.name),
@@ -106,18 +137,20 @@ const RenameSingleOGForm = forwardRef(
       []
     );
 
-    const onRoleNameChange = async (e) => {
+    const debouncedRoleName = useRef(
+      debounce(async (roleNameToSearch, directGroup) => {
+          const result = await isJobTitleAlreadyTakenRequest(roleNameToSearch, directGroup);
+          setValue("isJobAlreadyTakenData", result);
+      }, 200)
+    );
+
+    const onRoleNameChange = (e) => {
       const roleNameToSearch = e.target.value;
       setValue('roleName', e.target.value);
+      clearErrors('roleName');
 
-      if (roleNameToSearch && watch('hierarchy')?.id) {
-        const isJobTitleAlreadyTakenResponse =
-          await isJobTitleAlreadyTakenRequest(
-            roleNameToSearch,
-            watch('hierarchy').id
-          );
-
-        setValue('isJobAlreadyTakenData', isJobTitleAlreadyTakenResponse);
+      if (roleNameToSearch && getValues('hierarchy')?.id) {
+        debouncedRoleName.current(roleNameToSearch, getValues("hierarchy").id);
       }
     };
 
@@ -126,6 +159,7 @@ const RenameSingleOGForm = forwardRef(
       setValue('isJobAlreadyTakenData', {
         isJobTitleAlreadyTaken: false,
       });
+      clearErrors('roleName');
     };
 
     const handleOrgSelected = async (org) => {
@@ -162,8 +196,13 @@ const RenameSingleOGForm = forwardRef(
                 <i>{watch("isJobAlreadyTakenData")?.isJobTitleAlreadyTaken ? "תפוס" : "פנוי"}</i>
               )}
               <InputText {...register("roleName")} onChange={onRoleNameChange} disabled={onlyForView} />
-              <label>{errors.roleName && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
-              <label>{errors.isJobAlreadyTakenData && <small>יש לבחור תפקיד פנוי</small>}</label>
+              <label>
+                {errors.roleName && (
+                  <small style={{ color: "red" }}>
+                    {errors.roleName?.message ? errors.roleName.message : "יש למלא ערך"}
+                  </small>
+                )}
+              </label>
             </span>
           </div>
         </div>
@@ -197,7 +236,13 @@ const RenameSingleOGForm = forwardRef(
               value={watch("clearance")}
               disabled={onlyForView}
             />
-            <label>{errors.clearance && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
+            <label>
+              {errors.clearance && (
+                <small style={{ color: "red" }}>
+                  {errors.clearance?.message ? errors.clearance.message : "יש למלא ערך"}
+                </small>
+              )}
+            </label>
           </div>
         </div>
         <div className="p-fluid-item">

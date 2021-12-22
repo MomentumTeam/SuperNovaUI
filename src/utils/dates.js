@@ -2,17 +2,23 @@ import moment from 'moment';
 
 class DatesUtil {
   format;
+  mask;
+  lowerFormat; 
+  formatWithTime;
 
   constructor() {
-    this.format = 'MM/DD/YYYY';
+    this.format = "DD/MM/YYYY";
+    this.formatWithTime = "DD/MM/YYYY, HH:mm";
+    this.mask = "99/99/9999";
+    this.lowerFormat = "dd/mm/yy";
   }
 
   formattedDateTime = (date) => {
     return moment(date).format('MMM D, YYYY, HH:mm');
   };
 
-  formattedDate = (date) => {
-    return moment(date).format(this.format);
+  formattedDate = (date, withTime = false) => {
+    return moment(date).format(withTime? this.formatWithTime: this.format);
   };
 
   timeSince = (date) => {

@@ -34,7 +34,11 @@ export const TableTypes = {
 };
 
 export const TableNames = {
-  entities: { tab: "entities", tableName: "רשימת משתמשים" },
+  entities: {
+    tab: "entities",
+    tableName: "רשימת משתמשים",
+    roles: [USER_TYPE.ADMIN, USER_TYPE.BULK, USER_TYPE.COMMANDER, USER_TYPE.SECURITY, USER_TYPE.SUPER_SECURITY],
+  },
   hierarchy: { tab: "hierarchy", tableName: "רשימת היררכיה" },
   roles: { tab: "roles", tableName: "רשימת תפקידים" },
 };

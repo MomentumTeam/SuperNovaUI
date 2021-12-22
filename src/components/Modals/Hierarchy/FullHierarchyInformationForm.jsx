@@ -29,8 +29,8 @@ const FullHierarchyInformationForm = forwardRef(
         then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
       }),
       hierarchyName: Yup.string()
-        .matches(NAME_OG_EXP, "שם לא תקין")
-        .required("יש לבחור שם היררכיה")
+      .required("יש לבחור שם היררכיה")
+      .matches(NAME_OG_EXP, "שם לא תקין")
         .test({
           name: "hierarchy-valid-check",
           message: "היררכיה תפוסה",
@@ -91,7 +91,7 @@ const FullHierarchyInformationForm = forwardRef(
         throw new Error(err.errors);
       }
       const { approvers, comments, hierarchyName } = data;
-      const ouDisplayName = getOuDisplayName(hierarchy.hierarchy, hierarchy.name);
+      const ouDisplayName = getOuDisplayName(hierarchy.hierarchy, hierarchy.name, false);
 
       const req = {
         commanders: approvers,

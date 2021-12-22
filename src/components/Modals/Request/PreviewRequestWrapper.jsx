@@ -5,6 +5,7 @@ import ApproverSection from '../../ApproverSection';
 import RequestFlowChart from './RequestFlowChart';
 import { DeleteSection } from './DeleteSection';
 import HorizontalLine from '../../HorizontalLine';
+import { Tooltip } from 'primereact/tooltip';
 
 
 const PreviewRequestWrapper = ({
@@ -23,12 +24,13 @@ const PreviewRequestWrapper = ({
             <label htmlFor="2020">
               <span className="required-field">*</span>שם משתמש
             </label>
-            <InputText
-              id="2022"
-              disabled={true}
-              value={request?.submittedBy?.displayName}
-              field="displayName"
+            <Tooltip
+              target=".username"
+              content={request?.submittedBy?.displayName}
             />
+            <div className="username">
+              <InputText id="2022" disabled={true} value={request?.submittedBy?.displayName} field="displayName" />
+            </div>
           </div>
         </div>
         <div className="p-fluid-item">
@@ -37,10 +39,7 @@ const PreviewRequestWrapper = ({
               <span className="required-field">*</span>מ"א/ת"ז
             </label>
             <InputText
-              value={
-                request?.submittedBy?.personalNumber ||
-                request?.submittedBy?.identityCard
-              }
+              value={request?.submittedBy?.personalNumber || request?.submittedBy?.identityCard}
               disabled={true}
               id="2013"
               type="text"
@@ -52,17 +51,10 @@ const PreviewRequestWrapper = ({
       </div>
       <hr style={{ borderWidth: '1px' }} />
       <h2>פרטי הבקשה</h2>
-      <ModalComponent
-        onlyForView={true}
-        requestObject={request}
-        showJob={showJob}
-      />
+      <ModalComponent onlyForView={true} requestObject={request} showJob={showJob} />
       <HorizontalLine />
 
-      <ApproverSection
-        request={request}
-        setDialogVisiblity={setDialogVisiblity}
-      />
+      <ApproverSection request={request} setDialogVisiblity={setDialogVisiblity} />
       <DeleteSection requestId={request.id} setDialogVisiblity={setDialogVisiblity} />
     </>
   );
