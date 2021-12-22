@@ -19,7 +19,7 @@ export const TYPES = {
   // DELETE_ROLE: "מחיקת תפקיד",
   // DELETE_ENTITY: "מחיקת משתמש",
   // DISCONNECT_ROLE: "ניתוק תפקיד",
-  ADD_APPROVER: 'יצירת גורם מאשר',
+  ADD_APPROVER: 'הוספת הרשאות',
   CHANGE_ROLE_HIERARCHY: 'מעבר היררכיה לתפקיד',
   CREATE_ROLE_BULK: 'יצירת תפקידים חדשים',
   CHANGE_ROLE_HIERARCHY_BULK: 'מעבר היררכיה לתפקידים',
