@@ -49,6 +49,7 @@ const HelpHamburgerMenu = () => {
           buttonClassName="p-button-outlined"
         />
         <Dialog
+          closeOnEscape
           header="צור קשר"
           visible={displayContactInfo}
           onHide={onContactInfoHide}
@@ -59,6 +60,7 @@ const HelpHamburgerMenu = () => {
           <ContactInfo />
         </Dialog>
         <Dialog
+          closeOnEscape
           header="שאלות ותשובות"
           visible={displayFAQ}
           onHide={onFAQHide}

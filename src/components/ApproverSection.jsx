@@ -58,7 +58,7 @@ const ApproverSection = ({ request, setDialogVisiblity }) => {
 
   const submit = async () => {
     if (approverMode.denyMode) {
-      changeDecisionRequest(DECISIONS.DECLINED);
+      changeDecisionRequest(DECISIONS.DENIED);
     } else if (approverMode.commentMode) {
       for (let comment of approverComments) {
         let newCommentObject = {
@@ -68,7 +68,7 @@ const ApproverSection = ({ request, setDialogVisiblity }) => {
         };
 
         await appliesStore.updateApproversComments(newCommentObject);
-        setDialogVisiblity(false);
+        setApproveMode({...approverMode, commentMode: false});
       }
     }
   };
