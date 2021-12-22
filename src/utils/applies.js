@@ -270,3 +270,7 @@ export const getDenyReason = (apply) => {
   if (superSecurityReason && superSecurityReason !== '')
     return superSecurityReason;
 };
+
+export const isSubmitterReq = (request, user)  => {
+  return request?.submittedBy?.id === user.id
+}

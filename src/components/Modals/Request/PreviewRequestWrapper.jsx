@@ -55,7 +55,7 @@ const PreviewRequestWrapper = ({
       <HorizontalLine />
 
       <ApproverSection request={request} setDialogVisiblity={setDialogVisiblity} />
-      <DeleteSection requestId={request.id} setDialogVisiblity={setDialogVisiblity} />
+      <DeleteSection request={request} setDialogVisiblity={setDialogVisiblity} />
     </>
   );
 };

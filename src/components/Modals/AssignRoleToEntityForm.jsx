@@ -144,7 +144,6 @@ const AssignRoleToEntityForm = forwardRef(
 
         await roleId;
 
-        // TODO: fix due
         setValue("changeRoleAt", +requestObject.due);
   
         const result = await GetDefaultApprovers({ request: requestObject, onlyForView, user: userStore.user });
@@ -173,7 +172,8 @@ const AssignRoleToEntityForm = forwardRef(
           uniqueId: role.digitalIdentityUniqueId,
           needDisconnect: showJob,
           roleId: roleId,
-          hierarchy: hierarchyConverse(hierarchy)
+          hierarchy: hierarchyConverse(hierarchy),
+          directGroup: hierarchy.id
         },
         adParams: {
           newSAMAccountName: getSamAccountNameFromUniqueId(roleId),
