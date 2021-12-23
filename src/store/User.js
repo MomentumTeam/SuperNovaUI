@@ -17,7 +17,6 @@ export default class UserStore {
       userUnreadNotifications: observable,
       fetchUserInfo: action,
       fetchUserNotifications: action,
-      loadUsers: action,
       getMyPicture: action,
     });
 
@@ -61,12 +60,10 @@ export default class UserStore {
     this.userUnreadNotifications.clear();
   }
 
-  async loadUsers() {
-    // this.users = await getUsers();
-  }
-
   async getMyPicture() {
     const myPicture = await getPictureByConnectedEntity();
+    console.log(myPicture)
     this.user = {...this.user, picture: myPicture.image};
+    console.log(this.user)
   }
 }

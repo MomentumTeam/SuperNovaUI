@@ -63,7 +63,6 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
   const { appliesStore, userStore } = useStores();
   const [roleSuggestions, setRoleSuggestions] = useState([]);
   const [defaultApprovers, setDefaultApprovers] = useState([]);
-  console.log('ddj')
   const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
 
   const { register, handleSubmit, setValue, watch, formState, getValues } = useForm({

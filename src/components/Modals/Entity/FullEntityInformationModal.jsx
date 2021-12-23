@@ -3,7 +3,7 @@ import { Dialog } from "primereact/dialog";
 import { classNames } from "primereact/utils";
 
 import blankProfilePic from "../../../assets/images/blankProfile.png";
-import { getPictureByEntityId } from "../../../service/UserService";
+import { getPictureByEntityIdentifier } from "../../../service/UserService";
 import { FullEntityInformationFooter } from "./FullEntityInformationFooter";
 import { USER_NO_PICTURE } from "../../../constants";
 
@@ -38,7 +38,7 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit,
   useEffect(() => {
     async function getUserPic() {
       if (user && user.picture && user.picture === USER_NO_PICTURE) {
-        const pic = await getPictureByEntityId(user.id);
+        const pic = await getPictureByEntityIdentifier(user?.personalNumber || user?.identityCard);
         setUserPic(pic.image);
       } else {
         setUserPic(user.picture);

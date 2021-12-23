@@ -12,6 +12,7 @@ import { TableNames, TableTypes } from "../../constants/usersTable";
 
 import "../../assets/css/local/pages/listUsersPage.min.css";
 import { USER_TYPE } from '../../constants';
+require("polyfill-object.fromentries");
 
 const Entities = observer(() => {
   const { actionPopup } = useToast();

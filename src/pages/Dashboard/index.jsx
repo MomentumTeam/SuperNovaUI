@@ -79,8 +79,8 @@ const Dashboard = observer(() => {
                   </div>
                 </div>
                 <div className="chart-wrap">
-                  <DecorAnimation />
                   <HierarchyTree data={toJS(treeStore.tree)} />
+                  <DecorAnimation />
                 </div>
               </div>
             )}

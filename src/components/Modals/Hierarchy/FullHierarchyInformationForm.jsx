@@ -16,7 +16,6 @@ import { InputForm, InputTypes } from '../../Fields/InputForm';
 const FullHierarchyInformationForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject, reqView = true }, ref) => {
     const { userStore, appliesStore } = useStores();
-    // const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isHierarchyFree, setIsHierarchyFree] = useState(true);
     const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
     const [hierarchy, setHierarchy] = useState(requestObject);

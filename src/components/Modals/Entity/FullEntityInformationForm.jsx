@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import datesUtil from "../../../utils/dates";
-import { CanSeeUserClearance } from "../../../utils/entites";
-import { NAME_REG_EXP, PHONE_REG_EXP, USER_CLEARANCE } from "../../../constants";
+import { CanSeeUserClearance, CanEditEntityFields } from "../../../utils/entites";
+import { NAME_REG_EXP, PHONE_REG_EXP } from "../../../constants";
 import { InputForm, InputTypes } from "../../Fields/InputForm";
 import { useStores } from "../../../context/use-stores";
 
@@ -22,7 +22,7 @@ const validationSchema = Yup.object().shape({
     is: true,
     then: Yup.string().required('יש להזין ת"ז'),
   }),
-  phone: Yup.array().of(Yup.string().matches(PHONE_REG_EXP, "מספר לא תקין").required("נא להזין מספר")),
+  mobilePhone: Yup.array().of(Yup.string().matches(PHONE_REG_EXP, "מספר לא תקין").required("נא להזין מספר")),
   canSeeUserClearance: Yup.boolean(),
   clearance: Yup.string().when("canSeeUserClearance", {
     is: true,
@@ -59,13 +59,13 @@ const FullEntityInformationForm = forwardRef(({ setIsActionDone, onlyForView, re
         id: tempForm.id,
         firstName: tempForm.firstName,
         lastName: tempForm.lastName,
-        phone: Array.isArray(tempForm.phone)? tempForm.phone: [tempForm.phone],
-        ...(tempForm.serviceType && {serviceType: tempForm.serviceType}),
-        ...(tempForm.address && {address: tempForm.address}),
-        ...(tempForm.clearance && {clearance: tempForm.clearance}),
-        ...(tempForm && {sex: tempForm.sex}),
-        ...(tempForm.birthDate && {birthdate: datesUtil.getTime(tempForm.birthDate)}),
-        ...(tempForm.entityType && {entityType: tempForm.entityType}),
+        phone: Array.isArray(tempForm.mobilePhone) ? tempForm.mobilePhone : [tempForm.mobilePhone],
+        ...(tempForm.serviceType && { serviceType: tempForm.serviceType }),
+        ...(tempForm.address && { address: tempForm.address }),
+        ...(tempForm.clearance && { clearance: tempForm.clearance }),
+        ...(tempForm && { sex: tempForm.sex }),
+        ...(tempForm.birthDate && { birthdate: datesUtil.getTime(tempForm.birthDate) }),
+        ...(tempForm.entityType && { entityType: tempForm.entityType }),
         ...(tempForm.personalNumber && { personalNumber: tempForm.personalNumber }),
         ...(tempForm.identityCard && { identityCard: tempForm.identityCard }),
       };
@@ -108,14 +108,14 @@ const FullEntityInformationForm = forwardRef(({ setIsActionDone, onlyForView, re
       fieldName: "firstName",
       displayName: "שם פרטי",
       inputType: InputTypes.TEXT,
-      canEdit: true,
+      canEdit: () => CanEditEntityFields(user),
       force: true,
     },
     {
       fieldName: "lastName",
       displayName: "שם משפחה",
       inputType: InputTypes.TEXT,
-      canEdit: true,
+      canEdit: () => CanEditEntityFields(user),
       force: true,
     },
     {
@@ -130,7 +130,7 @@ const FullEntityInformationForm = forwardRef(({ setIsActionDone, onlyForView, re
       inputType: InputTypes.TEXT,
       type: "num",
       keyFilter: "num",
-      canEdit: true,
+      canEdit: () => CanEditEntityFields(user),
     },
     {
       fieldName: "rank",
@@ -165,12 +165,12 @@ const FullEntityInformationForm = forwardRef(({ setIsActionDone, onlyForView, re
       secured: () => !reqView,
     },
     {
-      fieldName: "phone",
+      fieldName: "mobilePhone",
       displayName: "טלפון",
       inputType: InputTypes.LISTBOX,
       type: "num",
       keyFilter: "num",
-      canEdit: true,
+      canEdit: () => CanEditEntityFields(user),
       force: true,
       validator: (value) => PHONE_REG_EXP.test(value),
     },

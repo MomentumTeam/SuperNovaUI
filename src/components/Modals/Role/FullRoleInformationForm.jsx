@@ -9,7 +9,7 @@ import { debounce } from "lodash";
 import Hierarchy from "../../Fields/Hierarchy";
 import { useStores } from "../../../context/use-stores";
 import { isUserHoldType } from "../../../utils/user";
-import { NAME_OG_EXP, USER_TYPE } from "../../../constants";
+import { ROLE_EXP, USER_TYPE } from "../../../constants";
 import { getEntityByRoleId, getRoleByRoleId, isJobTitleAlreadyTakenRequest } from "../../../service/KartoffelService";
 import Approver from "../../Fields/Approver";
 import { GetDefaultApprovers } from "../../../utils/approver";
@@ -34,20 +34,20 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
       then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
     }),
     roleName: Yup.string()
-      .matches(NAME_OG_EXP, "תפקיד לא תקין")
+      .matches(ROLE_EXP, "תפקיד לא תקין")
       .required("יש לבחור שם תפקיד")
-      .test({
-        name: "jobTitle-valid-check",
-        message: "תפקיד תפוס",
-        test: () => {
-          return !isJobTitleAlreadyTaken;
-        },
-      })
       .test({
         name: "jobTitle-changed",
         message: "נא לבחור שם חדש",
         test: (value) => {
           return value !== requestObject.jobTitle;
+        },
+      })
+      .test({
+        name: "jobTitle-valid-check",
+        message: "תפקיד תפוס",
+        test: () => {
+          return !isJobTitleAlreadyTaken;
         },
       }),
     comments: Yup.string().optional(),
@@ -134,7 +134,7 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
 
   const onRoleNameChange = (e) => {
     const roleNameToSearch = e.target.value;
-    setValue("roleName", roleNameToSearch);
+    setValue("roleName", roleNameToSearch, {shouldValidate: true});
     debouncedRoleName.current(roleNameToSearch, role);
   };
 

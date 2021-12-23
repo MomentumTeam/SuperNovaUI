@@ -12,7 +12,7 @@ import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isJobTitleAlreadyTakenRequest } from '../../../service/KartoffelService';
 import { isUserHoldType } from '../../../utils/user';
-import { USER_SOURCE_DI, USER_TYPE, ROLE_CLEARANCE } from '../../../constants';
+import { USER_SOURCE_DI, USER_TYPE, ROLE_CLEARANCE, USER_DI_TYPE, USER_ROLE_ENTITY_TYPE, ROLE_EXP } from "../../../constants";
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
@@ -49,6 +49,7 @@ const validationSchema = Yup.object().shape({
   clearance: Yup.string().required("יש לבחור סיווג"),
   roleName: Yup.string()
     .required("יש למלא שם תפקיד")
+    .matches(ROLE_EXP, "שם לא תקין")
     .test({
       name: "valid-role-name",
       message: "יש לבחור תפקיד פנוי",
@@ -112,10 +113,10 @@ const RenameSingleOGForm = forwardRef(
           directGroup: hierarchy.id,
           isRoleAttachable: true,
           source: USER_SOURCE_DI,
-          type: 'domainUser',
+          type: USER_DI_TYPE,
           clearance,
-          roleEntityType: isTafkidan ? 'goalUser' : undefined,
-          hierarchy: hierarchyConverse(hierarchy)
+          roleEntityType: isTafkidan ? USER_ROLE_ENTITY_TYPE : undefined,
+          hierarchy: hierarchyConverse(hierarchy),
         },
         adParams: {
           ouDisplayName: getOuDisplayName(hierarchy.hierarchy, hierarchy.name),
@@ -146,7 +147,7 @@ const RenameSingleOGForm = forwardRef(
 
     const onRoleNameChange = (e) => {
       const roleNameToSearch = e.target.value;
-      setValue('roleName', e.target.value);
+      setValue('roleName', e.target.value, {shouldValidate: true});
       clearErrors('roleName');
 
       if (roleNameToSearch && getValues('hierarchy')?.id) {

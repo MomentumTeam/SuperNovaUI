@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   searchApproverByDisplayNameReq,
   searchHighApproverByDisplayNameReq,
 } from '../../service/ApproverService';
 import { AutoComplete } from 'primereact/autocomplete';
 import { Tooltip } from 'primereact/tooltip';
+import { debounce } from "lodash";
 
 import { useStores } from '../../context/use-stores';
 import { getUserNameFromDisplayName } from '../../utils/user';
 import '../../assets/css/local/components/approver.css';
+import { useToast } from '../../context/use-toast';
 
 const Approver = ({
   setValue,
@@ -21,24 +23,45 @@ const Approver = ({
   isHighRank = false,
   tooltip = 'גורם מאשר',
 }) => {
+  const { actionPopup } = useToast();
   const { userStore } = useStores();
   const [ApproverSuggestions, setApproverSuggestions] = useState([]);
   const [selectedApprover, setSelectedApprover] = useState(defaultApprovers);
 
-  const searchApprover = async (event) => {
-    if (event) {
-      if (event.query.length > 1) {
-        const result = await (isHighRank
-          ? searchHighApproverByDisplayNameReq(event.query)
-          : searchApproverByDisplayNameReq(event.query, type));
-        const filteredResult = result.approvers.filter((approvers) => approvers.id !== userStore.user.id);
-        setApproverSuggestions(filteredResult);
-      } else {
-        setApproverSuggestions([]);
+  const onDisplayNameChange = async (event) => {
+    try {
+      if (event) {
+        const displayNameToSearch = event.query;
+        if (displayNameToSearch.length > 1) {
+          debouncedApproverName.current(displayNameToSearch);
+        } else {
+          setApproverSuggestions([]);
+        }
       }
-
+    } catch (error) {
+      setApproverSuggestions([]);
+      actionPopup("הבאת גורמים מאשרים", {message: "לא ניתן כרגע לחפש גורמים מאשרים"})
     }
   };
+
+  const searchApprover = async(displayName) => {
+    try {
+        const result = await (isHighRank
+          ? searchHighApproverByDisplayNameReq(displayName)
+          : searchApproverByDisplayNameReq(displayName, type));
+        const filteredResult = result.approvers.filter((approvers) => approvers.id !== userStore.user.id);
+        setApproverSuggestions(filteredResult);
+    } catch (error) {
+       setApproverSuggestions([]);
+       actionPopup("הבאת גורמים מאשרים", { message: "לא ניתן כרגע לחפש גורמים מאשרים" });
+    }
+  }
+
+  const debouncedApproverName = useRef(
+    debounce(async (approverQuery) => {
+      searchApprover(approverQuery);
+    }, 200)
+  );
 
   const itemSelectedTemplate = (item) => {
     const id = Math.random().toString(36).slice(2);
@@ -86,11 +109,10 @@ const Approver = ({
               : selectedApprover
           }
           suggestions={ApproverSuggestions}
-          completeMethod={searchApprover}
+          completeMethod={onDisplayNameChange}
           selectedItemTemplate={multiple && itemSelectedTemplate}
           field="displayName"
           onChange={(e) => {
-            console.log(e)
             if (multiple && Array.isArray(e.value)) {
               const approvers = e.value.map(({ id, displayName, entityId, identityCard, personalNumber }) => ({
                 id,

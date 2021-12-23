@@ -14,9 +14,7 @@ export const getPictureByConnectedEntity = async () => {
   return userPic.data;
 };
 
-export const getPictureByEntityId = async (id) => {
-  const userPic = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/entities/picture/${id}`,
-  );
+export const getPictureByEntityIdentifier = async (identifier) => {
+  const userPic = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/entities/picture/${identifier}`);
   return userPic.data;
 };

@@ -13,8 +13,13 @@ export const GetDefaultApprovers = async ({request, onlyForView, user, showJob =
     }
 
     if (groupId) {
-      const {isValid} = await isApproverValid(user?.entityId || user?.id, groupId);
-      if (!isValid) return [];
+      try {
+        const {isValid} = await isApproverValid(user?.entityId || user?.id, groupId);
+        if (!isValid) return [];
+        
+      } catch (error) {
+        return [];
+      }
     }
 
     return [user];

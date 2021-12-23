@@ -27,8 +27,7 @@ const CreateRoleForm = forwardRef(({ setIsActionDone }, ref) => {
     [activeIndex, formRefs]
   );
 
-  // TODO: remove !
-  return !isBulkPermitted ? (
+  return isBulkPermitted ? (
     <Accordion
       expandIcon="pi pi-chevron-left"
       style={{ marginBottom: "20px" }}
