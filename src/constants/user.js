@@ -8,7 +8,7 @@ export const USER_TYPE = {
   BULK: 'BULK',
 };
 
-export const USER_CITIZEN_ENTITY_TYPE = process.env.UI_USER_CITIZEN_ENTITY_TYPE || "digimon";
+export const USER_CITIZEN_ENTITY_TYPE = process.env.UI_USER_CITIZEN_ENTITY_TYPE || "agumon";
 export const USER_CLEARANCE = process.env.UI_USER_CLEARANCE
   ? process.env.UI_USER_CLEARANCE.split(",")
   : ["1", "2", "3", "4", "5", "6"];
@@ -17,6 +17,8 @@ export const USER_NO_PICTURE = process.env.UI_USER_NO_PICTURE_STRING || 'picture
 export const highCommanderRanks = process.env.UI_HIGH_COMMANDER_RANKS
   ? process.env.UI_HIGH_COMMANDER_RANKS.split(",")
   : ["rookie", "champion"];
+export const USER_DI_TYPE = process.env.UI_DI_TYPE || "domainUser";
+export const USER_ROLE_ENTITY_TYPE = process.env.UI_ROLE_ENTITY_TYPE || "goalUser";
 
 export const USER_TYPE_TAG = {
   APPROVER: 'גורם מאשר',
@@ -26,6 +28,6 @@ export const USER_TYPE_TAG = {
 
 export const USER_SEX = [
   { label: "---", value: "" },
-  { label: "זכר", value: "1" },
-  { label: "נקבה", value: "2" },
+  { label: "זכר", value: "זכר" },
+  { label: "נקבה", value: "נקבה" },
 ];

@@ -25,7 +25,7 @@ import { isApproverValid } from '../../../service/ApproverService';
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
   comments: Yup.string().optional(),
-  hierarchy: Yup.object().required(),
+  hierarchy: Yup.object().required("יש לבחור היררכיה חדשה"),
   currentHierarchy: Yup.object().required('יש לבחור היררכיה'),
   isUserApprover: Yup.boolean(),
   approvers: Yup.array().when('isUserApprover', {

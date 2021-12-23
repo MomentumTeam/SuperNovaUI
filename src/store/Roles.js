@@ -96,6 +96,7 @@ export default class RolesStore {
           }
         } catch (error) {}
       }
+
       return filteredResults;
     };
 

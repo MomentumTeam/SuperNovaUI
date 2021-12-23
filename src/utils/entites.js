@@ -8,8 +8,17 @@ export const canEditEntity = (selectedEntity, user) => {
   return (
     selectedEntity &&
     selectedEntity.entityType === USER_CITIZEN_ENTITY_TYPE &&
-    (isUserHoldType(user, USER_TYPE.ADMIN) || selectedEntity.id === user.id)
+    (isUserHoldType(user, USER_TYPE.SUPER_SECURITY) ||
+      isUserHoldType(user, USER_TYPE.SECURITY) ||
+      selectedEntity.id === user.id)
   );
+};
+
+export const CanEditEntityFields = (selectedEntity) => {
+  const { userStore } = useStores();
+  const user = toJS(userStore.user);
+
+  return selectedEntity.id === user.id;
 };
 
 export const CanSeeUserClearance = () => {

@@ -3,7 +3,15 @@ import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useStores } from '../../../context/use-stores';
-import { NAME_REG_EXP, PHONE_REG_EXP, USER_CLEARANCE, USER_TYPE, USER_SEX, USER_CITIZEN_ENTITY_TYPE } from "../../../constants";
+import {
+  NAME_REG_EXP,
+  PHONE_REG_EXP,
+  USER_CLEARANCE,
+  USER_TYPE,
+  USER_SEX,
+  USER_CITIZEN_ENTITY_TYPE,
+  IDENTITY_CARD_EXP,
+} from "../../../constants";
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { isUserHoldType } from '../../../utils/user';
 import { InputForm, InputTypes } from '../../Fields/InputForm';
@@ -13,7 +21,7 @@ import datesUtil from "../../../utils/dates";
 const validationSchema = Yup.object().shape({
   firstName: Yup.string().required("יש למלא שם פרטי").matches(NAME_REG_EXP, "שם לא תקין"),
   lastName: Yup.string().required("יש למלא שם משפחה").matches(NAME_REG_EXP, "שם לא תקין"),
-  identityNumber: Yup.string().required('יש להזין ת"ז'),
+  identityNumber: Yup.string().required('יש להזין ת"ז').matches(IDENTITY_CARD_EXP, 'ת"ז לא תקין'),
   phone: Yup.string().required("יש למלא מספר טלפון").matches(PHONE_REG_EXP, "מספר לא תקין"),
   classification: Yup.string().required("יש לבחור סיווג"),
   isUserApprover: Yup.boolean(),
