@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useStores } from '../../../context/use-stores';
-import { NAME_REG_EXP, PHONE_REG_EXP, USER_CLEARANCE, USER_TYPE, USER_SEX } from "../../../constants";
+import { NAME_REG_EXP, PHONE_REG_EXP, USER_CLEARANCE, USER_TYPE, USER_SEX, USER_CITIZEN_ENTITY_TYPE } from "../../../constants";
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { isUserHoldType } from '../../../utils/user';
 import { InputForm, InputTypes } from '../../Fields/InputForm';
@@ -81,8 +81,7 @@ const CreateSpecialEntityForm = forwardRef(
           mobilePhone: [phone],
           phone: [phone],
           clearance: classification,
-          entityType: "civillian", // only civilian
-          serviceType: "???", // TODO: ask
+          entityType: USER_CITIZEN_ENTITY_TYPE,
           ...(sex && sex !== "" && {sex}),
           ...(birthDate && { birthdate: datesUtil.getTime(birthDate) }),
         },

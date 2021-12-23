@@ -8,10 +8,15 @@ export const USER_TYPE = {
   BULK: 'BULK',
 };
 
-export const USER_CITIZEN = process.env.USER_CITIZEN || 'אזרח';
-export const USER_CLEARANCE = process.env.USER_CLEARANCE || ['1', '2', '3', '4', '5', '6'];
-export const USER_SOURCE_DI = process.env.USER_SOURCE_DI || 'sf_name';
-export const USER_NO_PICTURE = process.env.USER_NO_PICTURE || 'pictureUrl';
+export const USER_CITIZEN_ENTITY_TYPE = process.env.UI_USER_CITIZEN_ENTITY_TYPE || "digimon";
+export const USER_CLEARANCE = process.env.UI_USER_CLEARANCE
+  ? process.env.UI_USER_CLEARANCE.split(",")
+  : ["1", "2", "3", "4", "5", "6"];
+export const USER_SOURCE_DI = process.env.UI_USER_SOURCE_DI || 'sf_name';
+export const USER_NO_PICTURE = process.env.UI_USER_NO_PICTURE_STRING || 'pictureUrl';
+export const highCommanderRanks = process.env.UI_HIGH_COMMANDER_RANKS
+  ? process.env.UI_HIGH_COMMANDER_RANKS.split(",")
+  : ["rookie", "champion"];
 
 export const USER_TYPE_TAG = {
   APPROVER: 'גורם מאשר',
@@ -24,7 +29,3 @@ export const USER_SEX = [
   { label: "זכר", value: "1" },
   { label: "נקבה", value: "2" },
 ];
-
-export const highCommanderRanks = process.env.HIGH_COMMANDER_RANKS
-  ? process.env.HIGH_COMMANDER_RANKS.split(",")
-  : ["rookie", "champion"];

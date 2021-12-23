@@ -253,6 +253,8 @@ const AssignRoleToEntityForm = forwardRef(
     const handleOrgSelected = async (org) => {
       const result = await getRolesUnderOG({ id: org.id, direct: true });
       setRoles(result || []);
+      setValue("roleId", "");
+      setValue("currentRoleUser", null);
     };
 
     const handleRoleSelected = async (roleId) => {

@@ -10,7 +10,7 @@ export const getMyRequests = async (from, to) => {
     params: {
       from,
       to,
-      sortField: "UPDATED_AT",
+      sortField: "CREATED_AT",
     },
   });
 
@@ -19,7 +19,7 @@ export const getMyRequests = async (from, to) => {
 
 export const getMyRequestsWithParams = async (params) => {
   const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/my`, {
-    params: { ...params, sortField: "UPDATED_AT" },
+    params: { ...params, sortField: "CREATED_AT" },
   });
 
   if (Array.isArray(response.data.requests)) {
