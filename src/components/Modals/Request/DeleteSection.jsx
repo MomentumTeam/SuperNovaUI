@@ -4,11 +4,13 @@ import { Dialog } from "primereact/dialog";
 import { useToast } from '../../../context/use-toast';
 import { deleteRequest } from "../../../service/AppliesService";
 import { useStores } from '../../../context/use-stores';
+import { isSubmitterReq } from '../../../utils/applies';
 
-const DeleteSection = ({ requestId, setDialogVisiblity }) => {
+const DeleteSection = ({ request, setDialogVisiblity }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { actionPopup } = useToast();
-  const { appliesStore } = useStores();
+  const { appliesStore, userStore } = useStores();
+  const enabledDelete = isSubmitterReq(request, userStore.user);
 
   return (
     <>
@@ -26,9 +28,9 @@ const DeleteSection = ({ requestId, setDialogVisiblity }) => {
                 label="כן, תמחק"
                 onClick={async () => {
                   try {
-                    await deleteRequest(requestId);
+                    await deleteRequest(request.id);
                     actionPopup("מחיקה");
-                    await appliesStore.removeApplyById(requestId);
+                    await appliesStore.removeApplyById(request.id);
                   } catch (err) {
                     actionPopup("מחיקה", {});
                   }
@@ -53,11 +55,11 @@ const DeleteSection = ({ requestId, setDialogVisiblity }) => {
         </div>
       </Dialog>
       <div>
-        <Button
+        {enabledDelete &&<Button
           label="מחיקה "
           className={"btn-gradient red"}
           onClick={() => setIsOpen(true)}
-        />
+        />}
       </div>
     </>
   );
