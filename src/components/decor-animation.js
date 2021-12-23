@@ -18,7 +18,7 @@ class DecorAnimation extends React.Component {
         };
         return (
             <div className="decor-animation">
-                <Lottie options={defaultOptions} />
+                <Lottie options={defaultOptions} width="90"/>
             </div>
         );
 
