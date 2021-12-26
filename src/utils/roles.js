@@ -1,5 +1,6 @@
 export const canEditRole = (selectedEntity, user) => {
-  const role = selectedEntity && user.digitalIdentities.find((di) => di.role.roleId === selectedEntity.roleId);
+  const role =
+    selectedEntity && user.digitalIdentities.find((di) => di.role?.roleId && di.role.roleId === selectedEntity.roleId);
 
   return role;
 };
