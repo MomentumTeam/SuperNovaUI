@@ -1,21 +1,26 @@
-import * as Yup from "yup";
-import FormData from "form-data";
-import React, { useImperativeHandle, forwardRef, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { InputTextarea } from "primereact/inputtextarea";
+import * as Yup from 'yup';
+import FormData from 'form-data';
+import React, {
+  useImperativeHandle,
+  forwardRef,
+  useEffect,
+  useState,
+} from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { InputTextarea } from 'primereact/inputtextarea';
 
-import Hierarchy from "../../Fields/Hierarchy";
-import Approver from "../../Fields/Approver";
-import BulkFileArea from "./BulkFileArea";
-import BulkRowsPopup from "./BulkRowsPopup";
+import Hierarchy from '../../Fields/Hierarchy';
+import Approver from '../../Fields/Approver';
+import BulkFileArea from './BulkFileArea';
+import BulkRowsPopup from './BulkRowsPopup';
 
-import { useStores } from "../../../context/use-stores";
+import { useStores } from '../../../context/use-stores';
 import { BulkTypes } from '../../../constants/applies';
 import {
   uploadBulkFile,
   getBulkChangeRoleHierarchyData,
-} from "../../../service/AppliesService";
+} from '../../../service/AppliesService';
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { isUserHoldType } from '../../../utils/user';
 import { USER_TYPE } from '../../../constants';
@@ -25,22 +30,44 @@ import { isApproverValid } from '../../../service/ApproverService';
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
   comments: Yup.string().optional(),
-  hierarchy: Yup.object().required("יש לבחור היררכיה חדשה"),
+  hierarchy: Yup.object()
+    .required('יש לבחור היררכיה חדשה')
+    .test({
+      name: 'check-if-valid',
+      message: 'יש לבחור היררכיה שונה מההיררכיה הנוכחית!',
+      test: async (hierarchy, context) => {
+        if (hierarchy?.id === context.parent?.currentHierarchy?.id) {
+          return false;
+        }
+        return true;
+      },
+    }),
   currentHierarchy: Yup.object().required('יש לבחור היררכיה'),
   isUserApprover: Yup.boolean(),
-  approvers: Yup.array().when('isUserApprover', {
-    is: false,
-    then: Yup.array().min(1, 'יש לבחור לפחות גורם מאשר אחד').required('יש לבחור לפחות גורם מאשר אחד'),
-  }).test({
+  approvers: Yup.array()
+    .when('isUserApprover', {
+      is: false,
+      then: Yup.array()
+        .min(1, 'יש לבחור לפחות גורם מאשר אחד')
+        .required('יש לבחור לפחות גורם מאשר אחד'),
+    })
+    .test({
       name: 'check-if-valid',
       message: 'יש לבחור מאשרים תקינים (מהיחידה בלבד)',
       test: async (approvers, context) => {
         let isTotalValid = true;
 
-        if (approvers && Array.isArray(approvers) &&  context.parent?.currentHierarchy?.id) {
+        if (
+          approvers &&
+          Array.isArray(approvers) &&
+          context.parent?.currentHierarchy?.id
+        ) {
           await Promise.all(
             approvers.map(async (approver) => {
-              const { isValid } = await isApproverValid(approver.entityId, context.parent.currentHierarchy.id);
+              const { isValid } = await isApproverValid(
+                approver.entityId,
+                context.parent.currentHierarchy.id
+              );
               if (!isValid) isTotalValid = false;
             })
           );
@@ -85,8 +112,12 @@ const RenameBulkOGForm = forwardRef(
         setValue('comments', requestObject.comments);
         setValue('hierarchy', data.request.adParams.ouDisplayName);
         setValue('rows', data.rows);
-        
-        const result = await GetDefaultApprovers({ request: requestObject, onlyForView, user: userStore.user });
+
+        const result = await GetDefaultApprovers({
+          request: requestObject,
+          onlyForView,
+          user: userStore.user,
+        });
         setDefaultApprovers(result || []);
       };
       if (requestObject) {
@@ -100,7 +131,8 @@ const RenameBulkOGForm = forwardRef(
       } catch (err) {
         throw new Error(err.errors);
       }
-      const { hierarchy, approvers, bulkFile, comments, currentHierarchy } = data;
+      const { hierarchy, approvers, bulkFile, comments, currentHierarchy } =
+        data;
 
       const formData = new FormData();
       formData.append('bulkFiles', bulkFile[0]);
@@ -144,7 +176,7 @@ const RenameBulkOGForm = forwardRef(
         groupId: org.id,
       });
       setDefaultApprovers(result || []);
-      setValue("isUserApprover", result.length > 0);
+      setValue('isUserApprover', result.length > 0);
     };
 
     return (
@@ -157,7 +189,11 @@ const RenameBulkOGForm = forwardRef(
               labelText="היררכיה נוכחית"
               errors={errors}
               disabled={onlyForView}
-              userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
+              userHierarchy={
+                userStore.user && userStore.user.hierarchy
+                  ? userStore.user.hierarchy
+                  : null
+              }
               onOrgSelected={handleOrgSelected}
             />
           </div>
@@ -169,21 +205,27 @@ const RenameBulkOGForm = forwardRef(
               name="hierarchy"
               labelText="היררכיה חדשה"
               errors={errors}
-              ogValue={watch("hierarchy")}
+              ogValue={watch('hierarchy')}
               disabled={onlyForView}
-              userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
+              userHierarchy={
+                userStore.user && userStore.user.hierarchy
+                  ? userStore.user.hierarchy
+                  : null
+              }
             />
           </div>
         </div>
-        {!requestObject && <BulkFileArea register={register} bulkType={1} errors={errors} />}
+        {!requestObject && (
+          <BulkFileArea register={register} bulkType={1} errors={errors} />
+        )}
         {!!requestObject && (
           <BulkRowsPopup
-            rows={watch("rows")}
+            rows={watch('rows')}
             columns={[
-              { field: "rowNumber" },
-              { field: "currentJobTitle", header: "תפקיד נוכחי" },
-              { field: "newJobTitle", header: "תפקיד חדש" },
-              { field: "roleId", header: "מזהה תפקיד" },
+              { field: 'rowNumber' },
+              { field: 'currentJobTitle', header: 'תפקיד נוכחי' },
+              { field: 'newJobTitle', header: 'תפקיד חדש' },
+              { field: 'roleId', header: 'מזהה תפקיד' },
             ]}
           />
         )}
@@ -194,7 +236,7 @@ const RenameBulkOGForm = forwardRef(
             tooltip='רס"ן ומעלה ביחידתך'
             multiple={true}
             errors={errors}
-            disabled={onlyForView || watch("isUserApprover")}
+            disabled={onlyForView || watch('isUserApprover')}
             defaultApprovers={defaultApprovers}
           />
         </div>
@@ -205,7 +247,7 @@ const RenameBulkOGForm = forwardRef(
               <span></span>הערות
             </label>
             <InputTextarea
-              {...register("comments")}
+              {...register('comments')}
               id="2028"
               type="text"
               placeholder="הכנס הערות לבקשה..."
