@@ -22,7 +22,7 @@ const validationSchema = Yup.object().shape({
   firstName: Yup.string().required("יש למלא שם פרטי").matches(NAME_REG_EXP, "שם לא תקין"),
   lastName: Yup.string().required("יש למלא שם משפחה").matches(NAME_REG_EXP, "שם לא תקין"),
   identityNumber: Yup.string().required('יש להזין ת"ז').matches(IDENTITY_CARD_EXP, 'ת"ז לא תקין'),
-  phone: Yup.string().required("יש למלא מספר טלפון").matches(PHONE_REG_EXP, "מספר לא תקין"),
+  mobilePhone: Yup.string().required("יש למלא מספר פלאפון נייד").matches(PHONE_REG_EXP, "מספר לא תקין"),
   classification: Yup.string().required("יש לבחור סיווג"),
   isUserApprover: Yup.boolean(),
   approvers: Yup.array().when("isUserApprover", {
@@ -51,7 +51,7 @@ const CreateSpecialEntityForm = forwardRef(
         methods.setValue("firstName", requestObject.kartoffelParams.firstName);
         methods.setValue("lastName", requestObject.kartoffelParams.lastName);
         methods.setValue("identityNumber", requestObject.kartoffelParams.identityCard);
-        methods.setValue("phone", requestObject.kartoffelParams.mobilePhone[0]);
+        methods.setValue("mobilePhone", requestObject.kartoffelParams.mobilePhone[0]);
         methods.setValue("classification", requestObject.kartoffelParams.clearance);
         methods.setValue("sex", requestObject.kartoffelParams.sex);
 
@@ -134,8 +134,8 @@ const CreateSpecialEntityForm = forwardRef(
         force: true,
       },
       {
-        fieldName: "phone",
-        displayName: "טלפון",
+        fieldName: "mobilePhone",
+        displayName: "פלאפון נייד",
         inputType: InputTypes.TEXT,
         type: "num",
         keyFilter: "num",

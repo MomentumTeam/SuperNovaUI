@@ -31,3 +31,9 @@ export const USER_SEX = [
   { label: "זכר", value: "זכר" },
   { label: "נקבה", value: "נקבה" },
 ];
+
+export const USER_ENTITY_TYPE = {
+  Soldier: "חייל",
+  Civilian: "אזרח",
+  GoalUser: "GoalUser"
+}

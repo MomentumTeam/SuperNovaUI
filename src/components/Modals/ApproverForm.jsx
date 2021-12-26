@@ -20,7 +20,7 @@ import {
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { USER_TYPE } from '../../constants';
-import { isUserHoldType } from '../../utils/user';
+import { isUserHoldType, userTemplate } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
 import "../../assets/css/local/components/approverForm.css";
 
@@ -164,11 +164,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
      }
    };
 
-    const itemTemplate = (item) => (
-      <>{item.displayName ? item.displayName : item.fullName + `${item.jobTitle ? "-" + item.jobTitle : ""}`}</>
-    );
-
-
+ 
   const setCurrentUser = () => {
     const user = toJS(userStore.user);
     setValue('userName', user.fullName);
@@ -216,7 +212,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
             completeMethod={onSearchUser}
             id="approverForm-userName"
             type="text"
-            itemTemplate={itemTemplate}
+            itemTemplate={userTemplate}
             field="fullName"
             onSelect={(e) => {
               setValue("user", e.value);

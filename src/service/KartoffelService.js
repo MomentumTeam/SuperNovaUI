@@ -2,24 +2,22 @@ import axiosApiInstance from '../config/axios';
 import { apiBaseUrl } from '../constants/api';
 
 // GROUPS
-export const searchOG = async (nameAndHierarchy) => {
-  // TODO: add underGroupId
+export const searchOG = async (nameAndHierarchy, withRoles = false, underGroupId = null) => {
   const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/groups/search`, {
     params: {
       nameAndHierarchy,
+      withRoles,
+      ...underGroupId && {underGroupId}
     },
   });
 
   return response.data.groups;
 };
 
-export const getOGByHierarchy = async (hierarchy) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/groups/hierarchy`,
-    {
-      params: { hierarchy },
-    }
-  );
+export const getOGByHierarchy = async (hierarchy, withRoles = false) => {
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/groups/hierarchy`, {
+    params: { hierarchy, withRoles },
+  });
 
   return response.data;
 };

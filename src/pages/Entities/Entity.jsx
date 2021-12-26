@@ -12,15 +12,18 @@ import { TableNames, TableTypes } from "../../constants/usersTable";
 
 import "../../assets/css/local/pages/listUsersPage.min.css";
 import { USER_TYPE } from '../../constants';
-require("polyfill-object.fromentries");
 
 const Entities = observer(() => {
   const { actionPopup } = useToast();
   const { entitiesStore, rolesStore, groupsStore, userStore } = useStores();
 
   const userTypes = userStore.user?.types ? userStore.user.types : USER_TYPE.SOLDIER;
-  const tabs = Object.fromEntries(Object.entries(TableNames).filter(
-    ([key, value]) => !value?.roles || value.roles.some((role) => userTypes.includes(role))));
+  const tabs = Object.assign(
+    {},
+    ...Object.entries(TableNames)
+      .filter(([key, value]) => !value?.roles || value.roles.some((role) => userTypes.includes(role)))
+      .map(([k, v]) => ({ [k]: v }))
+  );
   
   const [tabId, setTabId] = useState(Object.values(tabs)[0].tab);
   const [first, setFirst] = useState(0);
