@@ -33,7 +33,7 @@ const validationSchema = Yup.object().shape({
   hierarchy: Yup.object()
     .required('יש לבחור היררכיה חדשה')
     .test({
-      name: 'check-if-valid',
+      name: 'check-if-hierarchies-are-different',
       message: 'יש לבחור היררכיה שונה מההיררכיה הנוכחית!',
       test: async (hierarchy, context) => {
         if (hierarchy?.id === context.parent?.currentHierarchy?.id) {
