@@ -1,4 +1,4 @@
-import { USER_TYPE, USER_TYPE_TAG } from "../constants";
+import { USER_ENTITY_TYPE, USER_TYPE, USER_TYPE_TAG } from "../constants";
 
 // permissions
 export const isUserCanSeeAllApproveApplies = (user) => {
@@ -53,3 +53,11 @@ export const getUserNameFromDisplayName = (displayName) => {
   const name = displayName.split("/").pop();
   return name;
 };
+
+export const userTemplate = (user) => {
+  <>{user.displayName ? user.displayName : user.fullName + `${user.jobTitle ? "-" + user.jobTitle : ""}`}</>;
+}
+
+export const formatServiceType = (user) => {
+  <>{user[1] ? user[0] : USER_ENTITY_TYPE[user[0]]}</>;
+}

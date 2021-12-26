@@ -3,6 +3,7 @@ import ModalHierarchy from "../Modals/Hierarchy/ModalHierarchy";
 import { searchOG } from "../../service/KartoffelService";
 import { AutoComplete } from "primereact/autocomplete";
 import { hierarchyConverse, hierarchyItemTemplate } from '../../utils/hierarchy';
+import { Tooltip } from 'primereact/tooltip';
 
 const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText = "היררכיה", userHierarchy, errors }) => {
   const [ogSuggestions, setOgSuggestions] = useState([]);
@@ -25,9 +26,10 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
   return (
     <>
       <div className="p-field">
+        {disabled && <Tooltip target={`.hierarchyText`} content={selectedOg} />}
         <label htmlFor="2020">
           <span className="required-field">*</span>
-          {disabled? labelText:`הכנסת ${labelText}`}
+          {disabled ? labelText : `הכנסת ${labelText}`}
         </label>
         <AutoComplete
           disabled={disabled || false}
@@ -36,6 +38,7 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
           completeMethod={searchOg}
           id="2020"
           type="text"
+          className="hierarchyText"
           field={hierarchyConverse}
           itemTemplate={hierarchyItemTemplate}
           onSelect={(e) => {
@@ -52,8 +55,8 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
         />
         <label htmlFor="2020">
           {errors[name] && (
-            <small style={{ color: 'red' }}>
-              {(errors[name].type !== 'typeError' && errors[name].message) || 'יש לבחור היררכיה'}
+            <small style={{ color: "red" }}>
+              {(errors[name].type !== "typeError" && errors[name].message) || "יש לבחור היררכיה"}
             </small>
           )}
         </label>

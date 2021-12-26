@@ -7,6 +7,7 @@ const SearchField = ({
   searchField,
   searchDisplayName,
   searchTemplate,
+  searchRemoveField,
   isSetTable,
   setTableData,
   getData,
@@ -16,7 +17,7 @@ const SearchField = ({
 
   useEffect(() => {
     if (selected === "") setSelected([]);
-  }, [selected]);
+  }, []);
 
   useEffect(() => {
     setSelected([]);
@@ -28,7 +29,6 @@ const SearchField = ({
     }
   }, [isSetTable]);
 
-
   return (
     <div className="autocomplete-wrap">
       <div className="p-fluid">
@@ -37,10 +37,15 @@ const SearchField = ({
             value={selected}
             suggestions={[...new Map(results.map((item) => [item[searchField], item])).values()]}
             completeMethod={async (e) => {
-              if (e.query.length > 1) {
-                const searchResults = await searchFunc(e);
-                setResults(searchResults);
-              } else {
+              try {
+                if (e.query.length > 1) {
+                  const searchResults = await searchFunc(e);
+
+                  setResults(searchResults);
+                } else {
+                  setResults([]);
+                }
+              } catch (error) {
                 setResults([]);
               }
             }}
@@ -50,15 +55,33 @@ const SearchField = ({
               setSelected(e.value);
 
               if (e.originalEvent.type === "click") {
-                const filteredResults = results.filter((r) => r[searchField] === e.value[searchField]);
+                let filteredResults = results.filter((r) => r[searchField] === e.value[searchField]);
+
+                if (searchRemoveField) {
+                  const newData = filteredResults.map(({searchRemoveField, ...keepAttrs}) => keepAttrs)
+                  filteredResults = [...new Set(newData)];
+                }
                 setTableData(filteredResults);
               }
             }}
             onKeyUp={async (e) => {
               if (e.code === EVENT_KEY_UP_CODE_ENTER) {
-                Array.isArray(selected) && selected.length === 0
-                  ? await getData({ reset: true })
-                  : setTableData(results);
+                if (Array.isArray(selected) && selected.length === 0) {
+                 await getData({ reset: true })
+                } else {
+                  
+                  if (searchRemoveField) {
+                    let filteredResults;
+                    const newData = results.map(({ searchRemoveField, ...keepAttrs }) => keepAttrs);
+                    filteredResults = [...new Set(newData)];
+
+                    setTableData(filteredResults);
+                  } else {
+                    setTableData(results);
+
+                  }
+                  
+                }
               }
             }}
           />

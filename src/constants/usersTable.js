@@ -3,6 +3,7 @@ import { useStores } from "../context/use-stores";
 import { TextFieldTemplate } from "../components/Fields/TextFieldTemplate";
 import { concatHierarchy, hierarchyItemTemplate } from '../utils/hierarchy';
 import { actions } from './actions';
+import { formatServiceType, userTemplate } from '../utils/user';
 
 export const TableTypes = {
   entities: [
@@ -18,7 +19,7 @@ export const TableTypes = {
     { field: "displayName", displayName: "יוזר", template: TextFieldTemplate },
     { field: "rank", displayName: "דרגה" },
     { field: "akaUnit", displayName: "יחידה" },
-    { field: "serviceType", displayName: "סוג שירות" },
+    { field: ["serviceType", "entityType"], displayName: "סוג שירות", formatter: formatServiceType },
   ],
   hierarchy: [
     { field: ["hierarchy", "name"], displayName: "היררכיה", formatter: concatHierarchy},
@@ -75,12 +76,12 @@ export const TableSearch = (tableType) => {
   const { entitiesStore, rolesStore, groupsStore } = useStores();
 
   const searchFields = {
-    // ASK: LIRON
     entities: [
       {
         searchField: "displayName",
         searchDisplayName: 'שם/מ"א/ת"ז',
         searchFunc: entitiesStore.getEntitiesByEntity,
+        searchTemplate: userTemplate,
       },
       {
         searchField: "hierarchy",
@@ -104,6 +105,7 @@ export const TableSearch = (tableType) => {
         searchField: "roleIdSearch",
         searchDisplayName: "חיפוש לפי מזהה תפקיד (T)",
         searchFunc: groupsStore.getHierarchyByRoleId,
+        searchRemoveField: "roleIdSearch",
         // searchTemplate: hierarchyItemTemplate,
       },
     ],

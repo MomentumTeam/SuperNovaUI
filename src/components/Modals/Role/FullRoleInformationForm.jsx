@@ -233,14 +233,6 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
         </div>
       )}
 
-      {!reqView && (
-        <div className="p-fluid-item p-fluid-item">
-          <div className="p-field">
-            <label> יחידה </label>
-            <InputText value={role?.unit || "---"} disabled={true} />
-          </div>
-        </div>
-      )}
 
       {!reqView && (
         <div className="p-fluid-item p-fluid-item">
