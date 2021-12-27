@@ -55,7 +55,7 @@ export const getUserNameFromDisplayName = (displayName) => {
 };
 
 export const userTemplate = (user) => {
-  <>{user.displayName ? user.displayName : user.fullName + `${user.jobTitle ? "-" + user.jobTitle : ""}`}</>;
+  return <>{user.displayName ? user.displayName : user.fullName + `${user.jobTitle ? "-" + user.jobTitle : ""}`}</>;
 }
 
 export const formatServiceType = (user) => {

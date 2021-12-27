@@ -21,13 +21,11 @@ const InputCalanderField = ({
   required= true,
   showTime=false
 }) => {
-  const [date, setDate] = useState(null);
   const disabled = !canEdit || !isEdit;
 
   let nowDate = new Date();
 
   useEffect(() => {
-    if (item) setDate(item[fieldName]);
     clearErrors();
   }, [isEdit]);
 
@@ -41,7 +39,7 @@ const InputCalanderField = ({
           onChange={(e) => {
             if (e.value) setValue(fieldName, new Date(e.value), { shouldValidate: true });
           }}
-          value={watch(fieldName)? datesUtil.formattedDate(watch(fieldName), showTime): "---"}
+          value={watch(fieldName)? watch(fieldName): "---"}
           placeholder={watch(fieldName) ? datesUtil.formattedDate(watch(fieldName), showTime) : "---"}
           showIcon
           showTime={showTime}
