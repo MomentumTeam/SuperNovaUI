@@ -55,8 +55,13 @@ export const getUserNameFromDisplayName = (displayName) => {
 };
 
 export const userTemplate = (user) => {
-  <>{user.displayName ? user.displayName : user.fullName + `${user.jobTitle ? "-" + user.jobTitle : ""}`}</>;
+  return <>{user.displayName ? user.displayName : user.fullName + `${user.jobTitle ? "-" + user.jobTitle : ""}`}</>;
 }
+
+export const userConverse = (user) => {
+  if (user && (user?.displayName || user?.fullName)) return user.displayName ? user.displayName : user.fullName + `${user.jobTitle ? "-" + user.jobTitle : ""}`;
+  return undefined
+};
 
 export const formatServiceType = (user) => {
   <>{user[1] ? user[0] : USER_ENTITY_TYPE[user[0]]}</>;

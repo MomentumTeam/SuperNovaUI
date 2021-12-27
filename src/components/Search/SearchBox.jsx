@@ -16,7 +16,7 @@ const SearchBox = ({ searchFields, setTableData, getData }) => {
               searchField={searchField.searchField}
               searchDisplayName={searchField.searchDisplayName}
               searchTemplate={searchField?.searchTemplate}
-              searchRemoveField={searchField?.searchRemoveField}
+              searchIdField={searchField?.searchIdField}
               isSetTable={isSetTable}
               setIsSetTable={setIsSetTable}
               setTableData={setTableData}

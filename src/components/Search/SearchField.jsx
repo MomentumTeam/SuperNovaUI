@@ -7,7 +7,7 @@ const SearchField = ({
   searchField,
   searchDisplayName,
   searchTemplate,
-  searchRemoveField,
+  searchIdField,
   isSetTable,
   setTableData,
   getData,
@@ -57,30 +57,32 @@ const SearchField = ({
               if (e.originalEvent.type === "click") {
                 let filteredResults = results.filter((r) => r[searchField] === e.value[searchField]);
 
-                if (searchRemoveField) {
-                  const newData = filteredResults.map(({searchRemoveField, ...keepAttrs}) => keepAttrs)
-                  filteredResults = [...new Set(newData)];
-                }
-                setTableData(filteredResults);
+                 if (searchIdField) {
+                   let newData = [...results];
+                   newData = newData.filter(
+                     (v, i, a) => a.findIndex((t) => t[searchIdField] === v[searchIdField]) === i
+                   );
+                   setTableData(newData);
+                 } else {
+                   setTableData(filteredResults);
+                 }
               }
             }}
             onKeyUp={async (e) => {
               if (e.code === EVENT_KEY_UP_CODE_ENTER) {
                 if (Array.isArray(selected) && selected.length === 0) {
-                 await getData({ reset: true })
+                  await getData({ reset: true });
                 } else {
-                  
-                  if (searchRemoveField) {
-                    let filteredResults;
-                    const newData = results.map(({ searchRemoveField, ...keepAttrs }) => keepAttrs);
-                    filteredResults = [...new Set(newData)];
 
+                  if (searchIdField) {
+                    let filteredResults = [...results];
+                    filteredResults = filteredResults.filter(
+                      (v, i, a) => a.findIndex((t) => t[searchIdField] === v[searchIdField]) === i
+                    );
                     setTableData(filteredResults);
                   } else {
                     setTableData(results);
-
                   }
-                  
                 }
               }
             }}

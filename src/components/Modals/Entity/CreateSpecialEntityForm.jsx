@@ -54,6 +54,10 @@ const CreateSpecialEntityForm = forwardRef(
         methods.setValue("mobilePhone", requestObject.kartoffelParams.mobilePhone[0]);
         methods.setValue("classification", requestObject.kartoffelParams.clearance);
         methods.setValue("sex", requestObject.kartoffelParams.sex);
+        methods.setValue(
+          "birthdate",
+          requestObject.kartoffelParams?.birthdate ? parseInt(requestObject.kartoffelParams.birthdate) : ""
+        );
 
       }
 
@@ -72,12 +76,12 @@ const CreateSpecialEntityForm = forwardRef(
         firstName,
         lastName,
         identityNumber,
-        phone,
+        mobilePhone,
         classification,
         comments,
         sex,
         approvers,
-        birthDate
+        birthdate
       } = data;
 
       const req = {
@@ -86,12 +90,12 @@ const CreateSpecialEntityForm = forwardRef(
           firstName,
           lastName,
           identityCard: identityNumber,
-          mobilePhone: [phone],
-          phone: [phone],
+          mobilePhone: [mobilePhone],
+          phone: [mobilePhone],
           clearance: classification,
           entityType: USER_CITIZEN_ENTITY_TYPE,
-          ...(sex && sex !== "" && {sex}),
-          ...(birthDate && { birthdate: datesUtil.getTime(birthDate) }),
+          ...(sex && sex !== "" && { sex }),
+          ...(birthdate && { birthdate: datesUtil.getTime(birthdate) }),
         },
         comments,
         adParams: {},

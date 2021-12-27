@@ -105,8 +105,7 @@ export const TableSearch = (tableType) => {
         searchField: "roleIdSearch",
         searchDisplayName: "חיפוש לפי מזהה תפקיד (T)",
         searchFunc: groupsStore.getHierarchyByRoleId,
-        searchRemoveField: "roleIdSearch",
-        // searchTemplate: hierarchyItemTemplate,
+        searchIdField: "id",
       },
     ],
     roles: [

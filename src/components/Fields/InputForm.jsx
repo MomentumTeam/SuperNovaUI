@@ -38,6 +38,7 @@ const InputForm = ({ fields, item = null, methods, isEdit, errors }) => {
             keyFilter={field?.keyFilter}
             additionalClass={field?.additionalClass}
             placeholder={field?.placeholder}
+            withTooltip={field?.withTooltip}
           />
         );
       case InputTypes.CALANDER:
