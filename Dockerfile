@@ -9,6 +9,7 @@ RUN npm run build
 
 # Stage 2 - serve static files
 FROM nginx:alpine
+ENV NODE_ENV=production
 COPY --from=node /usr/src/app/build /usr/share/nginx/html
 COPY ./outdated-browser.html /usr/share/nginx/html
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
