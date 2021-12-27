@@ -163,6 +163,7 @@ const FullEntityInformationForm = forwardRef(
         inputType: InputTypes.TEXT,
         force: true,
         secured: () => !reqView,
+        withTooltip: true,
       },
       {
         fieldName: "mail",
