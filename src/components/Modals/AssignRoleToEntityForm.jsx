@@ -466,7 +466,12 @@ const AssignRoleToEntityForm = forwardRef(
           <div className="p-fluid-item-flex p-fluid-item">
             <Hierarchy
               ogValue={watch("hierarchy")}
-              setValue={setValue}
+              setValue={(name, value) => {
+                setValue("role", "");
+                setValue("roleId", "");
+                setValue("currentRoleUser", null);
+                setValue(name, value)
+              }}
               name="hierarchy"
               onOrgSelected={handleOrgSelected}
               errors={errors}
