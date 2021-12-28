@@ -62,8 +62,6 @@ export default class UserStore {
 
   async getMyPicture() {
     const myPicture = await getPictureByConnectedEntity();
-    console.log(myPicture)
     this.user = {...this.user, picture: myPicture.image};
-    console.log(this.user)
   }
 }

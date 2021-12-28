@@ -16,13 +16,15 @@ import { toJS } from "mobx";
 import {
   searchEntitiesByFullName,
   getEntityByIdentifier,
+  getOGById,
 } from "../../service/KartoffelService";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { USER_TYPE } from '../../constants';
-import { isUserHoldType } from '../../utils/user';
+import { isUserHoldType, userConverse, userTemplate } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
 import "../../assets/css/local/components/approverForm.css";
+import { Tooltip } from 'primereact/tooltip';
 
 const approverTypes = [
   { label: "גורם מאשר ראשוני", value: USER_TYPE.COMMANDER },
@@ -35,7 +37,7 @@ const approverTypes = [
 const validationSchema = Yup.object().shape({
   approverType: Yup.string().required("יש להכניס סוג מאשר"),
   user: Yup.object().required("יש לבחור משתמש"),
-  hierarchy: Yup.string().required("יש לבחור היררכיה"),
+  hierarchy: Yup.object().required("יש לבחור היררכיה"),
   isUserApprover: Yup.boolean(),
   approvers: Yup.array().when("isUserApprover", {
     is: false,
@@ -75,9 +77,16 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
     if (requestObject) {
       setValue('comments', requestObject.comments);
       setValue('userName', requestObject.additionalParams.displayName);
-      setValue('hierarchy', requestObject.additionalParams.directGroup);
+
       setValue('personalNumber', requestObject.additionalParams.personalNumber || requestObject.additionalParams.identityCard);
       setApproverType(requestObject.additionalParams.type);
+      try {
+        const hierarchy = await getOGById(requestObject.additionalParams.directGroup);
+        setValue("hierarchy", hierarchy);
+        
+      } catch (error) {
+
+      }
     }
 
     const result = await GetDefaultApprovers({ request: requestObject, onlyForView, user: userStore.user, highCommander: true });
@@ -90,10 +99,8 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
       hierarchy,
       approverType,
       comments,
-      userName
     } = data;
 
-    console.log(errors);
     try {
       await validationSchema.validate(data);
     } catch (err) {
@@ -106,10 +113,10 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
       commanders: approvers,
       additionalParams: {
         entityId: user.id,
-        displayName: user.fullName,
+        displayName: userConverse(user),
         domainUsers: (user?.digitalIdentities || []).map(({ uniqueId, mail }) => uniqueId || mail),
         type: approverType,
-        directGroup: hierarchy,
+        directGroup: hierarchy.directGroup,
         ...(user.akaUnit && { akaUnit: user.akaUnit }),
         ...(user.personalNumber && { personalNumber: user.personalNumber }),
         ...(user.identityCard && { identityCard: user.identityCard }),
@@ -144,8 +151,8 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
   
       if (user) {
         setValue('user', user);
-        setValue('userName', user.fullName);
-        setValue('hierarchy', user.hierarchy);
+        setValue('userName', userConverse(user));
+        setValue('hierarchy',  {hierarchy: user.hierarchy, directGroup: user.directGroup});
       }
       
     } catch (error) {
@@ -164,17 +171,13 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
      }
    };
 
-    const itemTemplate = (item) => (
-      <>{item.displayName ? item.displayName : item.fullName + `${item.jobTitle ? "-" + item.jobTitle : ""}`}</>
-    );
-
-
+ 
   const setCurrentUser = () => {
     const user = toJS(userStore.user);
-    setValue('userName', user.fullName);
+    setValue('userName', userConverse(user));
     setValue('user', user);
     setValue('personalNumber', user.personalNumber || user.identityCard);
-    setValue('hierarchy', user.hierarchy);
+    setValue("hierarchy", { hierarchy: user.hierarchy, directGroup: user.directGroup });
   };
 
   return (
@@ -201,6 +204,8 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
           <label htmlFor="2020">
             <span className="required-field">*</span>שם מלא
           </label>
+          {onlyForView && <Tooltip target={`.userNameText`} content={watch("userName")} />}
+
           <button
             className="btn-underline left19 approver-fillMe"
             onClick={setCurrentUser}
@@ -216,15 +221,16 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
             completeMethod={onSearchUser}
             id="approverForm-userName"
             type="text"
-            itemTemplate={itemTemplate}
-            field="fullName"
+            itemTemplate={userTemplate}
+            className="userNameText"
+            field={userConverse}
             onSelect={(e) => {
               setValue("user", e.value);
               setValue("personalNumber", e.value.personalNumber || e.value.identityCard);
-              setValue("hierarchy", e.value.hierarchy);
+              setValue("hierarchy", { hierarchy: e.value.hierarchy, directGroup: e.value.directGroup });
             }}
             onChange={(e) => {
-              setValue("userName", e.value.fullName ? e.value.fullName : e.value);
+              setValue("userName", e.value.fullName ? userConverse(e.value) : e.value);
               setValue("personalNumber", "");
               setValue("user", null);
               setValue("hierarchy", "");
@@ -277,7 +283,7 @@ const ApproverForm = forwardRef(({ onlyForView, requestObject, setIsActionDone }
           disabled={true}
           setValue={setValue}
           name="hierarchy"
-          ogValue={getValues("hierarchy")}
+          ogValue={getValues("hierarchy")?.hierarchy}
           errors={errors}
           userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
         />

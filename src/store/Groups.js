@@ -29,7 +29,7 @@ export default class GroupsStore {
 
     if (query.trim().length) {
       try {
-        filteredResults = await searchOG(query);
+        filteredResults = await searchOG(query, true);
       } catch (error) {}
     }
 
@@ -51,7 +51,7 @@ export default class GroupsStore {
 
         filteredResults = await Promise.all(
           hierarchies.map(async (hierarchy) => {
-            const res = await getOGByHierarchy(hierarchy.hierarchy);
+            const res = await getOGByHierarchy(hierarchy.hierarchy, true);
             res.roleIdSearch = hierarchy.roleId;
             return res;
           })
