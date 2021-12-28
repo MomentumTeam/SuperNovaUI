@@ -7,7 +7,6 @@ import { isUserHoldType } from './user';
 const fileType =
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 
-
 export const organizeRows = (rows) => {
   rows.sort((a, b) => {
     //sort requests by row order.
@@ -24,7 +23,6 @@ export const organizeRows = (rows) => {
 export const getFormattedDate = (timestamp) => {
   const newDate = new Date(parseInt(timestamp));
   return datesUtil.formattedDate(newDate);
-
 };
 
 export const getResponsibleFactor = (apply, user) => {
@@ -36,7 +34,6 @@ export const getResponsibleFactor = (apply, user) => {
 
   return responsibles;
 };
-
 
 export const getResponsibleFactors = (apply, user) => {
   let fields = [];
@@ -91,8 +88,6 @@ export const getResponsibleFactors = (apply, user) => {
     fields = [...fields, ...apply['superSecurityApprovers']];
   }
 
-
-  
   return fields;
 };
 
@@ -214,11 +209,17 @@ export const IsRequestCompleteForApprover = (apply, approverType) => {
 
   switch (approverType) {
     case USER_TYPE.SUPER_SECURITY:
-      return !apply.needSuperSecurityDecision ||  isStatusComplete(apply["superSecurityDecision"]["decision"]);
+      return (
+        !apply.needSuperSecurityDecision ||
+        isStatusComplete(apply['superSecurityDecision']['decision'])
+      );
     case USER_TYPE.SECURITY:
-      return !apply.needSecurityDecision || isStatusComplete(apply["securityDecision"]["decision"]);
+      return (
+        !apply.needSecurityDecision ||
+        isStatusComplete(apply['securityDecision']['decision'])
+      );
     case USER_TYPE.COMMANDER:
-      return isStatusComplete(apply["commanderDecision"]["decision"]);
+      return isStatusComplete(apply['commanderDecision']['decision']);
     default:
       break;
   }
@@ -271,6 +272,10 @@ export const getDenyReason = (apply) => {
     return superSecurityReason;
 };
 
-export const isSubmitterReq = (request, user)  => {
-  return request?.submittedBy?.id === user.id
-}
+export const isSubmitterReq = (request, user) => {
+  console.log('request', request?.status);
+  return (
+    request?.submittedBy?.id === user.id &&
+    request?.status !== "IN_PROGRESS"
+  );
+};
