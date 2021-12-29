@@ -4,3 +4,4 @@ export * from './applies';
 export * from './general';
 export * from './status';
 export * from './actions';
+export * from './decisions';

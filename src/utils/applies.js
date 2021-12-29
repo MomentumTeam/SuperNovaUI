@@ -1,6 +1,12 @@
 import * as filesaver from 'file-saver';
 import * as xlsx from 'xlsx';
-import { USER_TYPE, STATUSES, TYPES, checkIfRequestIsDone } from '../constants';
+import {
+  USER_TYPE,
+  STATUSES,
+  TYPES,
+  checkIfRequestIsDone,
+  REQ_STATUSES,
+} from '../constants';
 import datesUtil from '../utils/dates';
 import { isUserHoldType } from './user';
 
@@ -276,6 +282,7 @@ export const isSubmitterReq = (request, user) => {
   console.log('request', request?.status);
   return (
     request?.submittedBy?.id === user.id &&
-    request?.status !== "IN_PROGRESS"
+    request?.status !== REQ_STATUSES.IN_PROGRESS &&
+    request?.status !== REQ_STATUSES.DECLINED
   );
 };
