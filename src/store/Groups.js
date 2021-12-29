@@ -1,21 +1,32 @@
-import { action, makeAutoObservable, observable } from "mobx";
+import { action, makeAutoObservable, observable } from 'mobx';
 import {
   getOGByHierarchy,
   getOGChildren,
   searchOG,
   searchRolesByRoleId,
-} from "../service/KartoffelService";
+} from '../service/KartoffelService';
 
 export default class GroupsStore {
   groups = [];
+  myGroup = {};
 
   constructor() {
     makeAutoObservable(this, {
       groups: observable,
+      myGroup: observable,
       loadOGChildren: action,
       getHierarchyByHierarchy: action,
       getHierarchyByRoleId: action,
     });
+
+    // this.getMyOg();
+  }
+
+  async getMyOg() {
+    // const myOg = await getMyOG();
+    //ask barak for route
+    //then add myGroup to the top of all search result
+    // this.myGroup = myOg;
   }
 
   async loadOGChildren(id, page, pageSize, append = false) {
@@ -46,7 +57,8 @@ export default class GroupsStore {
       if (roles.length > 0) {
         let hierarchies = [];
         hierarchies = roles.map((role) => {
-          if (role?.hierarchy) return { hierarchy: role.hierarchy, roleId: role.roleId };
+          if (role?.hierarchy)
+            return { hierarchy: role.hierarchy, roleId: role.roleId };
         });
 
         filteredResults = await Promise.all(

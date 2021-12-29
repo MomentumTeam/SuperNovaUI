@@ -4,23 +4,29 @@ import React, {
   useState,
   useMemo,
   createRef,
-} from "react";
-import { Dialog } from "primereact/dialog";
-import { Button } from "primereact/button";
+} from 'react';
+import { Dialog } from 'primereact/dialog';
+import { Button } from 'primereact/button';
 
-import "../../assets/css/local/components/modal-item.min.css";
+import '../../assets/css/local/components/modal-item.min.css';
 
-import InfoPopup from "../InfoPopup";
-import "../../assets/css/local/components/dialog.css";
+import InfoPopup from '../InfoPopup';
+import '../../assets/css/local/components/dialog.css';
 import { useToast } from '../../context/use-toast';
-import { actions } from '../../constants/actions';
-
+import { actions, headersInfo } from '../../constants/actions';
+import { USER_TYPE } from '../../constants';
+import { isUserHoldType } from '../../utils/user';
+import { useStores } from '../../context/use-stores';
 
 const Action = () => {
   const { actionPopup } = useToast();
   const [actionList, setActionList] = useState(actions);
   const [isActionDone, setIsActionDone] = useState(false);
   const [currentActionId, setCurrentActionId] = useState(null);
+
+  const { userStore } = useStores();
+  const isBulkPermitted = isUserHoldType(userStore.user, USER_TYPE.BULK);
+
   const modalRefs = useMemo(
     () =>
       actions.map((i) => {
@@ -56,7 +62,9 @@ const Action = () => {
 
   useEffect(() => {
     if (currentActionId) {
-      const actionName = actionList.find((action) => action.id === currentActionId).actionName;
+      const actionName = actionList.find(
+        (action) => action.id === currentActionId
+      ).actionName;
       isActionDone && actionName && actionPopup(actionName);
     }
 
@@ -79,19 +87,35 @@ const Action = () => {
       try {
         await ref.current.handleSubmit();
       } catch (e) {
-        const actionName = actionList.find(action => action.id === currentActionId);
-        actionPopup(actionName?.actionName, e.message || "Message Content");
+        const actionName = actionList.find(
+          (action) => action.id === currentActionId
+        );
+        actionPopup(actionName?.actionName, e.message || 'Message Content');
       }
     },
     [getRef]
   );
 
-  const renderHeader = (actionName, showInfo, infoText, infoWithTitle) => {
+  const renderHeader = (
+    actionName,
+    showInfo,
+    infoText,
+    infoWithTitle,
+    isBulkPermitted
+  ) => {
+    if (!isBulkPermitted) {
+      if (actionName === 'תפקיד חדש') {
+        infoText = headersInfo['תפקיד חדש'];
+      } else if (actionName === 'מעבר היררכיה') {
+        infoText = headersInfo['מעבר היררכיה לתפקיד'];
+      }
+    }
+    
     return (
       <div className="display-flex dialog-header">
         <div className="dialog-header-title">{actionName}</div>
         <InfoPopup
-          name={actionName + " dialog"}
+          name={actionName + ' dialog'}
           infoText={infoText}
           visible={showInfo}
           withTitle={infoWithTitle}
@@ -163,7 +187,13 @@ const Action = () => {
             />
             <Dialog
               className={dialogClass}
-              header={renderHeader(actionName, true, infoText, infoWithTitle)}
+              header={renderHeader(
+                actionName,
+                true,
+                infoText,
+                infoWithTitle,
+                isBulkPermitted
+              )}
               visible={displayResponsive}
               onHide={() => onHide(id)}
               footer={renderFooter(id)}

@@ -111,6 +111,7 @@ const RenameBulkOGForm = forwardRef(
         const data = await getBulkChangeRoleHierarchyData(requestObject.id);
         setValue('comments', requestObject.comments);
         setValue('hierarchy', data.request.adParams.ouDisplayName);
+        setValue('currentHierarchy', data.request.kartoffelParams.oldHierarchy);
         setValue('rows', data.rows);
 
         const result = await GetDefaultApprovers({
@@ -188,6 +189,7 @@ const RenameBulkOGForm = forwardRef(
               name="currentHierarchy"
               labelText="היררכיה נוכחית"
               errors={errors}
+              ogValue={watch('currentHierarchy')}
               disabled={onlyForView}
               userHierarchy={
                 userStore.user && userStore.user.hierarchy

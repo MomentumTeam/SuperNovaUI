@@ -190,7 +190,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
 
   return (
     <div className="p-fluid">
-      <div className="display-flex title-wrap" style={{ width: "inherit" }}>
+      <div className="display-flex title-wrap" style={{ width: 'inherit' }}>
         <h2>היררכיה נוכחית</h2>
       </div>
       <div className="p-fluid-item p-fluid-item-flex1">
@@ -199,31 +199,35 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             setValue={setValue}
             name="currentHierarchy"
             onOrgSelected={handleOrgSelected}
-            ogValue={watch("currentHierarchy")}
+            ogValue={watch('currentHierarchy')}
             errors={errors}
             disabled={onlyForView}
-            userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
+            userHierarchy={
+              userStore.user && userStore.user.hierarchy
+                ? userStore.user.hierarchy
+                : null
+            }
           />
         </div>
       </div>
       <div className="p-fluid-item p-fluid-item">
         <div className="p-field">
           <label>
-            <span className="required-field">*</span>תפקיד
+            <span className="required-field">*</span>בחירת תפקיד מתוך רשימה
           </label>
           <Dropdown
             options={roles}
             optionLabel="jobTitle"
             placeholder="תפקיד"
-            {...register("role")}
+            {...register('role')}
             onChange={(e) => {
-              setValue("roleId", e.target.value.roleId);
-              setValue("role", e.target.value);
+              setValue('roleId', e.target.value.roleId);
+              setValue('role', e.target.value);
             }}
-            value={watch("role")}
+            value={watch('role')}
             disabled={onlyForView}
           />
-          {errors.role && <small style={{ color: "red" }}>יש למלא ערך</small>}
+          {errors.role && <small style={{ color: 'red' }}>יש למלא ערך</small>}
         </div>
       </div>
       <div className="p-fluid-item-flex p-fluid-item">
@@ -232,31 +236,35 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             <span className="required-field">*</span>מזהה תפקיד
           </label>
           <AutoComplete
-            value={watch("roleId")}
+            value={watch('roleId')}
             field="roleId"
             suggestions={roleSuggestions}
             completeMethod={onSearchRoleId}
             onChange={(e) => {
-              setValue("role", null)
-              setValue("roleId", e.value.roleId ? e.value.roleId : e.value);
+              setValue('role', null);
+              setValue('roleId', e.value.roleId ? e.value.roleId : e.value);
             }}
             onSelect={() => onRoleIdSelected()}
             type="text"
             required
             placeholder="מזהה תפקיד"
             disabled={onlyForView}
-            tooltip={onlyForView?'':'לדוגמה: "T12345678"'}
-            tooltipOptions={{ position: "top" }}
+            tooltip={onlyForView ? '' : 'לדוגמה: "T12345678"'}
+            tooltipOptions={{ position: 'top' }}
           />
           <label>
             {errors.roleId && (
-              <small style={{ color: "red" }}>{errors.roleId?.message ? errors.roleId?.message : "יש למלא ערך"}</small>
+              <small style={{ color: 'red' }}>
+                {errors.roleId?.message
+                  ? errors.roleId?.message
+                  : 'יש למלא ערך'}
+              </small>
             )}
           </label>
         </div>
       </div>
       <HorizontalLine />
-      <div className="display-flex title-wrap" style={{ width: "inherit" }}>
+      <div className="display-flex title-wrap" style={{ width: 'inherit' }}>
         <h2>היררכיה חדשה</h2>
       </div>
       <div className="p-fluid-item-flex p-fluid-item">
@@ -265,9 +273,13 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             setValue={setValue}
             name="hierarchy"
             errors={errors}
-            ogValue={watch("hierarchy")}
+            ogValue={watch('hierarchy')}
             disabled={onlyForView}
-            userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
+            userHierarchy={
+              userStore.user && userStore.user.hierarchy
+                ? userStore.user.hierarchy
+                : null
+            }
           />
         </div>
       </div>
@@ -278,7 +290,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
           multiple={true}
           errors={errors}
           tooltip='רס"ן ומעלה ביחידתך'
-          disabled={onlyForView || watch("isUserApprover")}
+          disabled={onlyForView || watch('isUserApprover')}
           defaultApprovers={defaultApprovers}
         />
       </div>
@@ -288,7 +300,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             <span></span>הערות
           </label>
           <InputTextarea
-            {...register("comments")}
+            {...register('comments')}
             type="text"
             autoResize="false"
             disabled={onlyForView}

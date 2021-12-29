@@ -32,3 +32,8 @@ export const AUTOCOMPLETE_STATUSES = {
 export const checkIfRequestIsDone = (req) => {
   return req.status === "DECLINED" || req.status === "DONE" || req.status === "FAILED" || req.status === "IN_PROGRESS";
 };
+
+export const REQ_STATUSES = {
+  DECLINED: 'DECLINED',
+  IN_PROGRESS: 'IN_PROGRESS',
+};
