@@ -96,7 +96,7 @@ export const TableSearch = (tableType) => {
     ],
     hierarchy: [
       {
-        searchField: "id",
+        searchField: "hierarchy",
         searchDisplayName: "היררכיה",
         searchFunc: groupsStore.getHierarchyByHierarchy,
         searchTemplate: hierarchyItemTemplate,
