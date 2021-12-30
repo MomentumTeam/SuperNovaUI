@@ -10,6 +10,7 @@ import { USER_NO_PICTURE } from "../../../constants";
 import "../../../assets/css/local/general/buttons.css";
 import "../../../assets/css/local/components/modal-item.css";
 import { FullEntityInformationForm } from "./FullEntityInformationForm";
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 export const FullEntityInformationModalContext = createContext(null);
 
@@ -17,6 +18,8 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit,
   const [isEdit, setIsEdit] = useState(edit);
   const [userPic, setUserPic] = useState(undefined);
   const [isActionDone, setIsActionDone] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
   const ref = useRef(null);
 
   const handleRequest = async () => {
@@ -37,14 +40,24 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit,
 
   useEffect(() => {
     async function getUserPic() {
-      if (user && user.picture && user.picture === USER_NO_PICTURE) {
-        const pic = await getPictureByEntityIdentifier(user?.personalNumber || user?.identityCard);
-        setUserPic(pic.image);
-      } else {
-        setUserPic(user.picture);
+      try {
+        if (user && (user.picture === "" || user.picture === USER_NO_PICTURE || !user.picture)) {
+          if (user?.personalNumber || user?.identityCard) {
+            const pic = await getPictureByEntityIdentifier(user?.personalNumber || user?.identityCard);
+            setUserPic(pic.image);
+          }
+        } else {
+          setUserPic(user.picture);
+        }
+        
+      } catch (error) {
+        
       }
+
+      setIsLoading(false);
     }
 
+    setIsLoading(true);
     // When user changes, retrive new photo
     getUserPic();
   }, [user, isOpen]);
@@ -67,22 +80,28 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit,
       }
       dismissableMask={true}
     >
-      <div>
-        <div className="userpic-wrap">
-          <img
-            style={{ borderRadius: "50%", width: "142px" }}
-            src={user && userPic && userPic !== USER_NO_PICTURE ? `data:image/jpeg;base64,${userPic}` : blankProfilePic}
-            alt="userpic"
+      {isLoading ? (
+        <ProgressSpinner className="tree-loading-spinner" />
+      ) : (
+        <div>
+          <div className="userpic-wrap">
+            <img
+              style={{ borderRadius: "50%", width: "142px" }}
+              src={
+                user && userPic && userPic !== USER_NO_PICTURE ? `data:image/jpeg;base64,${userPic}` : blankProfilePic
+              }
+              alt="userpic"
+            />
+          </div>
+          <FullEntityInformationForm
+            ref={ref}
+            reqView={false}
+            requestObject={user}
+            setIsActionDone={setIsActionDone}
+            onlyForView={!isEdit}
           />
         </div>
-        <FullEntityInformationForm
-          ref={ref}
-          reqView={false}
-          requestObject={user}
-          setIsActionDone={setIsActionDone}
-          onlyForView={!isEdit}
-        />
-      </div>
+      )}
     </Dialog>
   );
 };

@@ -14,6 +14,7 @@ const SearchBox = ({ searchFields, setTableData, getData }) => {
             <SearchField
               searchFunc={async (e) => await searchField.searchFunc(e, userStore.user)}
               searchField={searchField.searchField}
+              searchFieldFunc={searchField?.searchFieldFunc}
               searchDisplayName={searchField.searchDisplayName}
               searchTemplate={searchField?.searchTemplate}
               searchIdField={searchField?.searchIdField}

@@ -26,7 +26,7 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
   return (
     <>
       <div className="p-field">
-        {disabled && <Tooltip target={`.hierarchyText`} content={selectedOg} />}
+        {disabled && <Tooltip target={`.hierarchyText`} content={hierarchyConverse(selectedOg)} />}
         <label htmlFor="2020">
           <span className="required-field">*</span>
           {disabled ? labelText : `הכנסת ${labelText}`}
