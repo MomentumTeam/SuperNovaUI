@@ -8,7 +8,9 @@ import {
   getEntityByDI,
   searchDIByUniqueId,
   searchRolesByRoleId,
+  searchOG,
 } from "../service/KartoffelService";
+import { hierarchyConverse } from '../utils/hierarchy';
 
 export default class EntitiesStore {
   entities = [];
@@ -52,8 +54,21 @@ export default class EntitiesStore {
 
     if (query.trim().length) {
       try {
-        filteredResults = await getEntitiesByHierarchy(query);
-        filteredResults = filteredResults.entities;
+        const ogs = await searchOG(query);
+
+        if (ogs.length > 0) {
+          await Promise.all(
+            ogs.map(async (og) => {
+              try {
+                let entities = await getEntitiesByHierarchy(hierarchyConverse(og));
+                
+                if (entities?.entities) filteredResults = [...filteredResults, ...entities.entities];
+
+              } catch (error) {
+              }
+            })
+          );
+        }
       } catch (error) {}
     }
 

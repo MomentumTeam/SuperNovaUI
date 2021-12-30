@@ -5,6 +5,7 @@ import { EVENT_KEY_UP_CODE_ENTER } from "../../constants/general";
 const SearchField = ({
   searchFunc,
   searchField,
+  searchFieldFunc,
   searchDisplayName,
   searchTemplate,
   searchIdField,
@@ -21,7 +22,7 @@ const SearchField = ({
 
   useEffect(() => {
     setSelected([]);
-  }, [searchField]);
+  }, [searchField, searchFieldFunc]);
 
   useEffect(() => {
     if (isSetTable && results.length > 0) {
@@ -50,22 +51,22 @@ const SearchField = ({
               }
             }}
             itemTemplate={searchTemplate}
-            field={searchField}
+            field={searchFieldFunc ? searchFieldFunc : searchField}
             onChange={async (e) => {
               setSelected(e.value);
 
               if (e.originalEvent.type === "click") {
                 let filteredResults = results.filter((r) => r[searchField] === e.value[searchField]);
 
-                 if (searchIdField) {
-                   let newData = [...results];
-                   newData = newData.filter(
-                     (v, i, a) => a.findIndex((t) => t[searchIdField] === v[searchIdField]) === i
-                   );
-                   setTableData(newData);
-                 } else {
-                   setTableData(filteredResults);
-                 }
+                if (searchIdField) {
+                  let newData = [...results];
+                  newData = newData.filter(
+                    (v, i, a) => a.findIndex((t) => t[searchIdField] === v[searchIdField]) === i
+                  );
+                  setTableData(newData);
+                } else {
+                  setTableData(filteredResults);
+                }
               }
             }}
             onKeyUp={async (e) => {
@@ -73,7 +74,6 @@ const SearchField = ({
                 if (Array.isArray(selected) && selected.length === 0) {
                   await getData({ reset: true });
                 } else {
-
                   if (searchIdField) {
                     let filteredResults = [...results];
                     filteredResults = filteredResults.filter(
