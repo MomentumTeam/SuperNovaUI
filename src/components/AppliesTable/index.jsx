@@ -1,13 +1,22 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from 'react';
 
-import Table from "../Table";
-import { processApprovalTableData, exportToExcel } from "../../utils/applies";
-import { HeaderTable } from "./HeaderTable";
-import { TableNames, TableTypes, itemsPerRow, pageSize, sortOrder} from "../../constants/applies";
-import { isUserCanSeeAllApproveApplies, isUserCanSeeMyApproveApplies } from "../../utils/user";
-import { useStores } from "../../context/use-stores";
+import Table from '../Table';
+import { processApprovalTableData, exportToExcel } from '../../utils/applies';
+import { HeaderTable } from './HeaderTable';
+import {
+  TableNames,
+  TableTypes,
+  itemsPerRow,
+  pageSize,
+  sortOrder,
+} from '../../constants/applies';
+import {
+  isUserCanSeeAllApproveApplies,
+  isUserCanSeeMyApproveApplies,
+} from '../../utils/user';
+import { useStores } from '../../context/use-stores';
 
-import "../../assets/css/local/general/table.min.css";
+import '../../assets/css/local/general/table.min.css';
 import { toJS } from 'mobx';
 
 const AppliesTable = () => {
@@ -15,7 +24,9 @@ const AppliesTable = () => {
 
   const user = toJS(userStore.user);
   const [selectedTab, setTab] = useState(
-    isUserCanSeeAllApproveApplies(user) ? TableNames.allreqs.tab : TableNames.myreqs.tab
+    isUserCanSeeAllApproveApplies(user)
+      ? TableNames.allreqs.tab
+      : TableNames.myreqs.tab
   );
   const [first, setFirst] = useState(0);
   const [page, setPage] = useState(0);
@@ -25,7 +36,14 @@ const AppliesTable = () => {
   const [sortQuery, setSortQuery] = useState({});
   const [sortEvent, setSortEvent] = useState({});
 
-  const columns = TableTypes(selectedTab, user);
+  const approverTableType = isUserCanSeeAllApproveApplies(user)
+    ? 'secuirty'
+    : isUserCanSeeMyApproveApplies(user)
+    ? 'commander'
+    : 'soldier';
+
+  const columns = TableTypes(selectedTab, user, approverTableType);
+
   const sortActivate = useCallback(async () => {
     if (sortQuery != {}) await getData({ reset: true });
   }, [sortQuery]);
@@ -44,15 +62,24 @@ const AppliesTable = () => {
     exportToExcel(approvalData);
   };
 
-  const getData = async ({ saveToStore = true, append = false, reset = false }) => {
+  const getData = async ({
+    saveToStore = true,
+    append = false,
+    reset = false,
+  }) => {
     let data = [];
     if (reset) {
-      setFirst(0)
-      setPage(0)
+      setFirst(0);
+      setPage(0);
     }
     let searchquery = reset
       ? { from: 1, to: pageSize, saveToStore: saveToStore }
-      : { from: (page + 1) * pageSize + 1, to: (page + 2) * pageSize, append: append, saveToStore };
+      : {
+          from: (page + 1) * pageSize + 1,
+          to: (page + 2) * pageSize,
+          append: append,
+          saveToStore,
+        };
     searchquery = { ...searchquery, ...searchFields, ...sortQuery };
 
     switch (selectedTab) {
@@ -68,18 +95,19 @@ const AppliesTable = () => {
     return data;
   };
 
-  
-  const onSort = (event) => { 
-    let newSort = { ...sortQuery };   
+  const onSort = (event) => {
+    let newSort = { ...sortQuery };
     newSort.sortOrder = event.sortOrder === 1 ? sortOrder.INC : sortOrder.DEC;
 
-    const sortField = columns.find((col) => col.field === event.sortField).sortFields;
+    const sortField = columns.find(
+      (col) => col.field === event.sortField
+    ).sortFields;
     if (sortField) newSort.sortField = sortField;
     setSortQuery(newSort);
     setSortEvent(event);
-  }
+  };
 
-  const onVirtualScroll = async(event) => {
+  const onVirtualScroll = async (event) => {
     let getNextPage = true;
 
     if (event && event.first !== undefined) {
@@ -88,40 +116,46 @@ const AppliesTable = () => {
         first >= event.first ||
         tableData.requests.length / (event.page + 1) > itemsPerRow
       )
-      getNextPage = false;
+        getNextPage = false;
       setFirst(event.first);
     }
 
     if (getNextPage) {
       setIsLoading(true);
       try {
-        await getData({append:getNextPage});
+        await getData({ append: getNextPage });
         setPage(page + 1);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
 
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
-  
+
   useEffect(() => {
     sortActivate();
   }, [sortQuery]);
 
   useEffect(() => {
     setTableData(
-      selectedTab === TableNames.myreqs.tab ? appliesStore.approveMyApplies : appliesStore.approveAllApplies
+      selectedTab === TableNames.myreqs.tab
+        ? appliesStore.approveMyApplies
+        : appliesStore.approveAllApplies
     );
-  }, [selectedTab, appliesStore.approveMyApplies, appliesStore.approveAllApplies]);
+  }, [
+    selectedTab,
+    appliesStore.approveMyApplies,
+    appliesStore.approveAllApplies,
+  ]);
 
-  const getUserAppliesCallback = useCallback(async() => {
+  const getUserAppliesCallback = useCallback(async () => {
     if (user) {
       if (isUserCanSeeMyApproveApplies(user)) {
         await appliesStore.getMyApproveRequests({ from: 1, to: pageSize });
       }
       if (isUserCanSeeAllApproveApplies(user)) {
-       await appliesStore.getAllApproveRequests({ from: 1, to: pageSize });
+        await appliesStore.getAllApproveRequests({ from: 1, to: pageSize });
       }
     }
   }, [userStore.user.id]);
@@ -129,7 +163,6 @@ const AppliesTable = () => {
   useEffect(() => {
     getUserAppliesCallback();
   }, [getUserAppliesCallback]);
-
 
   return (
     <>
