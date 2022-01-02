@@ -126,8 +126,8 @@ const RenameSingleOGForm = forwardRef(
         due: Date.now(),
       };
 
-      await appliesStore.createRoleApply(req);
       setIsActionDone(true);
+      await appliesStore.createRoleApply(req);
     };
 
     useImperativeHandle(

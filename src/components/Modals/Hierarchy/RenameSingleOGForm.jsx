@@ -115,8 +115,9 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
         ouDisplayName: getOuDisplayName(hierarchy.hierarchy, hierarchy.name),
       },
     };
-    await appliesStore.changeRoleHierarchy(req);
+    
     setIsActionDone(true);
+    await appliesStore.changeRoleHierarchy(req);
   };
 
   useImperativeHandle(

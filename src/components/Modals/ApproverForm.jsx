@@ -136,8 +136,8 @@ const ApproverForm = forwardRef(
         due: Date.now(),
       };
 
-      await appliesStore.createNewApproverApply(req);
       setIsActionDone(true);
+      await appliesStore.createNewApproverApply(req);
     };
 
     useImperativeHandle(

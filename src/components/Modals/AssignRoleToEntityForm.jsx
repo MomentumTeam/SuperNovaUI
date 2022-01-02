@@ -190,8 +190,9 @@ const AssignRoleToEntityForm = forwardRef(
       if (userRole?.roleId && userRole?.roleId !== "") {
         req.adParams.oldSAMAccountName = getSamAccountNameFromUniqueId(userRole?.roleId);
       }
-      await appliesStore.assignRoleToEntityApply(req);
+
       setIsActionDone(true);
+      await appliesStore.assignRoleToEntityApply(req);
     };
 
     useImperativeHandle(
