@@ -12,7 +12,12 @@ import { isHierarchyAlreadyTakenRequest } from "../../../service/KartoffelServic
 import { useStores } from '../../../context/use-stores';
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { isUserHoldType } from '../../../utils/user';
-import { USER_SOURCE_DI, USER_TYPE, NAME_OG_EXP } from '../../../constants';
+import {
+  USER_SOURCE_DI,
+  USER_TYPE,
+  NAME_OG_EXP,
+  highCommanderRanks,
+} from '../../../constants';
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
 
@@ -66,6 +71,11 @@ const CreateOGForm = forwardRef(
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
     const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
+      const isHighCommander =
+        isUserApprover && userStore.user?.rank
+          ? highCommanderRanks.includes(userStore.user.rank)
+          : false;
+    
     const { register, handleSubmit, setValue, formState, watch, getValues } = useForm({
       resolver: yupResolver(validationSchema),
       defaultValues: { isUserApprover },
@@ -155,10 +165,14 @@ const CreateOGForm = forwardRef(
             setValue={setValue}
             name="parentHierarchy"
             errors={errors}
-            labelText={"היררכיית אב"}
-            ogValue={watch("parentHierarchy")}
+            labelText={'היררכיית אב'}
+            ogValue={watch('parentHierarchy')}
             disabled={onlyForView}
-            userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
+            userHierarchy={
+              userStore.user && userStore.user.hierarchy
+                ? userStore.user.hierarchy
+                : null
+            }
             onOrgSelected={handleOrgSelected}
           />
         </div>
@@ -168,11 +182,15 @@ const CreateOGForm = forwardRef(
               <span className="required-field">*</span>שם היררכיה חדשה
             </label>
             <span className="p-input-icon-left">
-              {watch("parentHierarchy") && watch("newHierarchy") && (
-                <i>{watch("isHierarchyAlreadyTakenData")?.isOGNameAlreadyTaken ? "תפוס" : "פנוי"}</i>
+              {watch('parentHierarchy') && watch('newHierarchy') && (
+                <i>
+                  {watch('isHierarchyAlreadyTakenData')?.isOGNameAlreadyTaken
+                    ? 'תפוס'
+                    : 'פנוי'}
+                </i>
               )}
               <InputText
-                {...register("newHierarchy")}
+                {...register('newHierarchy')}
                 id="2021"
                 type="text"
                 required
@@ -181,8 +199,10 @@ const CreateOGForm = forwardRef(
               />
               <label>
                 {errors.newHierarchy && (
-                  <small style={{ color: "red" }}>
-                    {errors.newHierarchy?.message ? errors.newHierarchy.message : "יש למלא ערך"}
+                  <small style={{ color: 'red' }}>
+                    {errors.newHierarchy?.message
+                      ? errors.newHierarchy.message
+                      : 'יש למלא ערך'}
                   </small>
                 )}
               </label>
@@ -197,7 +217,7 @@ const CreateOGForm = forwardRef(
             errors={errors}
             isHighRank={true}
             tooltip='סא"ל ומעלה ביחידתך'
-            disabled={onlyForView || watch("isUserApprover")}
+            disabled={onlyForView || (isUserApprover && isHighCommander)}
             defaultApprovers={defaultApprovers}
           />
         </div>
@@ -205,7 +225,7 @@ const CreateOGForm = forwardRef(
           <div className="p-field">
             <label htmlFor="2023">הערות</label>
             <InputTextarea
-              {...register("comments")}
+              {...register('comments')}
               id="2023"
               type="text"
               placeholder="הכנס הערות לבקשה..."

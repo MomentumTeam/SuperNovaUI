@@ -279,7 +279,6 @@ export const getDenyReason = (apply) => {
 };
 
 export const isSubmitterReq = (request, user) => {
-  // console.log('request', request?.status);
   return (
     request?.submittedBy?.id === user.id &&
     request?.status !== REQ_STATUSES.IN_PROGRESS &&
