@@ -4,14 +4,14 @@ import React, {
   forwardRef,
   createRef,
   useMemo,
-} from "react";
-import { Accordion, AccordionTab } from "primereact/accordion";
-import CreateBulkRoleForm from "../Bulk/CreateBulkRoleForm";
-import CreateSingleRoleForm from "../Role/CreateSingleRoleForm";
-import { useStores } from "../../../context/use-stores";
-import { USER_TYPE } from "../../../constants";
-import { isUserHoldType } from "../../../utils/user";
-import renderHeader from "../accordionTabHeaders";
+} from 'react';
+import { Accordion, AccordionTab } from 'primereact/accordion';
+import CreateBulkRoleForm from '../Bulk/CreateBulkRoleForm';
+import CreateSingleRoleForm from '../Role/CreateSingleRoleForm';
+import { useStores } from '../../../context/use-stores';
+import { USER_TYPE } from '../../../constants';
+import { isUserHoldType } from '../../../utils/user';
+import renderHeader from '../accordionTabHeaders';
 
 const CreateRoleForm = forwardRef(({ setIsActionDone }, ref) => {
   const { userStore } = useStores();
@@ -30,7 +30,7 @@ const CreateRoleForm = forwardRef(({ setIsActionDone }, ref) => {
   return isBulkPermitted ? (
     <Accordion
       expandIcon="pi pi-chevron-left"
-      style={{ marginBottom: "20px" }}
+      style={{ marginBottom: '20px' }}
       activeIndex={activeIndex}
       onTabChange={({ index }) => {
         setActiveIndex((currentIndex) => {
@@ -42,14 +42,14 @@ const CreateRoleForm = forwardRef(({ setIsActionDone }, ref) => {
         });
       }}
     >
-      <AccordionTab header={renderHeader("תפקיד חדש", true)}>
+      <AccordionTab header={renderHeader('תפקיד חדש', true)}>
         <CreateSingleRoleForm
           ref={formRefs[0]}
           showJob={false}
           setIsActionDone={setIsActionDone}
         />
       </AccordionTab>
-      <AccordionTab header={renderHeader("הגשת בקשה מרובה", true)}>
+      <AccordionTab header={renderHeader('תפקידים חדשים', true, true)}>
         <CreateBulkRoleForm
           ref={formRefs[1]}
           showJob={false}
