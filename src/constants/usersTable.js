@@ -1,9 +1,9 @@
 import { USER_TYPE } from ".";
 import { useStores } from "../context/use-stores";
 import { TextFieldTemplate } from "../components/Fields/TextFieldTemplate";
-import { concatHierarchy, hierarchyItemTemplate } from '../utils/hierarchy';
+import { concatHierarchy, hierarchyConverse, hierarchyItemTemplate } from '../utils/hierarchy';
 import { actions } from './actions';
-import { formatServiceType, userTemplate } from '../utils/user';
+import { formatServiceType, userTemplate, userConverse } from '../utils/user';
 
 export const TableTypes = {
   entities: [
@@ -78,7 +78,8 @@ export const TableSearch = (tableType) => {
   const searchFields = {
     entities: [
       {
-        searchField: "displayName",
+        searchFieldFunc: userConverse,
+        searchField: "id",
         searchDisplayName: 'שם/מ"א/ת"ז',
         searchFunc: entitiesStore.getEntitiesByEntity,
         searchTemplate: userTemplate,
@@ -96,7 +97,8 @@ export const TableSearch = (tableType) => {
     ],
     hierarchy: [
       {
-        searchField: "hierarchy",
+        searchFieldFunc: hierarchyConverse,
+        searchField: "id",
         searchDisplayName: "היררכיה",
         searchFunc: groupsStore.getHierarchyByHierarchy,
         searchTemplate: hierarchyItemTemplate,

@@ -20,19 +20,19 @@ class RequestFlowChart extends React.Component {
   }
 
   isApproved() {
-    console.log(this.request);
-    console.log(
-      '1',
-      this.isStageApprover('needSuperSecurityDecision', 'superSecurityDecision')
-    );
-    console.log(
-      '2',
-      this.isStageApprover('needSecurityDecision', 'securityApprovers')
-    );
-    console.log(
-      '3',
-      this.request?.commanderDecision?.decision === DECISIONS.APPROVED
-    );
+    // console.log(this.request);
+    // console.log(
+    //   '1',
+    //   this.isStageApprover('needSuperSecurityDecision', 'superSecurityDecision')
+    // );
+    // console.log(
+    //   '2',
+    //   this.isStageApprover('needSecurityDecision', 'securityApprovers')
+    // );
+    // console.log(
+    //   '3',
+    //   this.request?.commanderDecision?.decision === DECISIONS.APPROVED
+    // );
     return (
       this.isStageApprover(
         'needSuperSecurityDecision',

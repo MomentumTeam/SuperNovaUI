@@ -10,7 +10,7 @@ import "../../../assets/css/local/components/modal-item.css";
 import { GetDefaultApprovers } from "../../../utils/approver";
 import { isUserHoldType } from "../../../utils/user";
 import { useStores } from "../../../context/use-stores";
-import { getHierarchy, getOuDisplayName } from "../../../utils/hierarchy";
+import { getHierarchy, getOuDisplayName, hierarchyConverse } from "../../../utils/hierarchy";
 import { InputForm, InputTypes } from '../../Fields/InputForm';
 
 const FullHierarchyInformationForm = forwardRef(
@@ -97,6 +97,8 @@ const FullHierarchyInformationForm = forwardRef(
         kartoffelParams: {
           id: hierarchy.id,
           name: hierarchyName,
+          hierarchy: hierarchyConverse({hierarchy: hierarchy.hierarchy, name: hierarchyName}),
+          oldHierarchy: hierarchyConverse(hierarchy)
         },
         adParams: {
           ouDisplayName: ouDisplayName,
@@ -121,20 +123,21 @@ const FullHierarchyInformationForm = forwardRef(
 
     const formFields = [
       {
-        fieldName: "hierarchyName",
+        fieldName: reqView ? "hierarchy" : "hierarchyName",
         displayName: reqView ? "היררכיה חדשה" : "היררכיה",
         inputType: InputTypes.HIERARCHY_CHANGE,
         force: true,
         canEdit: true,
         setFunc: (value) => setIsHierarchyFree(value),
+        item: reqView ?requestObject?.kartoffelParams: null,
       },
       {
-        fieldName: "hierarchyName",
+        fieldName: "oldHierarchy",
         displayName: "היררכיה ישנה",
         inputType: InputTypes.HIERARCHY_CHANGE,
         force: true,
         secured: () => reqView,
-        item: { hierarchy: hierarchy.hierarchy, name: hierarchy.oldName },
+        item: requestObject?.kartoffelParams,
       },
       {
         fieldName: "jobnum",

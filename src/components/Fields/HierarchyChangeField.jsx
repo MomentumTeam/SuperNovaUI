@@ -61,7 +61,7 @@ const HierarchyField = ({
           <InputText
             disabled={!isEdit}
             className="input"
-            placeholder={item.hierarchy !== "" ? `${item.hierarchy}/${item.name}` : item.name}
+            placeholder={item[fieldName]}
           />
         ) : (
           <>
@@ -77,7 +77,6 @@ const HierarchyField = ({
 
                   if (hierarchyToSearch === "") {
                     setHierarchyFind(null);
-                    methods.setValue(fieldName, item.name, { shouldValidate: true });
                   } else {
                     debouncedHierarchyName.current(hierarchyToSearch);
                   }
