@@ -1,0 +1,14 @@
+@keyframes blink {
+  0%,
+  100% {
+    fill: #2979f4;
+  }
+  30%,
+  60% {
+    fill: #e6a032;
+  }
+}
+
+.blinking-info-popup path {
+  animation: blink 0.8s infinite;
+}
