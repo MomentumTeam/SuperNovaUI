@@ -25,6 +25,13 @@ export const concatHierarchy = (hierarchy) => {
   return hierarchy[1] != undefined ? `${hierarchy[0]}/${hierarchy[1]}` : hierarchy[0];
 };
 
+export const hierarchyConverse = (hierarchy)  => {
+    if (hierarchy?.name) {
+      return hierarchy?.hierarchy ? `${hierarchy.hierarchy}/${hierarchy.name}` : hierarchy.name;
+    }
+    return undefined;
+}
+
 export const hierarchyItemTemplate = (item) => {
   return (
     <>
@@ -33,3 +40,11 @@ export const hierarchyItemTemplate = (item) => {
     </>
   );
 };
+
+export const getOuDisplayName = (hierarchy, name, withName = true) => {
+  let ouDisplayName = withName? `${hierarchy}/${name}`: hierarchy;
+  ouDisplayName = ouDisplayName.split('/');
+  ouDisplayName.shift();
+  ouDisplayName = ouDisplayName.join("/");
+  return ouDisplayName;
+}

@@ -17,7 +17,6 @@ export default class UserStore {
       userUnreadNotifications: observable,
       fetchUserInfo: action,
       fetchUserNotifications: action,
-      loadUsers: action,
       getMyPicture: action,
     });
 
@@ -59,10 +58,6 @@ export default class UserStore {
   async markNotificationsAsRead(ids) {
     await markAsRead(ids);
     this.userUnreadNotifications.clear();
-  }
-
-  async loadUsers() {
-    // this.users = await getUsers();
   }
 
   async getMyPicture() {

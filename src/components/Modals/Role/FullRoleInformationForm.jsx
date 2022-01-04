@@ -9,12 +9,13 @@ import { debounce } from "lodash";
 import Hierarchy from "../../Fields/Hierarchy";
 import { useStores } from "../../../context/use-stores";
 import { isUserHoldType } from "../../../utils/user";
-import { NAME_OG_EXP, USER_TYPE } from "../../../constants";
+import { ROLE_EXP, USER_TYPE } from "../../../constants";
 import { getEntityByRoleId, getRoleByRoleId, isJobTitleAlreadyTakenRequest } from "../../../service/KartoffelService";
 import Approver from "../../Fields/Approver";
 import { GetDefaultApprovers } from "../../../utils/approver";
 import { Button } from "primereact/button";
 import { InputTextarea } from "primereact/inputtextarea";
+import { getSamAccountNameFromUniqueId } from '../../../utils/fields';
 
 const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requestObject, reqView = true }, ref) => {
   const { appliesStore, userStore } = useStores();
@@ -22,6 +23,7 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
   const [jobTitleSuggestions, setJobTitleSuggestions] = useState([]);
   const [entity, setEntity] = useState({});
   const [role, setRole] = useState();
+  const [defaultApprovers, setDefaultApprovers] = useState([]);
 
   const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
 
@@ -32,20 +34,20 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
       then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
     }),
     roleName: Yup.string()
-      .matches(NAME_OG_EXP, "תפקיד לא תקין")
+      .matches(ROLE_EXP, "תפקיד לא תקין")
       .required("יש לבחור שם תפקיד")
-      .test({
-        name: "jobTitle-valid-check",
-        message: "תפקיד תפוס",
-        test: () => {
-          return !isJobTitleAlreadyTaken;
-        },
-      })
       .test({
         name: "jobTitle-changed",
         message: "נא לבחור שם חדש",
         test: (value) => {
           return value !== requestObject.jobTitle;
+        },
+      })
+      .test({
+        name: "jobTitle-valid-check",
+        message: "תפקיד תפוס",
+        test: () => {
+          return !isJobTitleAlreadyTaken;
         },
       }),
     comments: Yup.string().optional(),
@@ -79,12 +81,22 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
       setValue("roleName", reqView ? requestObject?.kartoffelParams?.jobTitle : requestObject.jobTitle);
 
       if (reqView) {
+        // TODO: change in req
         const role = await getRoleByRoleId(requestObject.kartoffelParams.roleId);
         setRole(role);
       } else {
         setRole(requestObject);
       }
     }
+
+    const result = await GetDefaultApprovers({
+      request: requestObject,
+      onlyForView,
+      user: userStore.user,
+      groupId: role?.directGroup,
+    });
+    setDefaultApprovers(result || []);
+    setValue("isUserApprover", result.length > 0);
   }, [requestObject]);
 
   useEffect(async () => {
@@ -109,7 +121,7 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
         oldJobTitle: requestObject.jobTitle,
       },
       adParams: {
-        samAccountName: requestObject.digitalIdentityUniqueId,
+        samAccountName: getSamAccountNameFromUniqueId(requestObject.roleId),
         jobTitle: roleName,
       },
       comments,
@@ -122,7 +134,7 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
 
   const onRoleNameChange = (e) => {
     const roleNameToSearch = e.target.value;
-    setValue("roleName", roleNameToSearch);
+    setValue("roleName", roleNameToSearch, {shouldValidate: true});
     debouncedRoleName.current(roleNameToSearch, role);
   };
 
@@ -200,7 +212,7 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
       {!reqView && (
         <div className="p-fluid-item-flex p-fluid-item">
           <div className="p-field">
-            <Hierarchy disabled={true} name="hierarchy" labelText="היררכיה" errors={errors} ogValue={role?.hierarchy} />
+            <Hierarchy disabled={true} name="hierarchy" labelText="היררכיה" errors={errors} ogValue={role?.hierarchy} userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null} />
           </div>
         </div>
       )}
@@ -208,7 +220,7 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
       <div className="p-fluid-item p-fluid-item">
         <div className="p-field">
           <label> מזהה תפקיד </label>
-          <InputText value={role?.digitalIdentityUniqueId || "---"} disabled={true} />
+          <InputText value={role?.roleId || "---"} disabled={true} />
         </div>
       </div>
 
@@ -221,14 +233,6 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
         </div>
       )}
 
-      {!reqView && (
-        <div className="p-fluid-item p-fluid-item">
-          <div className="p-field">
-            <label> יחידה </label>
-            <InputText value={role?.unit || "---"} disabled={true} />
-          </div>
-        </div>
-      )}
 
       {!reqView && (
         <div className="p-fluid-item p-fluid-item">
@@ -256,8 +260,8 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
             tooltip='רס"ן ומעלה ביחידתך'
             multiple={true}
             errors={errors}
-            disabled={onlyForView || isUserApprover}
-            defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
+            disabled={onlyForView || watch("isUserApprover")}
+            defaultApprovers={defaultApprovers}
           />
         </div>
       )}

@@ -3,8 +3,12 @@ import { RequestorFieldTemplate } from "../components/AppliesTable/RequestorFiel
 import { StatusFieldTemplate } from "../components/Fields/StatusFieldTemplate";
 import { TextFieldTemplate } from "../components/Fields/TextFieldTemplate";
 import { getFormattedDate } from "../utils/applies";
-import { STATUSES } from '.';
+import { STATUSES, getStatus } from '.';
 import { ResponsibleFactorWithWaitingFieldTemplate } from '../components/AppliesTable/ResponsibleFactorWithWaitingFieldTemplate';
+import {
+  isUserHoldType,
+  isUserCanSeeAllApproveApplies,
+} from '../utils/user';
 
 
 export const TYPES = {
@@ -19,7 +23,7 @@ export const TYPES = {
   // DELETE_ROLE: "מחיקת תפקיד",
   // DELETE_ENTITY: "מחיקת משתמש",
   // DISCONNECT_ROLE: "ניתוק תפקיד",
-  ADD_APPROVER: 'יצירת גורם מאשר',
+  ADD_APPROVER: 'הוספת הרשאות',
   CHANGE_ROLE_HIERARCHY: 'מעבר היררכיה לתפקיד',
   CREATE_ROLE_BULK: 'יצירת תפקידים חדשים',
   CHANGE_ROLE_HIERARCHY_BULK: 'מעבר היררכיה לתפקידים',
@@ -30,58 +34,58 @@ export const TableNames = {
   allreqs: { tab: "allreqs", tableName: "סל הבקשות" },
 };
 
-export const TableTypes = (selectedTab, user) => {
+export const TableTypes = (selectedTab, user, approverTableType) => {
   return [
-    { field: "serialNumber", displayName: "מספר בקשה" },
+    { field: 'serialNumber', displayName: 'מספר בקשה' },
     {
-      field: "type",
-      displayName: "סוג בקשה",
+      field: 'type',
+      displayName: 'סוג בקשה',
       enum: TYPES,
-      default: "לא ידוע",
+      default: 'לא ידוע',
       sortable: true,
       sortFields: sortFields.REQUEST_TYPE,
     },
     {
-      field: "submittedBy",
-      displayName: "שם מבקש",
+      field: 'submittedBy',
+      displayName: 'שם מבקש',
       sortable: true,
       sortFields: sortFields.SUBMITTED_BY,
       template: RequestorFieldTemplate,
     },
     {
       field: null,
-      displayName: "גורם מטפל",
+      displayName: 'גורם מטפל',
       hide: selectedTab !== TableNames.allreqs.tab,
       templateParam: user,
       template: ResponsibleFactorWithWaitingFieldTemplate,
     },
     {
-      field: "createdAt",
-      displayName: "ת׳ בקשה",
+      field: 'createdAt',
+      displayName: 'ת׳ בקשה',
       formatter: getFormattedDate,
       sortable: true,
       sortFields: sortFields.CREATED_AT,
       templateParam: [
         user,
-        "status",
-        "needSecurityDecision",
-        "needSuperSecurityDecision",
-        "superSecurityDecision",
-        "securityDecision",
-        "commanderDecision",
+        'status',
+        'needSecurityDecision',
+        'needSuperSecurityDecision',
+        'superSecurityDecision',
+        'securityDecision',
+        'commanderDecision',
       ],
       template: DateFieldTemplate,
     },
     {
-      field: "additionalParams.directGroup",
-      displayName: "היררכיה",
+      field: 'additionalParams.directGroup',
+      displayName: 'היררכיה',
       template: TextFieldTemplate,
     },
-    { field: "comments", displayName: "סיבה", template: TextFieldTemplate },
+    { field: 'comments', displayName: 'סיבה', template: TextFieldTemplate },
     {
-      field: "status",
-      displayName: "סטטוס",
-      enum: STATUSES,
+      field: 'status',
+      displayName: 'סטטוס',
+      enum: getStatus(approverTableType),
       sortable: true,
       sortFields: sortFields.STATUS,
       template: StatusFieldTemplate,
@@ -127,7 +131,6 @@ export const TableAppliesActionsTypes = {
 
 export const ROLE_CLEARANCE = [
   'בלמ"ס',
-  'בלמ"ס',
   'שמור',
   'סודי',
   'סודי ביותר',
@@ -147,8 +150,12 @@ export const BulkTypes = [
 ]
   ;
 export const bulkExampleFileName = [
-  'createRoleBulkExample',
-  'renameOGBulkExample',
+  "createRoleBulkExample",
+  "changeRoleHierarchyBulkExample",
 ];
 
-export const assignRoleToEntityHeader = ['מעבר תפקיד', 'חיבור משתמש חדש לתפקיד'];
+export const assignRoleToEntityHeader = [
+  'מעבר תפקיד',
+  'חיבור משתמש חדש לתפקיד',
+];
+

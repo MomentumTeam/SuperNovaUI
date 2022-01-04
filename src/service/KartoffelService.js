@@ -2,26 +2,22 @@ import axiosApiInstance from '../config/axios';
 import { apiBaseUrl } from '../constants/api';
 
 // GROUPS
-export const searchOG = async (nameAndHierarchy) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/groups/search`,
-    {
-      params: {
-        nameAndHierarchy,
-      },
-    }
-  );
+export const searchOG = async (nameAndHierarchy, withRoles = false, underGroupId = null) => {
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/groups/search`, {
+    params: {
+      nameAndHierarchy,
+      withRoles,
+      ...underGroupId && {underGroupId}
+    },
+  });
 
   return response.data.groups;
 };
 
-export const getOGByHierarchy = async (hierarchy) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/groups/hierarchy`,
-    {
-      params: { hierarchy },
-    }
-  );
+export const getOGByHierarchy = async (hierarchy, withRoles = false) => {
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/groups/hierarchy`, {
+    params: { hierarchy, withRoles },
+  });
 
   return response.data;
 };
@@ -34,17 +30,16 @@ export const getOGById = async (id) => {
   return response.data;
 };
 
-export const getOGChildren = async ({ id, page, pageSize, direct = false }) => {
+export const getOGChildren = async ({ id, page, pageSize, direct = false, withRoles = false }) => {
   // If id not specified, using the Aman group children
   const response = await axiosApiInstance.get(
-    id
-      ? `${apiBaseUrl}/api/kartoffel/groups/${id}/children`
-      : `${apiBaseUrl}/api/kartoffel/groups/children`,
+    id ? `${apiBaseUrl}/api/kartoffel/groups/${id}/children` : `${apiBaseUrl}/api/kartoffel/groups/children`,
     {
       params: {
         direct,
         pageSize,
         page,
+        withRoles,
       },
     }
   );
@@ -132,7 +127,7 @@ export const isHierarchyAlreadyTakenRequest = async (name, parent) => {
     `${apiBaseUrl}/api/kartoffel/groups/name/taken?name=${name}&parent=${parent}`
   );
 
-  return response;
+  return response.data;
 };
 
 // Entities
@@ -182,14 +177,12 @@ export const getEntitiesUnderOG = async ({ id, direct = false, page, pageSize })
 };
 
 export const searchEntitiesByFullName = async (fullName) => {
-  const response = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/entities/search`,
-    {
-      params: {
-        fullName,
-      },
-    }
-  );
+  // TODO: add underGroupId
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/entities/search`, {
+    params: {
+      fullName,
+    },
+  });
   return response.data;
 };
 

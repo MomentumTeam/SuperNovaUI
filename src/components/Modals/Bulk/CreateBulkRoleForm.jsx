@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import React, { useImperativeHandle, forwardRef, useEffect } from 'react';
+import React, { useImperativeHandle, forwardRef, useEffect, useState } from 'react';
 import FormData from 'form-data';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -19,17 +19,34 @@ import {
 import { USER_TYPE } from '../../../constants';
 import { isUserHoldType } from '../../../utils/user';
 import { GetDefaultApprovers } from '../../../utils/approver';
+import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
+import { isApproverValid } from '../../../service/ApproverService';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
   comments: Yup.string().optional(),
-  hierarchy: Yup.object().required(),
+  hierarchy: Yup.object().required('נא לבחור היררכיה'),
   isUserApprover: Yup.boolean(),
   approvers: Yup.array().when('isUserApprover', {
     is: false,
-    then: Yup.array()
-      .min(1, 'יש לבחור לפחות גורם מאשר אחד')
-      .required('יש לבחור לפחות גורם מאשר אחד'),
+    then: Yup.array().min(1, 'יש לבחור לפחות גורם מאשר אחד').required('יש לבחור לפחות גורם מאשר אחד'),
+  }).test({
+      name: "check-if-valid",
+      message: "יש לבחור מאשרים תקינים (מהיחידה בלבד)",
+      test: async (approvers, context) => {
+        let isTotalValid = true;
+
+        if (context.parent?.hierarchy?.id && Array.isArray(approvers)) {
+          await Promise.all(
+            approvers.map(async (approver) => {
+              const { isValid } = await isApproverValid(approver.entityId, context.parent.hierarchy.id);
+              if (!isValid) isTotalValid = false;
+            })
+          );
+        }
+
+        return isTotalValid;
+      },
   }),
   bulkFile: Yup.mixed()
     .test('required', 'יש להעלות קובץ!', (value) => {
@@ -52,6 +69,8 @@ const RenameBulkOGForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject }, ref) => {
     const { appliesStore, userStore } = useStores();
     const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
+    const [defaultApprovers, setDefaultApprovers] = useState([]);
+
     const { register, handleSubmit, setValue, formState, watch } = useForm({
       resolver: yupResolver(validationSchema),
       defaultValues: { isUserApprover },
@@ -63,8 +82,11 @@ const RenameBulkOGForm = forwardRef(
       const getBulkData = async () => {
         const data = await getCreateBulkRoleData(requestObject.id);
         setValue('comments', requestObject.comments);
-        setValue('hierarchy', data.request.adParams.ouDisplayName);
+        setValue('hierarchy', { name: requestObject.kartoffelParams.hierarchy }); 
         setValue('rows', data.rows);
+
+        const result = await GetDefaultApprovers({ request: requestObject, onlyForView, user: userStore.user });
+        setDefaultApprovers(result || []);
       };
       if (requestObject) {
         getBulkData();
@@ -87,9 +109,10 @@ const RenameBulkOGForm = forwardRef(
         commanders: approvers,
         kartoffelParams: {
           directGroup: hierarchy.id,
+          hierarchy: hierarchyConverse(hierarchy)
         },
         adParams: {
-          ouDisplayName: hierarchy.name,
+          ouDisplayName: getOuDisplayName(hierarchy.hierarchy, hierarchy.name),
         },
         excelFilePath: uploadFiles[0],
         comments,
@@ -111,11 +134,19 @@ const RenameBulkOGForm = forwardRef(
       []
     );
 
+    const handleOrgSelected = async (org) => {
+      const result = await GetDefaultApprovers({
+        request: requestObject,
+        user: userStore.user,
+        onlyForView,
+        groupId: org.id,
+      });
+      setDefaultApprovers(result || []);
+      setValue("isUserApprover", result.length > 0);
+    };
+
     return (
-      <div
-        className="p-fluid"
-        style={{ display: 'flex', flexDirection: 'column' }}
-      >
+      <div className="p-fluid" style={{ display: "flex", flexDirection: "column" }}>
         <div className="p-fluid-item-flex p-fluid-item">
           <div className="p-field">
             <Hierarchy
@@ -123,22 +154,22 @@ const RenameBulkOGForm = forwardRef(
               name="hierarchy"
               labelText="היררכיה"
               errors={errors}
-              ogValue={watch('hierarchy')}
+              ogValue={watch("hierarchy")}
               disabled={onlyForView}
+              onOrgSelected={handleOrgSelected}
+              userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
             />
           </div>
         </div>
-        {!requestObject && (
-          <BulkFileArea register={register} bulkType={0} errors={errors} />
-        )}
+        {!requestObject && <BulkFileArea register={register} bulkType={0} errors={errors} />}
         {!!requestObject && (
           <BulkRowsPopup
-            rows={watch('rows')}
+            rows={watch("rows")}
             columns={[
-              { field: 'rowNumber' },
-              { field: 'jobTitle', header: 'שם תפקיד' },
-              { field: 'clearance', header: 'סיווג תפקיד' },
-              { field: 'roleEntityType', header: 'סוג ישות' },
+              { field: "rowNumber" },
+              { field: "jobTitle", header: "שם תפקיד" },
+              { field: "clearance", header: "סיווג תפקיד" },
+              { field: "roleEntityType", header: "סוג ישות" },
             ]}
           />
         )}
@@ -151,8 +182,8 @@ const RenameBulkOGForm = forwardRef(
             errors={errors}
             setValue={setValue}
             name="approvers"
-            defaultApprovers={GetDefaultApprovers(requestObject, onlyForView)}
-            disabled={onlyForView || isUserApprover}
+            defaultApprovers={defaultApprovers}
+            disabled={onlyForView || watch("isUserApprover")}
           />
         </div>
 
@@ -162,7 +193,7 @@ const RenameBulkOGForm = forwardRef(
               <span></span>הערות
             </label>
             <InputTextarea
-              {...register('comments')}
+              {...register("comments")}
               type="text"
               autoResize="false"
               disabled={onlyForView}

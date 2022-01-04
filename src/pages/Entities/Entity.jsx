@@ -11,11 +11,21 @@ import { itemsInPage, pageSize } from "../../constants/api";
 import { TableNames, TableTypes } from "../../constants/usersTable";
 
 import "../../assets/css/local/pages/listUsersPage.min.css";
+import { USER_TYPE } from '../../constants';
 
 const Entities = observer(() => {
   const { actionPopup } = useToast();
   const { entitiesStore, rolesStore, groupsStore, userStore } = useStores();
-  const [tabId, setTabId] = useState(TableNames.entities.tab);
+
+  const userTypes = userStore.user?.types ? userStore.user.types : USER_TYPE.SOLDIER;
+  const tabs = Object.assign(
+    {},
+    ...Object.entries(TableNames)
+      .filter(([key, value]) => !value?.roles || value.roles.some((role) => userTypes.includes(role)))
+      .map(([k, v]) => ({ [k]: v }))
+  );
+  
+  const [tabId, setTabId] = useState(Object.values(tabs)[0].tab);
   const [first, setFirst] = useState(0);
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -111,7 +121,7 @@ const Entities = observer(() => {
     <>
       <div className="main-inner-item main-inner-item2 main-inner-item2-table">
         <div className="main-inner-item2-content">
-          <Header setTab={setTabId} selectedTab={tabId} />
+          <Header setTab={setTabId} selectedTab={tabId} tabs={tabs}/>
           <div className="content-unit-wrap">
             <div className="content-unit-inner">
               <div className="display-flex search-row-wrap-flex">
@@ -120,7 +130,7 @@ const Entities = observer(() => {
                   setTableData={setSearchData}
                   getData={getData}
                 />
-                {/* TODO */}
+
                 <AddEntity tableType={tabId} />
               </div>
               <Table

@@ -1,45 +1,67 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   searchApproverByDisplayNameReq,
   searchHighApproverByDisplayNameReq,
 } from '../../service/ApproverService';
 import { AutoComplete } from 'primereact/autocomplete';
 import { Tooltip } from 'primereact/tooltip';
+import { debounce } from "lodash";
 
 import { useStores } from '../../context/use-stores';
 import { getUserNameFromDisplayName } from '../../utils/user';
 import '../../assets/css/local/components/approver.css';
+import { useToast } from '../../context/use-toast';
 
 const Approver = ({
   setValue,
   name,
   multiple,
-  disabled,
+  disabled = false,
   defaultApprovers,
   errors,
-  trigger = null,
   type = 'COMMANDER',
   isHighRank = false,
   tooltip = 'גורם מאשר',
 }) => {
+  const { actionPopup } = useToast();
   const { userStore } = useStores();
   const [ApproverSuggestions, setApproverSuggestions] = useState([]);
-
   const [selectedApprover, setSelectedApprover] = useState(defaultApprovers);
 
-  const searchApprover = async (event) => {
-    if (event.query.length > 1) {
-      const result = await (isHighRank
-        ? searchHighApproverByDisplayNameReq(event.query)
-        : searchApproverByDisplayNameReq(event.query, type));
-      const filteredResult = result.approvers.filter(
-        (approvers) => approvers.id !== userStore.user.id
-      );
-      setApproverSuggestions(filteredResult);
-    } else {
+  const onDisplayNameChange = async (event) => {
+    try {
+      if (event) {
+        const displayNameToSearch = event.query;
+        if (displayNameToSearch.length > 1) {
+          debouncedApproverName.current(displayNameToSearch);
+        } else {
+          setApproverSuggestions([]);
+        }
+      }
+    } catch (error) {
       setApproverSuggestions([]);
+      actionPopup("הבאת גורמים מאשרים", {message: "לא ניתן כרגע לחפש גורמים מאשרים"})
     }
   };
+
+  const searchApprover = async(displayName) => {
+    try {
+        const result = await (isHighRank
+          ? searchHighApproverByDisplayNameReq(displayName)
+          : searchApproverByDisplayNameReq(displayName, type));
+        const filteredResult = result.approvers.filter((approvers) => approvers.id !== userStore.user.id);
+        setApproverSuggestions(filteredResult);
+    } catch (error) {
+       setApproverSuggestions([]);
+       actionPopup("הבאת גורמים מאשרים", { message: "לא ניתן כרגע לחפש גורמים מאשרים" });
+    }
+  }
+
+  const debouncedApproverName = useRef(
+    debounce(async (approverQuery) => {
+      searchApprover(approverQuery);
+    }, 200)
+  );
 
   const itemSelectedTemplate = (item) => {
     const id = Math.random().toString(36).slice(2);
@@ -62,6 +84,7 @@ const Approver = ({
     setSelectedApprover(defaultApprovers);
     setApproverSuggestions([]);
   }, [type, defaultApprovers]);
+
 
   return (
     <div className="p-field-item">
@@ -86,39 +109,34 @@ const Approver = ({
               : selectedApprover
           }
           suggestions={ApproverSuggestions}
-          completeMethod={searchApprover}
+          completeMethod={onDisplayNameChange}
           selectedItemTemplate={multiple && itemSelectedTemplate}
           field="displayName"
           onChange={(e) => {
             if (multiple && Array.isArray(e.value)) {
-              const approvers = e.value.map(
-                ({ id, displayName, identityCard, personalNumber }) => ({
-                  id,
-                  displayName,
-                  ...identityCard,
-                  ...personalNumber,
-                })
-              );
+              const approvers = e.value.map(({ id, displayName, entityId, identityCard, personalNumber }) => ({
+                id,
+                displayName,
+                entityId,
+                ...(identityCard && { identityCard }),
+                ...(personalNumber && { personalNumber }),
+              }));
 
               setSelectedApprover(approvers);
               setValue(name, approvers);
-              if (trigger) trigger(name);
             }
 
             if (!multiple) {
               setSelectedApprover(e.value);
 
               if (e.value?.id) {
-                const { id, displayName, identityCard, personalNumber } =
-                  e.value;
-                setValue(name, [
-                  { id, displayName, ...identityCard, ...personalNumber },
-                ]);
+                const { id, displayName, entityId, identityCard, personalNumber } = e.value;
+               setValue(name, [
+                 { id, displayName,entityId, ...(identityCard && { identityCard }), ...(personalNumber && { personalNumber }) },
+               ]);
               } else {
                 setValue(name, []);
               }
-
-              if (trigger) trigger(name);
             }
           }}
         />
@@ -126,7 +144,7 @@ const Approver = ({
           {errors?.approvers && (
             <small style={{ color: 'red' }}>
               {errors.approvers?.message
-                ? errors.approvers?.message
+                ? errors.approvers.message
                 : 'יש למלא ערך'}
             </small>
           )}
@@ -136,8 +154,5 @@ const Approver = ({
   );
 };
 
-Approver.defaultProps = {
-  disabled: false,
-};
 
 export default Approver;

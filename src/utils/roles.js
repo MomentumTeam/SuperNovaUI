@@ -1,6 +1,8 @@
 export const canEditRole = (selectedEntity, user) => {
-  // return selectedEntity && selectedEntity.id === user.id;
-  return true;
+  const role =
+    selectedEntity && user.digitalIdentities.find((di) => di.role?.roleId && di.role.roleId === selectedEntity.roleId);
+
+  return role;
 };
 
 export const roleItemTemplate = (item) => {
@@ -13,7 +15,7 @@ export const roleItemTemplate = (item) => {
 //     }
 //   }
 
-  const getRole = () => {return item.digitalIdentityUniqueId};
+  const getRole = () => {return item.roleId};
   return (
     <>
     {getRole()}

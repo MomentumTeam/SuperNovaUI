@@ -1,27 +1,36 @@
-import { action, makeAutoObservable, observable } from "mobx";
+import { action, makeAutoObservable, observable } from 'mobx';
 import {
   getOGByHierarchy,
   getOGChildren,
-  getRoleByRoleId,
-  searchDIByUniqueId,
   searchOG,
   searchRolesByRoleId,
-} from "../service/KartoffelService";
+} from '../service/KartoffelService';
 
 export default class GroupsStore {
   groups = [];
+  myGroup = {};
 
   constructor() {
     makeAutoObservable(this, {
       groups: observable,
+      myGroup: observable,
       loadOGChildren: action,
       getHierarchyByHierarchy: action,
       getHierarchyByRoleId: action,
     });
+
+    // this.getMyOg();
+  }
+
+  async getMyOg() {
+    // const myOg = await getMyOG();
+    //ask barak for route
+    //then add myGroup to the top of all search result
+    // this.myGroup = myOg;
   }
 
   async loadOGChildren(id, page, pageSize, append = false) {
-    const groups = await getOGChildren({ id, page, pageSize });
+    const groups = await getOGChildren({ id, page, pageSize, withRoles: true });
     this.groups = append ? [...this.groups, ...groups] : groups;
   }
 
@@ -31,30 +40,31 @@ export default class GroupsStore {
 
     if (query.trim().length) {
       try {
-        filteredResults = await searchOG(query);
+        filteredResults = await searchOG(query, true);
       } catch (error) {}
     }
 
     return filteredResults;
   }
 
-  async getHierarchyByDI(event) {
+  async getHierarchyByRoleId(event) {
     let filteredResults = [];
     const { query } = event;
 
     if (query.trim().length) {
-      const dis = await searchDIByUniqueId(query);
+      const roles = await searchRolesByRoleId(query);
 
-      if (dis.length > 0) {
+      if (roles.length > 0) {
         let hierarchies = [];
-        hierarchies = dis.map((di) => {
-          if (di?.role && di.role?.hierarchy) return di.role.hierarchy;
+        hierarchies = roles.map((role) => {
+          if (role?.hierarchy)
+            return { hierarchy: role.hierarchy, roleId: role.roleId };
         });
-        const uniqueHierarchy = [...new Set(hierarchies)];
 
         filteredResults = await Promise.all(
-          uniqueHierarchy.map((hierarchy) => {
-            const res = getOGByHierarchy(hierarchy);
+          hierarchies.map(async (hierarchy) => {
+            const res = await getOGByHierarchy(hierarchy.hierarchy, true);
+            res.roleIdSearch = hierarchy.roleId;
             return res;
           })
         );
@@ -63,6 +73,33 @@ export default class GroupsStore {
 
     return filteredResults;
   }
+
+  //   async getHierarchyByDI(event) {
+  //     let filteredResults = [];
+  //     const { query } = event;
+  //
+  //     if (query.trim().length) {
+  //       const dis = await searchDIByUniqueId(query);
+  //
+  //       if (dis.length > 0) {
+  //         let hierarchies = [];
+  //         hierarchies = dis.map((di) => {
+  //           if (di?.role && di.role?.hierarchy) return {hierarchy: di.role.hierarchy, uniqueId: di.uniqueId};
+  //         });
+  //         const uniqueHierarchy = [...new Set(hierarchies)];
+  //
+  //         filteredResults = await Promise.all(
+  //           uniqueHierarchy.map(async(hierarchy) => {
+  //             const res = await getOGByHierarchy(hierarchy.hierarchy);
+  //             res.uniqueIdSearch = hierarchy.uniqueId;
+  //             return res;
+  //           })
+  //         );
+  //       }
+  //     }
+  //
+  //     return filteredResults;
+  //   }
 
   //   async getHierarchyByRoleId(event) {
   //     let filteredResults = [];

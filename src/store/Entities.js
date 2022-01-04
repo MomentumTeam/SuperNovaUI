@@ -6,7 +6,11 @@ import {
   searchEntitiesByFullName,
   getEntityByIdentifier,
   getEntityByDI,
+  searchDIByUniqueId,
+  searchRolesByRoleId,
+  searchOG,
 } from "../service/KartoffelService";
+import { hierarchyConverse } from '../utils/hierarchy';
 
 export default class EntitiesStore {
   entities = [];
@@ -50,8 +54,21 @@ export default class EntitiesStore {
 
     if (query.trim().length) {
       try {
-        filteredResults = await getEntitiesByHierarchy(query);
-        filteredResults = filteredResults.entities;
+        const ogs = await searchOG(query);
+
+        if (ogs.length > 0) {
+          await Promise.all(
+            ogs.map(async (og) => {
+              try {
+                let entities = await getEntitiesByHierarchy(hierarchyConverse(og));
+                
+                if (entities?.entities) filteredResults = [...filteredResults, ...entities.entities];
+
+              } catch (error) {
+              }
+            })
+          );
+        }
       } catch (error) {}
     }
 
@@ -80,6 +97,63 @@ export default class EntitiesStore {
       try {
         filteredResults = await getEntityByDI(query);
         filteredResults = [filteredResults];
+      } catch (error) {}
+    }
+
+    return filteredResults;
+  }
+
+  async searchEntitiesByRoleId(event) {
+    let filteredResults = [];
+    const { query } = event;
+
+    if (query.trim().length) {
+      try {
+        const roles = await searchRolesByRoleId(query);
+
+        if (roles.length > 0) {
+          filteredResults = await Promise.all(
+            roles.map(async (role) => {
+              try {
+                let entity = await getEntityByRoleId(role.roleId);
+                
+                if(entity) {
+                  entity.roleIdSearch = role.roleId;
+                  return entity;
+
+                }
+                return {}
+              } catch (error) {
+                return {};
+              }
+            })
+          );
+        }
+      } catch (error) {}
+    }
+
+    return filteredResults;
+  }
+
+  async searchEntitiesByDI(event) {
+    let filteredResults = [];
+    const { query } = event;
+
+    if (query.trim().length) {
+      try {
+        const dis = await searchDIByUniqueId(query);
+
+        if (dis.length > 0) {
+          filteredResults = await Promise.all(
+            dis.map(async (di) => {
+              try {
+                let entity = await getEntityByDI(di.uniqueId);
+                entity.uniqueIdSearch = di.uniqueId;
+                return entity;
+              } catch (error) {}
+            })
+          );
+        }
       } catch (error) {}
     }
 

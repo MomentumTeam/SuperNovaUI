@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import ModalHierarchy from "../Modals/Hierarchy/ModalHierarchy";
 import { searchOG } from "../../service/KartoffelService";
 import { AutoComplete } from "primereact/autocomplete";
-import { hierarchyItemTemplate } from '../../utils/hierarchy';
+import { hierarchyConverse, hierarchyItemTemplate } from '../../utils/hierarchy';
+import { Tooltip } from 'primereact/tooltip';
 
-const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText = "היררכיה", errors }) => {
+const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText = "היררכיה", userHierarchy, errors }) => {
   const [ogSuggestions, setOgSuggestions] = useState([]);
   const [selectedOg, setSelectedOg] = useState(ogValue);
 
@@ -25,9 +26,10 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
   return (
     <>
       <div className="p-field">
+        {disabled && <Tooltip target={`.hierarchyText`} content={hierarchyConverse(selectedOg)} />}
         <label htmlFor="2020">
           <span className="required-field">*</span>
-          {labelText}
+          {disabled ? labelText : `הכנסת ${labelText}`}
         </label>
         <AutoComplete
           disabled={disabled || false}
@@ -36,7 +38,8 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
           completeMethod={searchOg}
           id="2020"
           type="text"
-          field="name"
+          className="hierarchyText"
+          field={hierarchyConverse}
           itemTemplate={hierarchyItemTemplate}
           onSelect={(e) => {
             if (onOrgSelected) {
@@ -50,14 +53,25 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
           required
           forceSelection
         />
-        <label htmlFor="2020"> {errors[name] && <small style={{ color: "red" }}>{(errors[name].type !== "typeError" && errors[name].message) || "יש למלא ערך"}</small>}</label>
+        <label htmlFor="2020">
+          {errors[name] && (
+            <small style={{ color: "red" }}>
+              {(errors[name].type !== "typeError" && errors[name].message) || "יש לבחור היררכיה"}
+            </small>
+          )}
+        </label>
       </div>
       {(!disabled || true) && (
         <ModalHierarchy
           onSelectHierarchy={(hierarchySelected) => {
             setSelectedOg(hierarchySelected.name);
             setValue(name, hierarchySelected);
+
+            if (onOrgSelected) {
+              onOrgSelected(hierarchySelected);
+            }
           }}
+          userHierarchy={userHierarchy}
           disabled={disabled}
         />
       )}

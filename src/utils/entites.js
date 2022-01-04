@@ -1,4 +1,4 @@
-import { USER_CITIZEN, USER_SOURCE_DI, USER_TYPE } from "../constants";
+import { USER_CITIZEN_ENTITY_TYPE, USER_TYPE } from "../constants";
 import { toJS } from "mobx";
 import { TableTypes } from "../constants/usersTable";
 import { useStores } from "../context/use-stores";
@@ -7,9 +7,18 @@ import { isUserHoldType } from "./user";
 export const canEditEntity = (selectedEntity, user) => {
   return (
     selectedEntity &&
-    selectedEntity.serviceType === USER_CITIZEN &&
-    (isUserHoldType(user, USER_TYPE.ADMIN) || selectedEntity.id === user.id)
+    selectedEntity.entityType === USER_CITIZEN_ENTITY_TYPE &&
+    (isUserHoldType(user, USER_TYPE.SUPER_SECURITY) ||
+      isUserHoldType(user, USER_TYPE.SECURITY) ||
+      selectedEntity.id === user.id)
   );
+};
+
+export const CanEditEntityFields = (selectedEntity) => {
+  const { userStore } = useStores();
+  const user = toJS(userStore.user);
+
+  return selectedEntity.id === user.id;
 };
 
 export const CanSeeUserClearance = () => {
@@ -22,7 +31,3 @@ export const CanSeeUserClearance = () => {
   return field.secured.some((allowedType) => isUserHoldType(user, allowedType));
 };
 
-export const getSamAccountName = (entity) => {
-  return entity.digitalIdentities.find((di) => di.source === USER_SOURCE_DI)
-    .uniqueId;
-};

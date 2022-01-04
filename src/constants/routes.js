@@ -1,3 +1,4 @@
+import { USER_TYPE } from '.';
 import Dashboard from "../pages/Dashboard";
 import ListUsersPage from "../pages/Entities";
 import MyRequests from "../pages/MyRequests";

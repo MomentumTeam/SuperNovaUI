@@ -1,12 +1,12 @@
 import { action, makeAutoObservable, observable } from "mobx";
 import {
   getRolesUnderOG,
-  getRolesByHierarchy,
   searchRolesByRoleId,
   getEntityByIdentifier,
   searchEntitiesByFullName,
   getRoleByRoleId,
   searchDIByUniqueId,
+  searchOG,
 } from "../service/KartoffelService";
 
 export default class RolesStore {
@@ -25,19 +25,19 @@ export default class RolesStore {
     this.roles = append ? [...this.roles, ...roles] : roles;
   }
 
-  //   async searchRolesByRoleId(event) {
-  //     let filteredResults;
-  //     const { query } = event;
-  //
-  //     if (!query.trim().length) {
-  //       filteredResults = [];
-  //     } else {
-  //       filteredResults = await searchRolesByRoleId(query);
-  //       filteredResults = filteredResults;
-  //     }
-  //
-  //     return filteredResults;
-  //   }
+    async searchRolesByRoleId(event) {
+      let filteredResults;
+      const { query } = event;
+  
+      if (!query.trim().length) {
+        filteredResults = [];
+      } else {
+        filteredResults = await searchRolesByRoleId(query);
+        filteredResults = filteredResults;
+      }
+  
+      return filteredResults;
+    }
 
   async searchRolesByDI(event) {
     let filteredResults = [];
@@ -70,8 +70,13 @@ export default class RolesStore {
 
     if (query.trim().length) {
       try {
-        filteredResults = await getRolesByHierarchy({ hierarchy: query });
-        filteredResults = filteredResults;
+        const ogs = await searchOG(query, true);
+
+        if (ogs.length > 0) {
+            ogs.map(async (og) => {
+                if (og.directRoles) filteredResults = [...filteredResults, ...og.directRoles];
+            })
+        }
       } catch (error) {}
     }
 
@@ -96,6 +101,7 @@ export default class RolesStore {
           }
         } catch (error) {}
       }
+
       return filteredResults;
     };
 

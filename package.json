@@ -21,6 +21,7 @@
     "mobx": "^6.3.2",
     "mobx-react": "^7.2.0",
     "moment": "^2.29.1",
+    "polyfill-object.fromentries": "^1.0.1",
     "primeicons": "^4.1.0",
     "primereact": "^6.5.1",
     "react": "^17.0.2",
@@ -35,6 +36,7 @@
     "react-transition-group": "^4.4.2",
     "react-use-cookie": "^1.2.1",
     "styled-components": "^5.3.1",
+    "video-react": "^0.14.1",
     "web-vitals": "^1.1.2",
     "xlsx": "^0.17.3",
     "yup": "^0.32.9"

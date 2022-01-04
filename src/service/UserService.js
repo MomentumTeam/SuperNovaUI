@@ -9,27 +9,12 @@ export const getUser = async () => {
   return userInfo.data;
 };
 
-export const getUserType = async (userID) => {
-  const userInfo = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/approver/userType/${userID}`,
-  );
-  return userInfo.data;
-};
-
-// export const getUsers = async () => {
-//   const users = await axiosApiInstance.get(
-//     `${apiBaseUrl}/api/kartoffel/searchOG/`);
-//   return users;
-// };
-
 export const getPictureByConnectedEntity = async () => {
   const userPic = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/entities/me/picture`);
   return userPic.data;
 };
 
-export const getPictureByEntityId = async (id) => {
-  const userPic = await axiosApiInstance.get(
-    `${apiBaseUrl}/api/kartoffel/entities/picture/${id}`,
-  );
+export const getPictureByEntityIdentifier = async (identifier) => {
+  const userPic = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/entities/picture/${identifier}`);
   return userPic.data;
 };

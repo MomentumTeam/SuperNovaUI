@@ -1,9 +1,5 @@
 import { PHONE_REG_EXP, NAME_REG_EXP } from "../constants";
 
-export const validatePhoneNumber = (value) => {
-  return PHONE_REG_EXP.test(value) ? null : "מספר לא תקין";
-};
+export const validatePhoneNumber = (value) => PHONE_REG_EXP.test(value);
 
-export const validateName = (value) => {
-  return NAME_REG_EXP.test(value) ? null : "שם לא תקין";
-};
+export const validateName = (value) => NAME_REG_EXP.test(value);

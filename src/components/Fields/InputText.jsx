@@ -1,52 +1,55 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect } from "react";
 import { InputText } from "primereact/inputtext";
 
 import { getLabel, disabledInputStyle } from "./InputCommon";
-import { InputFormContext } from './InputForm';
+import { Tooltip } from 'primereact/tooltip';
 
 const InputTextField = ({
+  item,
   fieldName,
   displayName,
+  methods,
+  errors,
+  isEdit,
   canEdit = false,
   type = "text",
   keyFilter = null,
   additionalClass = "",
-  validator = null,
+  placeholder = "",
+  withTooltip = false,
 }) => {
-  const { item, isEdit, changeForm, errors, changeErrors } = useContext(InputFormContext);
-  const [value, setValue] = useState("");
   const disabled = !canEdit || !isEdit;
-
+  const id = Math.random().toString(36).slice(2);
 
   useEffect(() => {
-    setValue("");
-  }, [isEdit]);
+    if(item) methods.setValue(fieldName, item[fieldName]);
+    methods.clearErrors();
+  }, [isEdit, item]);
 
   return (
     <div className={`p-fluid-item ${additionalClass}`}>
       <div className="p-field">
         {getLabel({ canEdit, isEdit, labelName: displayName })}
+        {withTooltip && disabled && <Tooltip position='top' target={`.hierarchyText-${id}`} content={methods.watch(fieldName)} />}
 
-        <InputText
-          id="2011"
-          className={
-            errors === null || errors[fieldName] === undefined || errors[fieldName] === null ? "" : "p-invalid"
-          }
-          type={type}
-          keyfilter={keyFilter}
-          disabled={disabled}
-          style={disabled ? disabledInputStyle : {}}
-          placeholder={item[fieldName]}
-          onChange={(e) => {
-            const errormsg = e.target.value === "" ? null : validator ? validator(e.target.value) : null;
-            errormsg ? changeErrors(fieldName, errormsg) : changeErrors(fieldName);
-            setValue(e.target.value);
-            changeForm(fieldName, e.target.value);
-          }}
-          value={value}
-        />
+        <div className={`hierarchyText-${id}`}>
+          <InputText
+            id="2011"
+            {...methods.register(fieldName)}
+            className={errors[fieldName] ? "p-invalid" : ""}
+            disabled={disabled}
+            style={disabled ? disabledInputStyle : {}}
+            value={methods.watch(fieldName)}
+            type={type}
+            keyfilter={keyFilter}
+            onChange={(e) => {
+              methods.setValue(fieldName, e.target.value, { shouldValidate: true });
+            }}
+            placeholder={placeholder}
+          />
+        </div>
 
-        {errors !== null && errors[fieldName] !== null && <small className="p-error p-d-block">{errors[fieldName]}</small>}
+        {errors[fieldName] && <small className="p-error p-d-block">{errors[fieldName].message}</small>}
       </div>
     </div>
   );

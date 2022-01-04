@@ -4,7 +4,7 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import '../assets/css/local/components/modal-item.min.css';
 import { useStores } from '../context/use-stores';
 import { toJS } from 'mobx';
-import { DECISIONS } from '../constants/decisions';
+import { DECISIONS, REQ_STATUSES } from '../constants';
 import {
   getApproverComments,
   isApproverAndCanEdit,
@@ -58,7 +58,7 @@ const ApproverSection = ({ request, setDialogVisiblity }) => {
 
   const submit = async () => {
     if (approverMode.denyMode) {
-      changeDecisionRequest(DECISIONS.DECLINED);
+      changeDecisionRequest(DECISIONS.DENIED);
     } else if (approverMode.commentMode) {
       for (let comment of approverComments) {
         let newCommentObject = {
@@ -68,7 +68,7 @@ const ApproverSection = ({ request, setDialogVisiblity }) => {
         };
 
         await appliesStore.updateApproversComments(newCommentObject);
-        setDialogVisiblity(false);
+        setApproveMode({...approverMode, commentMode: false});
       }
     }
   };
@@ -97,7 +97,7 @@ const ApproverSection = ({ request, setDialogVisiblity }) => {
             );
           })}
 
-          {request.status === DECISIONS.DECLINED && (
+          {request.status === REQ_STATUSES.DECLINED && (
             <div className="p-field">
               <label>
                 <span></span>

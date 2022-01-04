@@ -1,46 +1,53 @@
-import React, { useEffect, useState } from "react";
-import { Dropdown } from "primereact/dropdown";
+import React, { useEffect } from "react";
 
 import { getLabel, disabledInputStyle } from "./InputCommon";
+import { InputTextarea } from 'primereact/inputtextarea';
 
-const InputDropdown = ({
+const InputTextAreaField = ({
   item,
-  methods,
   fieldName,
   displayName,
-  options,
+  methods,
+  errors,
   isEdit,
   canEdit = false,
+  type = "text",
+  keyFilter = null,
   additionalClass = "",
-  errors,
-  required = true,
+  placeholder = "",
+  required = false
 }) => {
   const disabled = !canEdit || !isEdit;
 
   useEffect(() => {
     if (item) methods.setValue(fieldName, item[fieldName]);
     methods.clearErrors();
-  }, [isEdit]);
+  }, [isEdit, item]);
 
   return (
     <div className={`p-fluid-item ${additionalClass}`}>
       <div className="p-field">
-        {getLabel({ canEdit: required && canEdit, isEdit, labelName: displayName })}
-        <Dropdown
+        {getLabel({ required, isEdit, labelName: displayName })}
+
+        <InputTextarea
           id="2011"
           {...methods.register(fieldName)}
-          options={options}
+          className={errors[fieldName] ? "p-invalid" : ""}
           disabled={disabled}
           style={disabled ? disabledInputStyle : {}}
+          value={methods.watch(fieldName)}
+          type={type}
+          keyfilter={keyFilter}
           onChange={(e) => {
             methods.setValue(fieldName, e.target.value, { shouldValidate: true });
           }}
-          value={methods.watch(fieldName)}
+          placeholder={placeholder}
         />
+
         {errors[fieldName] && <small className="p-error p-d-block">{errors[fieldName].message}</small>}
       </div>
     </div>
   );
 };
 
-export { InputDropdown };
+export { InputTextAreaField };
