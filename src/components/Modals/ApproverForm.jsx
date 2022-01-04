@@ -17,11 +17,10 @@ import {
   searchEntitiesByFullName,
   getEntityByIdentifier,
   getOGById,
-  getOGByHierarchy,
 } from '../../service/KartoffelService';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { USER_TYPE } from '../../constants';
+import { USER_TYPE, highCommanderRanks } from '../../constants';
 import { isUserHoldType, userConverse, userTemplate } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
 import '../../assets/css/local/components/approverForm.css';
@@ -69,6 +68,10 @@ const ApproverForm = forwardRef(
     const [approverType, setApproverType] = useState();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
     const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
+    const isHighCommander =
+      isUserApprover && userStore.user?.rank
+        ? highCommanderRanks.includes(userStore.user.rank)
+        : false;
 
     const { register, handleSubmit, setValue, getValues, formState, watch } =
       useForm({
@@ -378,18 +381,18 @@ const ApproverForm = forwardRef(
             errors={errors}
             tooltip={'סא"ל ומעלה ביחידתך'} //todo: ASK
             isHighRank={true}
-            disabled={onlyForView || isUserApprover}
+            disabled={onlyForView || (isUserApprover && isHighCommander)}
             defaultApprovers={defaultApprovers}
           />
         </div>
-        <div className='p-fluid-item p-fluid-item-flex1'>
-          <div className='p-field'>
-            <label htmlFor='2016'>הערות</label>
+        <div className="p-fluid-item p-fluid-item-flex1">
+          <div className="p-field">
+            <label htmlFor="2016">הערות</label>
             <InputTextarea
               disabled={onlyForView}
               {...register('comments')}
-              id='2016'
-              type='text'
+              id="2016"
+              type="text"
               placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
             />
           </div>

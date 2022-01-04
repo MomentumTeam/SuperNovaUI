@@ -109,8 +109,8 @@ const FullHierarchyInformationForm = forwardRef(
         due: Date.now(),
       };
 
-      await appliesStore.renameOGApply(req);
       setIsActionDone(true);
+      await appliesStore.renameOGApply(req);
     };
 
     useImperativeHandle(

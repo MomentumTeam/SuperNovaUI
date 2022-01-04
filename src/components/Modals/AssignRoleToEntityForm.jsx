@@ -40,44 +40,52 @@ import { hierarchyConverse } from '../../utils/hierarchy';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
-  user: Yup.object().required("נא לבחור משתמש"),
+  user: Yup.object().required('נא לבחור משתמש'),
   userName: Yup.string()
-    .required("יש למלא שם משתמש")
+    .required('יש למלא שם משתמש')
     .test({
-      name: "valid-user",
-      message: "נא לבחור משתמש",
+      name: 'valid-user',
+      message: 'נא לבחור משתמש',
       test: (userName, context) => {
         return userName && context.parent?.user;
       },
     })
     .test({
-      name: "valid-user-rank",
-      message: "לא ניתן לשייך משתמש זה מכיוון שאין לו דרגה",
+      name: 'valid-user-rank',
+      message: 'לא ניתן לשייך משתמש זה מכיוון שאין לו דרגה',
       test: (userName, context) => {
-        return userName && context.parent?.user?.rank && context.parent?.user?.rank !== "";
+        return (
+          userName &&
+          context.parent?.user?.rank &&
+          context.parent?.user?.rank !== ''
+        );
       },
     }),
-  personalNumber: Yup.string().required("יש למלא ערך"),
-  hierarchy: Yup.object().required("נא לבחור היררכיה"),
+  personalNumber: Yup.string().required('יש למלא ערך'),
+  hierarchy: Yup.object().required('נא לבחור היררכיה'),
   role: Yup.object()
-    .required("נא לבחור תפקיד")
+    .required('נא לבחור תפקיד')
     .test({
-      name: "valid-roleid",
-      message: "לא ניתן לשייך תפקיד זה למשתמש",
+      name: 'valid-roleid',
+      message: 'לא ניתן לשייך תפקיד זה למשתמש',
       test: (value) => {
-        return value?.digitalIdentityUniqueId && value.digitalIdentityUniqueId !== "";
+        return (
+          value?.digitalIdentityUniqueId && value.digitalIdentityUniqueId !== ''
+        );
       },
     }),
-  roleId: Yup.string().required("יש למלא מזהה תפקיד"),
+  roleId: Yup.string().required('יש למלא מזהה תפקיד'),
   isUserApprover: Yup.boolean(),
   approvers: Yup.array()
-    .when("isUserApprover", {
+    .when('isUserApprover', {
       is: false,
-      then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+      then: Yup.array()
+        .min(1, 'יש לבחור לפחות גורם מאשר אחד')
+        .required('יש לבחור לפחות גורם מאשר אחד'),
     })
     .test({
-      name: "check-if-valid",
-      message: "יש לבחור מאשרים תקינים (מהיחידה בלבד)",
+      name: 'check-if-valid',
+      message: 'יש לבחור מאשרים תקינים (מהיחידה בלבד)',
       test: async (approvers, context) => {
         let isTotalValid = true;
 
@@ -97,9 +105,10 @@ const validationSchema = Yup.object().shape({
       },
     }),
   comments: Yup.string().optional(),
-  changeRoleAt: Yup.date().when("currentRoleUser", {
-    is: (value) => value !== null,
-    then: Yup.date().required("יש לבחור תאריך החלפה"),
+  changeRoleAt: Yup.date().when('currentRoleUser', {
+    is: (value) => value !== "",
+    then: Yup.date().required('יש לבחור תאריך החלפה'),
+    otherwise: Yup.date(),
   }),
 });
 
@@ -139,8 +148,16 @@ const AssignRoleToEntityForm = forwardRef(
         setValue('role', role, { shouldValidate: true });
         setRoles([role]);
 
-        const entity = await getEntityByRoleId(roleId);
-        if (entity) setValue("currentRoleUser", entity.fullName);
+        try {
+          const entity = await getEntityByRoleId(roleId);
+
+          if (entity) {
+            // If role is taken
+            setValue('currentRoleUser', entity.fullName);
+          }
+        } catch (err) {
+          setValue('currentRoleUser', '');
+        }
 
         await roleId;
 
@@ -148,6 +165,7 @@ const AssignRoleToEntityForm = forwardRef(
   
         const result = await GetDefaultApprovers({ request: requestObject, onlyForView, user: userStore.user });
         setDefaultApprovers(result || []);
+
       };
 
       if (requestObject) {
@@ -190,8 +208,9 @@ const AssignRoleToEntityForm = forwardRef(
       if (userRole?.roleId && userRole?.roleId !== "") {
         req.adParams.oldSAMAccountName = getSamAccountNameFromUniqueId(userRole?.roleId);
       }
-      await appliesStore.assignRoleToEntityApply(req);
+
       setIsActionDone(true);
+      await appliesStore.assignRoleToEntityApply(req);
     };
 
     useImperativeHandle(
@@ -254,7 +273,7 @@ const AssignRoleToEntityForm = forwardRef(
       const result = await getRolesUnderOG({ id: org.id, direct: true });
       setRoles(result || []);
       setValue("roleId", "");
-      setValue("currentRoleUser", null);
+      setValue("currentRoleUser", '');
     };
 
     const handleRoleSelected = async (roleId) => {
@@ -469,7 +488,7 @@ const AssignRoleToEntityForm = forwardRef(
               setValue={(name, value) => {
                 setValue("role", "");
                 setValue("roleId", "");
-                setValue("currentRoleUser", null);
+                setValue("currentRoleUser", '');
                 setValue(name, value)
               }}
               name="hierarchy"

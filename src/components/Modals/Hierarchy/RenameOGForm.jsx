@@ -4,15 +4,15 @@ import React, {
   forwardRef,
   useMemo,
   createRef,
-} from "react";
-import { Accordion, AccordionTab } from "primereact/accordion";
-import { useStores } from "../../../context/use-stores";
-import RenameBulkOGForm from "../Bulk/RenameBulkOGForm";
-import RenameSingleOGForm from "../Hierarchy/RenameSingleOGForm";
-import { USER_TYPE } from "../../../constants";
-import { isUserHoldType } from "../../../utils/user";
-import "../../../assets/css/local/components/rename-og-form.css";
-import renderHeader from "../accordionTabHeaders";
+} from 'react';
+import { Accordion, AccordionTab } from 'primereact/accordion';
+import { useStores } from '../../../context/use-stores';
+import RenameBulkOGForm from '../Bulk/RenameBulkOGForm';
+import RenameSingleOGForm from '../Hierarchy/RenameSingleOGForm';
+import { USER_TYPE } from '../../../constants';
+import { isUserHoldType } from '../../../utils/user';
+import '../../../assets/css/local/components/rename-og-form.css';
+import renderHeader from '../accordionTabHeaders';
 
 const RenameOGForm = forwardRef(({ setIsActionDone }, ref) => {
   const { userStore } = useStores();
@@ -31,7 +31,7 @@ const RenameOGForm = forwardRef(({ setIsActionDone }, ref) => {
   return isBulkPermitted ? (
     <Accordion
       expandIcon="pi pi-chevron-left"
-      style={{ marginBottom: "20px" }}
+      style={{ marginBottom: '20px' }}
       activeIndex={activeIndex}
       onTabChange={({ index }) => {
         setActiveIndex((currentIndex) => {
@@ -43,14 +43,14 @@ const RenameOGForm = forwardRef(({ setIsActionDone }, ref) => {
         });
       }}
     >
-      <AccordionTab header={renderHeader("מעבר היררכיה לתפקיד", true)}>
+      <AccordionTab header={renderHeader('מעבר היררכיה לתפקיד', true)}>
         <RenameSingleOGForm
           ref={formRefs[0]}
           showJob={false}
           setIsActionDone={setIsActionDone}
         />
       </AccordionTab>
-      <AccordionTab header={renderHeader("הגשת בקשה מרובה", true)}>
+      <AccordionTab header={renderHeader('מעבר היררכיה לתפקידים', true, true)}>
         <RenameBulkOGForm
           ref={formRefs[1]}
           showJob={false}

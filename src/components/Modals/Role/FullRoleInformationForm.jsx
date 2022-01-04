@@ -128,8 +128,8 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
       due: Date.now(),
     };
 
-    await appliesStore.renameRoleApply(req);
     setIsActionDone(true);
+    await appliesStore.renameRoleApply(req);
   };
 
   const onRoleNameChange = (e) => {

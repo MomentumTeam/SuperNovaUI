@@ -122,8 +122,8 @@ const RenameBulkOGForm = forwardRef(
         delete req.comments;
       }
 
-      await appliesStore.createRoleBulk(req);
       setIsActionDone(true);
+      await appliesStore.createRoleBulk(req);
     };
 
     useImperativeHandle(

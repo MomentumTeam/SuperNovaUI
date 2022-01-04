@@ -58,8 +58,10 @@ export const checkIfRequestIsDone = (req) => {
 };
 
 export const REQ_STATUSES = {
+  IN_PROGRESS: 'IN_PROGRESS',
   DECLINED: 'DECLINED',
-  IN_PROGRESS: 'IN_PROGRESS'
+  DONE: 'DONE',
+  FAILED: 'FAILED',
 };
 
 
