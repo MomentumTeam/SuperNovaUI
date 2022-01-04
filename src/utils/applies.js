@@ -282,6 +282,8 @@ export const isSubmitterReq = (request, user) => {
   return (
     request?.submittedBy?.id === user.id &&
     request?.status !== REQ_STATUSES.IN_PROGRESS &&
-    request?.status !== REQ_STATUSES.DECLINED
+    request?.status !== REQ_STATUSES.DECLINED &&
+    request?.status !== REQ_STATUSES.DONE &&
+    request?.status !== REQ_STATUSES.FAILED
   );
 };
