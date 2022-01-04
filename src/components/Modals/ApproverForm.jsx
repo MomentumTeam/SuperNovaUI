@@ -17,6 +17,7 @@ import {
   searchEntitiesByFullName,
   getEntityByIdentifier,
   getOGById,
+  getOGByHierarchy,
 } from '../../service/KartoffelService';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -85,6 +86,7 @@ const ApproverForm = forwardRef(
         console.log(requestObject);
         setValue('comments', requestObject.comments);
         setValue('userName', requestObject.additionalParams.displayName);
+        setValue('approverType', requestObject.additionalParams.type);
 
         setValue(
           'personalNumber',
@@ -98,7 +100,6 @@ const ApproverForm = forwardRef(
           );
           setValue('hierarchy', hierarchy);
           setValue('HierarchyApproverOf', hierarchy);
-          console.log(watch('HierarchyApproverOf'));
         } catch (error) {}
       }
 
@@ -117,13 +118,12 @@ const ApproverForm = forwardRef(
         hierarchy,
         approverType,
         comments,
-        HierarchyApproverOf,
+        groupInChargeId,
       } = data;
 
       try {
         await validationSchema.validate(data);
       } catch (err) {
-        console.log(err);
         throw new Error(err.errors);
       }
 
@@ -144,8 +144,11 @@ const ApproverForm = forwardRef(
         },
         comments,
         due: Date.now(),
-        HierarchyApproverOf: HierarchyApproverOf,
       };
+
+      if (groupInChargeId) {
+        req.additionalParams.groupInChargeId = groupInChargeId;
+      }
 
       await appliesStore.createNewApproverApply(req);
       setIsActionDone(true);
@@ -215,6 +218,8 @@ const ApproverForm = forwardRef(
       });
       setDefaultApprovers(result || []);
       setValue('isUserApprover', result.length > 0);
+
+      setValue('groupInChargeId', watch('HierarchyApproverOf').directGroup);
     };
 
     return (
