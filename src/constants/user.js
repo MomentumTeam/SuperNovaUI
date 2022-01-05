@@ -32,7 +32,10 @@ export const highCommanderRanks = process.env.UI_HIGH_COMMANDER_RANKS
   : ["סאל", "אלם", "תאל", "אלף"];
   
 export const USER_DI_TYPE = process.env.UI_DI_TYPE || "domainUser";
-export const USER_ROLE_ENTITY_TYPE = process.env.UI_ROLE_ENTITY_TYPE || "goalUser";
+
+// export const USER_ROLE_ENTITY_TYPE = process.env.UI_ROLE_ENTITY_TYPE || "goalUser";
+export const USER_ROLE_ENTITY_TYPE =
+  process.env.UI_ROLE_ENTITY_TYPE || 'GoalUser';
 
 export const USER_TYPE_TAG = {
   APPROVER: 'גורם מאשר',
