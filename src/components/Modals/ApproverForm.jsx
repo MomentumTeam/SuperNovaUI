@@ -86,7 +86,6 @@ const ApproverForm = forwardRef(
       setApproverType(USER_TYPE.COMMANDER);
 
       if (requestObject) {
-        console.log(requestObject);
         setValue('comments', requestObject.comments);
         setValue('userName', requestObject.additionalParams.displayName);
         setValue('approverType', requestObject.additionalParams.type);
@@ -102,7 +101,12 @@ const ApproverForm = forwardRef(
             requestObject.additionalParams.directGroup
           );
           setValue('hierarchy', hierarchy);
-          setValue('HierarchyApproverOf', hierarchy);
+          const hierarchyApproverOf = await getOGById(
+            requestObject.additionalParams.groupInChargeId
+          );
+          console.log(hierarchyApproverOf);
+          setValue('HierarchyApproverOf', hierarchyApproverOf);
+          watch('HierarchyApproverOf');
         } catch (error) {}
       }
 
@@ -222,8 +226,7 @@ const ApproverForm = forwardRef(
       });
       setDefaultApprovers(result || []);
       setValue('isUserApprover', result.length > 0);
-
-      setValue('groupInChargeId', watch('HierarchyApproverOf').directGroup);
+      setValue('groupInChargeId', watch('HierarchyApproverOf').id);
     };
 
     return (
