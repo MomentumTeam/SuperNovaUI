@@ -263,7 +263,7 @@ const ApproverForm = forwardRef(
                 errors={errors}
                 ogValue={watch('HierarchyApproverOf')}
                 disabled={onlyForView}
-                labelText='היררכיה על'
+                labelText='ההיררכיה שבה תהיו מחשוב יחידתי'
                 onOrgSelected={handleOrgSelected}
               />
             </div>
