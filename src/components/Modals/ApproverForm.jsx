@@ -83,7 +83,6 @@ const ApproverForm = forwardRef(
       setApproverType(USER_TYPE.COMMANDER);
 
       if (requestObject) {
-        console.log(requestObject);
         setValue('comments', requestObject.comments);
         setValue('userName', requestObject.additionalParams.displayName);
         setValue('approverType', requestObject.additionalParams.type);
@@ -102,7 +101,9 @@ const ApproverForm = forwardRef(
           const hierarchyApproverOf = await getOGById(
             requestObject.additionalParams.groupInChargeId
           );
+          console.log(hierarchyApproverOf);
           setValue('HierarchyApproverOf', hierarchyApproverOf);
+          watch('HierarchyApproverOf');
         } catch (error) {}
       }
 
