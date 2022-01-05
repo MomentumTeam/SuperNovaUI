@@ -169,6 +169,15 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
            hierarchy = await getOGById(role.directGroup);
          }
 
+        const result = await GetDefaultApprovers({
+          request: requestObject,
+          user: userStore.user,
+          onlyForView,
+          groupId: role.directGroup,
+        });
+        setDefaultApprovers(result || []);
+        setValue('isUserApprover', result.length > 0);
+
         setValue("currentHierarchy", hierarchy);
         setValue("role", role);
 
