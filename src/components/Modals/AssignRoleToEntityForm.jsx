@@ -656,7 +656,7 @@ const AssignRoleToEntityForm = forwardRef(
               )}
             {watch('currentRoleUser') && (
               <div className="p-field">
-                <label htmlFor="2030">מבצע תפקיד</label>
+                <label htmlFor="2030">מבצע תפקיד נוכחי</label>
                 <InputText
                   {...register('currentRoleUser')}
                   id="2030"
