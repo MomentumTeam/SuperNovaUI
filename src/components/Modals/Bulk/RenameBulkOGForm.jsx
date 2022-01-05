@@ -157,8 +157,9 @@ const RenameBulkOGForm = forwardRef(
         delete req.comments;
       }
 
-      setIsActionDone(true);
       await appliesStore.changeRoleHierarchyBulk(req);
+      setIsActionDone(true);
+
     };
 
     useImperativeHandle(

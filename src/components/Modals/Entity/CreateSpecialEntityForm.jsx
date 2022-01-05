@@ -101,8 +101,9 @@ const CreateSpecialEntityForm = forwardRef(
         adParams: {},
       };
 
-      await setIsActionDone(true);
       await appliesStore.createEntityApply(req);
+      await setIsActionDone(true);
+
     };
 
     useImperativeHandle(

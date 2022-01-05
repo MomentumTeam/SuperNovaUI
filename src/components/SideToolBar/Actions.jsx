@@ -23,6 +23,7 @@ const Action = () => {
   const [actionList, setActionList] = useState(actions);
   const [isActionDone, setIsActionDone] = useState(false);
   const [currentActionId, setCurrentActionId] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
 
   const { userStore } = useStores();
   const isBulkPermitted = isUserHoldType(userStore.user, USER_TYPE.BULK);
@@ -85,7 +86,9 @@ const Action = () => {
       setCurrentActionId(id);
       const ref = getRef(id);
       try {
+        setSubmitted(true);
         await ref.current.handleSubmit();
+        setSubmitted(false);
       } catch (e) {
         const actionName = actionList.find(
           (action) => action.id === currentActionId
@@ -110,7 +113,7 @@ const Action = () => {
         infoText = headersInfo['מעבר היררכיה לתפקיד'];
       }
     }
-    
+
     return (
       <div className="display-flex dialog-header">
         <div className="dialog-header-title">{actionName}</div>
@@ -139,18 +142,21 @@ const Action = () => {
             <Button
               label=" שליחת בקשה"
               onClick={() => handleRequest(name)}
+              disabled={submitted}
               className="btn-gradient orange"
             />
           ) : name === 6 ? (
             <Button
               label=" שליחת בקשה"
               onClick={() => handleRequest(name)}
+              disabled={submitted}
               className="btn-gradient orange"
             />
           ) : (
             <Button
               label="שליחת בקשה"
               onClick={() => handleRequest(name)}
+              disabled={submitted}
               className="btn-gradient orange"
             />
           )}

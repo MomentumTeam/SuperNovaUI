@@ -361,7 +361,7 @@ export default class AppliesStore {
       this.approveAllAppliesCount = this.approveAllAppliesCount - 1;
     }
     if (responsibleAfter && !myApplyResponsibleBefore) {
-      this.approveMyApplies.requests.push(apply);
+      this.approveMyApplies.requests.unshift(apply);
       this.approveMyAppliesCount = this.approveMyAppliesCount + 1;
       this.approveMyApplies.waitingForApproveCount =
         this.approveMyApplies.waitingForApproveCount + 1;
