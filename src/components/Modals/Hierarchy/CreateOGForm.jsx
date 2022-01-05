@@ -148,8 +148,9 @@ const CreateOGForm = forwardRef(
         comments,
       };
 
-      setIsActionDone(true);
       await appliesStore.createOGApply(req);
+      setIsActionDone(true);
+
     };
 
     useImperativeHandle(ref, () => ({

@@ -92,7 +92,6 @@ const FullEntityInformationForm = forwardRef(
 
         const samAccountName = getSamAccountNameFromEntity(tempForm);
 
-        setIsActionDone(true);
         await appliesStore.editEntityApply({
           kartoffelParams,
           adParams: {
@@ -102,6 +101,9 @@ const FullEntityInformationForm = forwardRef(
             fullName: tempForm.fullName,
           },
         });
+        
+        setIsActionDone(true);
+
       } catch (error) {
         console.log(error);
       }
