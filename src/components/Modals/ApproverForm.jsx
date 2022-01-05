@@ -99,7 +99,10 @@ const ApproverForm = forwardRef(
             requestObject.additionalParams.directGroup
           );
           setValue('hierarchy', hierarchy);
-          setValue('HierarchyApproverOf', hierarchy);
+          const hierarchyApproverOf = await getOGById(
+            requestObject.additionalParams.groupInChargeId
+          );
+          setValue('HierarchyApproverOf', hierarchyApproverOf);
         } catch (error) {}
       }
 
@@ -218,8 +221,7 @@ const ApproverForm = forwardRef(
       });
       setDefaultApprovers(result || []);
       setValue('isUserApprover', result.length > 0);
-
-      setValue('groupInChargeId', watch('HierarchyApproverOf').directGroup);
+      setValue('groupInChargeId', watch('HierarchyApproverOf').id);
     };
 
     return (
