@@ -90,6 +90,7 @@ const Action = () => {
         await ref.current.handleSubmit();
         setSubmitted(false);
       } catch (e) {
+        setSubmitted(false);
         const actionName = actionList.find(
           (action) => action.id === currentActionId
         );

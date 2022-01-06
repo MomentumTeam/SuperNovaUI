@@ -37,10 +37,10 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit, actionP
   return (
     <>
       <Dialog
-        className={classNames("dialogClass5")}
-        header={isEdit ? "עריכת היררכיה" : "פרטי היררכיה"}
+        className={classNames('dialogClass5')}
+        header={isEdit ? 'עריכת היררכיה' : 'פרטי היררכיה'}
         visible={isOpen}
-        style={{ borderRadius: "30px" }}
+        style={{ borderRadius: '30px' }}
         onHide={closeModal}
         dismissableMask={true}
         footer={
@@ -59,6 +59,7 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit, actionP
           requestObject={hierarchy}
           setIsActionDone={setIsActionDone}
           onlyForView={!isEdit}
+          setIsEdit={setIsEdit}
         />
 
         <div className="p-fluid-item p-fluid-item-flex1">
@@ -69,7 +70,11 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit, actionP
           <ContainerRoleList roles={hierarchy.directRoles} />
         </div>
       </Dialog>
-      <HierarchyDelete hierarchy={hierarchy} isOpen={isDeleteModalOpen} closeModal={closeDeleteModal} />
+      <HierarchyDelete
+        hierarchy={hierarchy}
+        isOpen={isDeleteModalOpen}
+        closeModal={closeDeleteModal}
+      />
     </>
   );
 };

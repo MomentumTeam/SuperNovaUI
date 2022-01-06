@@ -44,7 +44,10 @@ const validationSchema = Yup.object().shape({
 });
 
 const FullEntityInformationForm = forwardRef(
-  ({ setIsActionDone, onlyForView, requestObject, reqView = true }, ref) => {
+  (
+    { setIsActionDone, onlyForView, requestObject, reqView = true, setIsEdit },
+    ref
+  ) => {
     const { appliesStore } = useStores();
     const [user, setUser] = useState(requestObject);
     const methods = useForm({
@@ -103,9 +106,8 @@ const FullEntityInformationForm = forwardRef(
             fullName: tempForm.fullName,
           },
         });
-        
+        setIsEdit(false);
         setIsActionDone(true);
-
       } catch (error) {
         console.log(error);
       }
@@ -121,104 +123,104 @@ const FullEntityInformationForm = forwardRef(
 
     const formFields = [
       {
-        fieldName: "id",
-        displayName: "מזהה",
+        fieldName: 'id',
+        displayName: 'מזהה',
         inputType: InputTypes.TEXT,
         force: true,
         secured: () => reqView,
       },
       {
-        fieldName: "firstName",
-        displayName: "שם פרטי",
+        fieldName: 'firstName',
+        displayName: 'שם פרטי',
         inputType: InputTypes.TEXT,
         canEdit: () => CanEditEntityFields(user),
         force: true,
       },
       {
-        fieldName: "lastName",
-        displayName: "שם משפחה",
+        fieldName: 'lastName',
+        displayName: 'שם משפחה',
         inputType: InputTypes.TEXT,
         canEdit: () => CanEditEntityFields(user),
         force: true,
       },
       {
-        fieldName: "personalNumber",
+        fieldName: 'personalNumber',
         displayName: 'מ"א',
         inputType: InputTypes.TEXT,
         secured: () => !reqView,
       },
       {
-        fieldName: "identityCard",
+        fieldName: 'identityCard',
         displayName: 'ת"ז',
         inputType: InputTypes.TEXT,
-        type: "num",
-        keyFilter: "num",
+        type: 'num',
+        keyFilter: 'num',
         canEdit: () => CanEditEntityFields(user),
       },
       {
-        fieldName: "rank",
-        displayName: "דרגה",
+        fieldName: 'rank',
+        displayName: 'דרגה',
         inputType: InputTypes.TEXT,
         secured: () => !reqView,
       },
       {
-        fieldName: "hierarchy",
-        displayName: "היררכיה",
+        fieldName: 'hierarchy',
+        displayName: 'היררכיה',
         inputType: InputTypes.TEXT,
         force: true,
         secured: () => !reqView,
         withTooltip: true,
       },
       {
-        fieldName: "mail",
-        displayName: "מייל",
+        fieldName: 'mail',
+        displayName: 'מייל',
         inputType: InputTypes.TEXT,
         force: true,
       },
       {
-        fieldName: "jobTitle",
-        displayName: "תפקיד",
+        fieldName: 'jobTitle',
+        displayName: 'תפקיד',
         inputType: InputTypes.TEXT,
         force: true,
         secured: () => !reqView,
       },
       {
-        fieldName: "address",
-        displayName: "כתובת",
+        fieldName: 'address',
+        displayName: 'כתובת',
         inputType: InputTypes.TEXT,
         secured: () => !reqView,
       },
       {
-        fieldName: "mobilePhone",
-        displayName: "פלאפון נייד",
+        fieldName: 'mobilePhone',
+        displayName: 'פלאפון נייד',
         inputType: InputTypes.TEXT,
-        type: "num",
-        keyFilter: "num",
+        type: 'num',
+        keyFilter: 'num',
         canEdit: true,
         force: true,
       },
       {
-        fieldName: "birthDate",
-        displayName: "תאריך לידה",
+        fieldName: 'birthDate',
+        displayName: 'תאריך לידה',
         inputType: InputTypes.CALANDER,
         secured: () => !reqView,
         untilNow: true
       },
       {
-        fieldName: "dischargeDay",
+        fieldName: 'dischargeDay',
         displayName: 'תק"ש',
         inputType: InputTypes.CALANDER,
         secured: () => !reqView,
       },
       {
-        fieldName: "clearance",
-        displayName: "סיווג",
+        fieldName: 'clearance',
+        displayName: 'סיווג',
         canEdit: true,
         secured: CanSeeUserClearance,
         force: true,
         inputType: InputTypes.TEXT,
-        type: "num",
-        keyFilter: "num",
+        type: 'num',
+        keyFilter: 'num',
       },
     ];
 
