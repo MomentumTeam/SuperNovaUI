@@ -1,26 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "primereact/button";
 import { toJS } from "mobx";
-
 import { useStores } from "../../../context/use-stores";
-import { canEditHierarchy } from "../../../utils/hierarchy";
+import { canEditHierarchy, processHierarchyData } from "../../../utils/hierarchy";
+import { exportToExcel } from '../../../utils/general';
 
-const FullHierarchyInformationFooter = ({ isEdit, closeModal, setIsEdit, handleRequest }) => {
+const FullHierarchyInformationFooter = ({ isEdit, closeModal, setIsEdit, handleRequest, hierarchy }) => {
   const { userStore } = useStores();
   const connectedUser = toJS(userStore.user);
+  const [excelLoading, setExcelLoading] = useState(false);
+
+  const excelExport = async () => {
+    try {
+      setExcelLoading(true);
+      const hierarchyData = await processHierarchyData(hierarchy);
+      exportToExcel(hierarchyData, `${hierarchy.name}Roles`);
+      
+    } catch (error) {
+      
+    }
+    setExcelLoading(false);
+  };
+
 
   return (
     <>
       <div className="display-flex">
-        <div></div>
-        {/* <Button label="מחיקה" onClick={openDeleteModal} className="p-button p-component btn-border" /> */}
+        <div>
+          <Button
+            icon="pi pi-file-excel"
+            loading={excelLoading}
+            label="ייצוא"
+            className="btn-border blue"
+            onClick={excelExport}
+          />
+        </div>
+
         <div className="display-flex">
           {canEditHierarchy(connectedUser) && (
             <Button
               label={isEdit ? "ביטול" : "עריכה"}
               className={isEdit ? "btn-underline" : "btn-border orange"}
               onClick={() => {
-                // if (isEdit) resetForm();
                 setIsEdit(!isEdit);
               }}
             />

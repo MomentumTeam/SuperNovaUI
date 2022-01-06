@@ -2332,6 +2332,18 @@
   border: 1px solid #f68340;
 }
 
+.p-dialog .p-button.btn-border.blue {
+  border: 1px solid #1d88ec;
+  color: #1d88ec;
+  font-weight: 600;
+}
+
+.p-dialog .p-button.btn-border.blue:hover,
+.p-dialog .p-button.btn-border.blue:focus {
+  color: #1d88ec;
+  border: 1px solid #1d88ec;
+}
+
 .p-dialog .p-button.btn-border:hover,
 .p-dialog .p-button.btn-border:focus {
   background-color: transparent;

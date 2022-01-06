@@ -54,7 +54,6 @@ const validationSchema = Yup.object().shape({
       name: 'check-if-valid',
       message: 'יש לבחור מאשרים תקינים (מהיחידה בלבד)',
       test: async (approvers, context) => {
-        console.log('approvers', approvers);
         let isTotalValid = true;
 
         if (
