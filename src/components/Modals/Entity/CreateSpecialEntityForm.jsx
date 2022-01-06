@@ -171,6 +171,7 @@ const CreateSpecialEntityForm = forwardRef(
         canEdit: true,
         force: true,
         required: false,
+        untilNow: true
       },
       {
         fieldName: "approvers",

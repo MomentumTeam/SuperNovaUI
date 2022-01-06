@@ -104,7 +104,7 @@ const ApproverForm = forwardRef(
           const hierarchyApproverOf = await getOGById(
             requestObject.additionalParams.groupInChargeId
           );
-          console.log(hierarchyApproverOf);
+
           setValue('HierarchyApproverOf', hierarchyApproverOf);
           watch('HierarchyApproverOf');
         } catch (error) {}

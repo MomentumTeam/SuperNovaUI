@@ -47,7 +47,6 @@ const FullEntityInformationForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject, reqView = true }, ref) => {
     const { appliesStore } = useStores();
     const [user, setUser] = useState(requestObject);
-
     const methods = useForm({
       resolver: yupResolver(validationSchema),
       defaultValues: user,
@@ -59,12 +58,15 @@ const FullEntityInformationForm = forwardRef(
         if (reqView) {
           setUser(requestObject.kartoffelParams);
         } else {
+          if (Array.isArray(requestObject.mobilePhone)) requestObject.mobilePhone = requestObject.mobilePhone[0];
+          
           setUser(requestObject);
         }
       }
     }, [requestObject]);
 
     const onSubmit = async (data) => {
+      console.log(data);
       try {
         let tempForm = { ...user, ...data };
         tempForm.fullName = `${tempForm.firstName} ${tempForm.lastName}`;
@@ -200,6 +202,7 @@ const FullEntityInformationForm = forwardRef(
         displayName: "תאריך לידה",
         inputType: InputTypes.CALANDER,
         secured: () => !reqView,
+        untilNow: true
       },
       {
         fieldName: "dischargeDay",

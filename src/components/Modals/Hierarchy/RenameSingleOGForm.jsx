@@ -1,5 +1,5 @@
 import React, { useState, useImperativeHandle, forwardRef, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
 import Hierarchy from "../../Fields/Hierarchy";
@@ -141,6 +141,8 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
 
     const roles = await getRolesUnderOG({ id: org.id, direct: true });
     setRoles(roles || []);
+    setValue("roleId", '');
+    setValue("role", null);
   };
 
 

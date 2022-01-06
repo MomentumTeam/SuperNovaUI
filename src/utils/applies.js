@@ -1,5 +1,3 @@
-import * as filesaver from 'file-saver';
-import * as xlsx from 'xlsx';
 import {
   USER_TYPE,
   STATUSES,
@@ -10,8 +8,6 @@ import {
 import datesUtil from '../utils/dates';
 import { isUserHoldType } from './user';
 
-const fileType =
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 
 export const organizeRows = (rows) => {
   rows.sort((a, b) => {
@@ -229,14 +225,6 @@ export const IsRequestCompleteForApprover = (apply, approverType) => {
     default:
       break;
   }
-};
-
-export const exportToExcel = (exportedData) => {
-  const ws = xlsx.utils.json_to_sheet(exportedData);
-  const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
-  const excelBuffer = xlsx.write(wb, { bookType: 'xlsx', type: 'array' });
-  const data = new Blob([excelBuffer], { type: fileType });
-  filesaver.saveAs(data, 'data.xlsx');
 };
 
 export const processApprovalTableData = (tableData) => {

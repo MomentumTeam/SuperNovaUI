@@ -45,13 +45,11 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit, actionP
         dismissableMask={true}
         footer={
           <FullHierarchyInformationFooter
-            hierarchy={hierarchy}
             isEdit={isEdit}
             closeModal={closeModal}
             setIsEdit={setIsEdit}
             handleRequest={handleRequest}
-            resetForm={resetForm}
-            openDeleteModal={openDeleteModal}
+            hierarchy={hierarchy}
           />
         }
       >

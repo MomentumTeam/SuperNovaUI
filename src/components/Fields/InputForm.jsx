@@ -57,6 +57,7 @@ const InputForm = ({ fields, item = null, methods, isEdit, errors }) => {
             additionalClass={field?.additionalClass}
             required={field?.required}
             fromNow={field?.fromNow}
+            untilNow={field?.untilNow}
             showTime={field?.showTime}
           />
         );
