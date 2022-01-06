@@ -79,6 +79,8 @@ const FullHierarchyInformationForm = forwardRef(
           });
           groupId = requestObject.kartoffelParams.id;
         } else {
+          const hierarchyName = hierarchyConverse(requestObject);
+          requestObject.hierarchyName = hierarchyName;
           setHierarchy(requestObject);
           groupId = requestObject.id;
         }
@@ -144,8 +146,8 @@ const FullHierarchyInformationForm = forwardRef(
 
     const formFields = [
       {
-        fieldName: reqView ? 'hierarchy' : 'hierarchyName',
-        displayName: reqView ? 'היררכיה חדשה' : 'היררכיה',
+        fieldName: reqView ? "hierarchy": "hierarchyName",
+        displayName: reqView ? "היררכיה חדשה" : "היררכיה",
         inputType: InputTypes.HIERARCHY_CHANGE,
         force: true,
         canEdit: true,
