@@ -39,12 +39,22 @@ const validationSchema = Yup.object().shape({
   user: Yup.object().required('יש לבחור משתמש'),
   hierarchy: Yup.object().required('יש לבחור היררכיה'),
   isUserApprover: Yup.boolean(),
-  approvers: Yup.array().when('isUserApprover', {
-    is: false,
-    then: Yup.array()
-      .min(1, 'יש לבחור לפחות גורם מאשר אחד')
-      .required('יש לבחור לפחות גורם מאשר אחד'),
-  }),
+  isHighCommander: Yup.boolean(),
+  approvers: Yup.array()
+    .when('isUserApprover', {
+      is: false,
+      then: Yup.array()
+        .min(1, 'יש לבחור לפחות גורם מאשר אחד')
+        .required('יש לבחור לפחות גורם מאשר אחד'),
+    })
+    .when(['isUserApprover', 'isHighCommander'], {
+      is: (isUserApprover, isHighCommander) => {
+        return isUserApprover && !isHighCommander;
+      },
+      then: Yup.array()
+        .min(1, 'יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה')
+        .required('יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה'),
+    }),
   comments: Yup.string().optional(),
   userName: Yup.string()
     .required('יש לבחור שם משתמש')
@@ -76,7 +86,7 @@ const ApproverForm = forwardRef(
     const { register, handleSubmit, setValue, getValues, formState, watch } =
       useForm({
         resolver: yupResolver(validationSchema),
-        defaultValues: { isUserApprover },
+        defaultValues: { isUserApprover ,isHighCommander},
       });
     const [userSuggestions, setUserSuggestions] = useState([]);
     const { errors } = formState;
@@ -118,6 +128,8 @@ const ApproverForm = forwardRef(
       });
       setDefaultApprovers(result || []);
     }, []);
+
+
     const onSubmit = async (data) => {
       const {
         approvers,
