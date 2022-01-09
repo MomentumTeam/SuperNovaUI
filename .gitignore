@@ -114,3 +114,4 @@ build/
 .metals
 #Allow
 !/node_modules/primereact/organizationchart/organizationchart.esm.js
+env.js
