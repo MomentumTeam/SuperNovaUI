@@ -2,7 +2,8 @@ import React from 'react';
 import {
   DECISIONS,
   DECISIONS_TRANSLATE,
-} from '../../../constants/decisions.js';
+  REQ_STATUSES,
+} from '../../../constants/';
 import { ModalContent } from '../../RequestFlowChart.styles.js';
 
 class RequestFlowChart extends React.Component {
@@ -43,7 +44,7 @@ class RequestFlowChart extends React.Component {
     );
   }
 
-  tooltipContent(decisionObj = {}, sectionName = '') {
+  tooltipContent({ decisionObj = {}, sectionName = '', status = '' }) {
     let tooltip = null;
     const date = decisionObj.date
       ? new Date(parseInt(decisionObj.date))
@@ -52,11 +53,21 @@ class RequestFlowChart extends React.Component {
       ? new Date(parseInt(this.request.createdAt))
       : undefined;
 
+    const isFailed = status === REQ_STATUSES.FAILED;
+
     if (true || decisionObj.decision !== DECISIONS.DECISION_UNKNOWN) {
       tooltip = (
-        <div className="tooltip">
-          <ul className="inner-list">
-            {sectionName === '' ? (
+        <div className={isFailed ? 'tooltip-failed' : 'tooltip'}>
+          <ul className={isFailed ? 'inner-list-failed' : 'inner-list'}>
+            {isFailed ? (
+              <li className="display-flex items-wrap">
+                <div className="item-failed">
+                  <p>
+                    <strong>הבקשה נכשלה מסיבה טכנית, נא לפנות לתמיכה!</strong>
+                  </p>
+                </div>
+              </li>
+            ) : sectionName === '' ? (
               <li className="display-flex items-wrap">
                 <div className="item">
                   <p>
@@ -116,7 +127,7 @@ class RequestFlowChart extends React.Component {
               <ul className="list">
                 <li>
                   קבלת בקשה
-                  {this.tooltipContent()}
+                  {this.tooltipContent({})}
                 </li>
                 <li
                   className={`${
@@ -124,10 +135,10 @@ class RequestFlowChart extends React.Component {
                   }`}
                 >
                   גורם מאשר
-                  {this.tooltipContent(
-                    this.request?.commanderDecision,
-                    'גורם מאשר'
-                  )}
+                  {this.tooltipContent({
+                    decisionObj: this.request?.commanderDecision,
+                    sectionName: 'גורם מאשר',
+                  })}
                 </li>
                 {this.request?.needSecurityDecision ? (
                   <li
@@ -136,10 +147,10 @@ class RequestFlowChart extends React.Component {
                     }`}
                   >
                     גורם מאשר יחב"ם
-                    {this.tooltipContent(
-                      this.request?.securityDecision,
-                      'גורם מאשר יחב"ם'
-                    )}
+                    {this.tooltipContent({
+                      decisionObj: this.request?.securityDecision,
+                      sectionName: 'גורם מאשר יחב"ם',
+                    })}
                   </li>
                 ) : null}
                 {this.request?.needSuperSecurityDecision ? (
@@ -149,13 +160,21 @@ class RequestFlowChart extends React.Component {
                     }`}
                   >
                     גורם מאשר בטח"ם
-                    {this.tooltipContent(
-                      this.request?.superSecurityDecision,
-                      'גורם מאשר בטח"ם'
-                    )}
+                    {this.tooltipContent({
+                      decisionObj: this.request?.superSecurityDecision,
+                      sectionName: 'גורם מאשר בטח"ם',
+                    })}
                   </li>
                 ) : null}
-                {this.isApproved() ? <li>בוצע</li> : null}
+
+                {this.request?.status === REQ_STATUSES.FAILED ? (
+                  <li className={`${REQ_STATUSES[this.request?.status]}`}>
+                    נכשל
+                    {this.tooltipContent({ status: this.request?.status })}
+                  </li>
+                ) : this.isApproved() ? (
+                  <li>בוצע</li>
+                ) : null}
               </ul>
               <p>
                 תאריך בקשה
