@@ -20,23 +20,28 @@ import { debounce } from "lodash";
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
-  hierarchy: Yup.object().required("יש לבחור היררכיה"),
+  hierarchy: Yup.object().required('יש לבחור היררכיה'),
   isUserApprover: Yup.boolean(),
   approvers: Yup.array()
-    .when("isUserApprover", {
+    .when('isUserApprover', {
       is: false,
-      then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+      then: Yup.array()
+        .min(1, 'יש לבחור לפחות גורם מאשר אחד')
+        .required('יש לבחור לפחות גורם מאשר אחד'),
     })
     .test({
-      name: "check-if-valid",
-      message: "יש לבחור מאשרים תקינים (מהיחידה בלבד)",
+      name: 'check-if-valid',
+      message: 'יש לבחור מאשרים תקינים (מהיחידה בלבד)',
       test: async (approvers, context) => {
         let isTotalValid = true;
 
         if (context.parent?.hierarchy?.id && Array.isArray(approvers)) {
           await Promise.all(
             approvers.map(async (approver) => {
-              const { isValid } = await isApproverValid(approver.entityId, context.parent.hierarchy.id);
+              const { isValid } = await isApproverValid(
+                approver.entityId,
+                context.parent.hierarchy.id
+              );
               if (!isValid) isTotalValid = false;
             })
           );
@@ -46,15 +51,30 @@ const validationSchema = Yup.object().shape({
       },
     }),
   comments: Yup.string().optional(),
-  clearance: Yup.string().required("יש לבחור סיווג"),
+  clearance: Yup.string().required('יש לבחור סיווג'),
   roleName: Yup.string()
-    .required("יש למלא שם תפקיד")
-    .matches(ROLE_EXP, "שם לא תקין")
+    .required('יש למלא שם תפקיד')
+    .matches(ROLE_EXP, 'שם לא תקין')
     .test({
-      name: "valid-role-name",
-      message: "יש לבחור תפקיד פנוי",
+      name: 'valid-role-name',
+      message: 'יש לבחור תפקיד פנוי',
       test: (roleName, context) => {
-        return roleName && !context.parent?.isJobAlreadyTakenData?.isJobTitleAlreadyTaken;
+        return (
+          roleName &&
+          !context.parent?.isJobAlreadyTakenData?.isJobTitleAlreadyTaken
+        );
+      },
+    })
+    .test({
+      name: 'valid-role-name-not-taken',
+      message: 'יש לבחור תפקיד אחר פנוי',
+      test: async (roleName, context) => {
+        const isJobTitleAlreadyTaken = await isJobTitleAlreadyTakenRequest(
+          roleName,
+          context.parent?.hierarchy.id
+        );
+
+        return roleName && !isJobTitleAlreadyTaken?.isJobTitleAlreadyTaken;
       },
     }),
   isTafkidan: Yup.boolean().default(false),
@@ -126,8 +146,9 @@ const RenameSingleOGForm = forwardRef(
         due: Date.now(),
       };
 
-      setIsActionDone(true);
       await appliesStore.createRoleApply(req);
+      setIsActionDone(true);
+
     };
 
     useImperativeHandle(

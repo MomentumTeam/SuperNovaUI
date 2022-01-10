@@ -117,8 +117,10 @@ const FullRoleInformationForm = forwardRef(
             requestObject.kartoffelParams.roleId
           );
           setRole(role);
+          console.log(watch('role'));
         } else {
           setRole(requestObject);
+          console.log(requestObject);
         }
       }
 
@@ -163,8 +165,8 @@ const FullRoleInformationForm = forwardRef(
         due: Date.now(),
       };
 
-      setIsActionDone(true);
       await appliesStore.renameRoleApply(req);
+      setIsActionDone(true);
     };
 
     const onRoleNameChange = (e) => {

@@ -42,7 +42,7 @@ const validationSchema = Yup.object().shape({
         return true;
       },
     }),
-  currentHierarchy: Yup.object().required('יש לבחור היררכיה'),
+  currentHierarchy: Yup.object().required('יש לבחור היררכיה נוכחית'),
   isUserApprover: Yup.boolean(),
   approvers: Yup.array()
     .when('isUserApprover', {
@@ -157,8 +157,9 @@ const RenameBulkOGForm = forwardRef(
         delete req.comments;
       }
 
-      setIsActionDone(true);
       await appliesStore.changeRoleHierarchyBulk(req);
+      setIsActionDone(true);
+
     };
 
     useImperativeHandle(

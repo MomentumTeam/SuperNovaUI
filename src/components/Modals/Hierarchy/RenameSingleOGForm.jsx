@@ -1,5 +1,5 @@
 import React, { useState, useImperativeHandle, forwardRef, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
 import Hierarchy from "../../Fields/Hierarchy";
@@ -20,23 +20,39 @@ import { isApproverValid } from '../../../service/ApproverService';
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
   hierarchy: Yup.object()
-    .required('יש לבחור היררכיה')
+    .required('יש לבחור היררכיה חדשה')
     .test(
       'does-user-already-exist-in-hierarchy',
       'שם התפקיד קיים בהיררכיה שבחרת. יש לערוך את שמו דרך טבלת התפקידים',
       (hierarchy, context) => {
         if (!Array.isArray(hierarchy?.directRoles)) return false;
-        return !hierarchy.directRoles.map((role) => role.jobTitle).includes(context.parent.role.jobTitle);
+        return !hierarchy.directRoles
+          .map((role) => role.jobTitle)
+          .includes(context.parent.role.jobTitle);
       }
-    ),
-  currentHierarchy: Yup.object().required('יש לבחור היררכיה'),
+    )
+    .test({
+      name: 'check-if-hierarchies-are-different',
+      message: 'יש לבחור היררכיה שונה מההיררכיה הנוכחית!',
+      test: async (hierarchy, context) => {
+        if (hierarchy?.id === context.parent?.currentHierarchy?.id) {
+          return false;
+        }
+        return true;
+      },
+    }),
+  currentHierarchy: Yup.object().required('יש לבחור היררכיה נוכחית'),
   role: Yup.object().required(),
-  roleId: Yup.string('יש להכניס מזהה תקין').required('יש למלא ערך').matches(/.*@.*/, 'יש להכניס מזהה תקין'),
+  roleId: Yup.string('יש להכניס מזהה תקין')
+    .required('יש למלא ערך')
+    .matches(/.*@.*/, 'יש להכניס מזהה תקין'),
   isUserApprover: Yup.boolean(),
   approvers: Yup.array()
     .when('isUserApprover', {
       is: false,
-      then: Yup.array().min(1, 'יש לבחור לפחות גורם מאשר אחד').required('יש לבחור לפחות גורם מאשר אחד'),
+      then: Yup.array()
+        .min(1, 'יש לבחור לפחות גורם מאשר אחד')
+        .required('יש לבחור לפחות גורם מאשר אחד'),
     })
     .test({
       name: 'check-if-valid',
@@ -44,10 +60,17 @@ const validationSchema = Yup.object().shape({
       test: async (approvers, context) => {
         let isTotalValid = true;
 
-        if (approvers && Array.isArray(approvers) &&  context.parent?.currentHierarchy?.id) {
+        if (
+          approvers &&
+          Array.isArray(approvers) &&
+          context.parent?.currentHierarchy?.id
+        ) {
           await Promise.all(
             approvers.map(async (approver) => {
-              const { isValid } = await isApproverValid(approver.entityId, context.parent.currentHierarchy.id);
+              const { isValid } = await isApproverValid(
+                approver.entityId,
+                context.parent.currentHierarchy.id
+              );
               if (!isValid) isTotalValid = false;
             })
           );
@@ -116,8 +139,9 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
       },
     };
     
-    setIsActionDone(true);
     await appliesStore.changeRoleHierarchy(req);
+    setIsActionDone(true);
+
   };
 
   useImperativeHandle(
@@ -140,6 +164,8 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
 
     const roles = await getRolesUnderOG({ id: org.id, direct: true });
     setRoles(roles || []);
+    setValue("roleId", '');
+    setValue("role", null);
   };
 
 
@@ -167,6 +193,15 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
          if (!hierarchy) {
            hierarchy = await getOGById(role.directGroup);
          }
+
+        const result = await GetDefaultApprovers({
+          request: requestObject,
+          user: userStore.user,
+          onlyForView,
+          groupId: role.directGroup,
+        });
+        setDefaultApprovers(result || []);
+        setValue('isUserApprover', result.length > 0);
 
         setValue("currentHierarchy", hierarchy);
         setValue("role", role);

@@ -101,8 +101,9 @@ const CreateSpecialEntityForm = forwardRef(
         adParams: {},
       };
 
-      await setIsActionDone(true);
       await appliesStore.createEntityApply(req);
+      await setIsActionDone(true);
+
     };
 
     useImperativeHandle(
@@ -170,6 +171,7 @@ const CreateSpecialEntityForm = forwardRef(
         canEdit: true,
         force: true,
         required: false,
+        untilNow: true
       },
       {
         fieldName: "approvers",
