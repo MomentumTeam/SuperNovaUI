@@ -3,6 +3,11 @@ name: "supernovaui"
 #fullname:
 replicaCount: 1
 
+server:
+  shouldPreconfigure: true
+  preconfigureCommand:
+    - "/bin/bash"
+    - "/usr/share/preconfigure_server.sh"
 images:
   PullSecrets:
     name: momentumacr
