@@ -26,3 +26,8 @@ ingress:
       - path: /
         service: supernovaui
         port: 80
+
+volume:
+  - name: momentum-config
+    mountPath: /usr/share/nginx/html/config
+    type: configMap
