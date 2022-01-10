@@ -8,7 +8,7 @@ export const USER_NO_PICTURE = env.UI_USER_NO_PICTURE_STRING || "pictureUrl";
 export const highCommanderRanks = env.UI_HIGH_COMMANDER_RANKS? env.UI_HIGH_COMMANDER_RANKS.split(","): ["rookie", "champion"];
 export const USER_DI_TYPE = env.UI_DI_TYPE || "domainUser";
 export const USER_ROLE_ENTITY_TYPE = env.UI_ROLE_ENTITY_TYPE || "goalUser";
-console.log("check-env-user")
+
 // CONST
 export const USER_TYPE_TAG = {
   APPROVER: "גורם מאשר",
