@@ -19,6 +19,7 @@ import { ROLE_EXP, USER_TYPE } from '../../../constants';
 import {
   getEntityByRoleId,
   getRoleByRoleId,
+  getDIByUniqueId,
   isJobTitleAlreadyTakenRequest,
 } from '../../../service/KartoffelService';
 import Approver from '../../Fields/Approver';
@@ -34,6 +35,7 @@ const FullRoleInformationForm = forwardRef(
     const [jobTitleSuggestions, setJobTitleSuggestions] = useState([]);
     const [entity, setEntity] = useState({});
     const [role, setRole] = useState();
+    const [digitalIdentity, setDigitalIdentity] = useState();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
     const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
@@ -132,6 +134,10 @@ const FullRoleInformationForm = forwardRef(
       });
       setDefaultApprovers(result || []);
       setValue('isUserApprover', result.length > 0);
+      console.log(role, role?.digitalIdentityUniqueId);
+      const di = await getDIByUniqueId(role?.digitalIdentityUniqueId);
+      setDigitalIdentity(di);
+      console.log(watch('digitalIdentity'));
     }, [requestObject]);
 
     useEffect(async () => {
@@ -332,7 +338,10 @@ const FullRoleInformationForm = forwardRef(
           <div className='p-fluid-item p-fluid-item'>
             <div className='p-field'>
               <label> מזהה כרטיס </label>
-              <InputText value={'---'} disabled={true} />
+              <InputText
+                value={digitalIdentity?.upn ? digitalIdentity.upn : '---'}
+                disabled={true}
+              />
             </div>
           </div>
         )}
