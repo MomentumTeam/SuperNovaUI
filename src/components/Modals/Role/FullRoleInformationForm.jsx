@@ -277,7 +277,7 @@ const FullRoleInformationForm = forwardRef(({ setIsActionDone, onlyForView, requ
               {...register("comments")}
               id="2028"
               type="text"
-              placeholder="הכנס הערות לבקשה..."
+              placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
               disabled={onlyForView}
             />
           </div>
