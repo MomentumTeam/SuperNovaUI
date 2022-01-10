@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 cat .env | while read line; do
     IFS='=' read key value <<< $line
