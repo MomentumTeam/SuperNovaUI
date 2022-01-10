@@ -9,8 +9,8 @@ images:
   repository: momentumacr.azurecr.io/supernovaui
   tag: "latest"
 
+containerCommand: ["/bin/sh /usr/share/preconfigure_server.sh"]
 service:
-  command: ["/bin/sh /usr/share/preconfigure_server.sh"]
   ports:
   - name: http
     port: "80"
