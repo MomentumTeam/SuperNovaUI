@@ -3,7 +3,6 @@ name: "supernovaui"
 #fullname:
 replicaCount: 1
 
-command: ["/bin/sh /usr/share/preconfigure_server.sh"]
 images:
   PullSecrets:
     name: momentumacr
@@ -11,6 +10,7 @@ images:
   tag: "latest"
 
 service:
+  command: ["/bin/sh /usr/share/preconfigure_server.sh"]
   ports:
   - name: http
     port: "80"

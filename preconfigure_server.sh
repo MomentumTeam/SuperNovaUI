@@ -1,9 +1,9 @@
 #!/bin/sh
 
 cat .env | while read line; do
-    IFS='=' read key value <<< $line
-    stringField='"'$key'": ""'
-    fieldValue=printenv $key
-    stringFieldNew='"'$key'": "'$fieldValue'"'
+    IFS='=' set -- $line
+    stringField='"'$1'": ""'
+    fieldValue=printenv $1
+    stringFieldNew='"'$1'": "'$fieldValue'"'
     sed -i "s/${stringField}/${stringFieldNew}g" /usr/share/nginx/html/env.js
 done
