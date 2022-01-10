@@ -198,7 +198,7 @@ const RenameBulkOGForm = forwardRef(
               type="text"
               autoResize="false"
               disabled={onlyForView}
-              placeholder="הכנס הערות לבקשה..."
+              placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
             />
           </div>
         </div>

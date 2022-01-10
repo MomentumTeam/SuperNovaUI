@@ -340,7 +340,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             type="text"
             autoResize="false"
             disabled={onlyForView}
-            placeholder="הכנס הערות לבקשה..."
+            placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
           />
         </div>
       </div>

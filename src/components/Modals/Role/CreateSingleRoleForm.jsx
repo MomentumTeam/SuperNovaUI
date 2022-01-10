@@ -300,7 +300,7 @@ const RenameSingleOGForm = forwardRef(
               type="text"
               autoResize="false"
               disabled={onlyForView}
-              placeholder="הכנס הערות לבקשה..."
+              placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
             />
             <label>{errors.comments && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
           </div>
