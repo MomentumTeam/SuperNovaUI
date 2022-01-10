@@ -12,6 +12,6 @@ FROM nginx:alpine
 ENV NODE_ENV=production
 COPY --from=node /usr/src/app/build /usr/share/nginx/html
 COPY ./preconfigure_server.sh /usr/share/preconfigure_server.sh
-COPY ./.env /usr/share/.env
+COPY ./.env .env
 COPY ./outdated-browser.html /usr/share/nginx/html
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
