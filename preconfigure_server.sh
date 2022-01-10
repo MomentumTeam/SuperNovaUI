@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cat .env | while read line; do
+cat /usr/share/.env | while read line; do
     IFS='=' set -- $line
     stringField='"'$1'": ""'
     fieldValue=printenv $1
