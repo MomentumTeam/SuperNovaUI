@@ -20,11 +20,12 @@ import {
 } from '../../service/KartoffelService';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { USER_TYPE, highCommanderRanks } from '../../constants';
+import { USER_TYPE } from '../../constants';
 import { isUserHoldType, userConverse, userTemplate } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
 import '../../assets/css/local/components/approverForm.css';
 import { Tooltip } from 'primereact/tooltip';
+import configStore from '../../store/Config';
 
 const approverTypes = [
   { label: 'גורם מאשר ראשוני', value: USER_TYPE.COMMANDER },
@@ -80,7 +81,7 @@ const ApproverForm = forwardRef(
     const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
     const isHighCommander =
       isUserApprover && userStore.user?.rank
-        ? highCommanderRanks.includes(userStore.user.rank)
+        ? configStore.USER_HIGH_COMMANDER_RANKS.includes(userStore.user.rank)
         : false;
 
     const { register, handleSubmit, setValue, getValues, formState, watch } =

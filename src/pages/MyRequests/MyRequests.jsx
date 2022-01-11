@@ -4,11 +4,11 @@ import { observer } from "mobx-react";
 import Table from "../../components/Table";
 import SearchMyRequests from "./SearchMyRequests";
 import Header from "./Header";
-import { itemsInPage, pageSize } from "../../constants/api";
 import { useStores } from "../../context/use-stores";
 import { TableNames, TableTypes } from "../../constants/myRequestsTable";
 
 import "../../assets/css/local/pages/listUsersPage.min.css";
+import configStore from '../../store/Config';
 
 let defaultSearchFuncName = "loadMyRequests";
 let defaultSearchValue = "";
@@ -33,8 +33,8 @@ const Requests = observer(() => {
       setPage(0);
     }
 
-    const from = reset ? 1 : (page + 1) * pageSize + 1;
-    const to = reset ? pageSize : (page + 2) * pageSize;
+    const from = reset ? 1 : (page + 1) * configStore.PAGE_SIZE + 1;
+    const to = reset ? configStore.PAGE_SIZE : (page + 2) * configStore.PAGE_SIZE;
     const funcName =
       searchQuery?.searchFunc && searchQuery?.searchValue ? searchQuery.searchFunc : defaultSearchFuncName;
     const searchValue = searchQuery?.searchValue ? searchQuery.searchValue : defaultSearchValue;
@@ -57,7 +57,7 @@ const Requests = observer(() => {
       if (
         tableData.length >= myRequestsStore.totalCount ||
         first >= event.first ||
-        tableData.length / (event.page + 1) > itemsInPage
+        tableData.length / (event.page + 1) > configStore.ITEMS_IN_PAGE
       )
       getNextPage = false;
       setFirst(event.first);

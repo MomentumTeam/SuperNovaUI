@@ -7,11 +7,11 @@ import SearchEntity from "./SearchEntity";
 import AddEntity from "./AddEntity";
 import { useToast } from '../../context/use-toast';
 import { useStores } from "../../context/use-stores";
-import { itemsInPage, pageSize } from "../../constants/api";
 import { TableNames, TableTypes } from "../../constants/usersTable";
 
 import "../../assets/css/local/pages/listUsersPage.min.css";
 import { USER_TYPE } from '../../constants';
+import configStore from '../../store/Config';
 
 const Entities = observer(() => {
   const { actionPopup } = useToast();
@@ -44,15 +44,15 @@ const Entities = observer(() => {
     if (userStore.user.directGroup) {
       switch (tabId) {
         case TableNames.entities.tab:
-          await entitiesStore.loadEntitiesUnderOG(userStore.user.directGroup, reset? 1: page+1, pageSize, append);
+          await entitiesStore.loadEntitiesUnderOG(userStore.user.directGroup, reset? 1: page+1, configStore.PAGE_SIZE, append);
           data = entitiesStore.entities;
           break;
         case TableNames.roles.tab:
-          await rolesStore.loadRolesUnderOG(userStore.user.directGroup, reset ? 1 : page + 1, pageSize, append);
+          await rolesStore.loadRolesUnderOG(userStore.user.directGroup, reset ? 1 : page + 1, configStore.PAGE_SIZE, append);
           data = rolesStore.roles;
           break;
         case TableNames.hierarchy.tab:
-          await groupsStore.loadOGChildren(userStore.user.directGroup, reset ? 1 : page + 1, pageSize, append);
+          await groupsStore.loadOGChildren(userStore.user.directGroup, reset ? 1 : page + 1, configStore.PAGE_SIZE, append);
           data =  groupsStore.groups;
           break;
         default:
@@ -73,7 +73,7 @@ const Entities = observer(() => {
         setFirst(event.first);
         if (
           first >= event.first ||
-          tableData.length / (event.page + 1) > itemsInPage
+          tableData.length / (event.page + 1) > configStore.ITEMS_IN_PAGE
         )
           getNextPage = false;
       }

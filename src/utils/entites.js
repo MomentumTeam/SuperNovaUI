@@ -1,4 +1,5 @@
-import { USER_CITIZEN_ENTITY_TYPE, USER_TYPE } from "../constants";
+import configStore from '../store/Config';
+import { USER_TYPE } from "../constants";
 import { toJS } from "mobx";
 import { TableTypes } from "../constants/usersTable";
 import { useStores } from "../context/use-stores";
@@ -7,7 +8,7 @@ import { isUserHoldType } from "./user";
 export const canEditEntity = (selectedEntity, user) => {
   return (
     selectedEntity &&
-    selectedEntity.entityType === USER_CITIZEN_ENTITY_TYPE &&
+    selectedEntity.entityType === configStore.USER_CITIZEN_ENTITY_TYPE &&
     (isUserHoldType(user, USER_TYPE.SUPER_SECURITY) ||
       isUserHoldType(user, USER_TYPE.SECURITY) ||
       selectedEntity.id === user.id)

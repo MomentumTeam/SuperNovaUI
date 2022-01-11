@@ -1,5 +1,6 @@
-import { highCommanderRanks, USER_TYPE } from '../constants';
+import { USER_TYPE } from '../constants';
 import { isApproverValid } from '../service/ApproverService';
+import configStore from '../store/Config';
 import { isUserHoldType } from './user';
 
 export const GetDefaultApprovers = async ({request, onlyForView, user, showJob = false, groupId = null, highCommander = false}) => {
@@ -9,7 +10,7 @@ export const GetDefaultApprovers = async ({request, onlyForView, user, showJob =
   if (isUserHoldType(user, USER_TYPE.COMMANDER)) {
     if (showJob) return [];
     if (highCommander) {
-     if (!user?.rank || !highCommanderRanks.includes(user.rank)) return [];
+     if (!user?.rank || !configStore.USER_HIGH_COMMANDER_RANKS.includes(user.rank)) return [];
     }
 
     if (groupId) {

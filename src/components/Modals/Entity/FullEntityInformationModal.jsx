@@ -5,12 +5,12 @@ import { classNames } from 'primereact/utils';
 import blankProfilePic from '../../../assets/images/blankProfile.png';
 import { getPictureByEntityIdentifier } from '../../../service/UserService';
 import { FullEntityInformationFooter } from './FullEntityInformationFooter';
-import { USER_NO_PICTURE } from '../../../constants';
 
 import '../../../assets/css/local/general/buttons.css';
 import '../../../assets/css/local/components/modal-item.css';
 import { FullEntityInformationForm } from './FullEntityInformationForm';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import configStore from '../../../store/Config';
 
 export const FullEntityInformationModalContext = createContext(null);
 
@@ -49,7 +49,7 @@ const FullEntityInformationModal = ({
         if (
           user &&
           (user.picture === '' ||
-            user.picture === USER_NO_PICTURE ||
+            user.picture === configStore.USER_NO_PICTURE ||
             !user.picture)
         ) {
           if (user?.personalNumber || user?.identityCard) {
@@ -97,7 +97,7 @@ const FullEntityInformationModal = ({
             <img
               style={{ borderRadius: '50%', width: '142px' }}
               src={
-                user && userPic && userPic !== USER_NO_PICTURE
+                user && userPic && userPic !== configStore.USER_NO_PICTURE
                   ? `data:image/jpeg;base64,${userPic}`
                   : blankProfilePic
               }

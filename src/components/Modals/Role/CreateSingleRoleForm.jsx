@@ -12,11 +12,12 @@ import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isJobTitleAlreadyTakenRequest } from '../../../service/KartoffelService';
 import { isUserHoldType } from '../../../utils/user';
-import { USER_SOURCE_DI, USER_TYPE, ROLE_CLEARANCE, USER_DI_TYPE, USER_ROLE_ENTITY_TYPE, ROLE_EXP } from "../../../constants";
+import { USER_TYPE, ROLE_CLEARANCE, ROLE_EXP } from "../../../constants";
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
 import { debounce } from "lodash";
+import configStore from '../../../store/Config';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
@@ -132,10 +133,10 @@ const RenameSingleOGForm = forwardRef(
           jobTitle: roleName,
           directGroup: hierarchy.id,
           isRoleAttachable: true,
-          source: USER_SOURCE_DI,
-          type: USER_DI_TYPE,
+          source: configStore.USER_SOURCE_DI,
+          type: configStore.USER_DI_TYPE,
           clearance,
-          roleEntityType: isTafkidan ? USER_ROLE_ENTITY_TYPE : undefined,
+          roleEntityType: isTafkidan ? configStore.USER_ROLE_ENTITY_TYPE : undefined,
           hierarchy: hierarchyConverse(hierarchy),
         },
         adParams: {

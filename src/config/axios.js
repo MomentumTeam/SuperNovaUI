@@ -1,6 +1,7 @@
 import axios from 'axios';
 import cookies from 'js-cookie';
-import { apiBaseUrl, tokenName } from '../constants/api';
+import { apiBaseUrl } from '../constants/api';
+import configStore from '../store/Config';
 
 console.log('apiBaseUrl', apiBaseUrl);
 
@@ -13,7 +14,7 @@ axiosApiInstance.interceptors.request.use(
     return {
       ...config,
       headers: {
-        Authorization: `Bearer ${cookies.get(tokenName)}`,
+        Authorization: `Bearer ${cookies.get(configStore.TOKEN_NAME)}`,
       },
     };
   },
