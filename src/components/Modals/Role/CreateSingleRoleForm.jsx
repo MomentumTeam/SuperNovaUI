@@ -69,12 +69,14 @@ const validationSchema = Yup.object().shape({
       name: 'valid-role-name-not-taken',
       message: 'יש לבחור תפקיד אחר פנוי',
       test: async (roleName, context) => {
-        const isJobTitleAlreadyTaken = await isJobTitleAlreadyTakenRequest(
-          roleName,
-          context.parent?.hierarchy.id
-        );
+        if (context.parent?.hierarchy?.id) {
+          const isJobTitleAlreadyTaken = await isJobTitleAlreadyTakenRequest(
+            roleName,
+            context.parent?.hierarchy.id
+          );
 
-        return roleName && !isJobTitleAlreadyTaken?.isJobTitleAlreadyTaken;
+          return roleName && !isJobTitleAlreadyTaken?.isJobTitleAlreadyTaken;
+        }
       },
     }),
   isTafkidan: Yup.boolean().default(false),
@@ -298,7 +300,7 @@ const RenameSingleOGForm = forwardRef(
               type="text"
               autoResize="false"
               disabled={onlyForView}
-              placeholder="הכנס הערות לבקשה..."
+              placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
             />
             <label>{errors.comments && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
           </div>

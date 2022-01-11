@@ -271,7 +271,7 @@ const CreateOGForm = forwardRef(
               {...register('comments')}
               id="2023"
               type="text"
-              placeholder="הכנס הערות לבקשה..."
+              placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
               disabled={onlyForView}
             />
           </div>

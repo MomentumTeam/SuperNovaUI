@@ -61,15 +61,18 @@ const ApproverSection = ({ request, setDialogVisiblity }) => {
       changeDecisionRequest(DECISIONS.DENIED);
     } else if (approverMode.commentMode) {
       for (let comment of approverComments) {
-        let newCommentObject = {
-          requestId,
-          approversType: comment.userType,
-          comment: comment.comment,
-        };
+        if (comment.comment !== '') {
+          let newCommentObject = {
+            requestId,
+            approversType: comment.userType,
+            comment: comment.comment,
+          };
 
-        await appliesStore.updateApproversComments(newCommentObject);
-        setApproveMode({...approverMode, commentMode: false});
+          await appliesStore.updateApproversComments(newCommentObject);
+          // setApproveMode({ ...approverMode, commentMode: false });
+        }
       }
+      setApproveMode({ ...approverMode, commentMode: false });
     }
   };
 
