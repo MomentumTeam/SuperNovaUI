@@ -5,6 +5,7 @@ import img3 from '../assets/images/icon-arrow-left.svg';
 import img4 from '../assets/images/buttons/icon-check.svg';
 import img5 from '../assets/images/icon-time.svg';
 import img6 from '../assets/images/buttons/close.svg';
+import img7 from '../assets/images/warning-icon.svg';
 
 export const OverlayWrapper = styled.div`
   position: fixed;
@@ -328,6 +329,11 @@ export const ModalContent = styled.div`
                       }
                     }
 
+                    &.FAILED::before {
+                        background-image: url(${img7}) !important;
+                        background-color: white;
+                        top: -5px !important;
+                    }
                     
                     &.DENIED::before {
                         background-image: url(${img6}) !important;
@@ -433,9 +439,69 @@ export const ModalContent = styled.div`
                         }
                     }
 
+                    .tooltip-failed {
+                        @media (max-width: 700px) {                   
+                            min-width: 180px;
+                        }
+                        display: none;
+                        position: absolute;
+                        top: 27px;
+                        left: -5px;
+                        // right: 5px;
+                        z-index: 4;
+                        border-radius: 20px;
+                        padding: 14px 13px 24px 13px;
+                        background-color: #ffffff;
+                        box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.3);
+                        border-right: 1px solid rgba(0, 0, 0, 0.2);
+                        border-top: 1px solid rgba(0, 0, 0, 0.2);
+                        min-width: 200px;
+
+                        .inner-list-failed {
+                            display: block;
+                            margin: 0;
+                            background-color: #ffffff;
+                            padding: 0px;
+                            .items-wrap {
+                                position: relative;
+                                padding-left: 0px;
+                                padding-right: 0px;
+                                padding-bottom: 8px;
+                                align-items: flex-start;
+                                justify-content: flex-start;
+                                &::before,
+                                &::after {
+                                    display: none;
+                                }
+
+                                .item-failed {
+                                    // &:first-child {
+                                    //     margin-left: 15px;
+                                    //     width: 40%;
+                                    // }
+
+                                    p {
+                                        font-size: 12px;
+                                        line-height: 16px;
+
+                                        span {
+                                            display: inline-block;
+                                            padding-left: 6px;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    
                     &:hover,
                     &:focus {
                         .tooltip {
+                            display: block;
+                        }
+                        .tooltip-failed {
                             display: block;
                         }
                     }
@@ -572,9 +638,7 @@ export const ModalContent = styled.div`
                                     }
                                 }
 
-                                &.green {
-                                    background-color: #73ca71;
-                                }
+                              
 
                                 .p-autocomplete-token-label {
                                     overflow: hidden;
