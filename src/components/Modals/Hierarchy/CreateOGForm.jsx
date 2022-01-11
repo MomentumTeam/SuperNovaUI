@@ -19,13 +19,12 @@ import { useStores } from '../../../context/use-stores';
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { isUserHoldType } from '../../../utils/user';
 import {
-  USER_SOURCE_DI,
   USER_TYPE,
   NAME_OG_EXP,
-  highCommanderRanks,
 } from '../../../constants';
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
+import configStore from '../../../store/Config';
 
 const validationSchema = Yup.object().shape({
   newHierarchy: Yup.string()
@@ -91,7 +90,7 @@ const CreateOGForm = forwardRef(
     const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
     const isHighCommander =
       isUserApprover && userStore.user?.rank
-        ? highCommanderRanks.includes(userStore.user.rank)
+        ? configStore.USER_HIGH_COMMANDER_RANKS.includes(userStore.user.rank)
         : false;
 
     const { register, handleSubmit, setValue, formState, watch, getValues } =
@@ -133,7 +132,7 @@ const CreateOGForm = forwardRef(
         kartoffelParams: {
           name: newHierarchy,
           parent: parentHierarchy.id,
-          source: USER_SOURCE_DI,
+          source: configStore.USER_SOURCE_DI,
           hierarchy: hierarchyConverse(parentHierarchy),
         },
         adParams: {

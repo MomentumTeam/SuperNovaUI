@@ -31,12 +31,13 @@ import {
   searchRolesByRoleId,
 } from '../../service/KartoffelService';
 import { getUserTypeReq, isApproverValid } from '../../service/ApproverService';
-import { USER_SOURCE_DI, USER_TYPE } from '../../constants';
+import { USER_TYPE } from '../../constants';
 import { isUserHoldType } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
 import { getSamAccountNameFromUniqueId } from '../../utils/fields';
 import { InputCalanderField } from '../Fields/InputCalander';
 import { hierarchyConverse } from '../../utils/hierarchy';
+import configStore from '../../store/Config';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
@@ -261,7 +262,7 @@ const AssignRoleToEntityForm = forwardRef(
         Array.isArray(user?.digitalIdentities)
       ) {
         const relevantIdentity = user.digitalIdentities.find(
-          (identity) => identity.source === USER_SOURCE_DI
+          (identity) => identity.source === configStore.USER_SOURCE_DI
         );
         if (relevantIdentity && relevantIdentity.role)
           return relevantIdentity.role;

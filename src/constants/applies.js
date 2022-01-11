@@ -3,12 +3,8 @@ import { RequestorFieldTemplate } from "../components/AppliesTable/RequestorFiel
 import { StatusFieldTemplate } from "../components/Fields/StatusFieldTemplate";
 import { TextFieldTemplate } from "../components/Fields/TextFieldTemplate";
 import { getFormattedDate } from "../utils/applies";
-import { STATUSES, getStatus } from '.';
+import { getStatus } from '.';
 import { ResponsibleFactorWithWaitingFieldTemplate } from '../components/AppliesTable/ResponsibleFactorWithWaitingFieldTemplate';
-import {
-  isUserHoldType,
-  isUserCanSeeAllApproveApplies,
-} from '../utils/user';
 
 
 export const TYPES = {

@@ -1,0 +1,17 @@
+environments:
+  dev:
+
+repositories:
+- name: yesodot
+  url: https://harborreg-2.northeurope.cloudapp.azure.com/chartrepo/library
+  username: {{ requiredEnv "HARBOR_USER" }}
+  password: {{ requiredEnv "HARBOR_PASSWORD" }}
+  
+releases:
+- name: supernovaui
+  namespace: momentum
+  chart: yesodot/common
+  version: {{ env "COMMON_VERSION" | default "0.5.1" }}
+  values:
+#    - ./environments/{{ .Environment.Name}}/values.yaml
+    - ./values.yaml

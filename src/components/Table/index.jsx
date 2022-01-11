@@ -5,7 +5,6 @@ import { Button } from "primereact/button";
 
 import TableFieldTemplate from "./TableFieldTemplate";
 import PaginatorTemplate from "./TablePaginatorTemplate";
-import { itemsInPage } from "../../constants/api";
 import { TableActionsMenu } from "./TableActionsMenu";
 import { TableFooter } from "./TableFooter";
 import { toJS } from "mobx";
@@ -13,6 +12,7 @@ import { useStores } from "../../context/use-stores";
 
 import "../../assets/css/local/general/table.min.css";
 import { isUserHoldType } from "../../utils/user";
+import configStore from '../../store/Config';
 
 export const TableContext = createContext(null);
 
@@ -32,7 +32,7 @@ const Table = ({
   isVirtualScrollable = false,
   onVirtualScroll = null,
   totalRecordsScroll = null,
-  rows = itemsInPage,
+  rows = configStore.ITEMS_IN_PAGE,
   onSort = null,
   sortField = null,
   sortOrder = null,

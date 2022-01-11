@@ -1,4 +1,5 @@
 import { createContext } from "react";
+import configStore from './Config';
 import ToastStore from "./Toast";
 import RolesStore from "./Roles";
 import EntitiesStore from "./Entities";
@@ -9,6 +10,7 @@ import UserStore from "./User";
 import MyRequestsStore from "./MyRequests";
 
 const stores = {
+  configStore,
   rolesStore: new RolesStore(),
   entitiesStore: new EntitiesStore(),
   groupsStore: new GroupsStore(),

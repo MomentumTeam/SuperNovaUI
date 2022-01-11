@@ -1,7 +1,7 @@
 import blankProfilePic from '../../assets/images/blankProfile.png';
 import '../../assets/css/local/pages/dashboard.css';
 import { Tooltip } from 'primereact/tooltip';
-import { USER_NO_PICTURE } from '../../constants';
+import configStore from '../../store/Config';
 
 const UserProfileCard = ({ user, userType, openFullDetailsModal }) => {
    return (
@@ -17,7 +17,7 @@ const UserProfileCard = ({ user, userType, openFullDetailsModal }) => {
              <img
                style={{ borderRadius: "50%" }}
                src={
-                 (user && user.picture) || user.picture !== USER_NO_PICTURE
+                 (user && user.picture) || user.picture !== configStore.USER_NO_PICTURE
                    ? `data:image/jpeg;base64,${user.picture}`
                    : blankProfilePic
                }
