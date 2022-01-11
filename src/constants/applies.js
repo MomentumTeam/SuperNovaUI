@@ -5,6 +5,7 @@ import { TextFieldTemplate } from "../components/Fields/TextFieldTemplate";
 import { getFormattedDate } from "../utils/applies";
 import { getStatus } from '.';
 import { ResponsibleFactorWithWaitingFieldTemplate } from '../components/AppliesTable/ResponsibleFactorWithWaitingFieldTemplate';
+import { StatusApproverFieldTemplate } from '../components/AppliesTable/StatusApproverFieldTemplate';
 
 
 export const TYPES = {
@@ -79,12 +80,12 @@ export const TableTypes = (selectedTab, user, approverTableType) => {
     },
     { field: 'comments', displayName: 'סיבה', template: TextFieldTemplate },
     {
-      field: 'status',
+      field: null,
       displayName: 'סטטוס',
-      enum: getStatus(approverTableType),
+      templateParam: user,
       sortable: true,
       sortFields: sortFields.STATUS,
-      template: StatusFieldTemplate,
+      template: StatusApproverFieldTemplate,
     },
   ];
 };

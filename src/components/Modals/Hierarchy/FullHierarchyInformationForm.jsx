@@ -198,7 +198,7 @@ const FullHierarchyInformationForm = forwardRef(
     ];
 
     return (
-      <div className="p-fluid">
+      <div className="p-fluid" id="fullHierarchyInfoForm">
         <InputForm
           fields={formFields}
           item={hierarchy}

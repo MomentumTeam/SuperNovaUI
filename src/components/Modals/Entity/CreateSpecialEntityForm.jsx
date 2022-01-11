@@ -190,7 +190,7 @@ const CreateSpecialEntityForm = forwardRef(
       },
     ];
     return (
-      <div className="p-fluid">
+      <div className="p-fluid" id="createSpecialEntityForm">
         <InputForm fields={formFields} errors={errors} item={requestObject} isEdit={!onlyForView} methods={methods}/>
       </div>
     );

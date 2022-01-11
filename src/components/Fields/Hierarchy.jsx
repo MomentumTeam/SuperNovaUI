@@ -25,7 +25,7 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
 
   return (
     <>
-      <div className="p-field">
+      <div className="p-field" id="form-hierarchy">
         {disabled && <Tooltip target={`.hierarchyText`} content={hierarchyConverse(selectedOg)} />}
         <label htmlFor="2020">
           <span className="required-field">*</span>
@@ -36,7 +36,7 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
           value={selectedOg}
           suggestions={ogSuggestions}
           completeMethod={searchOg}
-          id="2020"
+          id={`form-hierarchy=input-${name}`}
           type="text"
           className="hierarchyText"
           field={hierarchyConverse}

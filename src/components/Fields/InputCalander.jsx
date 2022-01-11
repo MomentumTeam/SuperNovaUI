@@ -34,6 +34,7 @@ const InputCalanderField = ({
       <div className="p-field">
         {getLabel({ canEdit: required && canEdit, isEdit, labelName: displayName })}
         <Calendar
+          id={`field-${fieldName}`}
           {...register(fieldName)}
           inputStyle={{ direction: "ltr" }}
           onChange={(e) => {

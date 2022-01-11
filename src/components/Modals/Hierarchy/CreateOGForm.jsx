@@ -201,7 +201,7 @@ const CreateOGForm = forwardRef(
     };
 
     return (
-      <div className="p-fluid">
+      <div className="p-fluid" id="createOGForm">
         <div className="p-fluid-item p-fluid-item-flex1">
           <Hierarchy
             setValue={setValue}
@@ -233,7 +233,7 @@ const CreateOGForm = forwardRef(
               )}
               <InputText
                 {...register('newHierarchy')}
-                id="2021"
+                id="createOGForm-newHierarchy"
                 type="text"
                 required
                 disabled={onlyForView}
@@ -268,7 +268,7 @@ const CreateOGForm = forwardRef(
             <label htmlFor="2023">הערות</label>
             <InputTextarea
               {...register('comments')}
-              id="2023"
+              id="createOGForm-comments"
               type="text"
               placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
               disabled={onlyForView}

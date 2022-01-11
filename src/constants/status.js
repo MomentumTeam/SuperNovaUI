@@ -8,36 +8,6 @@ export const STATUSES = {
   FAILED: 'נכשל',
 };
 
-export const COMMANDER_APPROVE_TABLE_STATUSES = {
-  SUBMITTED: 'ממתין לאישור',
-  APPROVED_BY_COMMANDER: 'אושר',
-  APPROVED_BY_SECURITY: 'אושר',
-  IN_PROGRESS: 'אושר',
-  DECLINED: 'סורב',
-  DONE: 'בוצע',
-  FAILED: 'נכשל',
-};
-
-export const SECURITY_APPROVE_TABLE_STATUSES = {
-  SUBMITTED: 'ממתין לאישור',
-  APPROVED_BY_COMMANDER: 'ממתין לאישור',
-  APPROVED_BY_SECURITY: 'אושר',
-  IN_PROGRESS: 'אושר',
-  DECLINED: 'סורב',
-  DONE: 'בוצע',
-  FAILED: 'נכשל',
-};
-
-export const SUPER_SECURITY_APPROVE_TABLE_STATUSES = {
-  SUBMITTED: 'ממתין לאישור',
-  APPROVED_BY_COMMANDER: 'ממתין לאישור',
-  APPROVED_BY_SECURITY: 'ממתין לאישור',
-  IN_PROGRESS: 'אושר',
-  DECLINED: 'סורב',
-  DONE: 'בוצע',
-  FAILED: 'נכשל',
-};
-
 export const STATUSES_CLASS = {
   [STATUSES.SUBMITTED]: 'start',
   [STATUSES.APPROVED_BY_COMMANDER]: 'neutral',

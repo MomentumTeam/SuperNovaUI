@@ -62,7 +62,7 @@ const PassRequestForm = forwardRef(({ request, setActionIsDone }, ref) => {
   );
 
   return (
-    <div className="p-fluid">
+    <div className="p-fluid" id="passRequestForm">
       <div className="p-fluid-item" style={{ width: "100%" }}>
         <label htmlFor="12023">
           העברה לטיפול (בקשה {request?.serialNumber})
@@ -71,6 +71,7 @@ const PassRequestForm = forwardRef(({ request, setActionIsDone }, ref) => {
           <div className="p-field">
             {passOptions.length > 1 && (
               <Dropdown
+                id="passRequestForm-approverType"
                 {...register('approverType')}
                 className="dropdown-autocomplete"
                 value={watch('approverType')}
@@ -112,7 +113,7 @@ const PassRequestForm = forwardRef(({ request, setActionIsDone }, ref) => {
           <label htmlFor="12024">הערות</label>
           <InputTextarea
             {...register('comment')}
-            id="2028"
+            id="passRequestForm-comment"
             type="text"
             placeholder="הכנס הערות לבקשה..."
           />

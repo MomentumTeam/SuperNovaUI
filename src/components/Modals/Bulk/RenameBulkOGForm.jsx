@@ -182,7 +182,7 @@ const RenameBulkOGForm = forwardRef(
     };
 
     return (
-      <div className="p-fluid">
+      <div className="p-fluid" id="renameBulkOGForm">
         <div className="p-fluid-item-flex p-fluid-item">
           <div className="p-field">
             <Hierarchy
@@ -251,7 +251,7 @@ const RenameBulkOGForm = forwardRef(
             </label>
             <InputTextarea
               {...register('comments')}
-              id="2028"
+              id="renameBulkOGForm-comments"
               type="text"
               placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
               disabled={onlyForView}

@@ -412,7 +412,7 @@ const AssignRoleToEntityForm = forwardRef(
     const userRoleDisplay = userRole ? userRole.jobTitle : ' - ';
 
     return (
-      <div className="p-fluid" style={{ flexDirection: 'column' }}>
+      <div className="p-fluid" style={{ flexDirection: 'column' }} id="assignRoleToEntityForm">
         <div style={{ display: 'flex' }}>
           <div className="p-fluid-item-flex p-fluid-item">
             <div className="p-field">
@@ -426,6 +426,7 @@ const AssignRoleToEntityForm = forwardRef(
                   onClick={setCurrentUser}
                   type="button"
                   title="עבורי"
+                  id="assignRoleToEntityForm-id"
                   style={onlyForView && { display: 'none' }}
                 >
                   עבורי
@@ -435,7 +436,7 @@ const AssignRoleToEntityForm = forwardRef(
                 value={watch('userName')}
                 suggestions={userSuggestions}
                 completeMethod={onSearchUser}
-                id="2020"
+                id="assignRoleToEntityForm-userName"
                 type="text"
                 itemTemplate={itemTemplate}
                 field="fullName"
@@ -482,7 +483,7 @@ const AssignRoleToEntityForm = forwardRef(
               </label>
               <InputText
                 {...register('personalNumber', { required: true })}
-                id="2021"
+                id="assignRoleToEntityForm-personalNumber"
                 type="text"
                 keyfilter="pnum"
                 required
@@ -517,7 +518,7 @@ const AssignRoleToEntityForm = forwardRef(
               <div className="p-field p-field-blue">
                 <label htmlFor="2022">תפקיד</label>
                 <InputText
-                  id="2022"
+                  id="assignRoleToEntityForm-role"
                   disabled
                   type="text"
                   placeholder="תפקיד"
@@ -571,7 +572,7 @@ const AssignRoleToEntityForm = forwardRef(
               <label htmlFor="2025">בחירת תפקיד מתוך רשימה</label>
               <Dropdown
                 {...register('role')}
-                inputId="2025"
+                id="assignRoleToEntityForm-role-dropdown"
                 options={roles}
                 optionLabel="jobTitle"
                 value={watch('role')}
@@ -604,7 +605,7 @@ const AssignRoleToEntityForm = forwardRef(
                 value={watch('roleId')}
                 suggestions={roleSuggestions}
                 completeMethod={onSearchRoleId}
-                id="2020"
+                id="assignRoleToEntityForm-roleId"
                 type="text"
                 field="roleId"
                 tooltip={'לדוגמה: "T12345678"'}
@@ -648,7 +649,7 @@ const AssignRoleToEntityForm = forwardRef(
                   <label htmlFor="2024">סטטוס תפקיד</label>
                   <InputText
                     {...register('roleStatus')}
-                    id="2024"
+                    id="assignRoleToEntityForm-roleStatus"
                     disabled
                     type="text"
                     placeholder={watch('currentRoleUser') ? 'לא פנוי' : 'פנוי'}
@@ -660,7 +661,7 @@ const AssignRoleToEntityForm = forwardRef(
                 <label htmlFor="2030">מבצע תפקיד נוכחי</label>
                 <InputText
                   {...register('currentRoleUser')}
-                  id="2030"
+                  id="assignRoleToEntityForm-currentRoleUser"
                   type="text"
                   disabled
                   placeholder="מבצע תפקיד"
@@ -684,6 +685,7 @@ const AssignRoleToEntityForm = forwardRef(
               canEdit={true}
               fromNow={true}
               showTime={true}
+              id="assignRoleToEntityForm-changeRoleAt"
             />
           )}
           <div className="p-fluid-item">
@@ -703,7 +705,7 @@ const AssignRoleToEntityForm = forwardRef(
             <label htmlFor="2028">סיבת מעבר</label>
             <InputTextarea
               {...register('comments')}
-              id="2028"
+              id="assignRoleToEntityForm-comments"
               type="text"
               placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
               disabled={onlyForView}

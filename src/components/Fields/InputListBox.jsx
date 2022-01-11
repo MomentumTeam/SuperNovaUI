@@ -72,7 +72,7 @@ const InputListBox = ({
         {getLabel({ canEdit, isEdit, labelName: displayName })}
         {listOptions && listOptions.length > 0 && (
           <ListBox
-            id="2011"
+            id={`field-${fieldName}-listbox`}
             {...methods.register(fieldName)}
             className="listbox"
             options={listOptions}
@@ -95,6 +95,7 @@ const InputListBox = ({
               <InputText
                 className={validNewOption || !newOption ? '' : 'p-invalid'}
                 value={newOption}
+                id={`field-${fieldName}-input`}
                 disabled={!isEdit}
                 placeholder={isEdit ? 'הוסף פריט חדש' : ''}
                 onChange={(e) => setOptionAndValidate(e)}

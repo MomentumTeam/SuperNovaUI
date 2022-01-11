@@ -28,6 +28,7 @@ const FullHierarchyInformationFooter = ({ isEdit, closeModal, setIsEdit, handleR
       <div className="display-flex">
         <div>
           <Button
+            id="fullHierarchyInfoForm-export"
             icon="pi pi-file-excel"
             loading={excelLoading}
             label="ייצוא"
@@ -39,6 +40,7 @@ const FullHierarchyInformationFooter = ({ isEdit, closeModal, setIsEdit, handleR
         <div className="display-flex">
           {canEditHierarchy(connectedUser) && (
             <Button
+              id="fullHierarchyInfoForm-editOrCancel"
               label={isEdit ? "ביטול" : "עריכה"}
               className={isEdit ? "btn-underline" : "btn-border orange"}
               onClick={() => {
@@ -48,6 +50,7 @@ const FullHierarchyInformationFooter = ({ isEdit, closeModal, setIsEdit, handleR
           )}
 
           <Button
+            id="fullHierarchyInfoForm-closeOrSave"
             label={isEdit ? "שליחת בקשה" : "סגור"}
             className="btn-orange-gradient"
             onClick={() => (isEdit ? handleRequest() : closeModal())}
