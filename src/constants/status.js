@@ -1,27 +1,7 @@
 export const STATUSES = {
   SUBMITTED: 'ממתין לאישור',
-  APPROVED_BY_COMMANDER: 'בתהליך',
-  APPROVED_BY_SECURITY: 'בתהליך',
-  IN_PROGRESS: 'אושר',
-  DECLINED: 'סורב',
-  DONE: 'בוצע',
-  FAILED: 'נכשל',
-};
-
-export const COMMANDER_APPROVE_TABLE_STATUSES = {
-  SUBMITTED: 'ממתין לאישור',
-  APPROVED_BY_COMMANDER: 'אושר',
-  APPROVED_BY_SECURITY: 'אושר',
-  IN_PROGRESS: 'אושר',
-  DECLINED: 'סורב',
-  DONE: 'בוצע',
-  FAILED: 'נכשל',
-};
-
-export const SECURITY_APPROVE_TABLE_STATUSES = {
-  SUBMITTED: 'ממתין לאישור',
   APPROVED_BY_COMMANDER: 'ממתין לאישור',
-  APPROVED_BY_SECURITY: 'אושר',
+  APPROVED_BY_SECURITY: 'ממתין לאישור',
   IN_PROGRESS: 'אושר',
   DECLINED: 'סורב',
   DONE: 'בוצע',
@@ -58,18 +38,20 @@ export const checkIfRequestIsDone = (req) => {
 };
 
 export const REQ_STATUSES = {
+  IN_PROGRESS: 'IN_PROGRESS',
   DECLINED: 'DECLINED',
-  IN_PROGRESS: 'IN_PROGRESS'
+  DONE: 'DONE',
+  FAILED: 'FAILED',
 };
 
 
 export const getStatus = (approverTableType) => {
-  switch (approverTableType) {
-    case 'secuirty':
-      return SECURITY_APPROVE_TABLE_STATUSES;
-    case 'commander':
-      return COMMANDER_APPROVE_TABLE_STATUSES;
-    case 'soldier':
+  // switch (approverTableType) {
+  //   case 'secuirty':
+  //     return SECURITY_APPROVE_TABLE_STATUSES;
+  //   case 'commander':
+  //     return COMMANDER_APPROVE_TABLE_STATUSES;
+  //   case 'soldier':
       return STATUSES;
-  }
+  // }
 };

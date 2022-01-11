@@ -2,8 +2,8 @@ import { action, makeAutoObservable, observable } from 'mobx';
 import { getPictureByConnectedEntity, getUser } from "../service/UserService";
 import { getMyNotifications, markAsRead } from '../service/NotificationService';
 import { Base64 } from 'js-base64';
-import { tokenName } from '../constants/api';
 import cookies from 'js-cookie';
+import configStore from './Config';
 
 export default class UserStore {
   user = null;
@@ -37,7 +37,7 @@ export default class UserStore {
 
   parseToken() {
     try {
-      const token = cookies.get(tokenName);
+      const token = cookies.get(configStore.TOKEN_NAME);
       const parts = token.split('.');
       if (parts.length !== 3) {
         console.error('token malford');

@@ -87,14 +87,14 @@ const Approver = ({
 
 
   return (
-    <div className="p-field-item">
+    <div className="p-field-item" id="approver-field">
       <div className={multiple ? 'AutoCompleteWrap' : ''}>
         <label htmlFor="2022">
           <span className="required-field">*</span>גורם מאשר
         </label>
         <AutoComplete
           disabled={disabled}
-          id="2022"
+          id={`approver-field-input-${name}`}
           className={`approver-selection-${
             multiple === true ? 'multiple' : 'single'
           } ${disabled ? 'disabled' : ''}`}

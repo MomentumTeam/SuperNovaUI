@@ -125,21 +125,21 @@ const ContainerRoleList = ({ roles }) => {
                     <Text onClick={() => onClick(role)}>
                       {role?.jobTitle && role.jobTitle != "unknown" ? role.jobTitle : role.roleId}
                     </Text>
-                    {/* <Status>פנוי</Status> */}
                   </StyledItemContent>
                 </StyledListItem>
               );
             })}
         </StyledList>
       </StyledContainerRoleList>
-
-      {selectedRole != null && <FullRoleInformation
-        role={selectedRole}
-        isOpen={isActionModalOpen}
-        closeModal={closeActionModal}
-        edit={false}
-        actionPopup={sendActionPopup}
-      />}
+      {selectedRole != null && (
+        <FullRoleInformation
+          role={selectedRole}
+          isOpen={isActionModalOpen}
+          closeModal={closeActionModal}
+          edit={false}
+          actionPopup={sendActionPopup}
+        />
+      )}
     </>
   );
 };

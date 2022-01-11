@@ -12,31 +12,37 @@ import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isJobTitleAlreadyTakenRequest } from '../../../service/KartoffelService';
 import { isUserHoldType } from '../../../utils/user';
-import { USER_SOURCE_DI, USER_TYPE, ROLE_CLEARANCE, USER_DI_TYPE, USER_ROLE_ENTITY_TYPE, ROLE_EXP } from "../../../constants";
+import { USER_TYPE, ROLE_CLEARANCE, ROLE_EXP } from "../../../constants";
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
 import { debounce } from "lodash";
+import configStore from '../../../store/Config';
 
 // TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
-  hierarchy: Yup.object().required("יש לבחור היררכיה"),
+  hierarchy: Yup.object().required('יש לבחור היררכיה'),
   isUserApprover: Yup.boolean(),
   approvers: Yup.array()
-    .when("isUserApprover", {
+    .when('isUserApprover', {
       is: false,
-      then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+      then: Yup.array()
+        .min(1, 'יש לבחור לפחות גורם מאשר אחד')
+        .required('יש לבחור לפחות גורם מאשר אחד'),
     })
     .test({
-      name: "check-if-valid",
-      message: "יש לבחור מאשרים תקינים (מהיחידה בלבד)",
+      name: 'check-if-valid',
+      message: 'יש לבחור מאשרים תקינים (מהיחידה בלבד)',
       test: async (approvers, context) => {
         let isTotalValid = true;
 
         if (context.parent?.hierarchy?.id && Array.isArray(approvers)) {
           await Promise.all(
             approvers.map(async (approver) => {
-              const { isValid } = await isApproverValid(approver.entityId, context.parent.hierarchy.id);
+              const { isValid } = await isApproverValid(
+                approver.entityId,
+                context.parent.hierarchy.id
+              );
               if (!isValid) isTotalValid = false;
             })
           );
@@ -46,15 +52,32 @@ const validationSchema = Yup.object().shape({
       },
     }),
   comments: Yup.string().optional(),
-  clearance: Yup.string().required("יש לבחור סיווג"),
+  clearance: Yup.string().required('יש לבחור סיווג'),
   roleName: Yup.string()
-    .required("יש למלא שם תפקיד")
-    .matches(ROLE_EXP, "שם לא תקין")
+    .required('יש למלא שם תפקיד')
+    .matches(ROLE_EXP, 'שם לא תקין')
     .test({
-      name: "valid-role-name",
-      message: "יש לבחור תפקיד פנוי",
+      name: 'valid-role-name',
+      message: 'יש לבחור תפקיד פנוי',
       test: (roleName, context) => {
-        return roleName && !context.parent?.isJobAlreadyTakenData?.isJobTitleAlreadyTaken;
+        return (
+          roleName &&
+          !context.parent?.isJobAlreadyTakenData?.isJobTitleAlreadyTaken
+        );
+      },
+    })
+    .test({
+      name: 'valid-role-name-not-taken',
+      message: 'יש לבחור תפקיד אחר פנוי',
+      test: async (roleName, context) => {
+        if (context.parent?.hierarchy?.id) {
+          const isJobTitleAlreadyTaken = await isJobTitleAlreadyTakenRequest(
+            roleName,
+            context.parent?.hierarchy.id
+          );
+
+          return roleName && !isJobTitleAlreadyTaken?.isJobTitleAlreadyTaken;
+        }
       },
     }),
   isTafkidan: Yup.boolean().default(false),
@@ -112,10 +135,10 @@ const RenameSingleOGForm = forwardRef(
           jobTitle: roleName,
           directGroup: hierarchy.id,
           isRoleAttachable: true,
-          source: USER_SOURCE_DI,
-          type: USER_DI_TYPE,
+          source: configStore.USER_SOURCE_DI,
+          type: configStore.USER_DI_TYPE,
           clearance,
-          roleEntityType: isTafkidan ? USER_ROLE_ENTITY_TYPE : undefined,
+          roleEntityType: isTafkidan ? configStore.USER_ROLE_ENTITY_TYPE : undefined,
           hierarchy: hierarchyConverse(hierarchy),
         },
         adParams: {
@@ -128,6 +151,7 @@ const RenameSingleOGForm = forwardRef(
 
       await appliesStore.createRoleApply(req);
       setIsActionDone(true);
+
     };
 
     useImperativeHandle(
@@ -170,7 +194,7 @@ const RenameSingleOGForm = forwardRef(
     };
 
     return (
-      <div className="p-fluid">
+      <div className="p-fluid" id="createSingleRoleForm">
         <div className="display-flex title-wrap" style={{ width: "inherit" }}>
           <h2>היררכיה</h2>
         </div>
@@ -196,7 +220,12 @@ const RenameSingleOGForm = forwardRef(
               {watch("hierarchy") && watch("roleName") && (
                 <i>{watch("isJobAlreadyTakenData")?.isJobTitleAlreadyTaken ? "תפוס" : "פנוי"}</i>
               )}
-              <InputText {...register("roleName")} onChange={onRoleNameChange} disabled={onlyForView} />
+              <InputText
+                {...register("roleName")}
+                id="createSingleRoleForm-roleName"
+                onChange={onRoleNameChange}
+                disabled={onlyForView}
+              />
               <label>
                 {errors.roleName && (
                   <small style={{ color: "red" }}>
@@ -209,7 +238,7 @@ const RenameSingleOGForm = forwardRef(
         </div>
         {watch("isJobAlreadyTakenData")?.isJobTitleAlreadyTaken && (
           <div className="p-fluid-item p-fluid-item-flex1" style={{ alignItems: "baseline", whiteSpace: "pre-wrap" }}>
-            <div className="p-field" style={{ display: "flex" }}>
+            <div className="p-field" style={{ display: "flex" }} id="createSingleRoleForm-freeNames">
               <div style={{ marginTop: "35px" }}>שמות פנויים:</div>
               <div style={{ margin: "20px", display: "flex", flexWrap: "wrap" }}>
                 {watch("isJobAlreadyTakenData").suggestions.map((suggestion) => (
@@ -231,6 +260,7 @@ const RenameSingleOGForm = forwardRef(
               <span className="required-field">*</span>סיווג תפקיד
             </label>
             <Dropdown
+              id="createSingleRoleForm-clearance"
               options={ROLE_CLEARANCE}
               placeholder="סיווג תפקיד"
               {...register("clearance")}
@@ -259,6 +289,7 @@ const RenameSingleOGForm = forwardRef(
         </div>
         <div className="p-field-checkbox" style={{ marginBottom: "10px" }}>
           <Checkbox
+            id="createSingleRoleForm-isTafkidan"
             style={{ marginLeft: "10px" }}
             {...register("isTafkidan")}
             onChange={(e) => setValue("isTafkidan", e.checked)}
@@ -275,9 +306,10 @@ const RenameSingleOGForm = forwardRef(
             <InputTextarea
               {...register("comments")}
               type="text"
+              id="createSingleRoleForm-comments"
               autoResize="false"
               disabled={onlyForView}
-              placeholder="הכנס הערות לבקשה..."
+              placeholder={!onlyForView && "הכנס הערות לבקשה..."}
             />
             <label>{errors.comments && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
           </div>

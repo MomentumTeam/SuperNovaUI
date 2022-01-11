@@ -198,3 +198,8 @@ export const searchDIByUniqueId = async (uniqueId) => {
    const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/di/search/${uniqueId}`);
    return response.data.digitalIdentities;
 }
+
+export const getDIByUniqueId = async (uniqueId) => {
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/di/${uniqueId}`);
+  return response.data;
+};

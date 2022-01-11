@@ -3,7 +3,6 @@ import { Calendar } from "primereact/calendar";
 import datesUtil from "../../utils/dates";
 
 import { getLabel, disabledInputStyle } from "./InputCommon";
-import { useState } from 'react';
 
 const InputCalanderField = ({
   item = null,
@@ -18,6 +17,7 @@ const InputCalanderField = ({
   canEdit = false,
   additionalClass = "",
   fromNow= false,
+  untilNow = false,
   required= true,
   showTime=false
 }) => {
@@ -34,6 +34,7 @@ const InputCalanderField = ({
       <div className="p-field">
         {getLabel({ canEdit: required && canEdit, isEdit, labelName: displayName })}
         <Calendar
+          id={`field-${fieldName}`}
           {...register(fieldName)}
           inputStyle={{ direction: "ltr" }}
           onChange={(e) => {
@@ -46,6 +47,7 @@ const InputCalanderField = ({
           mask={datesUtil.mask}
           dateFormat={datesUtil.lowerFormat}
           {...(fromNow && { minDate: nowDate })}
+          {...(untilNow && {maxDate: nowDate})}
           disabled={disabled}
           style={(disabled ? disabledInputStyle : {}, { border: "none" })}
         />

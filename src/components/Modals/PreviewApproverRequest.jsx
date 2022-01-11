@@ -8,7 +8,7 @@ const PreviewApproverRequest = ({ request }) => {
     <>
     <RequestFlowChart request={request} />
     <h2>פרטי מגיש הבקשה</h2>
-    <div className='p-fluid'>
+    <div className='p-fluid' id="previewRequest">
       <div className='p-fluid-item'>
         <div className='p-field'>
           <label htmlFor='2020'>
@@ -16,7 +16,7 @@ const PreviewApproverRequest = ({ request }) => {
             <span className='required-field'>*</span>שם משתמש
           </label>
           <InputText
-            id='2022'
+            id='previewRequest-displayName'
             disabled={true}
             value={request?.submittedBy?.displayName}
             field='displayName'
@@ -31,7 +31,7 @@ const PreviewApproverRequest = ({ request }) => {
           <InputText
             value={request?.submittedBy?.personalNumber || request?.submittedBy?.identityCard}
             disabled={true}
-            id='2013'
+            id='previewRequest-presonalNumer'
             type='text'
             required
             placeholder="מ''א/ת''ז"

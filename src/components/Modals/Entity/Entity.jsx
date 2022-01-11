@@ -45,6 +45,7 @@ const Entity = ({ setValue, name }) => {
           onClick={setCurrentUser}
           type="button"
           title="עבורי"
+          id="entity-forme"
         >
           עבורי
         </button>
@@ -54,7 +55,7 @@ const Entity = ({ setValue, name }) => {
             <span className="required-field">*</span>שם משתמש
           </label>
           <AutoComplete
-            id="2022"
+            id="entity-displayName"
             value={selectedEntity}
             suggestions={EntitySuggestions}
             completeMethod={searchEntityByName}
@@ -71,7 +72,7 @@ const Entity = ({ setValue, name }) => {
           <InputText
             value={selectedEntity?.personalNumber}
             onKeyUp={searchEntityByNumber}
-            id="2013"
+            id="entity-presonalNumber"
             type="text"
             required
             placeholder="מ''א"

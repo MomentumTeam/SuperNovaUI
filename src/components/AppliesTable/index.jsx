@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 import Table from '../Table';
-import { processApprovalTableData, exportToExcel } from '../../utils/applies';
+import { processApprovalTableData } from '../../utils/applies';
 import { HeaderTable } from './HeaderTable';
 import {
   TableNames,
@@ -18,6 +18,7 @@ import { useStores } from '../../context/use-stores';
 
 import '../../assets/css/local/general/table.min.css';
 import { toJS } from 'mobx';
+import { exportToExcel } from '../../utils/general';
 
 const AppliesTable = () => {
   const { appliesStore, userStore } = useStores();

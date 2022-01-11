@@ -1,5 +1,6 @@
 import { USER_TYPE } from "../constants";
-import { isUserHoldType } from "./user";
+import { isUserHoldType, userConverse } from "./user";
+import {getDIByUniqueId, getEntityByDI, getEntityByMongoId, getEntityByRoleId} from '../service/KartoffelService';
 
 export const transformNode = (node) => {
   return {
@@ -48,3 +49,32 @@ export const getOuDisplayName = (hierarchy, name, withName = true) => {
   ouDisplayName = ouDisplayName.join("/");
   return ouDisplayName;
 }
+
+export const processHierarchyData = async(hierarchy) => {
+  const hierarchyName = hierarchyConverse(hierarchy);
+  return await Promise.all(hierarchy.directRoles.map(async(role) => {
+    let newRow = {};
+
+    newRow["היררכיה"] = hierarchyName;
+    newRow["שם תפקיד"] = role.jobTitle;
+    newRow["מזהה תפקיד"] = role.roleId;
+
+    try {
+      const di = await getDIByUniqueId(role.digitalIdentityUniqueId);
+      newRow["מזהה כרטיס"] = di?.upn? di.upn: "---";
+      
+    } catch (error) {
+      console.log(error)
+      newRow["מזהה כרטיס"] = "לא ידוע"
+    }
+
+    try {
+      const entity = await getEntityByRoleId(role.roleId);
+      newRow["משתמש בתפקיד"] = userConverse(entity);
+    } catch (error) {
+      newRow["משתמש בתפקיד"] = "לא ידוע"
+    }
+    
+    return newRow;
+  }));
+};

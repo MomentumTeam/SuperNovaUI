@@ -124,6 +124,7 @@ const RenameBulkOGForm = forwardRef(
 
       await appliesStore.createRoleBulk(req);
       setIsActionDone(true);
+      
     };
 
     useImperativeHandle(
@@ -146,7 +147,7 @@ const RenameBulkOGForm = forwardRef(
     };
 
     return (
-      <div className="p-fluid" style={{ display: "flex", flexDirection: "column" }}>
+      <div className="p-fluid" id="createBulkRoleForm" style={{ display: "flex", flexDirection: "column" }}>
         <div className="p-fluid-item-flex p-fluid-item">
           <div className="p-field">
             <Hierarchy
@@ -193,11 +194,12 @@ const RenameBulkOGForm = forwardRef(
               <span></span>הערות
             </label>
             <InputTextarea
+              id="createBulkRoleForm-comments"
               {...register("comments")}
               type="text"
               autoResize="false"
               disabled={onlyForView}
-              placeholder="הכנס הערות לבקשה..."
+              placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
             />
           </div>
         </div>

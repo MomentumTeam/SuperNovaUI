@@ -27,7 +27,7 @@ const InputDropdown = ({
       <div className="p-field">
         {getLabel({ canEdit: required && canEdit, isEdit, labelName: displayName })}
         <Dropdown
-          id="2011"
+          id={`field-${fieldName}`}
           {...methods.register(fieldName)}
           options={options}
           disabled={disabled}

@@ -1,7 +1,7 @@
-import { USER_SOURCE_DI } from '../constants';
+import configStore from '../store/Config';
 
 export const getSamAccountNameFromEntity = (entity) => {
-  const di = entity.digitalIdentities.find((di) => di.source === USER_SOURCE_DI);
+  const di = entity.digitalIdentities.find((di) => di.source === configStore.USER_SOURCE_DI);
   return di.uniqueId.split("@")[0];
 };
 

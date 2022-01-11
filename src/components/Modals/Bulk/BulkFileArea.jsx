@@ -1,24 +1,24 @@
 import React from 'react';
 import { InputText } from 'primereact/inputtext';
 import cookies from 'js-cookie';
-import { tokenName } from '../../../constants/api';
 import { apiBaseUrl } from '../../../constants/api';
 import { BulkTypes, bulkExampleFileName } from '../../../constants/applies';
 import Downloader from 'js-file-downloader';
+import configStore from '../../../store/Config';
 
 const BulkFileArea = ({ register, bulkType, errors }) => {
   return (
     <div style={{ display: 'flex' }}>
       <div className="p-fluid-item-flex p-fluid-item">
         <div className="p-field">
-          <label htmlFor="1903">
+          <label htmlFor="bulkFile-input">
             <span className="required-field">*</span>העלאת קובץ
           </label>
           <span className="p-input-icon-left">
             <i className="pi pi-file-excel" />
             <InputText
               {...register('bulkFile')}
-              id="1903"
+              id="bulkFile-input"
               type="file"
               required
               placeholder="קובץ"
@@ -48,6 +48,7 @@ const BulkFileArea = ({ register, bulkType, errors }) => {
             border: 'none',
             color: '#069',
           }}
+          id="bulkFile-downloadFormat"
           onClick={() => {
             new Downloader({
               url: `${apiBaseUrl}/api/bulk/request/example?bulkType=${BulkTypes[bulkType]}`,
@@ -55,7 +56,7 @@ const BulkFileArea = ({ register, bulkType, errors }) => {
               headers: [
                 {
                   name: 'Authorization',
-                  value: `Bearer ${cookies.get(tokenName)}`,
+                  value: `Bearer ${cookies.get(configStore.TOKEN_NAME)}`,
                 },
               ],
             });

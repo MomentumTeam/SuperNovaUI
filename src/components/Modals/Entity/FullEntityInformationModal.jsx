@@ -1,20 +1,26 @@
-import React, { createContext, useEffect, useRef, useState } from "react";
-import { Dialog } from "primereact/dialog";
-import { classNames } from "primereact/utils";
+import React, { createContext, useEffect, useRef, useState } from 'react';
+import { Dialog } from 'primereact/dialog';
+import { classNames } from 'primereact/utils';
 
-import blankProfilePic from "../../../assets/images/blankProfile.png";
-import { getPictureByEntityIdentifier } from "../../../service/UserService";
-import { FullEntityInformationFooter } from "./FullEntityInformationFooter";
-import { USER_NO_PICTURE } from "../../../constants";
+import blankProfilePic from '../../../assets/images/blankProfile.png';
+import { getPictureByEntityIdentifier } from '../../../service/UserService';
+import { FullEntityInformationFooter } from './FullEntityInformationFooter';
 
-import "../../../assets/css/local/general/buttons.css";
-import "../../../assets/css/local/components/modal-item.css";
-import { FullEntityInformationForm } from "./FullEntityInformationForm";
+import '../../../assets/css/local/general/buttons.css';
+import '../../../assets/css/local/components/modal-item.css';
+import { FullEntityInformationForm } from './FullEntityInformationForm';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import configStore from '../../../store/Config';
 
 export const FullEntityInformationModalContext = createContext(null);
 
-const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit, actionPopup }) => {
+const FullEntityInformationModal = ({
+  user,
+  isOpen,
+  closeFullDetailsModal,
+  edit,
+  actionPopup,
+}) => {
   const [isEdit, setIsEdit] = useState(edit);
   const [userPic, setUserPic] = useState(undefined);
   const [isActionDone, setIsActionDone] = useState(false);
@@ -26,10 +32,9 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit,
     try {
       await ref.current.handleSubmit();
     } catch (e) {
-      actionPopup("עריכת משתמש", e.message || "Message Content");
+      actionPopup('עריכת משתמש', e.message || 'Message Content');
     }
   };
-    
 
   useEffect(() => {
     if (isActionDone) {
@@ -41,18 +46,22 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit,
   useEffect(() => {
     async function getUserPic() {
       try {
-        if (user && (user.picture === "" || user.picture === USER_NO_PICTURE || !user.picture)) {
+        if (
+          user &&
+          (user.picture === '' ||
+            user.picture === configStore.USER_NO_PICTURE ||
+            !user.picture)
+        ) {
           if (user?.personalNumber || user?.identityCard) {
-            const pic = await getPictureByEntityIdentifier(user?.personalNumber || user?.identityCard);
+            const pic = await getPictureByEntityIdentifier(
+              user?.personalNumber || user?.identityCard
+            );
             setUserPic(pic.image);
           }
         } else {
           setUserPic(user.picture);
         }
-        
-      } catch (error) {
-        
-      }
+      } catch (error) {}
 
       setIsLoading(false);
     }
@@ -64,10 +73,10 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit,
 
   return (
     <Dialog
-      className={classNames("dialogClass7")}
-      header={isEdit ? "עריכת משתמש/ת" : "פרטי משתמש/ת"}
+      className={classNames('dialogClass7')}
+      header={isEdit ? 'עריכת משתמש/ת' : 'פרטי משתמש/ת'}
       visible={isOpen}
-      style={{ borderRadius: "30px" }}
+      style={{ borderRadius: '30px' }}
       onHide={closeFullDetailsModal}
       footer={
         <FullEntityInformationFooter
@@ -86,9 +95,11 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit,
         <div>
           <div className="userpic-wrap">
             <img
-              style={{ borderRadius: "50%", width: "142px" }}
+              style={{ borderRadius: '50%', width: '142px' }}
               src={
-                user && userPic && userPic !== USER_NO_PICTURE ? `data:image/jpeg;base64,${userPic}` : blankProfilePic
+                user && userPic && userPic !== configStore.USER_NO_PICTURE
+                  ? `data:image/jpeg;base64,${userPic}`
+                  : blankProfilePic
               }
               alt="userpic"
             />
@@ -99,6 +110,7 @@ const FullEntityInformationModal = ({ user, isOpen, closeFullDetailsModal, edit,
             requestObject={user}
             setIsActionDone={setIsActionDone}
             onlyForView={!isEdit}
+            setIsEdit={setIsEdit}
           />
         </div>
       )}

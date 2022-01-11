@@ -42,7 +42,7 @@ const validationSchema = Yup.object().shape({
         return true;
       },
     }),
-  currentHierarchy: Yup.object().required('יש לבחור היררכיה'),
+  currentHierarchy: Yup.object().required('יש לבחור היררכיה נוכחית'),
   isUserApprover: Yup.boolean(),
   approvers: Yup.array()
     .when('isUserApprover', {
@@ -159,6 +159,7 @@ const RenameBulkOGForm = forwardRef(
 
       await appliesStore.changeRoleHierarchyBulk(req);
       setIsActionDone(true);
+
     };
 
     useImperativeHandle(
@@ -181,7 +182,7 @@ const RenameBulkOGForm = forwardRef(
     };
 
     return (
-      <div className="p-fluid">
+      <div className="p-fluid" id="renameBulkOGForm">
         <div className="p-fluid-item-flex p-fluid-item">
           <div className="p-field">
             <Hierarchy
@@ -250,9 +251,9 @@ const RenameBulkOGForm = forwardRef(
             </label>
             <InputTextarea
               {...register('comments')}
-              id="2028"
+              id="renameBulkOGForm-comments"
               type="text"
-              placeholder="הכנס הערות לבקשה..."
+              placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
               disabled={onlyForView}
             />
           </div>

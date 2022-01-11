@@ -7,3 +7,8 @@ export const getSupportGroupLink = async () => {
   );
   return response.data.supportGroupLink;
 };
+
+export const getConfig = async () => {
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/config`);
+  return response.data;
+};

@@ -6,10 +6,8 @@ import { useStores } from '../../../context/use-stores';
 import {
   NAME_REG_EXP,
   PHONE_REG_EXP,
-  USER_CLEARANCE,
   USER_TYPE,
   USER_SEX,
-  USER_CITIZEN_ENTITY_TYPE,
   IDENTITY_CARD_EXP,
 } from "../../../constants";
 import { GetDefaultApprovers } from '../../../utils/approver';
@@ -35,7 +33,7 @@ const validationSchema = Yup.object().shape({
 
 const CreateSpecialEntityForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject }, ref) => {
-    const { appliesStore, userStore} = useStores();
+    const { appliesStore, userStore, configStore} = useStores();
     const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
@@ -93,7 +91,7 @@ const CreateSpecialEntityForm = forwardRef(
           mobilePhone: [mobilePhone],
           phone: [mobilePhone],
           clearance: classification,
-          entityType: USER_CITIZEN_ENTITY_TYPE,
+          entityType: configStore.USER_CITIZEN_ENTITY_TYPE,
           ...(sex && sex !== "" && { sex }),
           ...(birthdate && { birthdate: datesUtil.getTime(birthdate) }),
         },
@@ -103,6 +101,7 @@ const CreateSpecialEntityForm = forwardRef(
 
       await appliesStore.createEntityApply(req);
       await setIsActionDone(true);
+
     };
 
     useImperativeHandle(
@@ -151,7 +150,7 @@ const CreateSpecialEntityForm = forwardRef(
         displayName: "סיווג המשתמש",
         inputType: InputTypes.DROPDOWN,
         canEdit: true,
-        options: USER_CLEARANCE,
+        options: configStore.USER_CLEARANCE,
         force: true,
       },
       {
@@ -170,6 +169,7 @@ const CreateSpecialEntityForm = forwardRef(
         canEdit: true,
         force: true,
         required: false,
+        untilNow: true
       },
       {
         fieldName: "approvers",
@@ -190,7 +190,7 @@ const CreateSpecialEntityForm = forwardRef(
       },
     ];
     return (
-      <div className="p-fluid">
+      <div className="p-fluid" id="createSpecialEntityForm">
         <InputForm fields={formFields} errors={errors} item={requestObject} isEdit={!onlyForView} methods={methods}/>
       </div>
     );

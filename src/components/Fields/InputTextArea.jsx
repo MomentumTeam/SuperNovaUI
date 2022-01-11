@@ -30,7 +30,7 @@ const InputTextAreaField = ({
         {getLabel({ required, isEdit, labelName: displayName })}
 
         <InputTextarea
-          id="2011"
+          id={`field-${fieldName}`}
           {...methods.register(fieldName)}
           className={errors[fieldName] ? "p-invalid" : ""}
           disabled={disabled}

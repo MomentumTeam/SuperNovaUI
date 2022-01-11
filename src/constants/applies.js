@@ -3,12 +3,9 @@ import { RequestorFieldTemplate } from "../components/AppliesTable/RequestorFiel
 import { StatusFieldTemplate } from "../components/Fields/StatusFieldTemplate";
 import { TextFieldTemplate } from "../components/Fields/TextFieldTemplate";
 import { getFormattedDate } from "../utils/applies";
-import { STATUSES, getStatus } from '.';
+import { getStatus } from '.';
 import { ResponsibleFactorWithWaitingFieldTemplate } from '../components/AppliesTable/ResponsibleFactorWithWaitingFieldTemplate';
-import {
-  isUserHoldType,
-  isUserCanSeeAllApproveApplies,
-} from '../utils/user';
+import { StatusApproverFieldTemplate } from '../components/AppliesTable/StatusApproverFieldTemplate';
 
 
 export const TYPES = {
@@ -83,12 +80,12 @@ export const TableTypes = (selectedTab, user, approverTableType) => {
     },
     { field: 'comments', displayName: 'סיבה', template: TextFieldTemplate },
     {
-      field: 'status',
+      field: null,
       displayName: 'סטטוס',
-      enum: getStatus(approverTableType),
+      templateParam: user,
       sortable: true,
       sortFields: sortFields.STATUS,
-      template: StatusFieldTemplate,
+      template: StatusApproverFieldTemplate,
     },
   ];
 };

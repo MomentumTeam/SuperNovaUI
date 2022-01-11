@@ -14,8 +14,8 @@
 }
 
 .p-dialog.dialogPass {
-min-height: unset!important;
-max-width: 500px;
+  min-height: unset !important;
+  max-width: 500px;
 }
 
 @media (max-width: 730px) {
@@ -1054,7 +1054,7 @@ max-width: 500px;
 }
 .p-dialog.dialogClass9 .p-dialog-content .card {
   padding-bottom: 20px;
-    display: flex;
+  display: flex;
   white-space: nowrap;
 }
 .p-dialog.dialogClass9 .p-dialog-content .card .p-tree {
@@ -1063,7 +1063,7 @@ max-width: 500px;
   color: #495057;
   padding: 16px;
   border-radius: 3px;
-  flex:1
+  flex: 1;
 }
 @media (max-width: 599px) {
   .p-dialog.dialogClass9 .p-dialog-content .card .p-tree {
@@ -1726,7 +1726,8 @@ max-width: 500px;
   .p-treenode-content
   .p-treenode-label::before {
   content: '';
-  background-image: url(../../../images/icon-label2.svg);
+  background-image: url(../../../images/actions-icon9.svg);
+  background-color: #3bbb9e;
   background-repeat: no-repeat;
   background-position: center;
 }
@@ -1876,7 +1877,7 @@ max-width: 500px;
 }
 
 .p-dialog .p-dialog-content::-webkit-scrollbar-thumb {
-   background: #d6d6d6;
+  background: #d6d6d6;
   border-radius: 30px;
 }
 
@@ -1977,7 +1978,6 @@ max-width: 500px;
   align-items: center;
   flex-wrap: nowrap;
 }
-
 
 .p-dialog
   .p-dialog-content
@@ -2330,6 +2330,18 @@ max-width: 500px;
 .p-dialog .p-button.btn-border.orange:focus {
   color: #f68340;
   border: 1px solid #f68340;
+}
+
+.p-dialog .p-button.btn-border.blue {
+  border: 1px solid #1d88ec;
+  color: #1d88ec;
+  font-weight: 600;
+}
+
+.p-dialog .p-button.btn-border.blue:hover,
+.p-dialog .p-button.btn-border.blue:focus {
+  color: #1d88ec;
+  border: 1px solid #1d88ec;
 }
 
 .p-dialog .p-button.btn-border:hover,
