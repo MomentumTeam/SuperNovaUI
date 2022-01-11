@@ -590,7 +590,7 @@ const AssignRoleToEntityForm = forwardRef(
                 {' '}
                 {errors.role && (
                   <small style={{ color: 'red' }}>
-                    {errors.role?.message ? errors.role.message : 'יש למלא ערך'}
+                    {errors["role"].type !== "typeError" && errors.role?.message ? errors.role.message : 'יש למלא ערך'}
                   </small>
                 )}
               </label>
