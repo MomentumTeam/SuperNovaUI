@@ -15,11 +15,13 @@ const FullEntityInformationFooter = ({ entity, isEdit, closeModal, setIsEdit, ha
       {canEditEntity(entity, connectedUser) && (
         <>
           <Button
+            id="fullEntityInfo-editOrCancel"
             label={isEdit ? "ביטול" : "עריכה"}
             className={isEdit ? "btn-underline" : "btn-border orange"}
             onClick={() => setIsEdit(!isEdit)}
           />
           <Button
+            id="fullEntityInfo-closeOrSave"
             label={isEdit ? "שליחת בקשה" : "סגור"}
             className="btn-orange-gradient"
             onClick={() => {

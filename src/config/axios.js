@@ -3,8 +3,6 @@ import cookies from 'js-cookie';
 import { apiBaseUrl } from '../constants/api';
 import configStore from '../store/Config';
 
-console.log('apiBaseUrl', apiBaseUrl);
-
 const axiosApiInstance = axios.create();
 
 // Add a request interceptor

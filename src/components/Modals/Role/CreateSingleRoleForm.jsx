@@ -194,7 +194,7 @@ const RenameSingleOGForm = forwardRef(
     };
 
     return (
-      <div className="p-fluid">
+      <div className="p-fluid" id="createSingleRoleForm">
         <div className="display-flex title-wrap" style={{ width: "inherit" }}>
           <h2>היררכיה</h2>
         </div>
@@ -220,7 +220,12 @@ const RenameSingleOGForm = forwardRef(
               {watch("hierarchy") && watch("roleName") && (
                 <i>{watch("isJobAlreadyTakenData")?.isJobTitleAlreadyTaken ? "תפוס" : "פנוי"}</i>
               )}
-              <InputText {...register("roleName")} onChange={onRoleNameChange} disabled={onlyForView} />
+              <InputText
+                {...register("roleName")}
+                id="createSingleRoleForm-roleName"
+                onChange={onRoleNameChange}
+                disabled={onlyForView}
+              />
               <label>
                 {errors.roleName && (
                   <small style={{ color: "red" }}>
@@ -233,7 +238,7 @@ const RenameSingleOGForm = forwardRef(
         </div>
         {watch("isJobAlreadyTakenData")?.isJobTitleAlreadyTaken && (
           <div className="p-fluid-item p-fluid-item-flex1" style={{ alignItems: "baseline", whiteSpace: "pre-wrap" }}>
-            <div className="p-field" style={{ display: "flex" }}>
+            <div className="p-field" style={{ display: "flex" }} id="createSingleRoleForm-freeNames">
               <div style={{ marginTop: "35px" }}>שמות פנויים:</div>
               <div style={{ margin: "20px", display: "flex", flexWrap: "wrap" }}>
                 {watch("isJobAlreadyTakenData").suggestions.map((suggestion) => (
@@ -255,6 +260,7 @@ const RenameSingleOGForm = forwardRef(
               <span className="required-field">*</span>סיווג תפקיד
             </label>
             <Dropdown
+              id="createSingleRoleForm-clearance"
               options={ROLE_CLEARANCE}
               placeholder="סיווג תפקיד"
               {...register("clearance")}
@@ -283,6 +289,7 @@ const RenameSingleOGForm = forwardRef(
         </div>
         <div className="p-field-checkbox" style={{ marginBottom: "10px" }}>
           <Checkbox
+            id="createSingleRoleForm-isTafkidan"
             style={{ marginLeft: "10px" }}
             {...register("isTafkidan")}
             onChange={(e) => setValue("isTafkidan", e.checked)}
@@ -299,9 +306,10 @@ const RenameSingleOGForm = forwardRef(
             <InputTextarea
               {...register("comments")}
               type="text"
+              id="createSingleRoleForm-comments"
               autoResize="false"
               disabled={onlyForView}
-              placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
+              placeholder={!onlyForView && "הכנס הערות לבקשה..."}
             />
             <label>{errors.comments && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
           </div>

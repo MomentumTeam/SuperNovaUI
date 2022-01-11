@@ -66,7 +66,7 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit, actionP
           <hr />
           <h2>רשימת תפקידים</h2>
         </div>
-        <div className="containerRoleList">
+        <div id="containerRoleList" className="containerRoleList">
           <ContainerRoleList roles={hierarchy.directRoles} />
         </div>
       </Dialog>

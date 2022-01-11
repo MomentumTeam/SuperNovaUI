@@ -59,6 +59,7 @@ const HierarchyField = ({
         {/* TODO: ADD LIMIT and test in show*/}
         {!isEdit ? (
           <InputText
+            id={`field-${fieldName}-input1`}
             disabled={!isEdit}
             className="input"
             placeholder={item[fieldName]}
@@ -67,6 +68,7 @@ const HierarchyField = ({
           <>
             <div class="input-box">
               <InputText
+                id={`field-${fieldName}-input2`}
                 {...methods.register(fieldName)}
                 disabled={!isEdit}
                 className={hierarchyFind !== null || errors[fieldName] ? "p-invalid" : "input"}

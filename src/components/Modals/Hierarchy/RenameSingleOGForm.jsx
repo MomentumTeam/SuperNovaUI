@@ -225,7 +225,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
    };
 
   return (
-    <div className="p-fluid">
+    <div className="p-fluid" id="renameSingleOGForm">
       <div className="display-flex title-wrap" style={{ width: 'inherit' }}>
         <h2>היררכיה נוכחית</h2>
       </div>
@@ -252,6 +252,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             <span className="required-field">*</span>בחירת תפקיד מתוך רשימה
           </label>
           <Dropdown
+            id="renameSingleOGForm-role"
             options={roles}
             optionLabel="jobTitle"
             placeholder="תפקיד"
@@ -272,6 +273,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             <span className="required-field">*</span>מזהה תפקיד
           </label>
           <AutoComplete
+            id="renameSingleOGForm-roleId"
             value={watch('roleId')}
             field="roleId"
             suggestions={roleSuggestions}
@@ -336,6 +338,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
             <span></span>הערות
           </label>
           <InputTextarea
+            id="renameSingleOGForm-comments"
             {...register('comments')}
             type="text"
             autoResize="false"

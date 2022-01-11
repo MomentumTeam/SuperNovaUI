@@ -15,6 +15,7 @@ const FullRoleInformationFooter = ({ isEdit, role, closeModal, setIsEdit, handle
       <div className="display-flex">
         {canEditRole(role, connectedUser) && (
           <Button
+            id="createSingleRoleForm-editOrCancel"
             label={isEdit ? "ביטול" : "עריכה"}
             className={isEdit ? "btn-underline" : "btn-border orange"}
             onClick={() => {
@@ -25,6 +26,7 @@ const FullRoleInformationFooter = ({ isEdit, role, closeModal, setIsEdit, handle
         )}
 
         <Button
+          id="createSingleRoleForm-sendOrClose"
           label={isEdit ? "שליחת בקשה" : "סגור"}
           className="btn-orange-gradient"
           onClick={() => (isEdit ? handleRequest() : closeModal())}

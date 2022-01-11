@@ -260,6 +260,7 @@ const ApproverForm = forwardRef(
               disabled={onlyForView}
               className={`${onlyForView ? 'disabled' : ''} approverType`}
               value={approverType}
+              id='approverForm-approverType'
               inputId='2011'
               required
               options={approverTypes}
@@ -296,6 +297,7 @@ const ApproverForm = forwardRef(
               onClick={setCurrentUser}
               type='button'
               title='עבורי'
+              id="approverForm-forme"
               style={onlyForView && { display: 'none' }}
             >
               עבורי
@@ -349,7 +351,7 @@ const ApproverForm = forwardRef(
             </label>
             <InputText
               {...register('personalNumber', { required: true })}
-              id='2021'
+              id='approverForm-personalNumber'
               type='text'
               keyfilter='pnum'
               required
@@ -408,7 +410,7 @@ const ApproverForm = forwardRef(
             <InputTextarea
               disabled={onlyForView}
               {...register('comments')}
-              id="2016"
+              id="approverForm-comments"
               type="text"
               placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
             />

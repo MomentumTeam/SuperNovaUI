@@ -218,6 +218,7 @@ const FullRoleInformationForm = forwardRef(
                 <i>{isJobTitleAlreadyTaken ? 'תפוס' : 'פנוי'}</i>
               )}
               <InputText
+                id="editSingleRoleForm-roleName"
                 {...register('roleName')}
                 onChange={onRoleNameChange}
                 disabled={onlyForView}
@@ -263,6 +264,7 @@ const FullRoleInformationForm = forwardRef(
             <div className='p-field'>
               <label> שם תפקיד ישן </label>
               <InputText
+                id='fullRoleInfoForm-oldJobTitle'
                 value={
                   requestObject?.kartoffelParams?.oldJobTitle ||
                   role?.jobTitle ||
@@ -296,7 +298,7 @@ const FullRoleInformationForm = forwardRef(
         <div className='p-fluid-item p-fluid-item'>
           <div className='p-field'>
             <label> מזהה תפקיד </label>
-            <InputText value={role?.roleId || '---'} disabled={true} />
+            <InputText id='fullRoleInfoForm-roleId' value={role?.roleId || '---'} disabled={true} />
           </div>
         </div>
 
@@ -310,6 +312,7 @@ const FullRoleInformationForm = forwardRef(
                     ? datesUtil.formattedDateTime(role.updatedAt)
                     : '---'
                 }
+                id='fullRoleInfoForm-updatedAt'
                 disabled={true}
               />
             </div>
@@ -320,7 +323,7 @@ const FullRoleInformationForm = forwardRef(
           <div className='p-fluid-item p-fluid-item'>
             <div className='p-field'>
               <label> סיווג התפקיד </label>
-              <InputText value={role?.clearance || '---'} disabled={true} />
+              <InputText id='fullRoleInfoForm-clearance' value={role?.clearance || '---'} disabled={true} />
             </div>
           </div>
         )}
@@ -329,7 +332,7 @@ const FullRoleInformationForm = forwardRef(
           <div className='p-fluid-item p-fluid-item'>
             <div className='p-field'>
               <label> משתמש בתפקיד </label>
-              <InputText value={entity?.fullName || '---'} disabled={true} />
+              <InputText  id='fullRoleInfoForm-entity' value={entity?.fullName || '---'} disabled={true} />
             </div>
           </div>
         )}
@@ -339,6 +342,7 @@ const FullRoleInformationForm = forwardRef(
             <div className='p-field'>
               <label> מזהה כרטיס </label>
               <InputText
+                id='fullRoleInfoForm-upn'
                 value={digitalIdentity?.upn ? digitalIdentity.upn : '---'}
                 disabled={true}
               />
@@ -368,7 +372,7 @@ const FullRoleInformationForm = forwardRef(
               </label>
               <InputTextarea
                 {...register('comments')}
-                id='2028'
+                id='fullRoleInfoForm-comments'
                 type='text'
                 placeholder='הכנס הערות לבקשה...'
                 disabled={onlyForView}

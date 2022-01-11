@@ -225,7 +225,7 @@ const FullEntityInformationForm = forwardRef(
     ];
 
     return (
-      <div className="p-fluid">
+      <div className="p-fluid" id="fullEntityInfoForm">
         <InputForm
           fields={formFields}
           item={user}

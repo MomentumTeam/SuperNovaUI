@@ -86,7 +86,7 @@ const Requests = observer(() => {
 
   return (
     <>
-      <div className="main-inner-item main-inner-item2 main-inner-item2-table">
+      <div className="main-inner-item main-inner-item2 main-inner-item2-table" id="my-request-table">
         <div className="main-inner-item2-content">
           <Header setTab={setTabId} selectedTab={tabId} />
           <div className="content-unit-wrap">
