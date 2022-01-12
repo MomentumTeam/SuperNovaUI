@@ -52,7 +52,7 @@ const Dashboard = observer(() => {
           <div className="display-flex title-wrap">
             <h2>פרטים אישיים</h2>
           </div>
-          <UserProfileCard user={user} userType={userType} openFullDetailsModal={openFullDetailsModal} />
+          <UserProfileCard isUserLoading={userStore.isUserLoading} user={user} userType={userType} openFullDetailsModal={openFullDetailsModal} />
           <FullEntityInformationModal
             user={user}
             isOpen={isFullUserInfoModalOpen}

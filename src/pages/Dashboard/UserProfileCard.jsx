@@ -2,11 +2,14 @@ import blankProfilePic from '../../assets/images/blankProfile.png';
 import '../../assets/css/local/pages/dashboard.css';
 import { Tooltip } from 'primereact/tooltip';
 import configStore from '../../store/Config';
+import { ProgressSpinner } from 'primereact/progressspinner';
 
-const UserProfileCard = ({ user, userType, openFullDetailsModal }) => {
+const UserProfileCard = ({ isUserLoading, user, userType, openFullDetailsModal }) => {
    return (
      <div className="personal-information-wrap">
        <div className="display-flex personal-information-inner">
+        {isUserLoading ? <ProgressSpinner className="tree-loading-spinner" />:
+         <>
          {userType?.tag && (
            <div className="noticeRibbon">
              <div className="noticeText">{userType?.tag}</div>
@@ -84,6 +87,9 @@ const UserProfileCard = ({ user, userType, openFullDetailsModal }) => {
              פרטים מלאים
            </button>
          </div>
+         </>}
+         
+         
        </div>
      </div>
    );
