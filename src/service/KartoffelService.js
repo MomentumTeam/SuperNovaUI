@@ -30,16 +30,26 @@ export const getOGById = async (id) => {
   return response.data;
 };
 
-export const getOGChildren = async ({ id, page, pageSize, direct = false, withRoles = false }) => {
+export const getOGChildren = async ({
+  id,
+  page,
+  pageSize,
+  direct = false,
+  withRoles = false,
+  withParent=false,
+}) => {
   // If id not specified, using the Aman group children
   const response = await axiosApiInstance.get(
-    id ? `${apiBaseUrl}/api/kartoffel/groups/${id}/children` : `${apiBaseUrl}/api/kartoffel/groups/children`,
+    id
+      ? `${apiBaseUrl}/api/kartoffel/groups/${id}/children`
+      : `${apiBaseUrl}/api/kartoffel/groups/children`,
     {
       params: {
         direct,
         pageSize,
         page,
         withRoles,
+        withParent,
       },
     }
   );
