@@ -8,8 +8,6 @@ import { getOGChildren } from '../service/KartoffelService';
 
 class ChartForTree extends React.Component {
     // TODO: Show the loading icon in overlay above the tree
-    // TODO: Fix the overflow-x scroll when there's many children
-    // TODO: Fix the text out of bounds when there's many children
 
     constructor(props) {
         super(props);

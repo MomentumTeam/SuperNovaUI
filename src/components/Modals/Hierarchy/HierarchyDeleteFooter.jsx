@@ -9,7 +9,6 @@ const HierarchyDeleteFooter = ({closeModal, item, disabled}) => {
         id: item.id,
     };
     
-    // TODO: ?
     const {hierarchyName} =  getHierarchy(item.hierarchy)
     const adParams = {
         ouDisplayName: item.hierarchy,
@@ -17,7 +16,6 @@ const HierarchyDeleteFooter = ({closeModal, item, disabled}) => {
         name: hierarchyName,
     };
 
-    // TODO: TOAST
     const res = await deleteOGRequest({ kartoffelParams: kartoffelParams, adParams: adParams });
   }  
 

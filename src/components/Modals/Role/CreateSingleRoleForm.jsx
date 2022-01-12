@@ -19,7 +19,6 @@ import { isApproverValid } from '../../../service/ApproverService';
 import { debounce } from "lodash";
 import configStore from '../../../store/Config';
 
-// TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
   hierarchy: Yup.object().required('יש לבחור היררכיה'),
   isUserApprover: Yup.boolean(),

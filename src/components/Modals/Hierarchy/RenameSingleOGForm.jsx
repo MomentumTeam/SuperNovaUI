@@ -17,7 +17,6 @@ import { getSamAccountNameFromUniqueId } from '../../../utils/fields';
 import { AutoComplete } from 'primereact/autocomplete';
 import { isApproverValid } from '../../../service/ApproverService';
 
-// TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
   hierarchy: Yup.object()
     .required('יש לבחור היררכיה חדשה')

@@ -22,7 +22,6 @@ import { GetDefaultApprovers } from '../../../utils/approver';
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
 
-// TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
   comments: Yup.string().optional(),
   hierarchy: Yup.object().required('נא לבחור היררכיה'),

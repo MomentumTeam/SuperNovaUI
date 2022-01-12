@@ -27,3 +27,12 @@ export const USER_TYPE = {
   ADMIN: "ADMIN",
   BULK: "BULK",
 };
+
+
+export const APPROVER_TYPES = [
+  { label: "גורם מאשר ראשוני", value: USER_TYPE.COMMANDER },
+  { label: 'גורם מאשר יחב"ם', value: USER_TYPE.SECURITY },
+  { label: 'גורם מאשר בטח"ם', value: USER_TYPE.SUPER_SECURITY },
+  { label: "הרשאת בקשה מרובה", value: USER_TYPE.BULK },
+  { label: "מחשוב יחידתי", value: USER_TYPE.ADMIN },
+];
