@@ -28,6 +28,16 @@ export const AUTOCOMPLETE_STATUSES = {
   FAILED: 'נכשל',
 };
 
+export const AUTOCOMPLETE_STATUSES_APPROVER = {
+  SUBMITTED: "הוגש לאישור ראשוני",
+  APPROVED_BY_COMMANDER: 'בתהליך לאישור יחב"ם',
+  APPROVED_BY_SECURITY: 'בתהליך לאישור בטח"ם',
+  IN_PROGRESS: "אושר עבור כל הגורמים",
+  DECLINED: "סורב",
+  DONE: "בוצע",
+  FAILED: "נכשל",
+};
+
 export const checkIfRequestIsDone = (req) => {
   return (
     req.status === 'DECLINED' ||

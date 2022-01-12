@@ -1,9 +1,7 @@
 import { DateFieldTemplate } from "../components/Fields/DateFieldTemplate";
 import { RequestorFieldTemplate } from "../components/AppliesTable/RequestorFieldTemplate";
-import { StatusFieldTemplate } from "../components/Fields/StatusFieldTemplate";
 import { TextFieldTemplate } from "../components/Fields/TextFieldTemplate";
 import { getFormattedDate } from "../utils/applies";
-import { getStatus } from '.';
 import { ResponsibleFactorWithWaitingFieldTemplate } from '../components/AppliesTable/ResponsibleFactorWithWaitingFieldTemplate';
 import { StatusApproverFieldTemplate } from '../components/AppliesTable/StatusApproverFieldTemplate';
 
