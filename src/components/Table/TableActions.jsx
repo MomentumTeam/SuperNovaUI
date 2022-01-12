@@ -19,7 +19,6 @@ import { TableContext } from ".";
 import { isUserHoldType } from "../../utils/user";
 import { canPassApply, isApproverAndCanEdit } from "../../utils/applies";
 
-// TODO: change to reducer
 const TableActions = ({ setActionType, openActionModal, setEvent }) => {
   const { selectedItem, tableType } = useContext(TableContext);
   const { userStore } = useStores();

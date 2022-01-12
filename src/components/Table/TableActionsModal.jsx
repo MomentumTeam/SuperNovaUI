@@ -26,7 +26,6 @@ import PreviewRequestsDialog from "../Modals/Request/PreviewRequestsDialog1";
 import { TakeRequest } from "../Modals/Request/TakeRequest";
 import { useToast } from '../../context/use-toast';
 
-// TODO: change to reducer?
 const TableActionsModal = forwardRef((_, ref) => {
   const { actionPopup, toastRef } = useToast();
   const { contextMenuRef } = ref;

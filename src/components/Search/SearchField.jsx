@@ -71,17 +71,22 @@ const SearchField = ({
             }}
             onKeyUp={async (e) => {
               if (e.code === EVENT_KEY_UP_CODE_ENTER) {
-                if (Array.isArray(selected) && selected.length === 0) {
+                if (selected === "" || Array.isArray(selected) && selected.length === 0) {
                   await getData({ reset: true });
                 } else {
-                  if (searchIdField) {
-                    let filteredResults = [...results];
-                    filteredResults = filteredResults.filter(
-                      (v, i, a) => a.findIndex((t) => t[searchIdField] === v[searchIdField]) === i
-                    );
-                    setTableData(filteredResults);
-                  } else {
-                    setTableData(results);
+                  if (selected.length > 1) {
+                    const searchResults = await searchFunc({query: selected});
+                    setResults(searchResults);
+                    
+                    if (searchIdField) {
+                      let filteredResults = [...searchResults];
+                      filteredResults = filteredResults.filter(
+                        (v, i, a) => a.findIndex((t) => t[searchIdField] === v[searchIdField]) === i
+                      );
+                      setTableData(filteredResults);
+                    } else {
+                      setTableData(searchResults);
+                    }
                   }
                 }
               }

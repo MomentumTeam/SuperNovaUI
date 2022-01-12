@@ -20,20 +20,13 @@ import {
 } from '../../service/KartoffelService';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { USER_TYPE } from '../../constants';
+import { APPROVER_TYPES, USER_TYPE } from '../../constants';
 import { isUserHoldType, userConverse, userTemplate } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
 import '../../assets/css/local/components/approverForm.css';
 import { Tooltip } from 'primereact/tooltip';
 import configStore from '../../store/Config';
 
-const approverTypes = [
-  { label: 'גורם מאשר ראשוני', value: USER_TYPE.COMMANDER },
-  { label: 'גורם מאשר יחב"ם', value: USER_TYPE.SECURITY },
-  { label: 'גורם מאשר בטח"ם', value: USER_TYPE.SUPER_SECURITY },
-  { label: 'הרשאת בקשה מרובה', value: USER_TYPE.BULK },
-  { label: 'מחשוב יחידתי', value: USER_TYPE.ADMIN },
-];
 
 const validationSchema = Yup.object().shape({
   approverType: Yup.string().required('יש להכניס סוג מאשר'),
@@ -68,7 +61,7 @@ const validationSchema = Yup.object().shape({
     }),
   personalNumber: Yup.string().required('יש למלא ערך'),
   HierarchyApproverOf: Yup.object().when('approverType', {
-    is: (value) => value == 'ADMIN',
+    is: (value) => value == USER_TYPE.ADMIN,
     then: Yup.object().required('יש לבחור היררכיה'),
   }),
 });
@@ -246,7 +239,7 @@ const ApproverForm = forwardRef(
       <div className='p-fluid'>
         <div
           className={
-            watch('approverType') == 'ADMIN'
+            watch('approverType') == USER_TYPE.ADMIN
               ? 'p-fluid-item'
               : 'p-fluid-item p-fluid-item-flex1'
           }
@@ -263,12 +256,12 @@ const ApproverForm = forwardRef(
               id='approverForm-approverType'
               inputId='2011'
               required
-              options={approverTypes}
+              options={APPROVER_TYPES}
               onChange={handleApprover}
             />
           </div>
         </div>
-        {watch('approverType') == 'ADMIN' && (
+        {watch('approverType') == USER_TYPE.ADMIN && (
           <div className='p-fluid-item'>
             <div className='p-field'>
               <Hierarchy
@@ -398,7 +391,7 @@ const ApproverForm = forwardRef(
             name='approvers'
             multiple={true}
             errors={errors}
-            tooltip={'סא"ל ומעלה ביחידתך'} //todo: ASK
+            tooltip={'סא"ל ומעלה ביחידתך'}
             isHighRank={true}
             disabled={onlyForView || (isUserApprover && isHighCommander)}
             defaultApprovers={defaultApprovers}

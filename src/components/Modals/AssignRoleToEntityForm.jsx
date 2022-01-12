@@ -39,7 +39,6 @@ import { InputCalanderField } from '../Fields/InputCalander';
 import { hierarchyConverse } from '../../utils/hierarchy';
 import configStore from '../../store/Config';
 
-// TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
   user: Yup.object().required('נא לבחור משתמש'),
   userName: Yup.string()

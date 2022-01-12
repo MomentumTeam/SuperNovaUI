@@ -6,6 +6,7 @@ import cookies from 'js-cookie';
 import configStore from './Config';
 
 export default class UserStore {
+  isUserLoading = true;
   user = null;
   users = null;
   userNotifications = [];
@@ -14,6 +15,7 @@ export default class UserStore {
   constructor() {
     makeAutoObservable(this, {
       user: observable,
+      isUserLoading: observable,
       userUnreadNotifications: observable,
       fetchUserInfo: action,
       fetchUserNotifications: action,
@@ -30,9 +32,18 @@ export default class UserStore {
   }
 
   async fetchUserInfo() {
-    const kartoffelUser = await getUser();
-    if (kartoffelUser.displayName === "") kartoffelUser.displayName = kartoffelUser.fullName;
-    this.user = { ...this.user, ...kartoffelUser };
+    this.isUserLoading = true;
+
+    try {
+      const kartoffelUser = await getUser();
+      if (kartoffelUser.displayName === "") kartoffelUser.displayName = kartoffelUser.fullName;
+      this.user = { ...this.user, ...kartoffelUser };
+      
+    } catch (error) {
+      console.log("problem in fetching user data");
+    }
+    
+    this.isUserLoading = false;
   }
 
   parseToken() {
