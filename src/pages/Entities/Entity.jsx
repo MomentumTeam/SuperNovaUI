@@ -34,6 +34,7 @@ const Entities = observer(() => {
 
   const getData = async ({ append = false, reset = false }) => {
     setIsSearch(false);
+    setIsLoading(true);
 
     let data = [];
     if (reset) {
@@ -42,26 +43,34 @@ const Entities = observer(() => {
     }
 
     if (userStore.user.directGroup) {
-      switch (tabId) {
-        case TableNames.entities.tab:
-          await entitiesStore.loadEntitiesUnderOG(userStore.user.directGroup, reset? 1: page+1, configStore.PAGE_SIZE, append);
-          data = entitiesStore.entities;
-          break;
-        case TableNames.roles.tab:
-          await rolesStore.loadRolesUnderOG(userStore.user.directGroup, reset ? 1 : page + 1, configStore.PAGE_SIZE, append);
-          data = rolesStore.roles;
-          break;
-        case TableNames.hierarchy.tab:
-          await groupsStore.loadOGChildren(userStore.user.directGroup, reset ? 1 : page + 1, configStore.PAGE_SIZE, append);
-          data =  groupsStore.groups;
-          break;
-        default:
-          break;
+
+      try {
+        switch (tabId) {
+          case TableNames.entities.tab:
+            await entitiesStore.loadEntitiesUnderOG(userStore.user.directGroup, reset? 1: page+1, configStore.PAGE_SIZE, append);
+            data = entitiesStore.entities;
+            break;
+          case TableNames.roles.tab:
+            await rolesStore.loadRolesUnderOG(userStore.user.directGroup, reset ? 1 : page + 1, configStore.PAGE_SIZE, append);
+            data = rolesStore.roles;
+            break;
+          case TableNames.hierarchy.tab:
+            await groupsStore.loadOGChildren(userStore.user.directGroup, reset ? 1 : page + 1, configStore.PAGE_SIZE, append);
+            data =  groupsStore.groups;
+            break;
+          default:
+            break;
+        }
+        
+        setPage(reset? 1: page +1);
+      } catch (error) {
+         console.log(error);
+         actionPopup("הבאת מידע", error);
       }
 
-      setPage(reset? 1: page +1);
     }
     
+    setIsLoading(false);
     setTableData(data);
   };
     
@@ -78,17 +87,7 @@ const Entities = observer(() => {
           getNextPage = false;
       }
 
-      if (getNextPage && !isSearch) {
-        setIsLoading(true);
-        try {
-          await getData({ append: getNextPage });
-        } catch (error) {
-          console.log(error);
-          actionPopup("הבאת מידע", error);
-        }
-
-        setIsLoading(false);
-      }
+      if (getNextPage && !isSearch) await getData({ append: getNextPage });
     }
   };
 
