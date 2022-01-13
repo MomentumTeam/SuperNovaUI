@@ -30,7 +30,13 @@ export default class GroupsStore {
   }
 
   async loadOGChildren(id, page, pageSize, append = false) {
-    const groups = await getOGChildren({ id, page, pageSize, withRoles: true });
+    const groups = await getOGChildren({
+      id,
+      page,
+      pageSize,
+      withRoles: true,
+      withParent: true,
+    });
     this.groups = append ? [...this.groups, ...groups] : groups;
   }
 
