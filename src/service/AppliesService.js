@@ -5,21 +5,21 @@ import '../assets/css/local/components/status.css';
 
 //GET
 
-export const getMyRequests = async (from, to) => {
+export const getMyRequests = async (from, to, sortField = "UPDATED_AT") => {
   const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/my`, {
     params: {
       from,
       to,
-      sortField: "CREATED_AT",
+      sortField,
     },
   });
 
   return response.data;
 };
 
-export const getMyRequestsWithParams = async (params) => {
+export const getMyRequestsWithParams = async (params, sortField = "UPDATED_AT") => {
   const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/my`, {
-    params: { ...params, sortField: "CREATED_AT" },
+    params: { ...params, sortField },
   });
 
   if (Array.isArray(response.data.requests)) {
