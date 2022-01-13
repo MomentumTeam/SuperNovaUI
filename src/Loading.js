@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import LegoAnimation from './assets/images/animation/LegoAnimation.mp4';
+import './App.css';
 
 function Loading() {
   const videoRef = useRef();
@@ -12,12 +13,10 @@ function Loading() {
     <div>
       <video
         ref={videoRef}
-        width="100%"
-        height="100%"
         autoPlay
         muted
         loop
-        style={{ position: 'absolute', top: 0, left: 0 }}
+        className="loadingLogo"
         onCanPlay={() => setPlayBack()}
       >
         <source src={LegoAnimation} type="video/mp4" />
