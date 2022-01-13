@@ -58,6 +58,7 @@ const InputForm = ({ fields, item = null, methods, isEdit, errors }) => {
             required={field?.required}
             fromNow={field?.fromNow}
             showTime={field?.showTime}
+            untilNow={field?.untilNow}
           />
         );
       case InputTypes.DROPDOWN:
