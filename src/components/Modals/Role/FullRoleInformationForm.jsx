@@ -113,16 +113,15 @@ const FullRoleInformationForm = forwardRef(
             : requestObject.jobTitle
         );
 
+
         if (reqView) {
           // TODO: change in req
           const role = await getRoleByRoleId(
             requestObject.kartoffelParams.roleId
           );
           setRole(role);
-          console.log(watch('role'));
         } else {
           setRole(requestObject);
-          console.log(requestObject);
         }
       }
 
@@ -134,17 +133,31 @@ const FullRoleInformationForm = forwardRef(
       });
       setDefaultApprovers(result || []);
       setValue('isUserApprover', result.length > 0);
-      console.log(role, role?.digitalIdentityUniqueId);
-      const di = await getDIByUniqueId(role?.digitalIdentityUniqueId);
-      setDigitalIdentity(di);
-      console.log(watch('digitalIdentity'));
+
     }, [requestObject]);
 
     useEffect(async () => {
-      const entityRes = await getEntityByRoleId(
-        requestObject?.roleId || requestObject?.kartoffelParams?.roleId
-      );
-      setEntity(entityRes);
+      try {
+        const entityRes = await getEntityByRoleId(
+          requestObject?.roleId || requestObject?.kartoffelParams?.roleId
+        );
+        setEntity(entityRes);
+        
+      } catch (error) {
+        // TODO: POPUP
+      }
+
+      try {
+        if (requestObject?.digitalIdentityUniqueId) {
+          const di = await getDIByUniqueId(requestObject.digitalIdentityUniqueId);
+          setDigitalIdentity(di);
+        }
+        
+      } catch (error) {
+        // TODO: POPUP
+      }
+
+
     }, [requestObject]);
 
     const onSubmit = async (data) => {
