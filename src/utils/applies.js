@@ -232,6 +232,7 @@ export const processApprovalTableData = (tableData) => {
   return tableData.map((action) => {
     let newAction = {};
 
+    newAction["מספר בקשה"] = action.serialNumber;
     newAction['שם מבקש'] = action.submittedBy.displayName;
     newAction['מספר אישי'] = action.submittedBy.personalNumber;
     newAction['סוג בקשה'] = TYPES[action.type];
