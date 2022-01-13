@@ -113,6 +113,7 @@ const CreateOGForm = forwardRef(
           request: requestObject,
           onlyForView,
           user: userStore.user,
+          highCommander: true
         });
         setDefaultApprovers(result || []);
       }
@@ -186,6 +187,7 @@ const CreateOGForm = forwardRef(
           user: userStore.user,
           onlyForView,
           groupId: org.id,
+          highCommander: true
         });
 
         setDefaultApprovers(result || []);

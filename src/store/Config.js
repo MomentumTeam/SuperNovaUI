@@ -29,7 +29,7 @@ class ConfigStore {
       TOKEN_NAME: observable,
       PAGE_SIZE: observable,
       ITEMS_IN_PAGE: observable,
-      FIRST_PAGE: observable
+      FIRST_PAGE: observable,
     });
   }
 
@@ -45,10 +45,9 @@ class ConfigStore {
       if (config?.USER_ROLE_ENTITY_TYPE) this.USER_ROLE_ENTITY_TYPE = config.USER_ROLE_ENTITY_TYPE;
       if (config?.TOKEN_NAME) this.TOKEN_NAME = config.TOKEN_NAME;
       if (config?.PAGE_SIZE) this.PAGE_SIZE = config.PAGE_SIZE;
-      if (config?.FIRST_PAGE) this.FIRST_PAGE = config.FIRST_PAGE; 
-      
+      if (config?.FIRST_PAGE) this.FIRST_PAGE = config.FIRST_PAGE;
     } catch (error) {
-      console.log("problem with config")
+      console.log("problem with config");
     }
   }
 }

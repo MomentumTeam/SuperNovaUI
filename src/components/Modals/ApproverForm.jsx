@@ -101,9 +101,7 @@ const ApproverForm = forwardRef(
         );
         setApproverType(requestObject.additionalParams.type);
         try {
-          const hierarchy = await getOGById(
-            requestObject.additionalParams.directGroup
-          );
+          const hierarchy = await getOGById(requestObject.additionalParams.directGroup);
           setValue('hierarchy', hierarchy);
           const hierarchyApproverOf = await getOGById(
             requestObject.additionalParams.groupInChargeId
@@ -229,7 +227,9 @@ const ApproverForm = forwardRef(
         user: userStore.user,
         onlyForView,
         groupId: org.id,
+        highCommander: true
       });
+      
       setDefaultApprovers(result || []);
       setValue('isUserApprover', result.length > 0);
       setValue('groupInChargeId', watch('HierarchyApproverOf').id);
@@ -261,7 +261,7 @@ const ApproverForm = forwardRef(
             />
           </div>
         </div>
-        {watch('approverType') == USER_TYPE.ADMIN && (
+        {watch('approverType') === USER_TYPE.ADMIN && (
           <div className='p-fluid-item'>
             <div className='p-field'>
               <Hierarchy

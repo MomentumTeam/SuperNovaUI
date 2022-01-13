@@ -8,7 +8,15 @@ const BulkRowsPopup = ({ rows, columns }) => {
       <div className="tableStyle">
         <div className="card">
           <DataTable value={rows} scrollable lazy>
-            {columns.map((column) => <Column field={column.field} header={column.header} style={{ textAlignLast: "right" }} /> )}
+            {columns.map((column) => 
+            {
+              return <Column
+                field={column.field}
+                header={column.header}
+                body={column?.body}
+                style={{ textAlignLast: "right" }}
+              />
+            })}
           </DataTable>
         </div>
       </div>
