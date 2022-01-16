@@ -5,6 +5,17 @@
   margin: 0px 32px 0px 0px;
   min-height: 700px;
 }
+.tags-tooltip.p-tooltip .p-tooltip-arrow {
+    border-top-color: #F68340;
+}
+.tags-tooltip.p-tooltip .p-tooltip-text {
+    background-color: #F68340;
+}
+
+.tags-tooltip.p-tooltip * {
+    color:white;
+}
+
 
 .hierarchy-name {
   max-width: 350px;
