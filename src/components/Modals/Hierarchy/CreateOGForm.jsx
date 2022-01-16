@@ -39,6 +39,25 @@ const validationSchema = Yup.object().shape({
           !context.parent?.isHierarchyAlreadyTakenData?.isOGNameAlreadyTaken
         );
       },
+    })
+    .test({
+      name: 'valid-hierarchy-name-not-taken',
+      message: 'יש לבחור היררכיה פנויה אחרת',
+      test: async (newHierarchy, context) => {
+        if (context.parent?.parentHierarchy.id) {
+          try {
+            const { isOGNameAlreadyTaken } =
+              await isHierarchyAlreadyTakenRequest(
+                newHierarchy,
+                context.parent?.parentHierarchy.id
+              );
+
+            return newHierarchy && !isOGNameAlreadyTaken;
+          } catch (error) {
+            return false;
+          }
+        }
+      },
     }),
   parentHierarchy: Yup.object().required('יש לבחור היררכית אב'),
   isUserApprover: Yup.boolean(),

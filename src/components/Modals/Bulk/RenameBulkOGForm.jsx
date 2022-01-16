@@ -46,7 +46,7 @@ const validationSchema = Yup.object().shape({
     .when('isUserApprover', {
       is: false,
       then: Yup.array()
-        .min(1,'יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה')
+        .min(1, 'יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה')
         .required('יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה'),
     })
     .test({
@@ -115,7 +115,7 @@ const RenameBulkOGForm = forwardRef(
           request: requestObject,
           onlyForView,
           user: userStore.user,
-          highCommander: true
+          highCommander: true,
         });
         setDefaultApprovers(result || []);
       };
@@ -157,7 +157,6 @@ const RenameBulkOGForm = forwardRef(
 
       await appliesStore.changeRoleHierarchyBulk(req);
       setIsActionDone(true);
-
     };
 
     useImperativeHandle(
@@ -174,10 +173,11 @@ const RenameBulkOGForm = forwardRef(
         user: userStore.user,
         onlyForView,
         groupId: org.id,
-        highCommander: true
+        highCommander: true,
       });
       setDefaultApprovers(result || []);
       setValue('isUserApprover', result.length > 0);
+      setValue('approvers', []);
     };
 
     return (

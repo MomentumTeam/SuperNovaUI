@@ -195,6 +195,7 @@ const RenameSingleOGForm = forwardRef(
       const result = await GetDefaultApprovers({ request: requestObject, user: userStore.user, onlyForView, groupId: org.id });
       setDefaultApprovers(result || []);
       setValue("isUserApprover", result.length > 0);
+      setValue('approvers', []);
     };
 
     return (

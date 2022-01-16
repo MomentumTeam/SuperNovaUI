@@ -155,6 +155,7 @@ const RenameBulkOGForm = forwardRef(
       });
       setDefaultApprovers(result || []);
       setValue("isUserApprover", result.length > 0);
+      setValue('approvers', []);
     };
 
     return (
