@@ -17,15 +17,42 @@ import datesUtil from "../../../utils/dates";
 
 
 const validationSchema = Yup.object().shape({
-  firstName: Yup.string().required("יש למלא שם פרטי").matches(NAME_REG_EXP, "שם לא תקין"),
-  lastName: Yup.string().required("יש למלא שם משפחה").matches(NAME_REG_EXP, "שם לא תקין"),
-  identityNumber: Yup.string().required('יש להזין ת"ז').matches(IDENTITY_CARD_EXP, 'ת"ז לא תקין'),
-  mobilePhone: Yup.string().required("יש למלא מספר פלאפון נייד").matches(PHONE_REG_EXP, "מספר לא תקין"),
-  classification: Yup.string().required("יש לבחור סיווג"),
+  firstName: Yup.string()
+    .required('יש למלא שם פרטי')
+    .matches(NAME_REG_EXP, 'שם לא תקין'),
+  lastName: Yup.string()
+    .required('יש למלא שם משפחה')
+    .matches(NAME_REG_EXP, 'שם לא תקין'),
+  identityNumber: Yup.string()
+    .required('יש להזין ת"ז')
+    .matches(IDENTITY_CARD_EXP, 'ת"ז לא תקין')
+    .test({
+      name: 'check-if-valid',
+      message: 'ת"ז לא תקין!',
+      test: async (identityNumber, context) => {
+        //kartoffel validation for identityCard
+        identityNumber = identityNumber.padStart(9, '0');
+
+        const accumulator = identityNumber
+          .split('')
+          .reduce((count, currChar, currIndex) => {
+            const num = Number(currChar) * ((currIndex % 2) + 1);
+            return (count += num > 9 ? num - 9 : num);
+          }, 0);
+
+        return accumulator % 10 === 0;
+      },
+    }),
+  mobilePhone: Yup.string()
+    .required('יש למלא מספר פלאפון נייד')
+    .matches(PHONE_REG_EXP, 'מספר לא תקין'),
+  classification: Yup.string().required('יש לבחור סיווג'),
   isUserApprover: Yup.boolean(),
-  approvers: Yup.array().when("isUserApprover", {
+  approvers: Yup.array().when('isUserApprover', {
     is: false,
-    then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+    then: Yup.array()
+      .min(1, 'יש לבחור לפחות גורם מאשר אחד')
+      .required('יש לבחור לפחות גורם מאשר אחד'),
   }),
   comments: Yup.string().optional(),
   sex: Yup.string().optional().nullable(),
