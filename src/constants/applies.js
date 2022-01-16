@@ -106,16 +106,18 @@ export const pageSize = 10;
 export const itemsPerRow = 5; // must be smaller than the page size
 
 export const TableAppliesActionsEnum = {
-  VIEW_APPLY: "VIEW_APPLY",
-  VIEW_MY_APPLY: "VIEW_MY_APPLY",
-  PASS_APPLY: "PASS_APPLY",
-  TAKE_APPLY: "TAKE_APPLY",
+  VIEW_APPLY: 'VIEW_APPLY',
+  VIEW_MY_APPLY: 'VIEW_MY_APPLY',
+  PASS_APPLY: 'PASS_APPLY',
+  TAKE_APPLY: 'TAKE_APPLY',
+  RETURN_APPLY: 'RETURN_APPLY',
 };
 
 export const TableAppliesActionsTypes = {
   myreqs: {
     view: TableAppliesActionsEnum.VIEW_MY_APPLY,
     pass: TableAppliesActionsEnum.PASS_APPLY,
+    return: TableAppliesActionsEnum.RETURN_APPLY,
   },
   allreqs: {
     view: TableAppliesActionsEnum.VIEW_APPLY,

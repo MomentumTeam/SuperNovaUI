@@ -24,6 +24,7 @@ import { FullRoleInformationForm } from "../Modals/Role/FullRoleInformationForm"
 import { PassRequestDialog } from "../Modals/Request/PassRequestDialog";
 import PreviewRequestsDialog from "../Modals/Request/PreviewRequestsDialog1";
 import { TakeRequest } from "../Modals/Request/TakeRequest";
+import { ReturnRequest } from '../Modals/Request/ReturnRequest';
 import { useToast } from '../../context/use-toast';
 
 const TableActionsModal = forwardRef((_, ref) => {
@@ -149,14 +150,18 @@ const TableActionsModal = forwardRef((_, ref) => {
               actionPopup={sendActionPopup}
             />
           );
+        case TableAppliesActionsEnum.RETURN:
+          ReturnRequest({ request: selectedItem[0], actionPopup: actionPopup });
+          closeActionModal();
+          break;
         case TableAppliesActionsEnum.TAKE_APPLY:
           TakeRequest({ request: selectedItem[0], actionPopup: actionPopup });
           closeActionModal();
           break;
         default:
           toastRef.current.show({
-            severity: "error",
-            summary: "פעולה לא ממומשת",
+            severity: 'error',
+            summary: 'פעולה לא ממומשת',
             detail: `פעולה זו לא ממומשת במערכת עדיין`,
             life: 1000,
           });
