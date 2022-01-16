@@ -69,6 +69,12 @@ const TableActions = ({ setActionType, openActionModal, setEvent }) => {
     // Add view action
     if (tableActions.pass && canPassApply(selectedItem[0], user))
       actions.push(getAction("העבר לטיפול גורם אחר", tableActions.pass));
+     if (
+       tableActions.return &&
+       canPassApply(selectedItem[0], user) &&
+       isApproverAndCanEdit(selectedItem[0], user)
+     )
+       actions.push(getAction('החזר לסל הבקשות', tableActions.return));
     if (tableActions.take && canPassApply(selectedItem[0], user) && !isApproverAndCanEdit(selectedItem[0], user))
       actions.push(getAction("העברה לטיפולי", tableActions.take));
 
