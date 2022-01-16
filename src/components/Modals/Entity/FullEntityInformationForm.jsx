@@ -22,24 +22,28 @@ import '../../../assets/css/local/components/modal-item.css';
 import { getSamAccountNameFromEntity } from '../../../utils/fields';
 
 const validationSchema = Yup.object().shape({
-  firstName: Yup.string()
-    .required('יש לבחור שם פרטי')
-    .matches(NAME_REG_EXP, 'שם לא תקין'),
-  lastName: Yup.string()
-    .required('יש לבחור שם משפחה')
-    .matches(NAME_REG_EXP, 'שם לא תקין'),
+  canEditEntityFields: Yup.boolean(),
+  firstName: Yup.string().when("canEditEntityFields", {
+    is: true,
+    then: Yup.string().required("יש לבחור שם פרטי").matches(NAME_REG_EXP, "שם לא תקין"),
+  }),
+  lastName: Yup.string().when("canEditEntityFields", {
+    is: true,
+    then: Yup.string().required("יש לבחור שם משפחה").matches(NAME_REG_EXP, "שם לא תקין"),
+  }),
   hasIdentityCard: Yup.boolean(),
-  identityCard: Yup.string().when('hasIdentityCard', {
+  identityCard: Yup.string().when("hasIdentityCard", {
     is: true,
     then: Yup.string().required('יש להזין ת"ז'),
   }),
-  mobilePhone: Yup.string()
-      .matches(PHONE_REG_EXP, 'מספר לא תקין')
-      .required('נא להזין מספר'),
-  canSeeUserClearance: Yup.boolean(),
-  clearance: Yup.string().when('canSeeUserClearance', {
+  mobilePhone: Yup.string().when("canEditEntityFields", {
     is: true,
-    then: Yup.string().required('יש להכניס סיווג'),
+    then: Yup.string().matches(PHONE_REG_EXP, "מספר לא תקין").required("נא להזין מספר"),
+  }),
+  canSeeUserClearance: Yup.boolean(),
+  clearance: Yup.string().when("canSeeUserClearance", {
+    is: true,
+    then: Yup.string().required("יש להכניס סיווג"),
   }),
 });
 
@@ -52,7 +56,7 @@ const FullEntityInformationForm = forwardRef(
     const [user, setUser] = useState(requestObject);
     const methods = useForm({
       resolver: yupResolver(validationSchema),
-      defaultValues: user,
+      defaultValues: {...user, canEditEntityFields:CanEditEntityFields(user)},
     });
     const { errors } = methods.formState;
 
@@ -61,8 +65,8 @@ const FullEntityInformationForm = forwardRef(
         if (reqView) {
           setUser(requestObject.kartoffelParams);
         } else {
+          if(!requestObject?.mobilePhone) requestObject.mobilePhone = '';
           if (Array.isArray(requestObject.mobilePhone)) requestObject.mobilePhone = requestObject.mobilePhone[0];
-          
           setUser(requestObject);
         }
       }
@@ -77,7 +81,9 @@ const FullEntityInformationForm = forwardRef(
           id: tempForm.id,
           firstName: tempForm.firstName,
           lastName: tempForm.lastName,
-          phone: Array.isArray(tempForm.mobilePhone)
+          phone: !tempForm?.mobilePhone
+            ? []
+            : Array.isArray(tempForm.mobilePhone)
             ? tempForm.mobilePhone
             : [tempForm.mobilePhone],
           ...(tempForm.serviceType && { serviceType: tempForm.serviceType }),
@@ -132,14 +138,14 @@ const FullEntityInformationForm = forwardRef(
         fieldName: 'firstName',
         displayName: 'שם פרטי',
         inputType: InputTypes.TEXT,
-        canEdit: () => CanEditEntityFields(user),
+        canEdit:  methods.watch("canEditEntityFields"),
         force: true,
       },
       {
         fieldName: 'lastName',
         displayName: 'שם משפחה',
         inputType: InputTypes.TEXT,
-        canEdit: () => CanEditEntityFields(user),
+        canEdit: methods.watch("canEditEntityFields"),
         force: true,
       },
       {
@@ -154,7 +160,7 @@ const FullEntityInformationForm = forwardRef(
         inputType: InputTypes.TEXT,
         type: 'num',
         keyFilter: 'num',
-        canEdit: () => CanEditEntityFields(user),
+        canEdit:  methods.watch("canEditEntityFields"),
       },
       {
         fieldName: 'rank',
@@ -195,7 +201,7 @@ const FullEntityInformationForm = forwardRef(
         inputType: InputTypes.TEXT,
         type: 'num',
         keyFilter: 'num',
-        canEdit: true,
+        canEdit:  methods.watch("canEditEntityFields"),
         force: true,
       },
       {
