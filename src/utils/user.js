@@ -15,6 +15,11 @@ export const isUserHoldType = (user, type) => {
   return user.types.includes(type);
 };
 
+export const isUserApproverType = (user) => {
+  return isUserHoldType(user, USER_TYPE.COMMANDER) || isUserHoldType(user, USER_TYPE.ADMIN);
+}
+
+
 export const getUserTag = (type) => {
   let tag;
   let isValidType = true;
@@ -64,5 +69,9 @@ export const userConverse = (user) => {
 };
 
 export const formatServiceType = (user) => {
-  <>{user[1] ? user[0] : USER_ENTITY_TYPE[user[0]]}</>;
+  return <>{user[1] ? user[0] : USER_ENTITY_TYPE[user[0]]}</>;
 }
+
+export const identityOrPersonalNumber = (user) => {
+  return user[0]? user[0]: user[1]
+};

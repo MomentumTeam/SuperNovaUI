@@ -8,7 +8,7 @@ import { NAME_OG_EXP, USER_TYPE } from "../../../constants";
 import "../../../assets/css/local/general/buttons.css";
 import "../../../assets/css/local/components/modal-item.css";
 import { GetDefaultApprovers } from "../../../utils/approver";
-import { isUserHoldType } from "../../../utils/user";
+import { isUserApproverType, isUserHoldType } from "../../../utils/user";
 import { useStores } from "../../../context/use-stores";
 import { getHierarchy, getOuDisplayName, hierarchyConverse } from "../../../utils/hierarchy";
 import { InputForm, InputTypes } from '../../Fields/InputForm';
@@ -20,7 +20,7 @@ const FullHierarchyInformationForm = forwardRef(
   ) => {
     const { userStore, appliesStore } = useStores();
     const [isHierarchyFree, setIsHierarchyFree] = useState(true);
-    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
+    const isUserApprover = isUserApproverType(userStore.user);
     const [hierarchy, setHierarchy] = useState(requestObject);
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 

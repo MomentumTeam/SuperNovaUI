@@ -10,13 +10,12 @@ import {
   TableActionsTypes as MyRequestsTableActionsTypes,
   TableNames as MyRequestsUsersTableNames,
 } from "../../constants/myRequestsTable";
-import { USER_TYPE } from "../../constants";
 import { canEditEntity } from "../../utils/entites";
 import { canEditRole } from "../../utils/roles";
 import { canEditHierarchy } from "../../utils/hierarchy";
 import { useContext } from "react";
 import { TableContext } from ".";
-import { isUserHoldType } from "../../utils/user";
+import { isUserApproverType } from "../../utils/user";
 import { canPassApply, isApproverAndCanEdit } from "../../utils/applies";
 
 const TableActions = ({ setActionType, openActionModal, setEvent }) => {
@@ -62,7 +61,7 @@ const TableActions = ({ setActionType, openActionModal, setEvent }) => {
 
     // Add delete action
     if (tableActions.delete) {
-      if (isUserHoldType(user, USER_TYPE.COMMANDER)) {
+      if (isUserApproverType(userStore.user)) {
         actions.push(getAction("מחיקה", tableActions.delete));
       }
     }

@@ -11,8 +11,8 @@ import { useStores } from '../../../context/use-stores';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isJobTitleAlreadyTakenRequest } from '../../../service/KartoffelService';
-import { isUserHoldType } from '../../../utils/user';
-import { USER_TYPE, ROLE_CLEARANCE, ROLE_EXP } from "../../../constants";
+import { isUserApproverType } from '../../../utils/user';
+import {  ROLE_CLEARANCE, ROLE_EXP } from "../../../constants";
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
@@ -70,12 +70,17 @@ const validationSchema = Yup.object().shape({
       message: 'יש לבחור תפקיד אחר פנוי',
       test: async (roleName, context) => {
         if (context.parent?.hierarchy?.id) {
-          const isJobTitleAlreadyTaken = await isJobTitleAlreadyTakenRequest(
-            roleName,
-            context.parent?.hierarchy.id
-          );
-
-          return roleName && !isJobTitleAlreadyTaken?.isJobTitleAlreadyTaken;
+          try {
+            const isJobTitleAlreadyTaken = await isJobTitleAlreadyTakenRequest(
+              roleName,
+              context.parent?.hierarchy.id
+            );
+  
+            return roleName && !isJobTitleAlreadyTaken?.isJobTitleAlreadyTaken;
+            
+          } catch (error) {
+            return false;
+          }
         }
       },
     }),
@@ -90,8 +95,8 @@ const validationSchema = Yup.object().shape({
 const RenameSingleOGForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject }, ref) => {
     const { appliesStore, userStore } = useStores();
-    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
     const [defaultApprovers, setDefaultApprovers] = useState([]);
+    const isUserApprover = isUserApproverType(userStore.user);
 
     const { register, handleSubmit, setValue, watch, formState, getValues, clearErrors } = useForm({
       resolver: yupResolver(validationSchema),

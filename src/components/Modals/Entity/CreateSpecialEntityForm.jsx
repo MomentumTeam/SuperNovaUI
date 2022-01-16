@@ -11,7 +11,7 @@ import {
   IDENTITY_CARD_EXP,
 } from "../../../constants";
 import { GetDefaultApprovers } from '../../../utils/approver';
-import { isUserHoldType } from '../../../utils/user';
+import { isUserApproverType, isUserHoldType } from '../../../utils/user';
 import { InputForm, InputTypes } from '../../Fields/InputForm';
 import datesUtil from "../../../utils/dates";
 
@@ -34,7 +34,7 @@ const validationSchema = Yup.object().shape({
 const CreateSpecialEntityForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject }, ref) => {
     const { appliesStore, userStore, configStore} = useStores();
-    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
+    const isUserApprover = isUserApproverType(userStore.user);
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
     const methods = useForm({

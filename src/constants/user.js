@@ -15,7 +15,7 @@ export const USER_SEX = [
 export const USER_ENTITY_TYPE = {
   Soldier: "חייל",
   Civilian: "אזרח",
-  GoalUser: "GoalUser",
+  GoalUser: "GoalUser"
 };
 
 export const USER_TYPE = {
