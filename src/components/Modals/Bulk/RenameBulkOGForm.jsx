@@ -22,8 +22,7 @@ import {
   getBulkChangeRoleHierarchyData,
 } from '../../../service/AppliesService';
 import { GetDefaultApprovers } from '../../../utils/approver';
-import { isUserHoldType } from '../../../utils/user';
-import { USER_TYPE } from '../../../constants';
+import { isUserApproverType } from '../../../utils/user';
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
 
@@ -47,8 +46,8 @@ const validationSchema = Yup.object().shape({
     .when('isUserApprover', {
       is: false,
       then: Yup.array()
-        .min(1, 'יש לבחור לפחות גורם מאשר אחד')
-        .required('יש לבחור לפחות גורם מאשר אחד'),
+        .min(1,'יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה')
+        .required('יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה'),
     })
     .test({
       name: 'check-if-valid',
@@ -97,10 +96,9 @@ const RenameBulkOGForm = forwardRef(
     const { appliesStore, userStore } = useStores();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
-    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
     const { register, handleSubmit, setValue, formState, watch } = useForm({
       resolver: yupResolver(validationSchema),
-      defaultValues: { isUserApprover },
+      defaultValues: { isUserApprover: isUserApproverType(userStore.user) },
     });
 
     const { errors } = formState;
@@ -117,6 +115,7 @@ const RenameBulkOGForm = forwardRef(
           request: requestObject,
           onlyForView,
           user: userStore.user,
+          highCommander: true
         });
         setDefaultApprovers(result || []);
       };
@@ -175,6 +174,7 @@ const RenameBulkOGForm = forwardRef(
         user: userStore.user,
         onlyForView,
         groupId: org.id,
+        highCommander: true
       });
       setDefaultApprovers(result || []);
       setValue('isUserApprover', result.length > 0);
@@ -235,7 +235,7 @@ const RenameBulkOGForm = forwardRef(
           <Approver
             setValue={setValue}
             name="approvers"
-            tooltip='רס"ן ומעלה ביחידתך'
+            tooltip='סא"ל ומעלה ביחידתך'
             multiple={true}
             errors={errors}
             disabled={onlyForView || watch('isUserApprover')}

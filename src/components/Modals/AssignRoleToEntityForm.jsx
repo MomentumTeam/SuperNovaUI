@@ -32,7 +32,7 @@ import {
 } from '../../service/KartoffelService';
 import { getUserTypeReq, isApproverValid } from '../../service/ApproverService';
 import { USER_TYPE } from '../../constants';
-import { isUserHoldType } from '../../utils/user';
+import { isUserApproverType } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
 import { getSamAccountNameFromUniqueId } from '../../utils/fields';
 import { InputCalanderField } from '../Fields/InputCalander';
@@ -48,17 +48,6 @@ const validationSchema = Yup.object().shape({
       message: 'נא לבחור משתמש',
       test: (userName, context) => {
         return userName && context.parent?.user;
-      },
-    })
-    .test({
-      name: 'valid-user-rank',
-      message: 'לא ניתן לשייך משתמש זה מכיוון שאין לו דרגה',
-      test: (userName, context) => {
-        return (
-          userName &&
-          context.parent?.user?.rank &&
-          context.parent?.user?.rank !== ''
-        );
       },
     }),
   personalNumber: Yup.string().required('יש למלא ערך'),
@@ -128,7 +117,7 @@ const AssignRoleToEntityForm = forwardRef(
     const [roleSuggestions, setRoleSuggestions] = useState([]);
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
-    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
+    const isUserApprover = isUserApproverType(userStore.user);
 
     const {
       register,
@@ -137,7 +126,6 @@ const AssignRoleToEntityForm = forwardRef(
       getValues,
       watch,
       formState,
-      setError,
       clearErrors,
     } = useForm({
       resolver: yupResolver(validationSchema),
@@ -226,8 +214,8 @@ const AssignRoleToEntityForm = forwardRef(
           firstName: user.firstName,
           lastName: user.lastName,
           fullName: user.fullName,
-          rank: user.rank,
-          roleSerialCode: '?',
+          ...(user.rank && { rank: user.rank }),
+          roleSerialCode: "?",
         },
         comments,
         due: changeRoleAt ? changeRoleAt.getTime() : Date.now(),
@@ -326,7 +314,7 @@ const AssignRoleToEntityForm = forwardRef(
 
           // Check if the entity is approver, if not, set the
           const { type } = await getUserTypeReq(entity.id);
-          const isEntityApprover = type.includes(USER_TYPE.COMMANDER);
+          const isEntityApprover = [USER_TYPE.COMMANDER, USER_TYPE.ADMIN].some(userType => type.includes(userType));
 
           if (isEntityApprover) approver = [entity];
         }

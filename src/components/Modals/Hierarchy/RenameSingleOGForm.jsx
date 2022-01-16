@@ -10,8 +10,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { getRolesUnderOG, getRoleByRoleId, searchRolesByRoleId, getOGById } from "../../../service/KartoffelService";
 import HorizontalLine from "../../HorizontalLine";
 import { GetDefaultApprovers } from "../../../utils/approver";
-import { isUserHoldType } from "../../../utils/user";
-import { USER_TYPE } from "../../../constants";
+import { isUserApproverType } from "../../../utils/user";
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { getSamAccountNameFromUniqueId } from '../../../utils/fields';
 import { AutoComplete } from 'primereact/autocomplete';
@@ -50,8 +49,8 @@ const validationSchema = Yup.object().shape({
     .when('isUserApprover', {
       is: false,
       then: Yup.array()
-        .min(1, 'יש לבחור לפחות גורם מאשר אחד')
-        .required('יש לבחור לפחות גורם מאשר אחד'),
+        .min(1, 'יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה')
+        .required('יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה'),
     })
     .test({
       name: 'check-if-valid',
@@ -85,11 +84,10 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
   const { appliesStore, userStore } = useStores();
   const [roleSuggestions, setRoleSuggestions] = useState([]);
   const [defaultApprovers, setDefaultApprovers] = useState([]);
-  const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
 
   const { register, handleSubmit, setValue, watch, formState, getValues } = useForm({
     resolver: yupResolver(validationSchema),
-    defaultValues: { isUserApprover },
+    defaultValues: { isUserApprover: isUserApproverType(userStore.user) },
   });
   const [roles, setRoles] = useState([]);
   const { errors } = formState;
@@ -157,6 +155,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
       user: userStore.user,
       onlyForView,
       groupId: org.id,
+      highCommander: true
     });
     setDefaultApprovers(result || []);
     setValue("isUserApprover", result.length > 0);
@@ -198,6 +197,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
           user: userStore.user,
           onlyForView,
           groupId: role.directGroup,
+          highCommander: true
         });
         setDefaultApprovers(result || []);
         setValue('isUserApprover', result.length > 0);
@@ -326,7 +326,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
           name="approvers"
           multiple={true}
           errors={errors}
-          tooltip='רס"ן ומעלה ביחידתך'
+          tooltip='סא"ל ומעלה ביחידתך'  
           disabled={onlyForView || watch('isUserApprover')}
           defaultApprovers={defaultApprovers}
         />

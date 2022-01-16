@@ -24,7 +24,7 @@ export default class MyRequestsStore {
 
 
   async loadMyRequests(from, to, append = false) {
-    const myRequests = await getMyRequests(from, to);
+    const myRequests = await getMyRequests(from, to, "CREATED_AT");
     this.myRequests = append ? [...this.myRequests, ...myRequests.requests] : myRequests.requests;
     this.totalCount  = myRequests.totalCount;
   }
