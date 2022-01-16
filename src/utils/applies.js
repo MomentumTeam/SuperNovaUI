@@ -6,7 +6,7 @@ import {
   REQ_STATUSES,
 } from '../constants';
 import datesUtil from '../utils/dates';
-import { isUserHoldType } from './user';
+import { isUserApproverType, isUserHoldType } from './user';
 
 
 export const organizeRows = (rows) => {
@@ -99,12 +99,7 @@ export const getResponsibleFactorFields = (user) => {
     fields.push('superSecurityApprovers');
   if (user === undefined || isUserHoldType(user, USER_TYPE.SECURITY))
     fields.push('securityApprovers');
-  if (
-    user === undefined ||
-    isUserHoldType(user, USER_TYPE.ADMIN) ||
-    isUserHoldType(user, USER_TYPE.COMMANDER)
-  )
-    fields.push('commanders');
+  if (user === undefined || isUserApproverType(user)) fields.push("commanders");
 
   return fields;
 };
@@ -113,13 +108,10 @@ export const getApproverComments = (apply, user) => {
   const comments = [];
   const applyComments = apply['approversComments'];
 
-  if (
-    isUserHoldType(user, USER_TYPE.COMMANDER) ||
-    isUserHoldType(user, USER_TYPE.ADMIN)
-  )
+  if (isUserApproverType(user))
     comments.push({
-      comment: applyComments['commanderComment'],
-      label: 'הערות גורם מאשר',
+      comment: applyComments["commanderComment"],
+      label: "הערות גורם מאשר",
       userType: USER_TYPE.COMMANDER,
     });
   if (isUserHoldType(user, USER_TYPE.SECURITY))
@@ -156,8 +148,7 @@ export const canEditApply = (apply, user) => {
       !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)) ||
     (isUserHoldType(user, USER_TYPE.SECURITY) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) ||
-    ((isUserHoldType(user, USER_TYPE.COMMANDER) ||
-      isUserHoldType(user, USER_TYPE.ADMIN)) &&
+    (isUserApproverType(user) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER))
   );
 };

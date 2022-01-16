@@ -14,8 +14,8 @@ import { debounce } from 'lodash';
 
 import Hierarchy from '../../Fields/Hierarchy';
 import { useStores } from '../../../context/use-stores';
-import { isUserHoldType } from '../../../utils/user';
-import { ROLE_EXP, USER_TYPE } from '../../../constants';
+import { isUserApproverType } from '../../../utils/user';
+import { ROLE_EXP } from '../../../constants';
 import {
   getEntityByRoleId,
   getRoleByRoleId,
@@ -38,7 +38,7 @@ const FullRoleInformationForm = forwardRef(
     const [digitalIdentity, setDigitalIdentity] = useState();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
-    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
+    const isUserApprover = isUserApproverType(userStore.user);
 
     const validationSchema = Yup.object().shape({
       isUserApprover: Yup.boolean(),

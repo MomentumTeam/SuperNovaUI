@@ -17,7 +17,7 @@ import Approver from '../../Fields/Approver';
 import { isHierarchyAlreadyTakenRequest } from '../../../service/KartoffelService';
 import { useStores } from '../../../context/use-stores';
 import { GetDefaultApprovers } from '../../../utils/approver';
-import { isUserHoldType } from '../../../utils/user';
+import { isUserApproverType, isUserHoldType } from '../../../utils/user';
 import {
   USER_TYPE,
   NAME_OG_EXP,
@@ -46,8 +46,8 @@ const validationSchema = Yup.object().shape({
     .when('isUserApprover', {
       is: false,
       then: Yup.array()
-        .min(1, 'יש לבחור לפחות גורם מאשר אחד')
-        .required('יש לבחור לפחות גורם מאשר אחד'),
+        .min(1, 'יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה')
+        .required('יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה'),
     })
     .test({
       name: 'check-if-valid',
@@ -87,17 +87,10 @@ const CreateOGForm = forwardRef(
     const { appliesStore, userStore } = useStores();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
-    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
-    const isHighCommander =
-      isUserApprover && userStore.user?.rank
-        ? configStore.USER_HIGH_COMMANDER_RANKS.includes(userStore.user.rank)
-        : false;
-
-    const { register, handleSubmit, setValue, formState, watch, getValues } =
-      useForm({
-        resolver: yupResolver(validationSchema),
-        defaultValues: { isUserApprover },
-      });
+    const { register, handleSubmit, setValue, formState, watch, getValues } = useForm({
+      resolver: yupResolver(validationSchema),
+      defaultValues: { isUserApprover: isUserApproverType(userStore.user) },
+    });
 
     const { errors } = formState;
 
@@ -116,6 +109,7 @@ const CreateOGForm = forwardRef(
           highCommander: true
         });
         setDefaultApprovers(result || []);
+        setValue("isUserApprover", result.length > 0);
       }
     }, []);
 
@@ -179,9 +173,6 @@ const CreateOGForm = forwardRef(
     };
 
     const handleOrgSelected = async (org) => {
-      if (isHighCommander) {
-        //this apply needs highCommander approval
-
         const result = await GetDefaultApprovers({
           request: requestObject,
           user: userStore.user,
@@ -192,7 +183,6 @@ const CreateOGForm = forwardRef(
 
         setDefaultApprovers(result || []);
         setValue('isUserApprover', result.length > 0);
-      }
 
       if (getValues('newHierarchy')) {
         debouncedHierarchyName.current(
@@ -261,7 +251,7 @@ const CreateOGForm = forwardRef(
             errors={errors}
             isHighRank={true}
             tooltip='סא"ל ומעלה ביחידתך'
-            disabled={onlyForView || (isUserApprover && isHighCommander)}
+            disabled={onlyForView || watch("isUserApprover")}
             defaultApprovers={defaultApprovers}
           />
         </div>

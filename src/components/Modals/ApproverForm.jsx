@@ -21,48 +21,38 @@ import {
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { APPROVER_TYPES, USER_TYPE } from '../../constants';
-import { isUserHoldType, userConverse, userTemplate } from '../../utils/user';
+import { isUserApproverType, userConverse, userTemplate } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
 import '../../assets/css/local/components/approverForm.css';
 import { Tooltip } from 'primereact/tooltip';
-import configStore from '../../store/Config';
 
 
 const validationSchema = Yup.object().shape({
-  approverType: Yup.string().required('יש להכניס סוג מאשר'),
-  user: Yup.object().required('יש לבחור משתמש'),
-  hierarchy: Yup.object().required('יש לבחור היררכיה'),
+  approverType: Yup.string().required("יש להכניס סוג מאשר"),
+  user: Yup.object().required("יש לבחור משתמש"),
+  hierarchy: Yup.object().required("יש לבחור היררכיה"),
   isUserApprover: Yup.boolean(),
-  isHighCommander: Yup.boolean(),
   approvers: Yup.array()
-    .when('isUserApprover', {
+    .when("isUserApprover", {
       is: false,
-      then: Yup.array()
-        .min(1, 'יש לבחור לפחות גורם מאשר אחד')
-        .required('יש לבחור לפחות גורם מאשר אחד'),
-    })
-    .when(['isUserApprover', 'isHighCommander'], {
-      is: (isUserApprover, isHighCommander) => {
-        return isUserApprover && !isHighCommander;
-      },
       then: Yup.array()
         .min(1, 'יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה')
         .required('יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה'),
     }),
   comments: Yup.string().optional(),
   userName: Yup.string()
-    .required('יש לבחור שם משתמש')
+    .required("יש לבחור שם משתמש")
     .test({
-      name: 'valid-user',
-      message: 'נא לבחור משתמש',
+      name: "valid-user",
+      message: "נא לבחור משתמש",
       test: (userName, context) => {
         return userName && context.parent?.user;
       },
     }),
-  personalNumber: Yup.string().required('יש למלא ערך'),
-  HierarchyApproverOf: Yup.object().when('approverType', {
-    is: (value) => value == USER_TYPE.ADMIN,
-    then: Yup.object().required('יש לבחור היררכיה'),
+  personalNumber: Yup.string().required("יש למלא ערך"),
+  HierarchyApproverOf: Yup.object().when("approverType", {
+    is: (value) => value === USER_TYPE.ADMIN,
+    then: Yup.object().required("יש לבחור היררכיה"),
   }),
 });
 
@@ -71,17 +61,11 @@ const ApproverForm = forwardRef(
     const { appliesStore, userStore } = useStores();
     const [approverType, setApproverType] = useState();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
-    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
-    const isHighCommander =
-      isUserApprover && userStore.user?.rank
-        ? configStore.USER_HIGH_COMMANDER_RANKS.includes(userStore.user.rank)
-        : false;
 
-    const { register, handleSubmit, setValue, getValues, formState, watch } =
-      useForm({
-        resolver: yupResolver(validationSchema),
-        defaultValues: { isUserApprover ,isHighCommander},
-      });
+    const { register, handleSubmit, setValue, getValues, formState, watch } = useForm({
+      resolver: yupResolver(validationSchema),
+      defaultValues: { isUserApprover: isUserApproverType(userStore.user) },
+    });
     const [userSuggestions, setUserSuggestions] = useState([]);
     const { errors } = formState;
 
@@ -118,7 +102,10 @@ const ApproverForm = forwardRef(
         user: userStore.user,
         highCommander: true,
       });
+      
       setDefaultApprovers(result || []);
+      setValue("isUserApprover", result.length > 0);
+
     }, []);
 
 
@@ -152,14 +139,12 @@ const ApproverForm = forwardRef(
           ...(user.akaUnit && { akaUnit: user.akaUnit }),
           ...(user.personalNumber && { personalNumber: user.personalNumber }),
           ...(user.identityCard && { identityCard: user.identityCard }),
+          ...(groupInChargeId && {groupInChargeId})
         },
         comments,
         due: Date.now(),
       };
 
-      if (groupInChargeId) {
-        req.additionalParams.groupInChargeId = groupInChargeId;
-      }
 
       await appliesStore.createNewApproverApply(req);
       setIsActionDone(true);
@@ -393,7 +378,7 @@ const ApproverForm = forwardRef(
             errors={errors}
             tooltip={'סא"ל ומעלה ביחידתך'}
             isHighRank={true}
-            disabled={onlyForView || (isUserApprover && isHighCommander)}
+            disabled={onlyForView || watch("isUserApprover")}
             defaultApprovers={defaultApprovers}
           />
         </div>

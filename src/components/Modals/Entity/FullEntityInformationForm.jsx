@@ -69,7 +69,6 @@ const FullEntityInformationForm = forwardRef(
     }, [requestObject]);
 
     const onSubmit = async (data) => {
-      console.log(data);
       try {
         let tempForm = { ...user, ...data };
         tempForm.fullName = `${tempForm.firstName} ${tempForm.lastName}`;

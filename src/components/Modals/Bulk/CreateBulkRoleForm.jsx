@@ -17,7 +17,7 @@ import {
   getCreateBulkRoleData,
 } from '../../../service/AppliesService';
 import { STATUSES, USER_TYPE } from '../../../constants';
-import { isUserHoldType } from '../../../utils/user';
+import { isUserApproverType } from "../../../utils/user";
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
@@ -68,7 +68,7 @@ const validationSchema = Yup.object().shape({
 const RenameBulkOGForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject }, ref) => {
     const { appliesStore, userStore } = useStores();
-    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
+    const isUserApprover = isUserApproverType(userStore.user);
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
     const { register, handleSubmit, setValue, formState, watch } = useForm({

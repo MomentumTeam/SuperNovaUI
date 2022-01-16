@@ -3,13 +3,13 @@ import { useStores } from "../context/use-stores";
 import { TextFieldTemplate } from "../components/Fields/TextFieldTemplate";
 import { concatHierarchy, hierarchyConverse, hierarchyItemTemplate } from '../utils/hierarchy';
 import { actions } from './actions';
-import { formatServiceType, userTemplate, userConverse } from '../utils/user';
+import { formatServiceType, userTemplate, userConverse, identityOrPersonalNumber } from '../utils/user';
 
 export const TableTypes = {
   entities: [
     { field: "firstName", displayName: "שם פרטי" },
     { field: "lastName", displayName: "שם משפחה" },
-    { field: "personalNumber", displayName: 'מ"א/ת"ז' },
+    { field: ["personalNumber", "identityCard"], displayName: 'מ"א/ת"ז', formatter: identityOrPersonalNumber },
     {
       field: "clearance",
       displayName: "סיווג",
@@ -22,7 +22,7 @@ export const TableTypes = {
     { field: ["serviceType", "entityType"], displayName: "סוג שירות", formatter: formatServiceType },
   ],
   hierarchy: [
-    { field: ["hierarchy", "name"], displayName: "היררכיה", formatter: concatHierarchy},
+    { field: ["hierarchy", "name"], displayName: "היררכיה", formatter: concatHierarchy },
     { field: "id", displayName: "מזהה היררכיה", hide: true },
     { field: "directRoles.length", displayName: "מספר תפקידים", default: 0 },
   ],
