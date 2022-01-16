@@ -159,6 +159,7 @@ const RenameSingleOGForm = forwardRef(({ setIsActionDone, onlyForView, requestOb
     });
     setDefaultApprovers(result || []);
     setValue("isUserApprover", result.length > 0);
+    setValue('approvers', []);
 
     const roles = await getRolesUnderOG({ id: org.id, direct: true });
     setRoles(roles || []);
