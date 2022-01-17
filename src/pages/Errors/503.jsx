@@ -1,11 +1,8 @@
 import { useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import healthStore from '../../store/Health';
 import "../../assets/css/local/pages/errorpages.css";
 
-const Error503 = () => {
-  let history = useHistory();
-  
+const Error503 = () => {  
   useEffect(() => {
     const healthcheck = setInterval(async () => {
       await healthStore.loadHealth()

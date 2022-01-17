@@ -14,11 +14,10 @@ class HealthStore {
   }
 
   async loadHealth() {
-    console.log("loadhealth, is loading: ", this.isLoading, " health: ", this.isApiHealthy);
     if (!this.isLoading) {
       this.isLoading = true;
       const isAlive = await isAPIAlive();
-      console.log(isAlive)
+      
       if (!isAlive) {
         this.isLoading = false;
         this.isApiHealthy = false;
@@ -27,7 +26,6 @@ class HealthStore {
         this.isApiHealthy = true;
       }
 
-      console.log("res loadhealth,  health res: ", isAlive);
       this.isLoading = false;
     }
   }
