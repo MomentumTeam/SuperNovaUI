@@ -3,7 +3,7 @@ import { getConfig } from '../service/ConfigService';
 
 class ConfigStore {
   // USER
-  USER_CITIZEN_ENTITY_TYPE = "agumon";
+  USER_CITIZEN_ENTITY_TYPE = "digimon";
   USER_CLEARANCE = ["1", "2", "3", "4", "5", "6"];
   USER_SOURCE_DI = "sf_name";
   USER_NO_PICTURE = "pictureUrl";

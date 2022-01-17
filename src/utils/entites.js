@@ -18,7 +18,6 @@ export const canEditEntity = (selectedEntity, user) => {
 export const CanEditEntityFields = (selectedEntity) => {
   const { userStore } = useStores();
   const user = toJS(userStore.user);
-
   return selectedEntity.id === user.id;
 };
 
