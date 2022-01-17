@@ -3,16 +3,16 @@ import { USER_ENTITY_TYPE, USER_TYPE, USER_TYPE_TAG } from "../constants";
 // permissions
 export const isUserCanSeeAllApproveApplies = (user) => {
   const allowedTypes = [USER_TYPE.SUPER_SECURITY, USER_TYPE.SECURITY, USER_TYPE.ADMIN];
-  return allowedTypes.some((allowedType) => user.types.includes(allowedType));
+  return user?.types && allowedTypes.some((allowedType) => user.types.includes(allowedType));
 };
 
 export const isUserCanSeeMyApproveApplies = (user) => {
   const allowedTypes = [USER_TYPE.COMMANDER, USER_TYPE.SUPER_SECURITY, USER_TYPE.SECURITY, USER_TYPE.ADMIN];
-  return allowedTypes.some((allowedType) => user.types.includes(allowedType));
+  return user?.types && allowedTypes.some((allowedType) => user.types.includes(allowedType));
 };
 
 export const isUserHoldType = (user, type) => {
-  return user.types.includes(type);
+  return user?.types && user.types.includes(type);
 };
 
 export const isUserApproverType = (user) => {

@@ -17,11 +17,8 @@ import Approver from '../../Fields/Approver';
 import { isHierarchyAlreadyTakenRequest } from '../../../service/KartoffelService';
 import { useStores } from '../../../context/use-stores';
 import { GetDefaultApprovers } from '../../../utils/approver';
-import { isUserApproverType, isUserHoldType } from '../../../utils/user';
-import {
-  USER_TYPE,
-  NAME_OG_EXP,
-} from '../../../constants';
+import { isUserApproverType, } from '../../../utils/user';
+import {NAME_OG_EXP} from '../../../constants';
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
 import configStore from '../../../store/Config';

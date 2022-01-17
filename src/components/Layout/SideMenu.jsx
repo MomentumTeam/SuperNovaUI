@@ -35,7 +35,7 @@ const SideMenu = () => {
         </div>
       <nav>
         <ul>{appRoutes.map((menuItem, i) => {
-          if (!menuItem?.roles || menuItem.roles.some((role) => userTypes.includes(role)))
+          if (menuItem?.classIcon || !menuItem?.roles || menuItem.roles.some((role) => userTypes.includes(role)))
             return getNavButton(menuItem, i);
         })}</ul>
       </nav>

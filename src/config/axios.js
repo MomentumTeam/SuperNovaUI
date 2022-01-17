@@ -2,6 +2,7 @@ import axios from 'axios';
 import cookies from 'js-cookie';
 import { apiBaseUrl } from '../constants/api';
 import configStore from '../store/Config';
+import { CheckHealth } from '../utils/health';
 
 const axiosApiInstance = axios.create();
 
@@ -30,8 +31,11 @@ axiosApiInstance.interceptors.response.use(
     return response;
   },
   function (error) {
+    console.log(error)
     const originalRequest = error.config;
 
+    if (!error.response && error?.config && error.config?.url !== `${apiBaseUrl}/isAlive`) {CheckHealth()};
+  
     if (error?.response?.status === 403 && !originalRequest.retry) {
       originalRequest.retry = true;
       window.location.href = `${apiBaseUrl}/api/auth/login`;
