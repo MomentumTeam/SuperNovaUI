@@ -150,7 +150,7 @@ const TableActionsModal = forwardRef((_, ref) => {
               actionPopup={sendActionPopup}
             />
           );
-        case TableAppliesActionsEnum.RETURN:
+        case TableAppliesActionsEnum.RETURN_APPLY:
           ReturnRequest({ request: selectedItem[0], actionPopup: actionPopup });
           closeActionModal();
           break;
