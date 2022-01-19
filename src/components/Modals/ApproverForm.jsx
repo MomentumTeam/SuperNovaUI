@@ -29,7 +29,13 @@ import { Tooltip } from 'primereact/tooltip';
 
 const validationSchema = Yup.object().shape({
   approverType: Yup.string().required("יש להכניס סוג מאשר"),
-  user: Yup.object().required("יש לבחור משתמש"),
+  user: Yup.object().required("יש לבחור משתמש").test({
+    name:"valid-user-with-role",
+    message: "לא ניתן להוסיף למשתמש זה הרשאות מכיוון שהוא לא משוייך לתפקיד",
+    test: (user) => {
+      return user?.directGroup !== ""
+    }
+  }),
   hierarchy: Yup.object().required("יש לבחור היררכיה"),
   isUserApprover: Yup.boolean(),
   approvers: Yup.array()
@@ -62,7 +68,7 @@ const ApproverForm = forwardRef(
     const [approverType, setApproverType] = useState();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
-    const { register, handleSubmit, setValue, getValues, formState, watch } = useForm({
+    const { register, handleSubmit, setValue, getValues, formState, watch, clearErrors } = useForm({
       resolver: yupResolver(validationSchema),
       defaultValues: { isUserApprover: isUserApproverType(userStore.user) },
     });
@@ -172,7 +178,7 @@ const ApproverForm = forwardRef(
         const user = await getEntityByIdentifier(userId);
 
         if (user) {
-          setValue('user', user);
+          setValue('user', user, {shouldValidate: true});
           setValue('userName', userConverse(user));
           setValue('hierarchy', {
             hierarchy: user.hierarchy,
@@ -180,6 +186,7 @@ const ApproverForm = forwardRef(
           });
         }
       } catch (error) {
+        clearErrors('user');
         setValue('user', null);
         setValue('userName', '');
         setValue('hierarchy', '');
@@ -198,7 +205,7 @@ const ApproverForm = forwardRef(
     const setCurrentUser = () => {
       const user = toJS(userStore.user);
       setValue('userName', userConverse(user));
-      setValue('user', user);
+      setValue('user', user, {shouldValidate: true});
       setValue('personalNumber', user.personalNumber || user.identityCard);
       setValue('hierarchy', {
         hierarchy: user.hierarchy,
@@ -290,7 +297,7 @@ const ApproverForm = forwardRef(
               className='userNameText'
               field={userConverse}
               onSelect={(e) => {
-                setValue('user', e.value);
+                setValue('user', e.value, {shouldValidate: true});
                 setValue(
                   'personalNumber',
                   e.value.personalNumber || e.value.identityCard
@@ -301,22 +308,21 @@ const ApproverForm = forwardRef(
                 });
               }}
               onChange={(e) => {
+                clearErrors('user');
                 setValue(
                   'userName',
                   e.value.fullName ? userConverse(e.value) : e.value
                 );
                 setValue('personalNumber', '');
-                setValue('user', null);
+                setValue('user', null,{shouldValidate: true});
                 setValue('hierarchy', '');
               }}
               required
               disabled={onlyForView}
             />
-            {errors.userName && (
+            {errors.user && (
               <small style={{ color: 'red' }}>
-                {errors.userName?.message
-                  ? errors.userName?.message
-                  : 'יש למלא ערך'}
+                {errors.user?.message? errors.user.message:'יש למלא ערך'}
               </small>
             )}
           </div>
@@ -340,6 +346,7 @@ const ApproverForm = forwardRef(
                 }
               }}
               onInput={() => {
+                clearErrors('user')
                 setValue('user', null);
                 setValue('userName', '');
                 setValue('hierarchy', '');
