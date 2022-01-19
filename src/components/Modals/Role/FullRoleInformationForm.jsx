@@ -55,14 +55,7 @@ const validationSchema = Yup.object().shape({
   }),
   isJobTitleAlreadyTaken: Yup.boolean().when("canEditRoleFields", {
     is: true,
-    then: Yup.boolean()
-    .test({
-      name: "jobTitle-valid-check",
-      message: "תפקיד תפוס",
-      test: (value) => {
-        return !value;
-      },
-    })
+    then: Yup.boolean().oneOf([false], "תפקיד תפוס")
     .test({
       name: "jobTitle-valid-check-after",
       message: "תפקיד תפוס",
@@ -104,7 +97,6 @@ const FullRoleInformationForm = forwardRef(
             roleNameToSearch,
             roleCheck.directGroup
           );
-          clearErrors("isJobTitleAlreadyTaken");
           setValue("isJobTitleAlreadyTaken", result.isJobTitleAlreadyTaken, { shouldValidate: true });
           setJobTitleSuggestions(result.suggestions);
         }
