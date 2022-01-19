@@ -53,7 +53,9 @@ const validationSchema = Yup.object().shape({
         },
       }),
   }),
-  isJobTitleAlreadyTaken: Yup.boolean()
+  isJobTitleAlreadyTaken: Yup.boolean().when("canEditRoleFields", {
+    is: true,
+    then: Yup.boolean()
     .test({
       name: "jobTitle-valid-check",
       message: "תפקיד תפוס",
@@ -72,7 +74,7 @@ const validationSchema = Yup.object().shape({
 
         return false;
       },
-    }),
+    })}),
   clearance: Yup.string().when("isUserSecurity", {
     is: true,
     then: Yup.string().required("יש לבחור סיווג"),
@@ -90,7 +92,8 @@ const FullRoleInformationForm = forwardRef(
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
     const isUserApprover = isUserApproverType(userStore.user);
-    const canEditRoleFields = !role || CanEditRoleFields(role);
+    const canEditRoleFields = CanEditRoleFields(requestObject) !== undefined;
+
     const isUserSecurity =
       isUserHoldType(userStore.user, USER_TYPE.SECURITY) || isUserHoldType(userStore.user, USER_TYPE.SUPER_SECURITY);
 
@@ -252,10 +255,14 @@ const FullRoleInformationForm = forwardRef(
           <div className="p-field">
             <label>
               <span className="required-field">*</span>
-              {reqView ? "שם תפקיד חדש" : "שם תפקיד"}
+              {reqView && requestObject?.kartoffelParams?.oldJobTitle !== requestObject?.kartoffelParams?.jobTitle
+                ? "שם תפקיד חדש"
+                : "שם תפקיד"}
             </label>
             <span className="p-input-icon-left">
-              {watch("roleName") && !errors.roleName  && !onlyForView && <i>{watch("isJobTitleAlreadyTaken") ? "תפוס" : "פנוי"}</i>}
+              {watch("roleName") && !errors.roleName && !onlyForView && (
+                <i>{watch("isJobTitleAlreadyTaken") ? "תפוס" : "פנוי"}</i>
+              )}
               <InputText
                 id="editSingleRoleForm-roleName"
                 {...register("roleName")}
@@ -295,7 +302,7 @@ const FullRoleInformationForm = forwardRef(
           </div>
         )}
 
-        {reqView && (
+        {reqView && requestObject?.kartoffelParams?.oldJobTitle !== requestObject?.kartoffelParams?.jobTitle && (
           <div className="p-fluid-item p-fluid-item">
             <div className="p-field">
               <label> שם תפקיד ישן </label>
@@ -343,29 +350,27 @@ const FullRoleInformationForm = forwardRef(
           </div>
         )}
 
-        {!reqView && (
-          <div className="p-fluid-item p-fluid-item">
-            <div className="p-field">
-              <label> סיווג התפקיד </label>
-              <Dropdown
-                id="fullRoleInfoForm-clearance"
-                options={ROLE_CLEARANCE}
-                placeholder={watch("clearance") || "---"}
-                {...register("clearance")}
-                value={watch("clearance")}
-                disabled={onlyForView || !isUserSecurity}
-              />
-              <label>
-                {errors.clearance && (
-                  <small style={{ color: "red" }}>
-                    {errors.clearance?.message ? errors.clearance?.message : "יש למלא ערך"}
-                  </small>
-                )}
-              </label>
-              {/* <InputText id="fullRoleInfoForm-clearance" value={role?.clearance || "---"} disabled={true} /> */}
-            </div>
+        <div className="p-fluid-item p-fluid-item">
+          <div className="p-field">
+            <label> סיווג התפקיד </label>
+            <Dropdown
+              id="fullRoleInfoForm-clearance"
+              options={ROLE_CLEARANCE}
+              placeholder={watch("clearance") || "---"}
+              {...register("clearance")}
+              value={watch("clearance")}
+              disabled={onlyForView || !isUserSecurity}
+            />
+            <label>
+              {errors.clearance && (
+                <small style={{ color: "red" }}>
+                  {errors.clearance?.message ? errors.clearance?.message : "יש למלא ערך"}
+                </small>
+              )}
+            </label>
+            {/* <InputText id="fullRoleInfoForm-clearance" value={role?.clearance || "---"} disabled={true} /> */}
           </div>
-        )}
+        </div>
 
         {!reqView && (
           <div className="p-fluid-item p-fluid-item">
