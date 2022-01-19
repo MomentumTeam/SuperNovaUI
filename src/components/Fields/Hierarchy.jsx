@@ -5,7 +5,7 @@ import { AutoComplete } from "primereact/autocomplete";
 import { hierarchyConverse, hierarchyItemTemplate } from '../../utils/hierarchy';
 import { Tooltip } from 'primereact/tooltip';
 
-const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText = "היררכיה", userHierarchy, errors }) => {
+const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText = "היררכיה", userHierarchy, errors, withRoles=false }) => {
   const [ogSuggestions, setOgSuggestions] = useState([]);
   const [selectedOg, setSelectedOg] = useState(ogValue);
 
@@ -16,7 +16,7 @@ const Hierarchy = ({ setValue, name, ogValue, onOrgSelected, disabled, labelText
   
   const searchOg = async (event) => {
     if (event.query.length > 1) {
-      const result = await searchOG(event.query);
+      const result = await searchOG(event.query, withRoles);
       setOgSuggestions(result);
     } else {
       setOgSuggestions([])

@@ -5,6 +5,7 @@ import {
   REQ_STATUSES,
 } from '../../../constants/';
 import { ModalContent } from '../../RequestFlowChart.styles.js';
+import { getFormattedDate } from '../../../utils/applies';
 
 class RequestFlowChart extends React.Component {
   constructor(props) {
@@ -167,9 +168,7 @@ class RequestFlowChart extends React.Component {
                 תאריך בקשה
                 <br />
                 <strong>
-                  {new Date(
-                    parseInt(this.request?.createdAt)
-                  )?.toLocaleDateString()}
+                  {getFormattedDate(this.request?.createdAt)}
                 </strong>
               </p>
             </div>
