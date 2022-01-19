@@ -4,6 +4,8 @@ export const USER_TYPE_TAG = {
   APPROVER: "גורם מאשר",
   SECURITY_APPROVER: "גורם מאשר במ",
   ADMIN: "מחשוב יחידתי",
+  SUPER_SECURITY_APPROVER:'גורם מאשר בטח"ם',
+  BULK:"הגשת בקשה מרובה"
 };
 
 export const USER_SEX = [

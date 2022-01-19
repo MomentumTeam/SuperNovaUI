@@ -12,7 +12,7 @@ export const TYPES = {
   ASSIGN_ROLE_TO_ENTITY: 'חיבור משתמש חדש לתפקיד',
   CREATE_ENTITY: 'יצירת משתמש מיוחד',
   RENAME_OG: 'עריכת שם היררכיה',
-  RENAME_ROLE: 'עריכת שם תפקיד',
+  RENAME_ROLE: 'עריכת תפקיד',
   EDIT_ENTITY: 'עריכת משתמש מיוחד',
   // DELETE_OG: "מחיקת היררכיה",
   // DELETE_ROLE: "מחיקת תפקיד",

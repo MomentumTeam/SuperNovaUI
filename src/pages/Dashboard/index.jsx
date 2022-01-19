@@ -10,7 +10,7 @@ import SideToolbar from "../../components/SideToolBar/SideToolbar";
 import UserProfileCard from "./UserProfileCard";
 import FullEntityInformationModal from "../../components/Modals/Entity/FullEntityInformationModal";
 import DecorAnimation from "../../components/decor-animation";
-import { getUserTag, isUserCanSeeAllApproveApplies, isUserCanSeeMyApproveApplies } from "../../utils/user";
+import { getUserTags, isUserCanSeeAllApproveApplies, isUserCanSeeMyApproveApplies } from "../../utils/user";
 import { AppliesTable } from "../../components/AppliesTable";
 import { useToast } from '../../context/use-toast';
 
@@ -23,10 +23,7 @@ const Dashboard = observer(() => {
   const approveMyApplies = toJS(appliesStore.approveMyApplies);
   const approveAllApplies = toJS(appliesStore.approveAllApplies);
 
-  let userType;
-  user?.types.map((type) => {
-    userType = getUserTag(type);
-  });
+  const userTags = getUserTags(user?.types);
 
   useEffect(() => {
     if (userStore.user) {
@@ -52,7 +49,12 @@ const Dashboard = observer(() => {
           <div className="display-flex title-wrap">
             <h2>פרטים אישיים</h2>
           </div>
-          <UserProfileCard isUserLoading={userStore.isUserLoading} user={user} userType={userType} openFullDetailsModal={openFullDetailsModal} />
+          <UserProfileCard
+            isUserLoading={userStore.isUserLoading}
+            user={user}
+            userTags={userTags}
+            openFullDetailsModal={openFullDetailsModal}
+          />
           <FullEntityInformationModal
             user={user}
             isOpen={isFullUserInfoModalOpen}
