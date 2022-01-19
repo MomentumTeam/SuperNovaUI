@@ -41,7 +41,7 @@ const validationSchema = Yup.object().shape({
       name: 'valid-hierarchy-name-not-taken',
       message: 'יש לבחור היררכיה פנויה אחרת',
       test: async (newHierarchy, context) => {
-        if (context.parent?.parentHierarchy.id) {
+        if (context.parent?.parentHierarchy?.id) {
           try {
             const { isOGNameAlreadyTaken } =
               await isHierarchyAlreadyTakenRequest(
@@ -71,23 +71,28 @@ const validationSchema = Yup.object().shape({
       test: async (approvers, context) => {
         let isTotalValid = true;
 
-        if (
-          approvers &&
-          Array.isArray(approvers) &&
-          context.parent?.parentHierarchy?.id
-        ) {
-          await Promise.all(
-            approvers.map(async (approver) => {
-              const { isValid } = await isApproverValid(
-                approver.entityId,
-                context.parent.parentHierarchy.id
-              );
-              if (!isValid) isTotalValid = false;
-            })
-          );
+        try {
+          if (
+            approvers &&
+            Array.isArray(approvers) &&
+            context.parent?.parentHierarchy?.id
+          ) {
+            await Promise.all(
+              approvers.map(async (approver) => {
+                const { isValid } = await isApproverValid(
+                  approver.entityId,
+                  context.parent.parentHierarchy.id
+                );
+                if (!isValid) isTotalValid = false;
+              })
+            );
+          }
+  
+          return isTotalValid;
+          
+        } catch (error) {
+          return false;
         }
-
-        return isTotalValid;
       },
     }),
   comments: Yup.string().optional(),
