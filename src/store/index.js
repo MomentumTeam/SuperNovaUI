@@ -8,9 +8,11 @@ import AppliesStore from "./Applies";
 import TreeStore from "./Tree";
 import UserStore from "./User";
 import MyRequestsStore from "./MyRequests";
+import healthStore from './Health';
 
 const stores = {
   configStore,
+  healthStore,
   rolesStore: new RolesStore(),
   entitiesStore: new EntitiesStore(),
   groupsStore: new GroupsStore(),

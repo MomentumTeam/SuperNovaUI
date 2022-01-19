@@ -81,11 +81,13 @@ const validationSchema = Yup.object().shape({
         if (context.parent?.hierarchy?.id && Array.isArray(approvers)) {
           await Promise.all(
             approvers.map(async (approver) => {
-              const { isValid } = await isApproverValid(
-                approver?.entityId || approver?.id,
-                context.parent.hierarchy.id
-              );
-              if (!isValid) isTotalValid = false;
+              if (!approver?.types || !approver?.types.includes(USER_TYPE.ADMIN)){
+                const { isValid } = await isApproverValid(
+                  approver?.entityId || approver?.id,
+                  context.parent.hierarchy.id
+                );
+                if (!isValid) isTotalValid = false;
+              }
             })
           );
         }

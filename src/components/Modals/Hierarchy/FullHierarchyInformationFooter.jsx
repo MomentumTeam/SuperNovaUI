@@ -4,6 +4,7 @@ import { toJS } from "mobx";
 import { useStores } from "../../../context/use-stores";
 import { canEditHierarchy, processHierarchyData } from "../../../utils/hierarchy";
 import { exportToExcel } from '../../../utils/general';
+import { ExportButton } from '../../Fields/ExportButton';
 
 const FullHierarchyInformationFooter = ({ isEdit, closeModal, setIsEdit, handleRequest, hierarchy }) => {
   const { userStore } = useStores();
@@ -27,14 +28,7 @@ const FullHierarchyInformationFooter = ({ isEdit, closeModal, setIsEdit, handleR
     <>
       <div className="display-flex">
         <div>
-          <Button
-            id="fullHierarchyInfoForm-export"
-            icon="pi pi-file-excel"
-            loading={excelLoading}
-            label="ייצוא"
-            className="btn-border blue"
-            onClick={excelExport}
-          />
+          <ExportButton isExportLoading={excelLoading} exportFunction={excelExport} />
         </div>
 
         <div className="display-flex">

@@ -4,6 +4,8 @@ export const USER_TYPE_TAG = {
   APPROVER: "גורם מאשר",
   SECURITY_APPROVER: "גורם מאשר במ",
   ADMIN: "מחשוב יחידתי",
+  SUPER_SECURITY_APPROVER:'גורם מאשר בטח"ם',
+  BULK:"הגשת בקשה מרובה"
 };
 
 export const USER_SEX = [
@@ -27,6 +29,8 @@ export const USER_TYPE = {
   ADMIN: "ADMIN",
   BULK: "BULK",
 };
+
+export const APPROVER_TRANSFER_TYPE = [USER_TYPE.ADMIN, USER_TYPE.COMMANDER, USER_TYPE.SUPER_SECURITY, USER_TYPE.COMMANDER];
 
 
 export const APPROVER_TYPES = [

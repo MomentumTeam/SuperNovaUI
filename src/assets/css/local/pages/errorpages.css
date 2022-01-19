@@ -1,0 +1,95 @@
+
+
+.backgroundError {
+    height: 100%;
+    width: 100%;
+    background: #0da7bf;
+    position: absolute;
+    background-size: cover;
+    top: 0;
+    left: 0;
+}
+.error503 {
+    height: 90%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: url('../../../images/animation/LEGO-Loader.gif') no-repeat;
+    background-size: auto;
+    background-position: bottom;
+    display: table;
+}
+
+.error503 .inner {
+    display: table-cell;
+    vertical-align: middle;
+    width: 100%;
+    max-width: none;
+    padding-bottom: 400px;
+}
+
+.error503 .content {
+    background-color: rgba(255, 255, 255, 0.445);
+    max-width: 500px;
+    height: 200px;
+    margin: 0 auto;
+    border-radius: 25px;
+    display: flex;
+    font-size: 20px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+main .main-wrap {
+    min-height: unset !important;
+}
+
+/* NOT FOUND */
+.linkHome {
+    color: rgb(0, 18, 46);
+    font-weight: bolder;
+}
+
+.backgroundErrorNotFound {
+    height: 100%;
+    width: 100%;
+    background: #f3ebe3;
+    position: absolute;
+    background-size: cover;
+    top: 0;
+    left: 0;
+}
+
+.notFound {
+    height: 90%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: url('../../../images/animation/lego-gif.gif') no-repeat;
+    background-size: auto;
+    background-position: bottom;
+    display: table;
+}
+.notFound .inner {
+    display: table-cell;
+    vertical-align: middle;
+    width: 100%;
+    max-width: none;
+    padding-bottom: 500px;
+}
+
+.notFound .content {
+    background-color: rgba(255, 255, 255, 0.445);
+    max-width: 500px;
+    height: 200px;
+    margin: 0 auto;
+    border-radius: 25px;
+    display: flex;
+    font-size: 20px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

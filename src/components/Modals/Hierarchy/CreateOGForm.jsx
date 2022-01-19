@@ -17,11 +17,8 @@ import Approver from '../../Fields/Approver';
 import { isHierarchyAlreadyTakenRequest } from '../../../service/KartoffelService';
 import { useStores } from '../../../context/use-stores';
 import { GetDefaultApprovers } from '../../../utils/approver';
-import { isUserApproverType, isUserHoldType } from '../../../utils/user';
-import {
-  USER_TYPE,
-  NAME_OG_EXP,
-} from '../../../constants';
+import { isUserApproverType, } from '../../../utils/user';
+import {NAME_OG_EXP} from '../../../constants';
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
 import configStore from '../../../store/Config';
@@ -44,7 +41,7 @@ const validationSchema = Yup.object().shape({
       name: 'valid-hierarchy-name-not-taken',
       message: 'יש לבחור היררכיה פנויה אחרת',
       test: async (newHierarchy, context) => {
-        if (context.parent?.parentHierarchy.id) {
+        if (context.parent?.parentHierarchy?.id) {
           try {
             const { isOGNameAlreadyTaken } =
               await isHierarchyAlreadyTakenRequest(
@@ -74,23 +71,28 @@ const validationSchema = Yup.object().shape({
       test: async (approvers, context) => {
         let isTotalValid = true;
 
-        if (
-          approvers &&
-          Array.isArray(approvers) &&
-          context.parent?.parentHierarchy?.id
-        ) {
-          await Promise.all(
-            approvers.map(async (approver) => {
-              const { isValid } = await isApproverValid(
-                approver.entityId,
-                context.parent.parentHierarchy.id
-              );
-              if (!isValid) isTotalValid = false;
-            })
-          );
+        try {
+          if (
+            approvers &&
+            Array.isArray(approvers) &&
+            context.parent?.parentHierarchy?.id
+          ) {
+            await Promise.all(
+              approvers.map(async (approver) => {
+                const { isValid } = await isApproverValid(
+                  approver.entityId,
+                  context.parent.parentHierarchy.id
+                );
+                if (!isValid) isTotalValid = false;
+              })
+            );
+          }
+  
+          return isTotalValid;
+          
+        } catch (error) {
+          return false;
         }
-
-        return isTotalValid;
       },
     }),
   comments: Yup.string().optional(),

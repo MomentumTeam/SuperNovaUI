@@ -1,4 +1,3 @@
-import { USER_TYPE } from '.';
 import Dashboard from "../pages/Dashboard";
 import ListUsersPage from "../pages/Entities";
 import MyRequests from "../pages/MyRequests";
@@ -21,7 +20,7 @@ const appRoutes = [
     classIcon: "aside-item-btn5",
     label: "Home",
     component: ListUsersPage,
-  },
+  }
 ];
 
 export default appRoutes;
