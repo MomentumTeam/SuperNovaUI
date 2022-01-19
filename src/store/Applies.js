@@ -1,5 +1,5 @@
 import { action, makeAutoObservable, observable } from 'mobx';
-import { checkIfRequestIsDone } from '../constants';
+import { APPROVER_TRANSFER_TYPE, checkIfRequestIsDone } from '../constants';
 import {
   getMyRequests,
   getRequestById,
@@ -270,23 +270,27 @@ export default class AppliesStore {
     if (Array.isArray(approversType)) {
       await Promise.all(
         approversType.map(async (approverType) => {
-          const apply = await transferApproverRequest({
-            reqId,
-            approvers,
-            type: approverType,
-            comment,
-          });
-          this.updateApplyAndCount({ user, reqId, apply, removeApply: true });
+          if (APPROVER_TRANSFER_TYPE.includes(approverType)) {
+            const apply = await transferApproverRequest({
+              reqId,
+              approvers,
+              type: approverType,
+              comment,
+            });
+            this.updateApplyAndCount({ user, reqId, apply, removeApply: true });
+          }
         })
       );
     } else {
-      const apply = await transferApproverRequest({
-        reqId,
-        approvers,
-        type: approversType,
-        comment,
-      });
-      this.updateApplyAndCount({ user, reqId, apply, removeApply: true });
+      if (APPROVER_TRANSFER_TYPE.includes(approversType)) {
+        const apply = await transferApproverRequest({
+          reqId,
+          approvers,
+          type: approversType,
+          comment,
+        });
+        this.updateApplyAndCount({ user, reqId, apply, removeApply: true });
+      }
     }
   }
 

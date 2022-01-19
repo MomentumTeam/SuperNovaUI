@@ -30,6 +30,8 @@ export const USER_TYPE = {
   BULK: "BULK",
 };
 
+export const APPROVER_TRANSFER_TYPE = [USER_TYPE.ADMIN, USER_TYPE.COMMANDER, USER_TYPE.SUPER_SECURITY, USER_TYPE.COMMANDER];
+
 
 export const APPROVER_TYPES = [
   { label: "גורם מאשר ראשוני", value: USER_TYPE.COMMANDER },
