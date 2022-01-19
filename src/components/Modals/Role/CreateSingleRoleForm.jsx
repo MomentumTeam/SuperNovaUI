@@ -175,8 +175,8 @@ const RenameSingleOGForm = forwardRef(
 
     const onRoleNameChange = (e) => {
       const roleNameToSearch = e.target.value;
-      setValue('roleName', e.target.value, {shouldValidate: true});
       clearErrors('roleName');
+      setValue('roleName', e.target.value, {shouldValidate: true});
 
       if (roleNameToSearch && getValues('hierarchy')?.id) {
         debouncedRoleName.current(roleNameToSearch, getValues("hierarchy").id);
