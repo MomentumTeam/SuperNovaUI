@@ -31,9 +31,7 @@ axiosApiInstance.interceptors.response.use(
     return response;
   },
   function (error) {
-    console.log(error)
     const originalRequest = error.config;
-
     
     if (error?.response?.status === 403 && !originalRequest.retry) {
       originalRequest.retry = true;
