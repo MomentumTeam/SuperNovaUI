@@ -11,6 +11,15 @@ class HealthStore {
       isLoading: observable,
       loadHealth: action,
     });
+
+    this.checkHealth();
+  }
+
+  checkHealth() {
+    const healthcheck = setInterval(async () => {
+      await healthStore.loadHealth();
+    }, 180000);
+    return () => clearInterval(healthcheck);
   }
 
   async loadHealth() {

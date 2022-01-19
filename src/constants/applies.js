@@ -81,8 +81,8 @@ export const TableTypes = (selectedTab, user, approverTableType) => {
       field: null,
       displayName: 'סטטוס',
       templateParam: user,
-      sortable: true,
-      sortFields: sortFields.STATUS,
+      // sortable: true,
+      // sortFields: sortFields.STATUS,
       template: StatusApproverFieldTemplate,
     },
   ];
