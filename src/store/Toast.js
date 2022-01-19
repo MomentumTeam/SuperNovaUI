@@ -6,20 +6,22 @@ const ToastProvider = ({children}) => {
   const toastRef = useRef(null);
 
   const actionPopup = (actionType = "זו", error = null) => {
-    if (error === null) {
-      toastRef.current.show({
-        severity: "success",
-        summary: "Success Message",
-        detail: `פעולה ${actionType} הצליחה`,
-        life: 3000,
-      });
-    } else {
-      toastRef.current.show({
-        severity: "error",
-        summary: "Error Message",
-        detail: error.message || `פעולה ${actionType} נכשלה`,
-        life: 3000,
-      });
+    if (toastRef.current) {
+      if (error === null) {
+        toastRef.current.show({
+          severity: "success",
+          summary: "Success Message",
+          detail: `פעולה ${actionType} הצליחה`,
+          life: 3000,
+        });
+      } else {
+        toastRef.current.show({
+          severity: "error",
+          summary: "Error Message",
+          detail: error.message || `פעולה ${actionType} נכשלה`,
+          life: 3000,
+        });
+      }
     }
   };
 

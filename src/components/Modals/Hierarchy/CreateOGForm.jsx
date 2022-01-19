@@ -10,7 +10,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { debounce } from 'lodash';
 
 import Hierarchy from '../../Fields/Hierarchy';
 import Approver from '../../Fields/Approver';
@@ -23,23 +22,14 @@ import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
 import configStore from '../../../store/Config';
 
+const errorHierarchyTaken = 'valid-hierarchy-name-not-taken';
 const validationSchema = Yup.object().shape({
   newHierarchy: Yup.string()
     .required('יש למלא שם היררכיה חדשה')
     .matches(NAME_OG_EXP, 'שם לא תקין')
     .test({
-      name: 'valid-hierarchy-name',
+      name: errorHierarchyTaken,
       message: 'יש לבחור היררכיה פנויה',
-      test: (newHierarchy, context) => {
-        return (
-          newHierarchy &&
-          !context.parent?.isHierarchyAlreadyTakenData?.isOGNameAlreadyTaken
-        );
-      },
-    })
-    .test({
-      name: 'valid-hierarchy-name-not-taken',
-      message: 'יש לבחור היררכיה פנויה אחרת',
       test: async (newHierarchy, context) => {
         if (context.parent?.parentHierarchy?.id) {
           try {
@@ -54,6 +44,8 @@ const validationSchema = Yup.object().shape({
             return false;
           }
         }
+
+        return true;
       },
     }),
   parentHierarchy: Yup.object().required('יש לבחור היררכית אב'),
@@ -96,11 +88,6 @@ const validationSchema = Yup.object().shape({
       },
     }),
   comments: Yup.string().optional(),
-  isHierarchyAlreadyTakenData: Yup.object()
-    .shape({
-      isOGNameAlreadyTaken: Yup.boolean().oneOf([false]).required(),
-    })
-    .required(),
 });
 
 const CreateOGForm = forwardRef(
@@ -108,7 +95,7 @@ const CreateOGForm = forwardRef(
     const { appliesStore, userStore } = useStores();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
-    const { register, handleSubmit, setValue, formState, watch, getValues } = useForm({
+    const { register, handleSubmit, setValue, formState, watch, getValues, clearErrors} = useForm({
       resolver: yupResolver(validationSchema),
       defaultValues: { isUserApprover: isUserApproverType(userStore.user) },
     });
@@ -171,26 +158,10 @@ const CreateOGForm = forwardRef(
       handleSubmit: handleSubmit(onSubmit),
     }));
 
-    const debouncedHierarchyName = useRef(
-      debounce(async (hierarchyToSearch, directGroup) => {
-        const result = await isHierarchyAlreadyTakenRequest(
-          hierarchyToSearch,
-          directGroup
-        );
-        setValue('isHierarchyAlreadyTakenData', result);
-      }, 200)
-    );
 
     const onHierarchyNameChange = async (e) => {
-      const hierarchyNameToSearch = e.target.value;
-      setValue('newHierarchy', e.target.value, { shouldValidate: true });
-
-      if (hierarchyNameToSearch && getValues('parentHierarchy')?.id) {
-        debouncedHierarchyName.current(
-          hierarchyNameToSearch,
-          getValues('parentHierarchy').id
-        );
-      }
+      clearErrors("newHierarchy");
+      setValue("newHierarchy", e.target.value, { shouldValidate: true });
     };
 
     const handleOrgSelected = async (org) => {
@@ -206,10 +177,7 @@ const CreateOGForm = forwardRef(
         setValue('isUserApprover', result.length > 0);
 
       if (getValues('newHierarchy')) {
-        debouncedHierarchyName.current(
-          getValues('newHierarchy'),
-          getValues('parentHierarchy').id
-        );
+       setValue("newHierarchy", getValues("newHierarchy"), {shouldValidate: true});
       }
     };
 
@@ -220,14 +188,10 @@ const CreateOGForm = forwardRef(
             setValue={setValue}
             name="parentHierarchy"
             errors={errors}
-            labelText={'היררכיית אב'}
-            ogValue={watch('parentHierarchy')}
+            labelText={"היררכיית אב"}
+            ogValue={watch("parentHierarchy")}
             disabled={onlyForView}
-            userHierarchy={
-              userStore.user && userStore.user.hierarchy
-                ? userStore.user.hierarchy
-                : null
-            }
+            userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
             onOrgSelected={handleOrgSelected}
           />
         </div>
@@ -237,15 +201,11 @@ const CreateOGForm = forwardRef(
               <span className="required-field">*</span>שם היררכיה חדשה
             </label>
             <span className="p-input-icon-left">
-              {watch('parentHierarchy') && watch('newHierarchy') && (
-                <i>
-                  {watch('isHierarchyAlreadyTakenData')?.isOGNameAlreadyTaken
-                    ? 'תפוס'
-                    : 'פנוי'}
-                </i>
+              {watch("parentHierarchy") && watch("newHierarchy") && (
+                <i>{errors.newHierarchy?.type === errorHierarchyTaken ? "תפוס" : "פנוי"}</i>
               )}
               <InputText
-                {...register('newHierarchy')}
+                {...register("newHierarchy")}
                 id="createOGForm-newHierarchy"
                 type="text"
                 required
@@ -254,10 +214,8 @@ const CreateOGForm = forwardRef(
               />
               <label>
                 {errors.newHierarchy && (
-                  <small style={{ color: 'red' }}>
-                    {errors.newHierarchy?.message
-                      ? errors.newHierarchy.message
-                      : 'יש למלא ערך'}
+                  <small style={{ color: "red" }}>
+                    {errors.newHierarchy?.message ? errors.newHierarchy.message : "יש למלא ערך"}
                   </small>
                 )}
               </label>
@@ -280,10 +238,10 @@ const CreateOGForm = forwardRef(
           <div className="p-field">
             <label htmlFor="2023">הערות</label>
             <InputTextarea
-              {...register('comments')}
+              {...register("comments")}
               id="createOGForm-comments"
               type="text"
-              placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
+              placeholder={!onlyForView && "הכנס הערות לבקשה..."}
               disabled={onlyForView}
             />
           </div>
