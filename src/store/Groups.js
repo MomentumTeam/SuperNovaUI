@@ -58,7 +58,7 @@ export default class GroupsStore {
     const { query } = event;
 
     if (query.trim().length) {
-      const roles = await searchRolesByRoleId(query);
+      const roles = await searchRolesByRoleId(query.toLowerCase());
 
       if (roles.length > 0) {
         let hierarchies = [];
