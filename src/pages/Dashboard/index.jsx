@@ -60,6 +60,7 @@ const Dashboard = observer(() => {
             isOpen={isFullUserInfoModalOpen}
             closeFullDetailsModal={closeFullDetailsModal}
             actionPopup={actionPopup}
+            edit={false}
           />
           <div className="content-unit-wrap">
             {isUserCanSeeMyApproveApplies(user) ? (

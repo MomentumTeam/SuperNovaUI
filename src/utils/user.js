@@ -37,6 +37,7 @@ export const getUserTags = (types) => {
       case USER_TYPE.SUPER_SECURITY:
       case 2:
         tags.push(USER_TYPE_TAG.SUPER_SECURITY_APPROVER);
+        break;
       case USER_TYPE.SECURITY:
       case 1:
         tags.push(USER_TYPE_TAG.SECURITY_APPROVER);

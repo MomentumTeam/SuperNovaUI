@@ -9,7 +9,10 @@ const FullEntityInformationFooter = ({ entity, isEdit, closeModal, setIsEdit, ha
   const { userStore } = useStores();
   const connectedUser = toJS(userStore.user);
 
-
+  const closeThisModal = () => {
+    setIsEdit(false);
+    closeModal();
+  }
   return (
     <div className="display-flex display-flex-end">
       {canEditEntity(entity, connectedUser) && (
@@ -25,7 +28,7 @@ const FullEntityInformationFooter = ({ entity, isEdit, closeModal, setIsEdit, ha
             label={isEdit ? "שליחת בקשה" : "סגור"}
             className="btn-orange-gradient"
             onClick={() => {
-              isEdit ? handleRequest() : closeModal();
+              isEdit ? handleRequest() : closeThisModal();
             }}
           />
         </>
