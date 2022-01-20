@@ -3,6 +3,7 @@ import {
   STATUSES,
   TYPES,
   checkIfRequestIsDone,
+  REQ_TYPES,
   REQ_STATUSES,
 } from '../constants';
 import datesUtil from '../utils/dates';
@@ -99,7 +100,7 @@ export const getResponsibleFactorFields = (user) => {
     fields.push('superSecurityApprovers');
   if (user === undefined || isUserHoldType(user, USER_TYPE.SECURITY))
     fields.push('securityApprovers');
-  if (user === undefined || isUserApproverType(user)) fields.push("commanders");
+  if (user === undefined || isUserApproverType(user)) fields.push('commanders');
 
   return fields;
 };
@@ -110,8 +111,8 @@ export const getApproverComments = (apply, user) => {
 
   if (isUserApproverType(user))
     comments.push({
-      comment: applyComments["commanderComment"],
-      label: "הערות גורם מאשר",
+      comment: applyComments['commanderComment'],
+      label: 'הערות גורם מאשר',
       userType: USER_TYPE.COMMANDER,
     });
   if (isUserHoldType(user, USER_TYPE.SECURITY))
@@ -202,17 +203,21 @@ export const IsRequestCompleteForApprover = (apply, approverType) => {
 
   switch (approverType) {
     case USER_TYPE.SUPER_SECURITY:
-      return !apply.needSuperSecurityDecision || isStatusComplete(apply["superSecurityDecision"]["decision"]);
+      return (
+        !apply.needSuperSecurityDecision ||
+        isStatusComplete(apply['superSecurityDecision']['decision'])
+      );
     case USER_TYPE.SECURITY:
       return (
         !apply.needSecurityDecision ||
-        isStatusComplete(apply["securityDecision"]["decision"]) ||
-        apply["status"] === STATUSES.APPROVED_BY_SECURITY
+        isStatusComplete(apply['securityDecision']['decision']) ||
+        apply['status'] === STATUSES.APPROVED_BY_SECURITY
       );
     case USER_TYPE.COMMANDER:
     case USER_TYPE.ADMIN:
       return (
-        apply["status"] === STATUSES.APPROVED_BY_COMMANDER || isStatusComplete(apply["commanderDecision"]["decision"])
+        apply['status'] === STATUSES.APPROVED_BY_COMMANDER ||
+        isStatusComplete(apply['commanderDecision']['decision'])
       );
     default:
       return true;
@@ -223,7 +228,7 @@ export const processApprovalTableData = (tableData) => {
   return tableData.map((action) => {
     let newAction = {};
 
-    newAction["מספר בקשה"] = action.serialNumber;
+    newAction['מספר בקשה'] = action.serialNumber;
     newAction['שם מבקש'] = action.submittedBy.displayName;
     newAction['מספר אישי/ת"ז'] = action.submittedBy?.personalNumber? action.submittedBy.personalNumber: action.submittedBy.identityCard;
     newAction['סוג בקשה'] = TYPES[action.type];
@@ -268,3 +273,14 @@ export const isSubmitterReq = (request, user) => {
     request?.status !== REQ_STATUSES.FAILED
   );
 };
+
+export const isAutomaticallyApproved = (request, user) => {
+  return (
+    request.commanders.some((commander) => commander.id === user.id) &&
+    (request?.type === REQ_TYPES.CREATE_OG ||
+    request?.type === REQ_TYPES.CREATE_ENTITY ||
+    (request?.type === REQ_TYPES.ADD_APPROVER) &&
+      request?.submittedBy?.id === user.id)
+  )
+};
+
