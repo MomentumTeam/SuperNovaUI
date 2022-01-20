@@ -399,7 +399,11 @@ const AssignRoleToEntityForm = forwardRef(
     const userRoleDisplay = userRole ? userRole.jobTitle : ' - ';
 
     return (
-      <div className="p-fluid" style={{ flexDirection: 'column' }} id="assignRoleToEntityForm">
+      <div
+        className="p-fluid"
+        style={{ flexDirection: 'column' }}
+        id="assignRoleToEntityForm"
+      >
         <div style={{ display: 'flex' }}>
           <div className="p-fluid-item-flex p-fluid-item">
             <div className="p-field">
@@ -577,7 +581,9 @@ const AssignRoleToEntityForm = forwardRef(
                 {' '}
                 {errors.role && (
                   <small style={{ color: 'red' }}>
-                    {errors["role"].type !== "typeError" && errors.role?.message ? errors.role.message : 'יש למלא ערך'}
+                    {errors['role'].type !== 'typeError' && errors.role?.message
+                      ? errors.role.message
+                      : 'יש למלא ערך'}
                   </small>
                 )}
               </label>
@@ -679,7 +685,7 @@ const AssignRoleToEntityForm = forwardRef(
             <Approver
               setValue={setValue}
               name="approvers"
-              tooltip='רס"ן ומעלה ביחידתך'
+              tooltip='רס"ן ומעלה בהיררכיה הנבחרת שבה נמצא התפקיד'
               multiple={true}
               defaultApprovers={defaultApprovers}
               disabled={onlyForView || watch('isUserApprover')}
