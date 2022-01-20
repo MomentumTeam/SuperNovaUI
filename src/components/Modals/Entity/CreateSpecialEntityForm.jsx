@@ -1,4 +1,9 @@
-import React, { useEffect, forwardRef, useImperativeHandle, useState } from 'react';
+import React, {
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+  useState,
+} from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -9,12 +14,12 @@ import {
   USER_TYPE,
   USER_SEX,
   IDENTITY_CARD_EXP,
-} from "../../../constants";
+} from '../../../constants';
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { isUserApproverType, isUserHoldType } from '../../../utils/user';
 import { InputForm, InputTypes } from '../../Fields/InputForm';
-import datesUtil from "../../../utils/dates";
-
+import datesUtil from '../../../utils/dates';
+import { kartoffelIdentityCardValidation } from '../../../utils/user';
 
 const validationSchema = Yup.object().shape({
   firstName: Yup.string()
@@ -29,18 +34,8 @@ const validationSchema = Yup.object().shape({
     .test({
       name: 'check-if-valid',
       message: 'ת"ז לא תקין!',
-      test: async (identityNumber, context) => {
-        //kartoffel validation for identityCard
-        identityNumber = identityNumber.padStart(9, '0');
-
-        const accumulator = identityNumber
-          .split('')
-          .reduce((count, currChar, currIndex) => {
-            const num = Number(currChar) * ((currIndex % 2) + 1);
-            return (count += num > 9 ? num - 9 : num);
-          }, 0);
-
-        return accumulator % 10 === 0;
+      test: async (identityNumber) => {
+        return kartoffelIdentityCardValidation(identityNumber);
       },
     }),
   mobilePhone: Yup.string()
@@ -60,7 +55,7 @@ const validationSchema = Yup.object().shape({
 
 const CreateSpecialEntityForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject }, ref) => {
-    const { appliesStore, userStore, configStore} = useStores();
+    const { appliesStore, userStore, configStore } = useStores();
     const isUserApprover = isUserApproverType(userStore.user);
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
@@ -70,23 +65,37 @@ const CreateSpecialEntityForm = forwardRef(
     });
     const { errors } = methods.formState;
 
-    useEffect(async() => {
+    useEffect(async () => {
       if (requestObject) {
-        methods.setValue("comments", requestObject.comments);
-        methods.setValue("firstName", requestObject.kartoffelParams.firstName);
-        methods.setValue("lastName", requestObject.kartoffelParams.lastName);
-        methods.setValue("identityNumber", requestObject.kartoffelParams.identityCard);
-        methods.setValue("mobilePhone", requestObject.kartoffelParams.mobilePhone[0]);
-        methods.setValue("classification", requestObject.kartoffelParams.clearance);
-        methods.setValue("sex", requestObject.kartoffelParams.sex);
+        methods.setValue('comments', requestObject.comments);
+        methods.setValue('firstName', requestObject.kartoffelParams.firstName);
+        methods.setValue('lastName', requestObject.kartoffelParams.lastName);
         methods.setValue(
-          "birthdate",
-          requestObject.kartoffelParams?.birthdate ? parseInt(requestObject.kartoffelParams.birthdate) : ""
+          'identityNumber',
+          requestObject.kartoffelParams.identityCard
         );
-
+        methods.setValue(
+          'mobilePhone',
+          requestObject.kartoffelParams.mobilePhone[0]
+        );
+        methods.setValue(
+          'classification',
+          requestObject.kartoffelParams.clearance
+        );
+        methods.setValue('sex', requestObject.kartoffelParams.sex);
+        methods.setValue(
+          'birthdate',
+          requestObject.kartoffelParams?.birthdate
+            ? parseInt(requestObject.kartoffelParams.birthdate)
+            : ''
+        );
       }
 
-      const result = await GetDefaultApprovers({ request: requestObject, onlyForView, user: userStore.user });
+      const result = await GetDefaultApprovers({
+        request: requestObject,
+        onlyForView,
+        user: userStore.user,
+      });
       setDefaultApprovers(result || []);
     }, []);
 
@@ -106,7 +115,7 @@ const CreateSpecialEntityForm = forwardRef(
         comments,
         sex,
         approvers,
-        birthdate
+        birthdate,
       } = data;
 
       const req = {
@@ -119,7 +128,7 @@ const CreateSpecialEntityForm = forwardRef(
           phone: [mobilePhone],
           clearance: classification,
           entityType: configStore.USER_CITIZEN_ENTITY_TYPE,
-          ...(sex && sex !== "" && { sex }),
+          ...(sex && sex !== '' && { sex }),
           ...(birthdate && { birthdate: datesUtil.getTime(birthdate) }),
         },
         comments,
@@ -128,7 +137,6 @@ const CreateSpecialEntityForm = forwardRef(
 
       await appliesStore.createEntityApply(req);
       await setIsActionDone(true);
-
     };
 
     useImperativeHandle(
@@ -141,48 +149,48 @@ const CreateSpecialEntityForm = forwardRef(
 
     const formFields = [
       {
-        fieldName: "firstName",
-        displayName: "שם פרטי",
+        fieldName: 'firstName',
+        displayName: 'שם פרטי',
         inputType: InputTypes.TEXT,
         canEdit: true,
         force: true,
       },
       {
-        fieldName: "lastName",
-        displayName: "שם משפחה",
+        fieldName: 'lastName',
+        displayName: 'שם משפחה',
         inputType: InputTypes.TEXT,
         canEdit: true,
         force: true,
       },
       {
-        fieldName: "identityNumber",
+        fieldName: 'identityNumber',
         displayName: 'ת"ז',
         inputType: InputTypes.TEXT,
-        type: "num",
-        keyFilter: "num",
+        type: 'num',
+        keyFilter: 'num',
         canEdit: true,
         force: true,
       },
       {
-        fieldName: "mobilePhone",
-        displayName: "פלאפון נייד",
+        fieldName: 'mobilePhone',
+        displayName: 'פלאפון נייד',
         inputType: InputTypes.TEXT,
-        type: "num",
-        keyFilter: "num",
+        type: 'num',
+        keyFilter: 'num',
         canEdit: true,
         force: true,
       },
       {
-        fieldName: "classification",
-        displayName: "סיווג המשתמש",
+        fieldName: 'classification',
+        displayName: 'סיווג המשתמש',
         inputType: InputTypes.DROPDOWN,
         canEdit: true,
         options: configStore.USER_CLEARANCE,
         force: true,
       },
       {
-        fieldName: "sex",
-        displayName: "מגדר",
+        fieldName: 'sex',
+        displayName: 'מגדר',
         inputType: InputTypes.DROPDOWN,
         canEdit: true,
         options: USER_SEX,
@@ -190,37 +198,44 @@ const CreateSpecialEntityForm = forwardRef(
         required: false,
       },
       {
-        fieldName: "birthdate",
-        displayName: "תאריך לידה",
+        fieldName: 'birthdate',
+        displayName: 'תאריך לידה',
         inputType: InputTypes.CALANDER,
         canEdit: true,
         force: true,
         required: false,
-        untilNow: true
+        untilNow: true,
       },
       {
-        fieldName: "approvers",
+        fieldName: 'approvers',
         inputType: InputTypes.APPROVER,
         tooltip: 'רס"ן ומעלה ביחידתך',
         default: defaultApprovers,
-        disabled: onlyForView || methods.watch("isUserApprover"),
+        disabled: onlyForView || methods.watch('isUserApprover'),
         force: true,
       },
       {
-        fieldName: "comments",
-        displayName: "הערות",
+        fieldName: 'comments',
+        displayName: 'הערות',
         inputType: InputTypes.TEXTAREA,
         force: true,
-        placeholder: "הכנס הערות לבקשה...",
-        additionalClass: "p-fluid-item-flex1",
+        placeholder: 'הכנס הערות לבקשה...',
+        additionalClass: 'p-fluid-item-flex1',
         canEdit: true,
       },
     ];
     return (
       <div className="p-fluid" id="createSpecialEntityForm">
-        <InputForm fields={formFields} errors={errors} item={requestObject} isEdit={!onlyForView} methods={methods}/>
+        <InputForm
+          fields={formFields}
+          errors={errors}
+          item={requestObject}
+          isEdit={!onlyForView}
+          methods={methods}
+        />
       </div>
     );
-});
+  }
+);
 
 export default CreateSpecialEntityForm;

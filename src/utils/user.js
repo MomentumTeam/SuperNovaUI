@@ -76,3 +76,17 @@ export const formatServiceType = (user) => {
 export const identityOrPersonalNumber = (user) => {
   return user[0]? user[0]: user[1]
 };
+
+export const kartoffelIdentityCardValidation = (identityCard) => {
+  //kartoffel validation for identityCard
+  identityCard = identityCard.padStart(9, '0');
+
+  const accumulator = identityCard
+    .split('')
+    .reduce((count, currChar, currIndex) => {
+      const num = Number(currChar) * ((currIndex % 2) + 1);
+      return (count += num > 9 ? num - 9 : num);
+    }, 0);
+
+  return accumulator % 10 === 0;
+};
