@@ -164,6 +164,15 @@ const FullHierarchyInformationForm = forwardRef(
         withTooltip: true,
       },
       {
+        fieldName: 'oldHierarchy',
+        displayName: 'היררכיה ישנה',
+        inputType: InputTypes.TEXT,
+        force: true,
+        secured: () => reqView,
+        item: requestObject?.kartoffelParams,
+        withTooltip: true,
+      },
+      {
         fieldName: 'jobnum',
         displayName: 'מספר תפקידים',
         inputType: InputTypes.TEXT,
