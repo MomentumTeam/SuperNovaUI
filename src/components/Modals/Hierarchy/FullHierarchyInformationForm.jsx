@@ -154,31 +154,13 @@ const FullHierarchyInformationForm = forwardRef(
 
     const formFields = [
       {
-        fieldName: 'hierarchyName',
-        displayName: 'היררכיה',
+        fieldName: reqView ? 'hierarchy' : 'hierarchyName',
+        displayName: reqView ? 'היררכיה חדשה' : 'היררכיה',
         inputType: InputTypes.HIERARCHY_CHANGE,
         force: true,
         canEdit: true,
-        withTooltip: true,
-        secured: () => !reqView,
         setFunc: (value) => setIsHierarchyFree(value),
-      },
-      {
-        fieldName: 'hierarchy',
-        displayName: 'היררכיה חדשה',
-        inputType: InputTypes.TEXT,
-        force: true,
-        secured: () => reqView,
-        item: requestObject?.kartoffelParams,
-        withTooltip: true,
-      },
-      {
-        fieldName: 'oldHierarchy',
-        displayName: 'היררכיה ישנה',
-        inputType: InputTypes.TEXT,
-        force: true,
-        secured: () => reqView,
-        item: requestObject?.kartoffelParams,
+        item: reqView ? requestObject?.kartoffelParams : null,
         withTooltip: true,
       },
       {
