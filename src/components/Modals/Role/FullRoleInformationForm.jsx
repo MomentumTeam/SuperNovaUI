@@ -126,6 +126,17 @@ const FullRoleInformationForm = forwardRef(
     });
     const { errors } = formState;
 
+    const initDefaultApprovers = async () => {
+      const result = await GetDefaultApprovers({
+        request: requestObject,
+        onlyForView,
+        user: userStore.user,
+        groupId: role?.directGroup,
+      });
+      setDefaultApprovers(result || []);
+      setValue("isUserApprover", result.length > 0);
+    }
+
     useEffect(async () => {
       if (requestObject) {
         setValue('comments', reqView ? requestObject?.comments : '');
@@ -148,16 +159,8 @@ const FullRoleInformationForm = forwardRef(
         }
       }
 
-      const result = await GetDefaultApprovers({
-        request: requestObject,
-        onlyForView,
-        user: userStore.user,
-        groupId: role?.directGroup,
-      });
-      setDefaultApprovers(result || []);
-      setValue('isUserApprover', result.length > 0);
-
-    }, [requestObject]);
+      await initDefaultApprovers();
+    }, [requestObject, onlyForView]);
 
     useEffect(async () => {
       try {
