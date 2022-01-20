@@ -114,12 +114,12 @@ const RenameSingleOGForm = forwardRef(
           requestObject.kartoffelParams.oldHierarchy
         );
 
-        // TODO: change in req
-        const role = await getRoleByRoleId(
-          requestObject.kartoffelParams.roleId
-        );
-        setValue('role', role);
-        setRoles([role]);
+        const oldRole = requestObject?.kartoffelParams?.role
+          ? requestObject?.kartoffelParams?.role
+          : await getRoleByRoleId(requestObject.kartoffelParams.roleId);
+
+        setValue("role", oldRole);
+        setRoles([oldRole]);
 
         const result = await GetDefaultApprovers({
           request: requestObject,
@@ -151,6 +151,7 @@ const RenameSingleOGForm = forwardRef(
           currentJobTitle: role.jobTitle,
           hierarchy: hierarchyConverse(hierarchy),
           oldHierarchy: hierarchyConverse(currentHierarchy),
+          role: role,
         },
         adParams: {
           samAccountName: getSamAccountNameFromUniqueId(roleId),
