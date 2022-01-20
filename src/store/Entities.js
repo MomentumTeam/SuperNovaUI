@@ -109,7 +109,7 @@ export default class EntitiesStore {
 
     if (query.trim().length) {
       try {
-        const roles = await searchRolesByRoleId(query);
+        const roles = await searchRolesByRoleId(query.toLowerCase());
 
         if (roles.length > 0) {
           results = await Promise.all(

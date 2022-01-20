@@ -37,9 +37,7 @@ const FullHierarchyInformationFooter = ({ isEdit, closeModal, setIsEdit, handleR
               id="fullHierarchyInfoForm-editOrCancel"
               label={isEdit ? "ביטול" : "עריכה"}
               className={isEdit ? "btn-underline" : "btn-border orange"}
-              onClick={() => {
-                setIsEdit(!isEdit);
-              }}
+              onClick={() => setIsEdit(!isEdit)}
             />
           )}
 
