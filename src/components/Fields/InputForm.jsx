@@ -27,7 +27,7 @@ const InputForm = ({ fields, item = null, methods, isEdit, errors }) => {
       case InputTypes.TEXT:
         return (
           <InputTextField
-            item={item}
+            item={field?.item ? field.item : item}
             methods={methods}
             errors={errors}
             fieldName={field.fieldName}
@@ -44,7 +44,7 @@ const InputForm = ({ fields, item = null, methods, isEdit, errors }) => {
       case InputTypes.CALANDER:
         return (
           <InputCalanderField
-            item={item}
+            item={field?.item ? field.item : item}
             setValue={methods.setValue}
             watch={methods.watch}
             register={methods.register}
@@ -64,7 +64,7 @@ const InputForm = ({ fields, item = null, methods, isEdit, errors }) => {
       case InputTypes.DROPDOWN:
         return (
           <InputDropdown
-            item={item}
+            item={field?.item ? field.item : item}
             methods={methods}
             fieldName={field.fieldName}
             displayName={field.displayName}
@@ -79,7 +79,7 @@ const InputForm = ({ fields, item = null, methods, isEdit, errors }) => {
       case InputTypes.LISTBOX:
         return (
           <InputListBox
-            item={item}
+            item={field?.item ? field.item : item}
             methods={methods}
             fieldName={field.fieldName}
             displayName={field.displayName}
@@ -92,7 +92,7 @@ const InputForm = ({ fields, item = null, methods, isEdit, errors }) => {
       case InputTypes.TEXTAREA:
         return (
           <InputTextAreaField
-            item={item}
+            item={field?.item ? field.item : item}
             methods={methods}
             errors={errors}
             fieldName={field.fieldName}

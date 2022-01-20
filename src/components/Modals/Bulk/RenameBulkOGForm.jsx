@@ -25,6 +25,8 @@ import { GetDefaultApprovers } from '../../../utils/approver';
 import { isUserApproverType } from '../../../utils/user';
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
+import { STATUSES } from '../../../constants';
+import { StatusFieldTemplate } from '../../Fields/StatusFieldTemplate';
 
 const validationSchema = Yup.object().shape({
   comments: Yup.string().optional(),
@@ -167,6 +169,15 @@ const RenameBulkOGForm = forwardRef(
       []
     );
 
+    const statusTemplateEnum = (column) => {
+      if (column?.status) {
+        const status = STATUSES[column.status];
+        return <StatusFieldTemplate status={status} />;
+      } else {
+        return "---";
+      }
+    };
+
     const handleOrgSelected = async (org) => {
       const result = await GetDefaultApprovers({
         request: requestObject,
@@ -228,6 +239,7 @@ const RenameBulkOGForm = forwardRef(
               { field: 'currentJobTitle', header: 'תפקיד נוכחי' },
               { field: 'newJobTitle', header: 'תפקיד חדש' },
               { field: 'roleId', header: 'מזהה תפקיד' },
+              { field: "status", header: "סטטוס", body: statusTemplateEnum },
             ]}
           />
         )}

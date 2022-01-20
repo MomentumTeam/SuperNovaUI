@@ -230,7 +230,7 @@ export const processApprovalTableData = (tableData) => {
 
     newAction['מספר בקשה'] = action.serialNumber;
     newAction['שם מבקש'] = action.submittedBy.displayName;
-    newAction['מספר אישי'] = action.submittedBy.personalNumber;
+    newAction['מספר אישי/ת"ז'] = action.submittedBy?.personalNumber? action.submittedBy.personalNumber: action.submittedBy.identityCard;
     newAction['סוג בקשה'] = TYPES[action.type];
     newAction['תאריך יצירה'] = getFormattedDate(action.createdAt);
     newAction['סיבה'] = action.comments;

@@ -20,28 +20,23 @@ import { debounce } from "lodash";
 import configStore from '../../../store/Config';
 
 const validationSchema = Yup.object().shape({
-  hierarchy: Yup.object().required('יש לבחור היררכיה'),
+  hierarchy: Yup.object().required("יש לבחור היררכיה"),
   isUserApprover: Yup.boolean(),
   approvers: Yup.array()
-    .when('isUserApprover', {
+    .when("isUserApprover", {
       is: false,
-      then: Yup.array()
-        .min(1, 'יש לבחור לפחות גורם מאשר אחד')
-        .required('יש לבחור לפחות גורם מאשר אחד'),
+      then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
     })
     .test({
-      name: 'check-if-valid',
-      message: 'יש לבחור מאשרים תקינים (מהיחידה בלבד)',
+      name: "check-if-valid",
+      message: "יש לבחור מאשרים תקינים (מהיחידה בלבד)",
       test: async (approvers, context) => {
         let isTotalValid = true;
 
         if (context.parent?.hierarchy?.id && Array.isArray(approvers)) {
           await Promise.all(
             approvers.map(async (approver) => {
-              const { isValid } = await isApproverValid(
-                approver.entityId,
-                context.parent.hierarchy.id
-              );
+              const { isValid } = await isApproverValid(approver.entityId, context.parent.hierarchy.id);
               if (!isValid) isTotalValid = false;
             })
           );
@@ -51,45 +46,31 @@ const validationSchema = Yup.object().shape({
       },
     }),
   comments: Yup.string().optional(),
-  clearance: Yup.string().required('יש לבחור סיווג'),
+  clearance: Yup.string().required("יש לבחור סיווג"),
   roleName: Yup.string()
-    .required('יש למלא שם תפקיד')
-    .matches(ROLE_EXP, 'שם לא תקין')
+    .required("יש למלא שם תפקיד")
+    .matches(ROLE_EXP, "שם לא תקין"),
+  isTafkidan: Yup.boolean().default(false),
+  isJobTitleAlreadyTaken: Yup.boolean()
+    .oneOf([false], "התפקיד תפוס")
     .test({
-      name: 'valid-role-name',
-      message: 'יש לבחור תפקיד פנוי',
-      test: (roleName, context) => {
-        return (
-          roleName &&
-          !context.parent?.isJobAlreadyTakenData?.isJobTitleAlreadyTaken
-        );
-      },
-    })
-    .test({
-      name: 'valid-role-name-not-taken',
-      message: 'יש לבחור תפקיד אחר פנוי',
-      test: async (roleName, context) => {
+      name: "valid-role-name-not-taken",
+      message: "התפקיד תפוס",
+      test: async (_, context) => {
         if (context.parent?.hierarchy?.id) {
           try {
-            const isJobTitleAlreadyTaken = await isJobTitleAlreadyTakenRequest(
-              roleName,
-              context.parent?.hierarchy.id
-            );
-  
-            return roleName && !isJobTitleAlreadyTaken?.isJobTitleAlreadyTaken;
-            
+            const isJobTitleAlreadyTaken = await isJobTitleAlreadyTakenRequest(context.parent?.roleName, context.parent?.hierarchy.id);
+
+            return context.parent.roleName && !isJobTitleAlreadyTaken?.isJobTitleAlreadyTaken;
           } catch (error) {
-            return false;
+            return true;
           }
+        } else {
+          return true;
         }
       },
     }),
-  isTafkidan: Yup.boolean().default(false),
-  isJobAlreadyTakenData: Yup.object()
-    .shape({
-      isJobTitleAlreadyTaken: Yup.boolean().oneOf([false]).required(),
-    })
-    .required(),
+  JobTitleSuggestions: Yup.array().default([]),
 });
 
 const RenameSingleOGForm = forwardRef(
@@ -169,14 +150,16 @@ const RenameSingleOGForm = forwardRef(
     const debouncedRoleName = useRef(
       debounce(async (roleNameToSearch, directGroup) => {
           const result = await isJobTitleAlreadyTakenRequest(roleNameToSearch, directGroup);
-          setValue("isJobAlreadyTakenData", result);
-      }, 200)
+          setValue("JobTitleSuggestions", result.suggestions);
+          setValue("isJobTitleAlreadyTaken", result.isJobTitleAlreadyTaken, {shouldValidate: true});
+      }, 300)
     );
 
     const onRoleNameChange = (e) => {
       const roleNameToSearch = e.target.value;
-      setValue('roleName', e.target.value, {shouldValidate: true});
       clearErrors('roleName');
+
+      setValue('roleName', e.target.value, {shouldValidate: true});
 
       if (roleNameToSearch && getValues('hierarchy')?.id) {
         debouncedRoleName.current(roleNameToSearch, getValues("hierarchy").id);
@@ -185,10 +168,9 @@ const RenameSingleOGForm = forwardRef(
 
     const onAvailableRoleName = (e) => {
       setValue('roleName', e.target.innerHTML);
-      setValue('isJobAlreadyTakenData', {
-        isJobTitleAlreadyTaken: false,
-      });
-      clearErrors('roleName');
+
+      clearErrors("isJobTitleAlreadyTaken");
+      setValue("isJobTitleAlreadyTaken", false, {shouldValidate: true});
     };
 
     const handleOrgSelected = async (org) => {
@@ -223,7 +205,12 @@ const RenameSingleOGForm = forwardRef(
             </label>
             <span className="p-input-icon-left">
               {watch("hierarchy") && watch("roleName") && (
-                <i>{watch("isJobAlreadyTakenData")?.isJobTitleAlreadyTaken ? "תפוס" : "פנוי"}</i>
+                <i>
+                  {watch("isJobTitleAlreadyTaken") ||
+                  errors.isJobTitleAlreadyTaken?.type === "valid-role-name-not-taken"
+                    ? "תפוס"
+                    : "פנוי"}
+                </i>
               )}
               <InputText
                 {...register("roleName")}
@@ -232,21 +219,25 @@ const RenameSingleOGForm = forwardRef(
                 disabled={onlyForView}
               />
               <label>
-                {errors.roleName && (
+                {(errors.roleName || errors.isJobTitleAlreadyTaken) && (
                   <small style={{ color: "red" }}>
-                    {errors.roleName?.message ? errors.roleName.message : "יש למלא ערך"}
+                    {errors?.roleName?.message
+                      ? errors.roleName?.message
+                      : errors.isJobTitleAlreadyTaken?.message
+                      ? errors.isJobTitleAlreadyTaken.message
+                      : "יש למלא ערך"}
                   </small>
                 )}
               </label>
             </span>
           </div>
         </div>
-        {watch("isJobAlreadyTakenData")?.isJobTitleAlreadyTaken && (
+        {watch("isJobTitleAlreadyTaken") && (
           <div className="p-fluid-item p-fluid-item-flex1" style={{ alignItems: "baseline", whiteSpace: "pre-wrap" }}>
             <div className="p-field" style={{ display: "flex" }} id="createSingleRoleForm-freeNames">
               <div style={{ marginTop: "35px" }}>שמות פנויים:</div>
               <div style={{ margin: "20px", display: "flex", flexWrap: "wrap" }}>
-                {watch("isJobAlreadyTakenData").suggestions.map((suggestion) => (
+                {watch("JobTitleSuggestions").map((suggestion) => (
                   <Button
                     className="p-button-secondary p-button-outlined"
                     style={{ width: "auto" }}

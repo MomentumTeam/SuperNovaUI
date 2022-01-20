@@ -104,15 +104,15 @@ export default class EntitiesStore {
   }
 
   async searchEntitiesByRoleId(event) {
-    let filteredResults = [];
+    let results = [];
     const { query } = event;
 
     if (query.trim().length) {
       try {
-        const roles = await searchRolesByRoleId(query);
+        const roles = await searchRolesByRoleId(query.toLowerCase());
 
         if (roles.length > 0) {
-          filteredResults = await Promise.all(
+          results = await Promise.all(
             roles.map(async (role) => {
               try {
                 let entity = await getEntityByRoleId(role.roleId);
@@ -132,6 +132,7 @@ export default class EntitiesStore {
       } catch (error) {}
     }
 
+    const filteredResults = results.filter(result => Object.keys(result).length > 0);
     return filteredResults;
   }
 

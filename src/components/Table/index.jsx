@@ -11,6 +11,7 @@ import { toJS } from "mobx";
 import { useStores } from "../../context/use-stores";
 
 import "../../assets/css/local/general/table.min.css";
+
 import { isUserHoldType } from "../../utils/user";
 import configStore from '../../store/Config';
 
@@ -37,6 +38,7 @@ const Table = ({
   sortField = null,
   sortOrder = null,
   scrollHeight = null,
+  canCheckBoxAll = false,
 }) => {
   const contextMenu = useRef(null);
   const { userStore } = useStores();
@@ -46,6 +48,14 @@ const Table = ({
 
   const user = toJS(userStore.user);
 
+  const checkboxAll = document.getElementsByClassName("p-checkbox-box")[0];
+  useEffect(()=> {
+    const checkcomponent = document.getElementsByClassName("p-checkbox p-component")[0];
+      if (checkcomponent && !canCheckBoxAll) {
+        document.getElementsByClassName("p-checkbox p-component")[0].style.display = "none";
+      }
+
+  });
   const isAllowed = (col) => {
     return (
       col.secured === undefined ||
@@ -105,6 +115,7 @@ const Table = ({
                     rowData={rowData}
                     exportFunction={exportFunction}
                     selectedItem={selectedItem}
+                    selectAllRowsCheckbox={checkboxAll}
                   />
                 }
                 scrollable={scrollable}

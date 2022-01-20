@@ -63,14 +63,23 @@ const FullHierarchyInformationForm = forwardRef(
 
     const { errors } = methods.formState;
 
+    const initDefaultApprovers = async (groupId) => {
+      const result = await GetDefaultApprovers({
+        request: requestObject,
+        onlyForView,
+        user: userStore.user,
+        groupId,
+      });
+      setDefaultApprovers(result || []);
+      methods.setValue("isUserApprover", result.length > 0);
+    }
+
     useEffect(async () => {
       let groupId;
 
       if (requestObject) {
         if (reqView) {
-          const { hierarchyReadOnly, hierarchyName } = getHierarchy(
-            requestObject.adParams.ouDisplayName
-          );
+          const { hierarchyReadOnly, hierarchyName } = getHierarchy(requestObject.adParams.ouDisplayName);
           setHierarchy({
             hierarchy: hierarchyReadOnly,
             name: hierarchyName,
@@ -86,15 +95,8 @@ const FullHierarchyInformationForm = forwardRef(
         }
       }
 
-      const result = await GetDefaultApprovers({
-        request: requestObject,
-        onlyForView,
-        user: userStore.user,
-        groupId,
-      });
-      setDefaultApprovers(result || []);
-      methods.setValue('isUserApprover', result.length > 0);
-    }, []);
+      await initDefaultApprovers(groupId);
+    }, [requestObject, onlyForView]);
 
     const onSubmit = async (data) => {
       try {
@@ -146,7 +148,7 @@ const FullHierarchyInformationForm = forwardRef(
 
     const formFields = [
       {
-        fieldName: reqView ? "hierarchy": "hierarchyName",
+        fieldName: reqView ? "hierarchy" : "hierarchyName",
         displayName: reqView ? "היררכיה חדשה" : "היררכיה",
         inputType: InputTypes.HIERARCHY_CHANGE,
         force: true,
@@ -155,45 +157,46 @@ const FullHierarchyInformationForm = forwardRef(
         item: reqView ? requestObject?.kartoffelParams : null,
       },
       {
-        fieldName: 'oldHierarchy',
-        displayName: 'היררכיה ישנה',
+        fieldName: "oldHierarchy",
+        displayName: "היררכיה ישנה",
         inputType: InputTypes.HIERARCHY_CHANGE,
         force: true,
         secured: () => reqView,
         item: requestObject?.kartoffelParams,
       },
       {
-        fieldName: 'jobnum',
-        displayName: 'מספר תפקידים',
+        fieldName: "jobnum",
+        displayName: "מספר תפקידים",
         inputType: InputTypes.TEXT,
         secured: () => !reqView,
         force: true,
         placeholder: hierarchy?.directRoles ? hierarchy.directRoles?.length : 0,
       },
       {
-        fieldName: 'id',
-        displayName: 'מזהה היררכיה',
+        fieldName: "id",
+        displayName: "מזהה היררכיה",
         inputType: InputTypes.TEXT,
         force: true,
       },
       {
-        fieldName: 'approvers',
+        fieldName: "approvers",
         inputType: InputTypes.APPROVER,
         tooltip: 'רס"ן ומעלה ביחידתך',
         default: defaultApprovers,
-        disabled: onlyForView || methods.watch('isUserApprover'),
+        disabled: onlyForView || methods.watch("isUserApprover"),
         force: true,
         secured: () => !onlyForView || reqView,
       },
       {
-        fieldName: 'comments',
-        displayName: 'הערות',
+        fieldName: "comments",
+        displayName: "הערות",
         inputType: InputTypes.TEXTAREA,
         force: true,
         secured: () => reqView || !onlyForView,
-        placeholder: 'הכנס הערות לבקשה...',
-        additionalClass: 'p-fluid-item-flex1',
+        placeholder: "הכנס הערות לבקשה...",
+        additionalClass: "p-fluid-item-flex1",
         canEdit: true,
+        item: requestObject,
       },
     ];
 
