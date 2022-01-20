@@ -149,42 +149,35 @@ const FullRoleInformationForm = forwardRef(
 
 
         if (reqView) {
-          // TODO: change in req
-          const role = await getRoleByRoleId(
-            requestObject.kartoffelParams.roleId
-          );
-          setRole(role);
+          const oldRole = requestObject?.kartoffelParams?.role
+            ? requestObject?.kartoffelParams?.role
+            : await getRoleByRoleId(requestObject?.kartoffelParams?.roleId);
+
+          setRole(oldRole);
         } else {
           setRole(requestObject);
+
+          try {
+            const entityRes = await getEntityByRoleId(requestObject?.roleId || requestObject?.kartoffelParams?.roleId);
+            setEntity(entityRes);
+          } catch (error) {
+            // TODO: POPUP
+          }
+
+          try {
+            if (requestObject?.digitalIdentityUniqueId) {
+              const di = await getDIByUniqueId(requestObject.digitalIdentityUniqueId);
+              setDigitalIdentity(di);
+            }
+          } catch (error) {
+            // TODO: POPUP
+          }
         }
       }
 
       await initDefaultApprovers();
     }, [requestObject, onlyForView]);
 
-    useEffect(async () => {
-      try {
-        const entityRes = await getEntityByRoleId(
-          requestObject?.roleId || requestObject?.kartoffelParams?.roleId
-        );
-        setEntity(entityRes);
-        
-      } catch (error) {
-        // TODO: POPUP
-      }
-
-      try {
-        if (requestObject?.digitalIdentityUniqueId) {
-          const di = await getDIByUniqueId(requestObject.digitalIdentityUniqueId);
-          setDigitalIdentity(di);
-        }
-        
-      } catch (error) {
-        // TODO: POPUP
-      }
-
-
-    }, [requestObject]);
 
     const onSubmit = async (data) => {
       try {
@@ -193,13 +186,14 @@ const FullRoleInformationForm = forwardRef(
         console.log(err);
         throw new Error(err.errors);
       }
-      const { approvers, comments, roleName, clearance } = data;
+      const { approvers, comments, roleName, clearance, oldRole } = data;
       const req = {
         commanders: approvers,
         kartoffelParams: {
           roleId: requestObject.roleId,
           jobTitle: roleName,
           oldJobTitle: requestObject.jobTitle,
+          role: oldRole,
           ...(clearance && { clearance })
         },
         adParams: {

@@ -150,12 +150,15 @@ const AssignRoleToEntityForm = forwardRef(
         setValue('roleId', roleId);
         setValue('hierarchy', requestObject.kartoffelParams.hierarchy);
 
-        // TODO: change in req
-        const role = await getRoleByRoleId(roleId);
-        setValue('role', role, { shouldValidate: true });
-        setRoles([role]);
+        const oldRole = requestObject?.kartoffelParams?.role
+          ? requestObject?.kartoffelParams?.role
+          : await getRoleByRoleId(roleId);
+
+        setValue("role", oldRole, { shouldValidate: true });
+        setRoles([oldRole]);
 
         try {
+          // TODO: change in req
           const entity = await getEntityByRoleId(roleId);
 
           if (entity) {
@@ -210,6 +213,7 @@ const AssignRoleToEntityForm = forwardRef(
           roleId: roleId,
           hierarchy: hierarchyConverse(hierarchy),
           directGroup: hierarchy.id,
+          role: role
         },
         adParams: {
           newSAMAccountName: getSamAccountNameFromUniqueId(roleId),
