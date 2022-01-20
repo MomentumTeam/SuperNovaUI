@@ -24,6 +24,26 @@ export const TYPES = {
   CHANGE_ROLE_HIERARCHY_BULK: 'מעבר היררכיה לתפקידים',
 };
 
+
+export const REQ_TYPES = {
+  CREATE_OG: 'CREATE_OG',
+  CREATE_ROLE: 'CREATE_ROLE',
+  ASSIGN_ROLE_TO_ENTITY: 'ASSIGN_ROLE_TO_ENTITY',
+  CREATE_ENTITY: 'CREATE_ENTITY',
+  RENAME_OG: 'RENAME_OG',
+  RENAME_ROLE: 'RENAME_ROLE',
+  EDIT_ENTITY: 'EDIT_ENTITY',
+  // DELETE_OG: "מחיקת היררכיה",
+  // DELETE_ROLE: "מחיקת תפקיד",
+  // DELETE_ENTITY: "מחיקת משתמש",
+  // DISCONNECT_ROLE: "ניתוק תפקיד",
+  ADD_APPROVER: 'ADD_APPROVER',
+  CHANGE_ROLE_HIERARCHY: 'CHANGE_ROLE_HIERARCHY',
+  CREATE_ROLE_BULK: 'CREATE_ROLE_BULK',
+  CHANGE_ROLE_HIERARCHY_BULK: 'CHANGE_ROLE_HIERARCHY_BULK',
+};
+
+
 export const TableNames = {
   myreqs: { tab: "myreqs", tableName: "בקשות לאישורי" },
   allreqs: { tab: "allreqs", tableName: "סל הבקשות" },

@@ -38,15 +38,6 @@ export const AUTOCOMPLETE_STATUSES_APPROVER = {
   FAILED: "נכשל",
 };
 
-export const checkIfRequestIsDone = (req) => {
-  return (
-    req.status === 'DECLINED' ||
-    req.status === 'DONE' ||
-    req.status === 'FAILED' ||
-    req.status === 'IN_PROGRESS'
-  );
-};
-
 export const REQ_STATUSES = {
   IN_PROGRESS: 'IN_PROGRESS',
   DECLINED: 'DECLINED',
@@ -54,14 +45,11 @@ export const REQ_STATUSES = {
   FAILED: 'FAILED',
 };
 
-
-export const getStatus = (approverTableType) => {
-  // switch (approverTableType) {
-  //   case 'secuirty':
-  //     return SECURITY_APPROVE_TABLE_STATUSES;
-  //   case 'commander':
-  //     return COMMANDER_APPROVE_TABLE_STATUSES;
-  //   case 'soldier':
-      return STATUSES;
-  // }
+export const checkIfRequestIsDone = (req) => {
+  return (
+    req.status === REQ_STATUSES.DECLINED ||
+    req.status === REQ_STATUSES.DONE ||
+    req.status === REQ_STATUSES.FAILED ||
+    req.status === REQ_STATUSES.IN_PROGRESS
+  );
 };

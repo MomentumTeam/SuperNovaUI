@@ -150,12 +150,15 @@ const AssignRoleToEntityForm = forwardRef(
         setValue('roleId', roleId);
         setValue('hierarchy', requestObject.kartoffelParams.hierarchy);
 
-        // TODO: change in req
-        const role = await getRoleByRoleId(roleId);
-        setValue('role', role, { shouldValidate: true });
-        setRoles([role]);
+        const oldRole = requestObject?.kartoffelParams?.role
+          ? requestObject?.kartoffelParams?.role
+          : await getRoleByRoleId(roleId);
+
+        setValue("role", oldRole, { shouldValidate: true });
+        setRoles([oldRole]);
 
         try {
+          // TODO: change in req
           const entity = await getEntityByRoleId(roleId);
 
           if (entity) {
@@ -210,6 +213,7 @@ const AssignRoleToEntityForm = forwardRef(
           roleId: roleId,
           hierarchy: hierarchyConverse(hierarchy),
           directGroup: hierarchy.id,
+          role: role
         },
         adParams: {
           newSAMAccountName: getSamAccountNameFromUniqueId(roleId),
@@ -401,7 +405,11 @@ const AssignRoleToEntityForm = forwardRef(
     const userRoleDisplay = userRole ? userRole.jobTitle : ' - ';
 
     return (
-      <div className="p-fluid" style={{ flexDirection: 'column' }} id="assignRoleToEntityForm">
+      <div
+        className="p-fluid"
+        style={{ flexDirection: 'column' }}
+        id="assignRoleToEntityForm"
+      >
         <div style={{ display: 'flex' }}>
           <div className="p-fluid-item-flex p-fluid-item">
             <div className="p-field">
@@ -579,7 +587,9 @@ const AssignRoleToEntityForm = forwardRef(
                 {' '}
                 {errors.role && (
                   <small style={{ color: 'red' }}>
-                    {errors["role"].type !== "typeError" && errors.role?.message ? errors.role.message : 'יש למלא ערך'}
+                    {errors['role'].type !== 'typeError' && errors.role?.message
+                      ? errors.role.message
+                      : 'יש למלא ערך'}
                   </small>
                 )}
               </label>
@@ -681,7 +691,7 @@ const AssignRoleToEntityForm = forwardRef(
             <Approver
               setValue={setValue}
               name="approvers"
-              tooltip='רס"ן ומעלה ביחידתך'
+              tooltip='רס"ן ומעלה בהיררכיה הנבחרת שבה נמצא התפקיד'
               multiple={true}
               defaultApprovers={defaultApprovers}
               disabled={onlyForView || watch('isUserApprover')}

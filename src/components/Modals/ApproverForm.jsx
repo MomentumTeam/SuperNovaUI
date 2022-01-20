@@ -29,30 +29,36 @@ import { Tooltip } from 'primereact/tooltip';
 
 const validationSchema = Yup.object().shape({
   approverType: Yup.string().required("יש להכניס סוג מאשר"),
-  user: Yup.object().required("יש לבחור משתמש"),
+  user: Yup.object().required("יש לבחור משתמש").test({
+    name:"valid-user-with-role",
+    message: "לא ניתן להוסיף למשתמש זה הרשאות מכיוון שהוא לא משוייך לתפקיד",
+    test: (user) => {
+      return user?.directGroup !== ""
+    }
+  }),
   hierarchy: Yup.object().required("יש לבחור היררכיה"),
   isUserApprover: Yup.boolean(),
-  approvers: Yup.array()
-    .when("isUserApprover", {
-      is: false,
-      then: Yup.array()
-        .min(1, 'יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה')
-        .required('יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה'),
-    }),
+  approvers: Yup.array().when('isUserApprover', {
+    is: false,
+    then: Yup.array()
+      .min(1, 'יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה')
+      .required('יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה'),
+  }),
   comments: Yup.string().optional(),
   userName: Yup.string()
-    .required("יש לבחור שם משתמש")
+    .required('יש לבחור שם משתמש')
     .test({
-      name: "valid-user",
-      message: "נא לבחור משתמש",
+      name: 'valid-user',
+      message: 'נא לבחור משתמש',
       test: (userName, context) => {
         return userName && context.parent?.user;
       },
     }),
-  personalNumber: Yup.string().required("יש למלא ערך"),
-  HierarchyApproverOf: Yup.object().when("approverType", {
+  personalNumber: Yup.string().required('יש למלא ערך'),
+  hierarchyApproverOf: Yup.object().when('approverType', {
     is: (value) => value === USER_TYPE.ADMIN,
-    then: Yup.object().required("יש לבחור היררכיה"),
+    then: Yup.object().required('יש לבחור היררכיה'),
+    otherwise: Yup.object(),
   }),
 });
 
@@ -62,7 +68,7 @@ const ApproverForm = forwardRef(
     const [approverType, setApproverType] = useState();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
-    const { register, handleSubmit, setValue, getValues, formState, watch } = useForm({
+    const { register, handleSubmit, setValue, getValues, formState, watch, clearErrors } = useForm({
       resolver: yupResolver(validationSchema),
       defaultValues: { isUserApprover: isUserApproverType(userStore.user) },
     });
@@ -91,8 +97,8 @@ const ApproverForm = forwardRef(
             requestObject.additionalParams.groupInChargeId
           );
 
-          setValue('HierarchyApproverOf', hierarchyApproverOf);
-          watch('HierarchyApproverOf');
+          setValue('hierarchyApproverOf', hierarchyApproverOf);
+          watch('hierarchyApproverOf');
         } catch (error) {}
       }
 
@@ -159,10 +165,23 @@ const ApproverForm = forwardRef(
       []
     );
 
-    const handleApprover = (e) => {
-      setApproverType(e.value);
-      setValue('approverType', e.value);
-    };
+   const handleApprover = async (e) => {
+     setApproverType(e.value);
+     setValue('approverType', e.value);
+     setValue('groupInChargeId', '');
+     setValue('hierarchyApproverOf', undefined);
+
+     if (e.value !== USER_TYPE.ADMIN) {
+       const result = await GetDefaultApprovers({
+         request: requestObject,
+         user: userStore.user,
+         highCommander: true,
+       });
+       setDefaultApprovers(result || []);
+       setValue('isUserApprover', result.length > 0);
+       setValue('approvers', []);
+     }
+   };
 
     const onSearchUserByPersonalNumber = async () => {
       const userId = getValues('personalNumber');
@@ -172,7 +191,7 @@ const ApproverForm = forwardRef(
         const user = await getEntityByIdentifier(userId);
 
         if (user) {
-          setValue('user', user);
+          setValue('user', user, {shouldValidate: true});
           setValue('userName', userConverse(user));
           setValue('hierarchy', {
             hierarchy: user.hierarchy,
@@ -180,6 +199,7 @@ const ApproverForm = forwardRef(
           });
         }
       } catch (error) {
+        clearErrors('user');
         setValue('user', null);
         setValue('userName', '');
         setValue('hierarchy', '');
@@ -198,7 +218,7 @@ const ApproverForm = forwardRef(
     const setCurrentUser = () => {
       const user = toJS(userStore.user);
       setValue('userName', userConverse(user));
-      setValue('user', user);
+      setValue('user', user, {shouldValidate: true});
       setValue('personalNumber', user.personalNumber || user.identityCard);
       setValue('hierarchy', {
         hierarchy: user.hierarchy,
@@ -206,19 +226,20 @@ const ApproverForm = forwardRef(
       });
     };
 
-    const handleOrgSelected = async (org) => {
-      const result = await GetDefaultApprovers({
-        request: requestObject,
-        user: userStore.user,
-        onlyForView,
-        groupId: org.id,
-        highCommander: true
-      });
-      
-      setDefaultApprovers(result || []);
-      setValue('isUserApprover', result.length > 0);
-      setValue('groupInChargeId', watch('HierarchyApproverOf').id);
-    };
+     const handleOrgSelected = async (org) => {
+       const result = await GetDefaultApprovers({
+         request: requestObject,
+         user: userStore.user,
+         onlyForView,
+         groupId: org.id,
+         highCommander: true,
+       });
+       setDefaultApprovers(result || []);
+       setValue('isUserApprover', result.length > 0);
+       if (getValues('hierarchyApproverOf')?.id) {
+         setValue('groupInChargeId', watch('hierarchyApproverOf').id);
+       }
+     };
 
     return (
       <div className='p-fluid'>
@@ -251,9 +272,9 @@ const ApproverForm = forwardRef(
             <div className='p-field'>
               <Hierarchy
                 setValue={setValue}
-                name='HierarchyApproverOf'
+                name='hierarchyApproverOf'
                 errors={errors}
-                ogValue={watch('HierarchyApproverOf')}
+                ogValue={watch('hierarchyApproverOf')}
                 disabled={onlyForView}
                 labelText='ההיררכיה שבה תהיו מחשוב יחידתי'
                 onOrgSelected={handleOrgSelected}
@@ -290,7 +311,7 @@ const ApproverForm = forwardRef(
               className='userNameText'
               field={userConverse}
               onSelect={(e) => {
-                setValue('user', e.value);
+                setValue('user', e.value, {shouldValidate: true});
                 setValue(
                   'personalNumber',
                   e.value.personalNumber || e.value.identityCard
@@ -301,22 +322,21 @@ const ApproverForm = forwardRef(
                 });
               }}
               onChange={(e) => {
+                clearErrors('user');
                 setValue(
                   'userName',
                   e.value.fullName ? userConverse(e.value) : e.value
                 );
                 setValue('personalNumber', '');
-                setValue('user', null);
+                setValue('user', null,{shouldValidate: true});
                 setValue('hierarchy', '');
               }}
               required
               disabled={onlyForView}
             />
-            {errors.userName && (
+            {errors.user && (
               <small style={{ color: 'red' }}>
-                {errors.userName?.message
-                  ? errors.userName?.message
-                  : 'יש למלא ערך'}
+                {errors.user?.message? errors.user.message:'יש למלא ערך'}
               </small>
             )}
           </div>
@@ -340,6 +360,7 @@ const ApproverForm = forwardRef(
                 }
               }}
               onInput={() => {
+                clearErrors('user')
                 setValue('user', null);
                 setValue('userName', '');
                 setValue('hierarchy', '');

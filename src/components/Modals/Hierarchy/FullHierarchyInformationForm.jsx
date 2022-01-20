@@ -72,14 +72,23 @@ const FullHierarchyInformationForm = forwardRef(
 
     const { errors } = methods.formState;
 
+    const initDefaultApprovers = async (groupId) => {
+      const result = await GetDefaultApprovers({
+        request: requestObject,
+        onlyForView,
+        user: userStore.user,
+        groupId,
+      });
+      setDefaultApprovers(result || []);
+      methods.setValue("isUserApprover", result.length > 0);
+    }
+
     useEffect(async () => {
       let groupId;
 
       if (requestObject) {
         if (reqView) {
-          const { hierarchyReadOnly, hierarchyName } = getHierarchy(
-            requestObject.adParams.ouDisplayName
-          );
+          const { hierarchyReadOnly, hierarchyName } = getHierarchy(requestObject.adParams.ouDisplayName);
           setHierarchy({
             hierarchy: hierarchyReadOnly,
             name: hierarchyName,
@@ -95,15 +104,8 @@ const FullHierarchyInformationForm = forwardRef(
         }
       }
 
-      const result = await GetDefaultApprovers({
-        request: requestObject,
-        onlyForView,
-        user: userStore.user,
-        groupId,
-      });
-      setDefaultApprovers(result || []);
-      methods.setValue('isUserApprover', result.length > 0);
-    }, []);
+      await initDefaultApprovers(groupId);
+    }, [requestObject, onlyForView]);
 
     const onSubmit = async (data) => {
       try {
