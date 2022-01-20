@@ -7,19 +7,19 @@ const appRoutes = [
   {
     path: "/",
     classIcon: "aside-item-btn1",
-    label: "Home",
+    label: "דף בית",
     component: Dashboard,
   },
   {
     path: "/myRequests",
     classIcon: "aside-item-btn3",
-    label: "Home",
+    label: "בקשות שלי",
     component: MyRequests,
   },
   {
     path: "/listUsersPage",
     classIcon: "aside-item-btn5",
-    label: "Home",
+    label: "טבלאות",
     component: ListUsersPage,
   },
 ];
