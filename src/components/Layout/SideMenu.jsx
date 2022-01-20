@@ -12,14 +12,14 @@ const SideMenu = () => {
   const getNavButton = (menuItem, i) => {
     if (menuItem.label) {
       return (
-        <li key={i}>
+        <li key={i} title={menuItem.label}>
           <NavLink
             to={menuItem.path}
             className={`aside-item-btn ${menuItem.classIcon}`}
             activeClassName={`aside-item-btn ${menuItem.classIcon} active`}
             exact
           >
-            <span className='for-screnReader'>{menuItem.label}</span>
+            <span className="for-screnReader">{menuItem.label}</span>
           </NavLink>
         </li>
       );
