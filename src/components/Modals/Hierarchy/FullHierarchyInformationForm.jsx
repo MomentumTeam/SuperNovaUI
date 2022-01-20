@@ -1,16 +1,25 @@
-import * as Yup from "yup";
-import React, { useState, useEffect, forwardRef, useImperativeHandle } from "react";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from 'yup';
+import React, {
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+} from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
-import { NAME_OG_EXP, USER_TYPE } from "../../../constants";
+import { NAME_OG_EXP, USER_TYPE } from '../../../constants';
 
-import "../../../assets/css/local/general/buttons.css";
-import "../../../assets/css/local/components/modal-item.css";
-import { GetDefaultApprovers } from "../../../utils/approver";
-import { isUserApproverType, isUserHoldType } from "../../../utils/user";
-import { useStores } from "../../../context/use-stores";
-import { getHierarchy, getOuDisplayName, hierarchyConverse } from "../../../utils/hierarchy";
+import '../../../assets/css/local/general/buttons.css';
+import '../../../assets/css/local/components/modal-item.css';
+import { GetDefaultApprovers } from '../../../utils/approver';
+import { isUserApproverType, isUserHoldType } from '../../../utils/user';
+import { useStores } from '../../../context/use-stores';
+import {
+  getHierarchy,
+  getOuDisplayName,
+  hierarchyConverse,
+} from '../../../utils/hierarchy';
 import { InputForm, InputTypes } from '../../Fields/InputForm';
 
 const FullHierarchyInformationForm = forwardRef(
@@ -133,7 +142,6 @@ const FullHierarchyInformationForm = forwardRef(
       await appliesStore.renameOGApply(req);
       setIsEdit(false);
       setIsActionDone(true);
-
     };
 
     useImperativeHandle(
@@ -146,60 +154,75 @@ const FullHierarchyInformationForm = forwardRef(
 
     const formFields = [
       {
-        fieldName: reqView ? "hierarchy" : "hierarchyName",
-        displayName: reqView ? "היררכיה חדשה" : "היררכיה",
+        // fieldName: reqView ? 'hierarchy' : 'hierarchyName',
+        // displayName: reqView ? 'היררכיה חדשה' : 'היררכיה',
+        // inputType: InputTypes.HIERARCHY_CHANGE,
+        // force: true,
+        // canEdit: true,
+        // setFunc: (value) => setIsHierarchyFree(value),
+        // item: reqView ? requestObject?.kartoffelParams : null,
+        fieldName: 'hierarchy',
+        displayName: 'היררכיה',
+        inputType: InputTypes.TEXT,
+        force: true,
+        secured: () => !reqView,
+        withTooltip: true,
+      },
+      {
+        fieldName: 'hierarchyName',
+        displayName: 'היררכיה חדשה',
         inputType: InputTypes.HIERARCHY_CHANGE,
         force: true,
         canEdit: true,
         setFunc: (value) => setIsHierarchyFree(value),
         item: reqView ? requestObject?.kartoffelParams : null,
+        secured: () => reqView,
       },
       {
-        fieldName: "oldHierarchy",
-        displayName: "היררכיה ישנה",
+        fieldName: 'oldHierarchy',
+        displayName: 'היררכיה ישנה',
         inputType: InputTypes.HIERARCHY_CHANGE,
         force: true,
         secured: () => reqView,
         item: requestObject?.kartoffelParams,
       },
       {
-        fieldName: "jobnum",
-        displayName: "מספר תפקידים",
+        fieldName: 'jobnum',
+        displayName: 'מספר תפקידים',
         inputType: InputTypes.TEXT,
         secured: () => !reqView,
         force: true,
         placeholder: hierarchy?.directRoles ? hierarchy.directRoles?.length : 0,
       },
       {
-        fieldName: "id",
-        displayName: "מזהה היררכיה",
+        fieldName: 'id',
+        displayName: 'מזהה היררכיה',
         inputType: InputTypes.TEXT,
         force: true,
       },
       {
-        fieldName: "approvers",
+        fieldName: 'approvers',
         inputType: InputTypes.APPROVER,
         tooltip: 'רס"ן ומעלה ביחידתך',
         default: defaultApprovers,
-        disabled: onlyForView || methods.watch("isUserApprover"),
+        disabled: onlyForView || methods.watch('isUserApprover'),
         force: true,
         secured: () => !onlyForView || reqView,
       },
       {
-        fieldName: "comments",
-        displayName: "הערות",
+        fieldName: 'comments',
+        displayName: 'הערות',
         inputType: InputTypes.TEXTAREA,
         force: true,
         secured: () => reqView || !onlyForView,
-        placeholder: "הכנס הערות לבקשה...",
-        additionalClass: "p-fluid-item-flex1",
+        placeholder: 'הכנס הערות לבקשה...',
+        additionalClass: 'p-fluid-item-flex1',
         canEdit: true,
-        item: requestObject,
       },
     ];
 
     return (
-      <div className="p-fluid" id="fullHierarchyInfoForm">
+      <div className='p-fluid' id='fullHierarchyInfoForm'>
         <InputForm
           fields={formFields}
           item={hierarchy}
