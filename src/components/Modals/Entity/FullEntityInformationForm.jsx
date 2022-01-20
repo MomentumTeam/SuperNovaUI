@@ -13,7 +13,7 @@ import {
   CanSeeUserClearance,
   CanEditEntityFields,
 } from '../../../utils/entites';
-import { NAME_REG_EXP, PHONE_REG_EXP } from '../../../constants';
+import { IDENTITY_CARD_EXP, NAME_REG_EXP, PHONE_REG_EXP } from '../../../constants';
 import { InputForm, InputTypes } from '../../Fields/InputForm';
 import { useStores } from '../../../context/use-stores';
 
@@ -31,14 +31,31 @@ const validationSchema = Yup.object().shape({
     is: true,
     then: Yup.string().required("יש לבחור שם משפחה").matches(NAME_REG_EXP, "שם לא תקין"),
   }),
-  hasIdentityCard: Yup.boolean(),
-  identityCard: Yup.string().when("hasIdentityCard", {
+  identityCard: Yup.string().when("canEditEntityFields", {
     is: true,
-    then: Yup.string().required('יש להזין ת"ז'),
+    then: Yup.string().required('יש להזין ת"ז')
+    .matches(IDENTITY_CARD_EXP, 'ת"ז לא תקין')
+    .test({
+      name: 'check-if-valid',
+      message: 'ת"ז לא תקין!',
+      test: async (identityNumber) => {
+        //kartoffel validation for identityCard
+        identityNumber = identityNumber.padStart(9, '0');
+
+        const accumulator = identityNumber
+          .split('')
+          .reduce((count, currChar, currIndex) => {
+            const num = Number(currChar) * ((currIndex % 2) + 1);
+            return (count += num > 9 ? num - 9 : num);
+          }, 0);
+
+        return accumulator % 10 === 0;
+      },
+    }),
   }),
-  mobilePhone: Yup.string().when("canEditEntityFields", {
+  mobilePhone: Yup.mixed().when("canEditEntityFields", {
     is: true,
-    then: Yup.string().matches(PHONE_REG_EXP, "מספר לא תקין").required("נא להזין מספר"),
+    then: Yup.string('נא להזין מספר').required("נא להזין מספר").matches(PHONE_REG_EXP, "מספר לא תקין"),
   }),
   canSeeUserClearance: Yup.boolean(),
   clearance: Yup.string().when("canSeeUserClearance", {
@@ -56,16 +73,34 @@ const FullEntityInformationForm = forwardRef(
     const [user, setUser] = useState(requestObject);
     const methods = useForm({
       resolver: yupResolver(validationSchema),
-      defaultValues: {...user, canEditEntityFields:CanEditEntityFields(user)},
+      defaultValues: {
+        ...user,
+        canEditEntityFields: CanEditEntityFields(user),
+        canSeeUserClearance: CanSeeUserClearance(),
+      },
     });
     const { errors } = methods.formState;
 
     useEffect(() => {
       if (requestObject) {
         if (reqView) {
+          if (
+            Array.isArray(requestObject.kartoffelParams?.mobilePhone) &&
+            requestObject.kartoffelParams?.mobilePhone.length === 0
+          ) {
+            if (Array.isArray(requestObject.kartoffelParams.phone) && requestObject.kartoffelParams.phone.length > 0 ) {
+              requestObject.kartoffelParams.mobilePhone = requestObject.kartoffelParams.phone[0];
+            }
+          }
           setUser(requestObject.kartoffelParams);
         } else {
-          if(!requestObject?.mobilePhone) requestObject.mobilePhone = '';
+          if(!requestObject?.mobilePhone) {
+            if (requestObject.phone && Array.isArray(requestObject.phone) && requestObject.phone.length > 0) {
+              requestObject.mobilePhone = requestObject.phone[0];
+            } else {
+              requestObject.mobilePhone = "";
+            }
+          }
           if (Array.isArray(requestObject.mobilePhone)) requestObject.mobilePhone = requestObject.mobilePhone[0];
           setUser(requestObject);
         }
@@ -221,7 +256,7 @@ const FullEntityInformationForm = forwardRef(
         fieldName: 'clearance',
         displayName: 'סיווג',
         canEdit: true,
-        secured: CanSeeUserClearance,
+        secured: () => methods.watch('canSeeUserClearance'),
         force: true,
         inputType: InputTypes.TEXT,
         type: 'num',
