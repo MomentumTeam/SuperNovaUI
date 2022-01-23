@@ -3,7 +3,7 @@ import { apiBaseUrl } from '../constants';
 
 export const isAPIAlive = async() => {
   try {
-    const res = await axiosApiInstance.get(`${apiBaseUrl}/isAlive`);
+    const res = await axiosApiInstance.get(`${apiBaseUrl}/api/isAlive`);
     if (res.status === 200) return true;
   
     return false;

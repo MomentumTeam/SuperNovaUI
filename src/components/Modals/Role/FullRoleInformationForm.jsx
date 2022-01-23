@@ -21,6 +21,7 @@ import {
   getRoleByRoleId,
   getDIByUniqueId,
   isJobTitleAlreadyTakenRequest,
+  getEntityByMongoId,
 } from '../../../service/KartoffelService';
 import Approver from '../../Fields/Approver';
 import { GetDefaultApprovers } from '../../../utils/approver';
@@ -79,6 +80,7 @@ const validationSchema = Yup.object().shape({
     then: Yup.string().required('יש לבחור סיווג'),
   }),
   comments: Yup.string().optional(),
+  entityId: Yup.string().optional(),
 });
 
 const FullRoleInformationForm = forwardRef(
@@ -160,17 +162,25 @@ const FullRoleInformationForm = forwardRef(
             : await getRoleByRoleId(requestObject?.kartoffelParams?.roleId);
 
           setRole(oldRole);
+
+          if(requestObject?.kartoffelParams?.entityId) {
+            try {
+              const entityRes = await getEntityByMongoId(requestObject?.kartoffelParams?.entityId);
+              setEntity(entityRes);
+            } catch (error) {
+              
+            }
+          }
         } else {
           setRole(requestObject);
-
+          
           try {
             const entityRes = await getEntityByRoleId(
               requestObject?.roleId || requestObject?.kartoffelParams?.roleId
             );
             setEntity(entityRes);
-          } catch (error) {
-            // TODO: POPUP
-          }
+            setValue("entityId", entityRes.id);
+          } catch (error) {}
 
           try {
             if (requestObject?.digitalIdentityUniqueId) {
@@ -180,9 +190,9 @@ const FullRoleInformationForm = forwardRef(
               setDigitalIdentity(di);
             }
           } catch (error) {
-            // TODO: POPUP
           }
         }
+
       }
 
       await initDefaultApprovers();
@@ -195,7 +205,7 @@ const FullRoleInformationForm = forwardRef(
         console.log(err);
         throw new Error(err.errors);
       }
-      const { approvers, comments, roleName, clearance, oldRole } = data;
+      const { approvers, comments, roleName, clearance, oldRole, entityId } = data;
       const req = {
         commanders: approvers,
         kartoffelParams: {
@@ -203,7 +213,8 @@ const FullRoleInformationForm = forwardRef(
           jobTitle: roleName,
           oldJobTitle: requestObject.jobTitle,
           role: oldRole,
-          ...(clearance && { clearance }),
+          ...(entityId && {entityId}),
+          ...(clearance && { clearance })
         },
         adParams: {
           samAccountName: getSamAccountNameFromUniqueId(requestObject.roleId),
@@ -397,18 +408,13 @@ const FullRoleInformationForm = forwardRef(
           </div>
         </div>
 
-        {!reqView && (
-          <div className='p-fluid-item p-fluid-item'>
-            <div className='p-field'>
-              <label> משתמש בתפקיד </label>
-              <InputText
-                id='fullRoleInfoForm-entity'
-                value={entity?.fullName || '---'}
-                disabled={true}
-              />
-            </div>
+        <div className="p-fluid-item p-fluid-item">
+          <div className="p-field">
+            <label> משתמש בתפקיד </label>
+            <InputText id="fullRoleInfoForm-entity" value={entity?.fullName || "---"} disabled={true} />
           </div>
-        )}
+        </div>
+  
 
         {!reqView && (
           <div className='p-fluid-item p-fluid-item'>

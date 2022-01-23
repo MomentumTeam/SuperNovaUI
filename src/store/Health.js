@@ -18,7 +18,7 @@ class HealthStore {
   checkHealth() {
     const healthcheck = setInterval(async () => {
       await healthStore.loadHealth();
-    }, 180000);
+    }, 90000);
     return () => clearInterval(healthcheck);
   }
 
