@@ -137,48 +137,49 @@ const AssignRoleToEntityForm = forwardRef(
     const { errors } = formState;
 
     useEffect(() => {
-      const initializeValues = async () => {
-        setValue('comments', requestObject.comments);
-
-        // user
-        const user = await getEntityByMongoId(requestObject.kartoffelParams.id);
-        setValue('userName', requestObject.adParams.fullName);
-        setValue('user', user);
-        setValue('personalNumber', user.personalNumber || user.identityCard);
-
-        const roleId = requestObject.kartoffelParams.roleId;
-        setValue('roleId', roleId);
-        setValue('hierarchy', requestObject.kartoffelParams.hierarchy);
-
-        const oldRole = requestObject?.kartoffelParams?.role
-          ? requestObject?.kartoffelParams?.role
-          : await getRoleByRoleId(roleId);
-
-        setValue("role", oldRole, { shouldValidate: true });
-        setRoles([oldRole]);
-
+      const getNewEntity = async () => {
+        // new entity
         try {
-          // TODO: change in req
-          const entity = await getEntityByRoleId(roleId);
+          const user = await getEntityByMongoId(requestObject.kartoffelParams.id);
+          setValue("user", user);
+          setValue("personalNumber", user.personalNumber || user.identityCard);
+        } catch (error) {}
+      };
 
-          if (entity) {
-            // If role is taken
-            setValue('currentRoleUser', entity.fullName);
-          }
-        } catch (err) {
-          setValue('currentRoleUser', '');
+      const getOldRole = async (roleId) => {
+        // old role
+        try {
+          const oldRole = requestObject?.kartoffelParams?.role
+            ? requestObject?.kartoffelParams?.role
+            : await getRoleByRoleId(roleId);
+
+          setValue("role", oldRole, { shouldValidate: true });
+          setRoles([oldRole]);
+        } catch (error) {
+          setValue("role", {});
+          setRoles([]);
         }
+      };
 
-        await roleId;
-
-        setValue('changeRoleAt', +requestObject.due);
-
+      const initDefaultApprovers = async () => {
         const result = await GetDefaultApprovers({
           request: requestObject,
           onlyForView,
           user: userStore.user,
         });
         setDefaultApprovers(result || []);
+      };
+      
+      const initializeValues = async () => {
+        const roleId = requestObject.kartoffelParams.roleId;
+        setValue("roleId", roleId);
+        setValue("comments", requestObject.comments);
+        setValue("userName", requestObject.adParams.fullName);
+        setValue("changeRoleAt", +requestObject.due);
+        setValue("hierarchy", requestObject.kartoffelParams.hierarchy);
+        setValue("currentRoleUser", requestObject?.kartoffelParams?.name ? requestObject.kartoffelParams.name : "");
+
+        await Promise.all[getNewEntity(), getOldRole(roleId), initDefaultApprovers()]
       };
 
       if (requestObject) {
@@ -192,15 +193,7 @@ const AssignRoleToEntityForm = forwardRef(
       } catch (err) {
         throw new Error(err.errors);
       }
-      const {
-        changeRoleAt,
-        approvers,
-        roleId,
-        comments,
-        user,
-        role,
-        hierarchy,
-      } = data;
+      const { changeRoleAt, approvers, roleId, comments, user, role, hierarchy, currentRoleUser } = data;
 
       const userRole = getUserRole();
 
@@ -213,7 +206,8 @@ const AssignRoleToEntityForm = forwardRef(
           roleId: roleId,
           hierarchy: hierarchyConverse(hierarchy),
           directGroup: hierarchy.id,
-          role: role
+          role: role,
+          ...(currentRoleUser && {name: currentRoleUser}) // name of old entity if there is
         },
         adParams: {
           newSAMAccountName: getSamAccountNameFromUniqueId(roleId),
