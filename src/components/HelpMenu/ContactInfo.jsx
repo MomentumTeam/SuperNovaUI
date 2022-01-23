@@ -31,8 +31,8 @@ const ContactInfo = () => {
           ליצירת קשר בנושא בקשות שממתינות לאישור יחב"ם ניתן לשלוח מייל לכתובת
           "דסק שובם" או{' '}
           <a
-            href={`mailto:${configStore.SECUIRTY_MAIL}`}
-            title={configStore.SECUIRTY_MAIL}
+            href={`mailto:${configStore.SECURITY_MAIL}`}
+            title={configStore.SECURITY_MAIL}
             style={{ fontWeight: '700', textDecoration: 'underline' }}
           >
             לחץ כאן
@@ -43,8 +43,8 @@ const ContactInfo = () => {
           ליצירת קשר בנושא בקשות שממתינות לאישור בטח"ם ניתן לשלוח מייל לכתובת
           "בטחם שוטף" או{' '}
           <a
-            href={`mailto:${configStore.SUPER_SECUIRTY_MAIL}`}
-            title={configStore.SUPER_SECUIRTY_MAIL}
+            href={`mailto:${configStore.SUPER_SECURITY_MAIL}`}
+            title={configStore.SUPER_SECURITY_MAIL}
             style={{ fontWeight: '700', textDecoration: 'underline' }}
           >
             לחץ כאן

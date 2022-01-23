@@ -16,8 +16,8 @@ class ConfigStore {
   PAGE_SIZE = 10;
   ITEMS_IN_PAGE = 6;
   FIRST_PAGE = 0;
-  SECUIRTY_MAIL = 'T82130201@gmail.com';
-  SUPER_SECUIRTY_MAIL = 'T02250B49@gmail.com';
+  SECURITY_MAIL = 'T82130201@gmail.com';
+  SUPER_SECURITY_MAIL = 'T02250B49@gmail.com';
 
   constructor() {
     makeAutoObservable(this, {
@@ -32,8 +32,8 @@ class ConfigStore {
       PAGE_SIZE: observable,
       ITEMS_IN_PAGE: observable,
       FIRST_PAGE: observable,
-      SECUIRTY_MAIL: observable,
-      SUPER_SECUIRTY_MAIL: observable,
+      SECURITY_MAIL: observable,
+      SUPER_SECURITY_MAIL: observable,
     });
   }
 
@@ -54,9 +54,9 @@ class ConfigStore {
       if (config?.TOKEN_NAME) this.TOKEN_NAME = config.TOKEN_NAME;
       if (config?.PAGE_SIZE) this.PAGE_SIZE = config.PAGE_SIZE;
       if (config?.FIRST_PAGE) this.FIRST_PAGE = config.FIRST_PAGE;
-      if (config?.SECUIRTY_MAIL) this.SECUIRTY_MAIL = config.SECUIRTY_MAIL;
-      if (config?.SUPER_SECUIRTY_MAIL)
-        this.SUPER_SECUIRTY_MAIL = config.SUPER_SECUIRTY_MAIL;
+      if (config?.SECURITY_MAIL) this.SECURITY_MAIL = config.SECURITY_MAIL;
+      if (config?.SUPER_SECURITY_MAIL)
+        this.SUPER_SECURITY_MAIL = config.SUPER_SECURITY_MAIL;
     } catch (error) {
       console.log('problem with config');
     }

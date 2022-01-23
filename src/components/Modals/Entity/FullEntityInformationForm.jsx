@@ -20,6 +20,7 @@ import { useStores } from '../../../context/use-stores';
 import '../../../assets/css/local/general/buttons.css';
 import '../../../assets/css/local/components/modal-item.css';
 import { getSamAccountNameFromEntity } from '../../../utils/fields';
+import { kartoffelIdentityCardValidation } from '../../../utils/user';
 
 const validationSchema = Yup.object().shape({
   canEditEntityFields: Yup.boolean(),
@@ -39,17 +40,7 @@ const validationSchema = Yup.object().shape({
       name: 'check-if-valid',
       message: 'ת"ז לא תקין!',
       test: async (identityNumber) => {
-        //kartoffel validation for identityCard
-        identityNumber = identityNumber.padStart(9, '0');
-
-        const accumulator = identityNumber
-          .split('')
-          .reduce((count, currChar, currIndex) => {
-            const num = Number(currChar) * ((currIndex % 2) + 1);
-            return (count += num > 9 ? num - 9 : num);
-          }, 0);
-
-        return accumulator % 10 === 0;
+        return kartoffelIdentityCardValidation(identityNumber);
       },
     }),
   }),
