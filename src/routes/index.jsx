@@ -49,7 +49,7 @@ const AppRouter = () => {
   });
   
   useEffect(async () => {
-    if(healthStore.isApiHealthy) await userStore.fetchUserInfo();
+    await userStore.fetchUserInfo();
   }, [healthStore.isApiHealthy]);
 
   return (
