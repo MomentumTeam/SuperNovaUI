@@ -567,7 +567,7 @@ const AssignRoleToEntityForm = forwardRef(
           ></InfoPopup>
         </div>
         <div style={{ display: 'flex' }}>
-          <div className='p-fluid-item-flex p-fluid-item'>
+          <div className='p-fluid-item'>
             <Hierarchy
               ogValue={watch('hierarchy')}
               setValue={(name, value) => {
