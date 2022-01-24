@@ -18,6 +18,8 @@ class ConfigStore {
   FIRST_PAGE = 0;
   SECURITY_MAIL = 'T82130201@gmail.com';
   SUPER_SECURITY_MAIL = 'T02250B49@gmail.com';
+  INSTRUCTION_VIDEOS =
+    'https://www.youtube.com/watch?v=OcUDK4kAUIw&ab_channel=KaliUchis-Topic';
 
   constructor() {
     makeAutoObservable(this, {
@@ -34,6 +36,7 @@ class ConfigStore {
       FIRST_PAGE: observable,
       SECURITY_MAIL: observable,
       SUPER_SECURITY_MAIL: observable,
+      INSTRUCTION_VIDEOS: observable,
     });
   }
 
@@ -57,6 +60,8 @@ class ConfigStore {
       if (config?.SECURITY_MAIL) this.SECURITY_MAIL = config.SECURITY_MAIL;
       if (config?.SUPER_SECURITY_MAIL)
         this.SUPER_SECURITY_MAIL = config.SUPER_SECURITY_MAIL;
+      if (config?.INSTRUCTION_VIDEOS)
+        this.INSTRUCTION_VIDEOS = config.INSTRUCTION_VIDEOS;
     } catch (error) {
       console.log('problem with config');
     }
