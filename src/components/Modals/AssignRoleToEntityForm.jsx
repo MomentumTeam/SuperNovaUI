@@ -193,21 +193,14 @@ const AssignRoleToEntityForm = forwardRef(
 
       const initializeValues = async () => {
         const roleId = requestObject.kartoffelParams.roleId;
-        setValue('roleId', roleId);
-        setValue('comments', requestObject.comments);
-        setValue('userName', requestObject.adParams.fullName);
-        setValue('changeRoleAt', +requestObject.due);
-        setValue('hierarchy', requestObject.kartoffelParams.hierarchy);
-        setValue(
-          'currentRoleUser',
-          requestObject?.kartoffelParams?.name
-            ? requestObject.kartoffelParams.name
-            : ''
-        );
+        setValue("roleId", roleId);
+        setValue("comments", requestObject.comments);
+        setValue("userName", requestObject.adParams.fullName);
+        setValue("changeRoleAt", +requestObject.due);
+        setValue("hierarchy", {name:requestObject.kartoffelParams.hierarchy});
+        setValue("currentRoleUser", requestObject?.kartoffelParams?.name ? requestObject.kartoffelParams.name : "");
 
-        await Promise.all[
-          (getNewEntity(), getOldRole(roleId), initDefaultApprovers())
-        ];
+        await Promise.all[getNewEntity(), getOldRole(roleId), initDefaultApprovers()]
       };
 
       if (requestObject) {
@@ -343,7 +336,6 @@ const AssignRoleToEntityForm = forwardRef(
 
       try {
         entity = await getEntityByRoleId(roleId);
-        console.log(entity, entity.roleId, watch('roleId'));
         if (entity && entity.id != watch('user')?.id) {
           // If role is taken
           setValue('currentRoleUser', entity.fullName);

@@ -43,7 +43,7 @@ const Hierarchy = ({
         {disabled && (
           <Tooltip
             target={`.hierarchyText-${id}`}
-            content={selectedOg}
+            content={selectedOg?.name}
             tooltipOptions={{ showOnDisabled: true }}
             position='top'
           />

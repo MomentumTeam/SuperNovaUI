@@ -21,22 +21,28 @@ import {
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { APPROVER_TYPES, USER_TYPE } from '../../constants';
-import { isUserApproverType, userConverse, userTemplate } from '../../utils/user';
+import {
+  isUserApproverType,
+  userConverse,
+  userTemplate,
+} from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
 import '../../assets/css/local/components/approverForm.css';
 import { Tooltip } from 'primereact/tooltip';
-
+import { hierarchyConverse } from '../../utils/hierarchy';
 
 const validationSchema = Yup.object().shape({
-  approverType: Yup.string().required("יש להכניס סוג מאשר"),
-  user: Yup.object().required("יש לבחור משתמש").test({
-    name:"valid-user-with-role",
-    message: "לא ניתן להוסיף למשתמש זה הרשאות מכיוון שהוא לא משוייך לתפקיד",
-    test: (user) => {
-      return user?.directGroup !== ""
-    }
-  }),
-  hierarchy: Yup.object().required("יש לבחור היררכיה"),
+  approverType: Yup.string().required('יש להכניס סוג מאשר'),
+  user: Yup.object()
+    .required('יש לבחור משתמש')
+    .test({
+      name: 'valid-user-with-role',
+      message: 'לא ניתן להוסיף למשתמש זה הרשאות מכיוון שהוא לא משוייך לתפקיד',
+      test: (user) => {
+        return user?.directGroup !== '';
+      },
+    }),
+  hierarchy: Yup.object().required('יש לבחור היררכיה'),
   isUserApprover: Yup.boolean(),
   approvers: Yup.array().when('isUserApprover', {
     is: false,
@@ -68,7 +74,15 @@ const ApproverForm = forwardRef(
     const [approverType, setApproverType] = useState();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
-    const { register, handleSubmit, setValue, getValues, formState, watch, clearErrors } = useForm({
+    const {
+      register,
+      handleSubmit,
+      setValue,
+      getValues,
+      formState,
+      watch,
+      clearErrors,
+    } = useForm({
       resolver: yupResolver(validationSchema),
       defaultValues: { isUserApprover: isUserApproverType(userStore.user) },
     });
@@ -91,13 +105,21 @@ const ApproverForm = forwardRef(
         );
         setApproverType(requestObject.additionalParams.type);
         try {
-          const hierarchy = await getOGById(requestObject.additionalParams.directGroup);
-          setValue('hierarchy', hierarchy);
+          const hierarchy = await getOGById(
+            requestObject.additionalParams.directGroup
+          );
+          setValue('hierarchy', {
+            name: hierarchyConverse(hierarchy),
+          });
+
           const hierarchyApproverOf = await getOGById(
             requestObject.additionalParams.groupInChargeId
           );
 
-          setValue('hierarchyApproverOf', hierarchyApproverOf);
+          setValue('hierarchyApproverOf', {
+            name: hierarchyConverse(hierarchyApproverOf),
+          });
+
           watch('hierarchyApproverOf');
         } catch (error) {}
       }
@@ -108,12 +130,10 @@ const ApproverForm = forwardRef(
         user: userStore.user,
         highCommander: true,
       });
-      
+
       setDefaultApprovers(result || []);
-      setValue("isUserApprover", result.length > 0);
-
+      setValue('isUserApprover', result.length > 0);
     }, []);
-
 
     const onSubmit = async (data) => {
       const {
@@ -145,16 +165,14 @@ const ApproverForm = forwardRef(
           ...(user.akaUnit && { akaUnit: user.akaUnit }),
           ...(user.personalNumber && { personalNumber: user.personalNumber }),
           ...(user.identityCard && { identityCard: user.identityCard }),
-          ...(groupInChargeId && {groupInChargeId})
+          ...(groupInChargeId && { groupInChargeId }),
         },
         comments,
         due: Date.now(),
       };
 
-
       await appliesStore.createNewApproverApply(req);
       setIsActionDone(true);
-      
     };
 
     useImperativeHandle(
@@ -165,23 +183,23 @@ const ApproverForm = forwardRef(
       []
     );
 
-   const handleApprover = async (e) => {
-     setApproverType(e.value);
-     setValue('approverType', e.value);
-     setValue('groupInChargeId', '');
-     setValue('hierarchyApproverOf', undefined);
+    const handleApprover = async (e) => {
+      setApproverType(e.value);
+      setValue('approverType', e.value);
+      setValue('groupInChargeId', '');
+      setValue('hierarchyApproverOf', undefined);
 
-     if (e.value !== USER_TYPE.ADMIN) {
-       const result = await GetDefaultApprovers({
-         request: requestObject,
-         user: userStore.user,
-         highCommander: true,
-       });
-       setDefaultApprovers(result || []);
-       setValue('isUserApprover', result.length > 0);
-       setValue('approvers', []);
-     }
-   };
+      if (e.value !== USER_TYPE.ADMIN) {
+        const result = await GetDefaultApprovers({
+          request: requestObject,
+          user: userStore.user,
+          highCommander: true,
+        });
+        setDefaultApprovers(result || []);
+        setValue('isUserApprover', result.length > 0);
+        setValue('approvers', []);
+      }
+    };
 
     const onSearchUserByPersonalNumber = async () => {
       const userId = getValues('personalNumber');
@@ -191,7 +209,7 @@ const ApproverForm = forwardRef(
         const user = await getEntityByIdentifier(userId);
 
         if (user) {
-          setValue('user', user, {shouldValidate: true});
+          setValue('user', user, { shouldValidate: true });
           setValue('userName', userConverse(user));
           setValue('hierarchy', {
             hierarchy: user.hierarchy,
@@ -218,7 +236,7 @@ const ApproverForm = forwardRef(
     const setCurrentUser = () => {
       const user = toJS(userStore.user);
       setValue('userName', userConverse(user));
-      setValue('user', user, {shouldValidate: true});
+      setValue('user', user, { shouldValidate: true });
       setValue('personalNumber', user.personalNumber || user.identityCard);
       setValue('hierarchy', {
         hierarchy: user.hierarchy,
@@ -226,23 +244,23 @@ const ApproverForm = forwardRef(
       });
     };
 
-     const handleOrgSelected = async (org) => {
-       const result = await GetDefaultApprovers({
-         request: requestObject,
-         user: userStore.user,
-         onlyForView,
-         groupId: org.id,
-         highCommander: true,
-       });
-       setDefaultApprovers(result || []);
-       setValue('isUserApprover', result.length > 0);
-       if (getValues('hierarchyApproverOf')?.id) {
-         setValue('groupInChargeId', watch('hierarchyApproverOf').id);
-       }
-     };
+    const handleOrgSelected = async (org) => {
+      const result = await GetDefaultApprovers({
+        request: requestObject,
+        user: userStore.user,
+        onlyForView,
+        groupId: org.id,
+        highCommander: true,
+      });
+      setDefaultApprovers(result || []);
+      setValue('isUserApprover', result.length > 0);
+      if (getValues('hierarchyApproverOf')?.id) {
+        setValue('groupInChargeId', watch('hierarchyApproverOf').id);
+      }
+    };
 
     return (
-      <div className='p-fluid'>
+      <div className="p-fluid">
         <div
           className={
             watch('approverType') == USER_TYPE.ADMIN
@@ -250,17 +268,17 @@ const ApproverForm = forwardRef(
               : 'p-fluid-item p-fluid-item-flex1'
           }
         >
-          <div className='p-field'>
-            <label htmlFor='2011'>
-              <span className='required-field'>*</span>סוג גורם מאשר
+          <div className="p-field">
+            <label htmlFor="2011">
+              <span className="required-field">*</span>סוג גורם מאשר
             </label>
             <Dropdown
               {...register('approverType')}
               disabled={onlyForView}
               className={`${onlyForView ? 'disabled' : ''} approverType`}
               value={approverType}
-              id='approverForm-approverType'
-              inputId='2011'
+              id="approverForm-approverType"
+              inputId="2011"
               required
               options={APPROVER_TYPES}
               onChange={handleApprover}
@@ -268,34 +286,34 @@ const ApproverForm = forwardRef(
           </div>
         </div>
         {watch('approverType') === USER_TYPE.ADMIN && (
-          <div className='p-fluid-item'>
-            <div className='p-field'>
+          <div className="p-fluid-item">
+            <div className="p-field">
               <Hierarchy
                 setValue={setValue}
-                name='hierarchyApproverOf'
+                name="hierarchyApproverOf"
                 errors={errors}
                 ogValue={watch('hierarchyApproverOf')}
                 disabled={onlyForView}
-                labelText='ההיררכיה שבה תהיו מחשוב יחידתי'
+                labelText="ההיררכיה שבה תהיו מחשוב יחידתי"
                 onOrgSelected={handleOrgSelected}
               />
             </div>
           </div>
         )}
-        <div className='p-fluid-item'>
-          <div className='p-field'>
-            <label htmlFor='2020'>
-              <span className='required-field'>*</span>שם מלא
+        <div className="p-fluid-item">
+          <div className="p-field">
+            <label htmlFor="2020">
+              <span className="required-field">*</span>שם מלא
             </label>
             {onlyForView && (
               <Tooltip target={`.userNameText`} content={watch('userName')} />
             )}
 
             <button
-              className='btn-underline left19 approver-fillMe'
+              className="btn-underline left19 approver-fillMe"
               onClick={setCurrentUser}
-              type='button'
-              title='עבורי'
+              type="button"
+              title="עבורי"
               id="approverForm-forme"
               style={onlyForView && { display: 'none' }}
             >
@@ -305,13 +323,13 @@ const ApproverForm = forwardRef(
               value={watch('userName')}
               suggestions={userSuggestions}
               completeMethod={onSearchUser}
-              id='approverForm-userName'
-              type='text'
+              id="approverForm-userName"
+              type="text"
               itemTemplate={userTemplate}
-              className='userNameText'
+              className="userNameText"
               field={userConverse}
               onSelect={(e) => {
-                setValue('user', e.value, {shouldValidate: true});
+                setValue('user', e.value, { shouldValidate: true });
                 setValue(
                   'personalNumber',
                   e.value.personalNumber || e.value.identityCard
@@ -328,7 +346,7 @@ const ApproverForm = forwardRef(
                   e.value.fullName ? userConverse(e.value) : e.value
                 );
                 setValue('personalNumber', '');
-                setValue('user', null,{shouldValidate: true});
+                setValue('user', null, { shouldValidate: true });
                 setValue('hierarchy', '');
               }}
               required
@@ -336,22 +354,22 @@ const ApproverForm = forwardRef(
             />
             {errors.user && (
               <small style={{ color: 'red' }}>
-                {errors.user?.message? errors.user.message:'יש למלא ערך'}
+                {errors.user?.message ? errors.user.message : 'יש למלא ערך'}
               </small>
             )}
           </div>
         </div>
-        <div className='p-fluid-item'>
-          <div className='p-field'>
-            <label htmlFor='2021'>
+        <div className="p-fluid-item">
+          <div className="p-field">
+            <label htmlFor="2021">
               {' '}
-              <span className='required-field'>*</span>מ"א/ת"ז
+              <span className="required-field">*</span>מ"א/ת"ז
             </label>
             <InputText
               {...register('personalNumber', { required: true })}
-              id='approverForm-personalNumber'
-              type='text'
-              keyfilter='pnum'
+              id="approverForm-personalNumber"
+              type="text"
+              keyfilter="pnum"
               required
               onBlur={onSearchUserByPersonalNumber}
               onKeyDown={(e) => {
@@ -360,7 +378,7 @@ const ApproverForm = forwardRef(
                 }
               }}
               onInput={() => {
-                clearErrors('user')
+                clearErrors('user');
                 setValue('user', null);
                 setValue('userName', '');
                 setValue('hierarchy', '');
@@ -377,12 +395,12 @@ const ApproverForm = forwardRef(
             )}
           </div>
         </div>
-        <div className='p-fluid-item'>
+        <div className="p-fluid-item">
           <Hierarchy
             disabled={true}
             setValue={setValue}
-            name='hierarchy'
-            ogValue={getValues('hierarchy')?.hierarchy}
+            name="hierarchy"
+            ogValue={getValues('hierarchy')}
             errors={errors}
             userHierarchy={
               userStore.user && userStore.user.hierarchy
@@ -391,15 +409,15 @@ const ApproverForm = forwardRef(
             }
           />
         </div>
-        <div className='p-fluid-item'>
+        <div className="p-fluid-item">
           <Approver
             setValue={setValue}
-            name='approvers'
+            name="approvers"
             multiple={true}
             errors={errors}
             tooltip={'סא"ל ומעלה ביחידתך'}
             isHighRank={true}
-            disabled={onlyForView || watch("isUserApprover")}
+            disabled={onlyForView || watch('isUserApprover')}
             defaultApprovers={defaultApprovers}
           />
         </div>
