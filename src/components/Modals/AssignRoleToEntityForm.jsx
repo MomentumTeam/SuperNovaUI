@@ -112,7 +112,9 @@ const validationSchema = Yup.object().shape({
   comments: Yup.string().optional(),
   changeRoleAt: Yup.date().when('currentRoleUser', {
     is: (value) => value !== '',
-    then: Yup.date().required('יש לבחור תאריך החלפה'),
+    then: Yup.date()
+      .typeError('תאריך לא תקין')
+      .required('יש לבחור תאריך החלפה'),
     otherwise: Yup.date(),
   }),
 });
