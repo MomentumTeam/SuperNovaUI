@@ -23,7 +23,7 @@ const HierarchyField = ({
   const firstRender = useFirstRender();
   const [hierarchyFind, setHierarchyFind] = useState(null);
   const disabled = !canEdit || !isEdit;
-  console.log(disabled && withTooltip);
+
   const searchHierarchy = async (hierarchyName) => {
     let hierarchyResult = null;
     if (hierarchyName !== undefined) {
