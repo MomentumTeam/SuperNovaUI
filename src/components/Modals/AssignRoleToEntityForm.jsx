@@ -176,7 +176,7 @@ const AssignRoleToEntityForm = forwardRef(
         setValue("comments", requestObject.comments);
         setValue("userName", requestObject.adParams.fullName);
         setValue("changeRoleAt", +requestObject.due);
-        setValue("hierarchy", requestObject.kartoffelParams.hierarchy);
+        setValue("hierarchy", {name:requestObject.kartoffelParams.hierarchy});
         setValue("currentRoleUser", requestObject?.kartoffelParams?.name ? requestObject.kartoffelParams.name : "");
 
         await Promise.all[getNewEntity(), getOldRole(roleId), initDefaultApprovers()]
