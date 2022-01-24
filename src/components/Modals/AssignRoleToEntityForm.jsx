@@ -55,23 +55,34 @@ const validationSchema = Yup.object().shape({
   role: Yup.object()
     .required('נא לבחור תפקיד')
     .test({
-      name: 'is-current-role',
-      message: 'נראה שבחרת את התפקיד הנוכחי שלך... אנא בחר תפקיד אחר',
-      test: function (value) {
-        const { user } = this.parent;
+      name: 'valid-roleid',
+      message: 'לא ניתן לשייך תפקיד זה למשתמש',
+      test: (role) => {
         return (
-          value?.roleId &&
-          user?.digitalIdentities[0]?.role?.roleId !== value?.roleId
+          role?.digitalIdentityUniqueId && role.digitalIdentityUniqueId !== ''
         );
       },
     })
     .test({
-      name: 'valid-roleid',
-      message: 'לא ניתן לשייך תפקיד זה למשתמש',
-      test: (value) => {
-        return (
-          value?.digitalIdentityUniqueId && value.digitalIdentityUniqueId !== ''
-        );
+      name: 'is-current-role',
+      message: 'נראה שבחרת את התפקיד הנוכחי שלך... אנא בחר תפקיד אחר',
+      test: (role, context) => {
+        const { user } = context.parent;
+
+        if (user) {
+          const isRoleConnectedToUser = role?.digitalIdentityUniqueId;
+          const hasDigitalIdentityAlready =
+            user?.digitalIdentities && isRoleConnectedToUser
+              ? user.digitalIdentities.find(
+                  (identity) =>
+                    identity.uniqueId === role.digitalIdentityUniqueId
+                )
+              : false;
+
+          return !hasDigitalIdentityAlready;
+        }
+
+        return true;
       },
     }),
   roleId: Yup.string().required('יש למלא מזהה תפקיד'),
@@ -139,7 +150,7 @@ const AssignRoleToEntityForm = forwardRef(
       clearErrors,
     } = useForm({
       resolver: yupResolver(validationSchema),
-      defaultValues: { isUserApprover },
+      defaultValues: { isUserApprover, role: null, user: null },
     });
 
     const { errors } = formState;

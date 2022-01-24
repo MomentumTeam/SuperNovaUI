@@ -206,6 +206,7 @@ const FullHierarchyInformationForm = forwardRef(
         placeholder: 'הכנס הערות לבקשה...',
         additionalClass: 'p-fluid-item-flex1',
         canEdit: true,
+        item: requestObject
       },
     ];
 
