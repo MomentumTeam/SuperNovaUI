@@ -65,7 +65,11 @@ const Dashboard = observer(() => {
           <div className="content-unit-wrap">
             {isUserCanSeeMyApproveApplies(user) ? (
               <>
-                <AppliesTable user={user} myApplies={approveMyApplies} allApplies={approveAllApplies} />
+                <AppliesTable
+                  user={user}
+                  myApplies={approveMyApplies}
+                  allApplies={approveAllApplies}
+                />
               </>
             ) : (
               <div className="content-unit-inner content-unit-inner-before">
@@ -82,7 +86,10 @@ const Dashboard = observer(() => {
                   </div>
                 </div>
                 <div className="chart-wrap">
-                  <HierarchyTree data={toJS(treeStore.tree)} />
+                  <HierarchyTree
+                    data={toJS(treeStore.tree)}
+                    isTreeLoading={treeStore.isTreeLoading}
+                  />
                   <DecorAnimation />
                 </div>
               </div>

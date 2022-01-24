@@ -3070,3 +3070,13 @@
     left: 10px;
   }
 }
+
+
+.hierarchyBtn {
+  background-image: url(../../../images/buttons/change-view-chart-blue.svg) !important;
+  background-size: 60px !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  border: none !important;
+  padding: 40px !important;
+}
