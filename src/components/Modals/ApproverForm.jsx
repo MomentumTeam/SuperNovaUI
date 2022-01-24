@@ -400,7 +400,11 @@ const ApproverForm = forwardRef(
             disabled={true}
             setValue={setValue}
             name="hierarchy"
-            ogValue={getValues('hierarchy')?.hierarchy}
+            ogValue={
+              onlyForView
+                ? getValues('hierarchy')
+                : getValues('hierarchy')?.hierarchy
+            }
             errors={errors}
             userHierarchy={
               userStore.user && userStore.user.hierarchy
