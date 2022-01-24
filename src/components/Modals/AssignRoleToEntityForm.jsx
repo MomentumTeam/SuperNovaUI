@@ -40,48 +40,63 @@ import { hierarchyConverse } from '../../utils/hierarchy';
 import configStore from '../../store/Config';
 
 const validationSchema = Yup.object().shape({
-  user: Yup.object().required('נא לבחור משתמש'),
+  user: Yup.object().required("נא לבחור משתמש"),
   userName: Yup.string()
-    .required('יש למלא שם משתמש')
+    .required("יש למלא שם משתמש")
     .test({
-      name: 'valid-user',
-      message: 'נא לבחור משתמש',
+      name: "valid-user",
+      message: "נא לבחור משתמש",
       test: (userName, context) => {
         return userName && context.parent?.user;
       },
     }),
-  personalNumber: Yup.string().required('יש למלא ערך'),
-  hierarchy: Yup.object().required('נא לבחור היררכיה'),
+  personalNumber: Yup.string().required("יש למלא ערך"),
+  hierarchy: Yup.object().required("נא לבחור היררכיה"),
   role: Yup.object()
-    .required('נא לבחור תפקיד')
+    .required("נא לבחור תפקיד")
     .test({
-      name: 'valid-roleid',
-      message: 'לא ניתן לשייך תפקיד זה למשתמש',
-      test: (value) => {
-        return (
-          value?.digitalIdentityUniqueId && value.digitalIdentityUniqueId !== ''
-        );
+      name: "valid-roleid",
+      message: "לא ניתן לשייך תפקיד זה למשתמש",
+      test: (role) => {
+        return role?.digitalIdentityUniqueId && role.digitalIdentityUniqueId !== "";
       },
-    }),
-  roleId: Yup.string().required('יש למלא מזהה תפקיד'),
-  isUserApprover: Yup.boolean(),
-  approvers: Yup.array()
-    .when('isUserApprover', {
-      is: false,
-      then: Yup.array()
-        .min(1, 'יש לבחור לפחות גורם מאשר אחד')
-        .required('יש לבחור לפחות גורם מאשר אחד'),
     })
     .test({
-      name: 'check-if-valid',
-      message: 'יש לבחור מאשרים תקינים (מהיחידה בלבד)',
+      name: "is-current-role",
+      message: "נראה שבחרת את התפקיד הנוכחי שלך... אנא בחר תפקיד אחר",
+      test: (role, context) => {
+        const { user } = context.parent;
+
+        if (user) {
+          const isRoleConnectedToUser = role?.digitalIdentityUniqueId;
+          const hasDigitalIdentityAlready =
+            user?.digitalIdentities && isRoleConnectedToUser
+              ? user.digitalIdentities.find((identity) => identity.uniqueId === role.digitalIdentityUniqueId)
+              : false;
+
+          return !hasDigitalIdentityAlready;
+        }
+
+        return true;
+      },
+    }),
+  roleId: Yup.string().required("יש למלא מזהה תפקיד"),
+  isUserApprover: Yup.boolean(),
+  approvers: Yup.array()
+    .when("isUserApprover", {
+      is: false,
+      then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+    })
+    .test({
+      name: "check-if-valid",
+      message: "יש לבחור מאשרים תקינים (מהיחידה בלבד)",
       test: async (approvers, context) => {
         let isTotalValid = true;
 
         if (context.parent?.hierarchy?.id && Array.isArray(approvers)) {
           await Promise.all(
             approvers.map(async (approver) => {
-              if (!approver?.types || !approver?.types.includes(USER_TYPE.ADMIN)){
+              if (!approver?.types || !approver?.types.includes(USER_TYPE.ADMIN)) {
                 const { isValid } = await isApproverValid(
                   approver?.entityId || approver?.id,
                   context.parent.hierarchy.id
@@ -96,9 +111,9 @@ const validationSchema = Yup.object().shape({
       },
     }),
   comments: Yup.string().optional(),
-  changeRoleAt: Yup.date().when('currentRoleUser', {
-    is: (value) => value !== '',
-    then: Yup.date().required('יש לבחור תאריך החלפה'),
+  changeRoleAt: Yup.date().when("currentRoleUser", {
+    is: (value) => value !== "",
+    then: Yup.date().required("יש לבחור תאריך החלפה"),
     otherwise: Yup.date(),
   }),
 });
@@ -131,7 +146,7 @@ const AssignRoleToEntityForm = forwardRef(
       clearErrors,
     } = useForm({
       resolver: yupResolver(validationSchema),
-      defaultValues: { isUserApprover },
+      defaultValues: { isUserApprover, role: null, user:null },
     });
 
     const { errors } = formState;
