@@ -18,7 +18,7 @@ const ContactInfo = () => {
       <ul>
         <li>
           {' '}
-          צוות מומנטום, ענף יסודות- לכניסה לקבוצת התמיכה{' '}
+         לכניסה לקבוצת התמיכה- לגו תמיכה{' '}
           <a
             href={supportGroupLink}
             style={{ fontWeight: '700', textDecoration: 'underline' }}
