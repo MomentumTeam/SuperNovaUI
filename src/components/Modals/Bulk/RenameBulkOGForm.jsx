@@ -174,7 +174,7 @@ const RenameBulkOGForm = forwardRef(
         const status = STATUSES[column.status];
         return <StatusFieldTemplate status={status} />;
       } else {
-        return "---";
+        return '---';
       }
     };
 
@@ -192,13 +192,13 @@ const RenameBulkOGForm = forwardRef(
     };
 
     return (
-      <div className="p-fluid" id="renameBulkOGForm">
-        <div className="p-fluid-item-flex p-fluid-item">
-          <div className="p-field">
+      <div className='p-fluid' id='renameBulkOGForm'>
+        <div className='p-fluid-item'>
+          <div className='p-field'>
             <Hierarchy
               setValue={setValue}
-              name="currentHierarchy"
-              labelText="היררכיה נוכחית"
+              name='currentHierarchy'
+              labelText='היררכיה נוכחית'
               errors={errors}
               ogValue={watch('currentHierarchy')}
               disabled={onlyForView}
@@ -211,12 +211,12 @@ const RenameBulkOGForm = forwardRef(
             />
           </div>
         </div>
-        <div className="p-fluid-item-flex p-fluid-item">
-          <div className="p-field">
+        <div className='p-fluid-item'>
+          <div className='p-field'>
             <Hierarchy
               setValue={setValue}
-              name="hierarchy"
-              labelText="היררכיה חדשה"
+              name='hierarchy'
+              labelText='היררכיה חדשה'
               errors={errors}
               ogValue={watch('hierarchy')}
               disabled={onlyForView}
@@ -239,14 +239,14 @@ const RenameBulkOGForm = forwardRef(
               { field: 'currentJobTitle', header: 'תפקיד נוכחי' },
               { field: 'newJobTitle', header: 'תפקיד חדש' },
               { field: 'roleId', header: 'מזהה תפקיד' },
-              { field: "status", header: "סטטוס", body: statusTemplateEnum },
+              { field: 'status', header: 'סטטוס', body: statusTemplateEnum },
             ]}
           />
         )}
-        <div className="p-fluid-item-flex p-fluid-item">
+        <div className='p-fluid-item-flex p-fluid-item'>
           <Approver
             setValue={setValue}
-            name="approvers"
+            name='approvers'
             tooltip='סא"ל ומעלה ביחידתך'
             multiple={true}
             errors={errors}
@@ -255,15 +255,15 @@ const RenameBulkOGForm = forwardRef(
           />
         </div>
 
-        <div className="p-fluid-item p-fluid-item-flex1">
-          <div className="p-field">
+        <div className='p-fluid-item p-fluid-item-flex1'>
+          <div className='p-field'>
             <label>
               <span></span>הערות
             </label>
             <InputTextarea
               {...register('comments')}
-              id="renameBulkOGForm-comments"
-              type="text"
+              id='renameBulkOGForm-comments'
+              type='text'
               placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
               disabled={onlyForView}
             />
