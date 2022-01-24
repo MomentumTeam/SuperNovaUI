@@ -2,7 +2,7 @@ import { action, makeAutoObservable, observable } from "mobx";
 import { isAPIAlive } from "../service/HealthService";
 
 class HealthStore {
-  isApiHealthy = true;
+  isApiHealthy = false;
   isLoading = false;
 
   constructor() {
