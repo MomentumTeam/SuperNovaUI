@@ -38,7 +38,7 @@ axiosApiInstance.interceptors.response.use(
       window.location.href = `${apiBaseUrl}/api/auth/login`;
       return axiosApiInstance(originalRequest);
     }
-    if ((!error.response || error?.response?.status ===500) && error?.config && error.config?.url !== `${apiBaseUrl}/isAlive`) {CheckHealth()};
+    if ((!error.response || error?.response?.status ===500) && error?.config && error.config?.url !== `${apiBaseUrl}/api/isAlive`) {CheckHealth()};
 
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
