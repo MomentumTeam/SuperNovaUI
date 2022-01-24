@@ -219,7 +219,7 @@ const CreateSpecialEntityForm = forwardRef(
         displayName: 'הערות',
         inputType: InputTypes.TEXTAREA,
         force: true,
-        placeholder: 'הכנס הערות לבקשה...',
+        placeholder: !onlyForView && 'הכנס הערות לבקשה...',
         additionalClass: 'p-fluid-item-flex1',
         canEdit: true,
       },
