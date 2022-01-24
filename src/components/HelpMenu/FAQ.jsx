@@ -1,13 +1,34 @@
-import "primereact/resources/primereact.css";
-import "../../assets/css/local/components/faq.css";
-import faqs from "../../constants/faq";
+import 'primereact/resources/primereact.css';
+import '../../assets/css/local/components/faq.css';
+import faqs from '../../constants/faq';
 
-import React from "react";
-import { Accordion, AccordionTab } from "primereact/accordion";
+import React from 'react';
+import { Accordion, AccordionTab } from 'primereact/accordion';
+import { useStores } from '../../context/use-stores';
 
 const FAQ = () => {
-  const mapToParagraphsWithNewLines = (text) =>
-    text.split("\n").map((str, index) => <p key={index}>{str}</p>);
+  const { configStore } = useStores();
+
+  const mapToParagraphsWithNewLines = (text, id) => {
+    const rows = text.split('\n');
+    
+    return rows.map((str, index) => (
+      <p key={index}>
+        {str}
+        {id === 1 && index === rows.length - 1 && (
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={`${configStore.INSTRUCTION_VIDEOS}`}
+            title={configStore.INSTRUCTION_VIDEOS}
+            style={{ fontWeight: '700', textDecoration: 'underline' }}
+          >
+            לחץ כאן
+          </a>
+        )}
+      </p>
+    ));
+  };
 
   return (
     <div className="card accordion-faq">
@@ -21,7 +42,7 @@ const FAQ = () => {
               </React.Fragment>
             }
           >
-            {mapToParagraphsWithNewLines(faq.body)}
+            {mapToParagraphsWithNewLines(faq.body, faq.id)}
           </AccordionTab>
         ))}
       </Accordion>
