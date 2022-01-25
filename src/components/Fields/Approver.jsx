@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   searchApproverByDisplayNameReq,
   searchHighApproverByDisplayNameReq,
 } from '../../service/ApproverService';
 import { AutoComplete } from 'primereact/autocomplete';
 import { Tooltip } from 'primereact/tooltip';
-import { debounce } from "lodash";
 
 import { useStores } from '../../context/use-stores';
 import { getUserNameFromDisplayName } from '../../utils/user';
@@ -23,6 +22,7 @@ const Approver = ({
   type = USER_TYPE.COMMANDER,
   isHighRank = false,
   tooltip = 'גורם מאשר',
+  title= 'גורם מאשר'
 }) => {
   const { actionPopup } = useToast();
   const { userStore } = useStores();
@@ -34,7 +34,7 @@ const Approver = ({
       if (event) {
         const displayNameToSearch = event.query;
         if (displayNameToSearch.length > 1) {
-          debouncedApproverName.current(displayNameToSearch);
+          searchApprover(displayNameToSearch);
         } else {
           setApproverSuggestions([]);
         }
@@ -58,12 +58,6 @@ const Approver = ({
     }
   }
 
-  const debouncedApproverName = useRef(
-    debounce(async (approverQuery) => {
-      searchApprover(approverQuery);
-    }, 200)
-  );
-
   const itemSelectedTemplate = (item) => {
     const id = Math.random().toString(36).slice(2);
     const userFullName = getUserNameFromDisplayName(item.displayName);
@@ -86,12 +80,11 @@ const Approver = ({
     setApproverSuggestions([]);
   }, [type, defaultApprovers]);
 
-
   return (
     <div className="p-field-item" id="approver-field">
       <div className={multiple ? 'AutoCompleteWrap' : ''}>
         <label htmlFor="2022">
-          <span className="required-field">*</span>גורם מאשר
+          <span className="required-field">*</span>{title}
         </label>
         <AutoComplete
           disabled={disabled}

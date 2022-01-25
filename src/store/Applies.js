@@ -290,6 +290,8 @@ export default class AppliesStore {
           comment,
         });
         this.updateApplyAndCount({ user, reqId, apply, removeApply: true });
+      } else {
+        throw new Error('לא ניתן להעביר לסוג משתמש זה')
       }
     }
   }
