@@ -56,6 +56,7 @@ class ConfigStore {
         this.USER_ROLE_ENTITY_TYPE = config.USER_ROLE_ENTITY_TYPE;
       if (config?.TOKEN_NAME) this.TOKEN_NAME = config.TOKEN_NAME;
       if (config?.PAGE_SIZE) this.PAGE_SIZE = config.PAGE_SIZE;
+      if (config?.ITEMS_IN_PAGE) this.ITEMS_IN_PAGE = config.ITEMS_IN_PAGE;
       if (config?.FIRST_PAGE) this.FIRST_PAGE = config.FIRST_PAGE;
       if (config?.SECURITY_MAIL) this.SECURITY_MAIL = config.SECURITY_MAIL;
       if (config?.SUPER_SECURITY_MAIL)
@@ -67,7 +68,6 @@ class ConfigStore {
     }
   }
 }
-
 
 const configStore = new ConfigStore();
 configStore.loadConfig();
