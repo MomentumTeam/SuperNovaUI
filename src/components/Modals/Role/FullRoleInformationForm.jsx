@@ -259,23 +259,23 @@ const FullRoleInformationForm = forwardRef(
     );
 
     return (
-      <div className='p-fluid'>
-        <div className='p-fluid-item p-fluid-item'>
-          <div className='p-field'>
+      <div className="p-fluid">
+        <div className="p-fluid-item p-fluid-item">
+          <div className="p-field">
             <label>
-              <span className='required-field'>*</span>
+              <span className="required-field">*</span>
               {reqView &&
               requestObject?.kartoffelParams?.oldJobTitle !==
                 requestObject?.kartoffelParams?.jobTitle
                 ? 'שם תפקיד חדש'
                 : 'שם תפקיד'}
             </label>
-            <span className='p-input-icon-left'>
+            <span className="p-input-icon-left">
               {watch('roleName') && !errors.roleName && !onlyForView && (
                 <i>{watch('isJobTitleAlreadyTaken') ? 'תפוס' : 'פנוי'}</i>
               )}
               <InputText
-                id='editSingleRoleForm-roleName'
+                id="editSingleRoleForm-roleName"
                 {...register('roleName')}
                 onChange={onRoleNameChange}
                 disabled={onlyForView || !canEditRoleFields}
@@ -296,17 +296,17 @@ const FullRoleInformationForm = forwardRef(
         </div>
         {watch('isJobTitleAlreadyTaken') && !errors.roleName && (
           <div
-            className='p-fluid-item p-fluid-item-flex1'
+            className="p-fluid-item p-fluid-item-flex1"
             style={{ alignItems: 'baseline', whiteSpace: 'pre-wrap' }}
           >
-            <div className='p-field' style={{ display: 'flex' }}>
+            <div className="p-field" style={{ display: 'flex' }}>
               <div style={{ marginTop: '35px' }}>שמות פנויים:</div>
               <div
                 style={{ margin: '20px', display: 'flex', flexWrap: 'wrap' }}
               >
                 {jobTitleSuggestions.map((suggestion) => (
                   <Button
-                    className='p-button-secondary p-button-outlined'
+                    className="p-button-secondary p-button-outlined"
                     style={{ width: 'auto' }}
                     onClick={onAvailableRoleName}
                   >
@@ -321,11 +321,11 @@ const FullRoleInformationForm = forwardRef(
         {reqView &&
           requestObject?.kartoffelParams?.oldJobTitle !==
             requestObject?.kartoffelParams?.jobTitle && (
-            <div className='p-fluid-item p-fluid-item'>
-              <div className='p-field'>
+            <div className="p-fluid-item p-fluid-item">
+              <div className="p-field">
                 <label> שם תפקיד ישן </label>
                 <InputText
-                  id='fullRoleInfoForm-oldJobTitle'
+                  id="fullRoleInfoForm-oldJobTitle"
                   value={
                     requestObject?.kartoffelParams?.oldJobTitle ||
                     role?.jobTitle ||
@@ -338,12 +338,12 @@ const FullRoleInformationForm = forwardRef(
           )}
 
         {!reqView && (
-          <div className='p-fluid-item-flex p-fluid-item'>
-            <div className='p-field'>
+          <div className="p-fluid-item-flex p-fluid-item">
+            <div className="p-field">
               <Hierarchy
                 disabled={true}
-                name='hierarchy'
-                labelText='היררכיה'
+                name="hierarchy"
+                labelText="היררכיה"
                 errors={errors}
                 ogValue={role?.hierarchy}
                 userHierarchy={
@@ -356,11 +356,11 @@ const FullRoleInformationForm = forwardRef(
           </div>
         )}
 
-        <div className='p-fluid-item p-fluid-item'>
-          <div className='p-field'>
+        <div className="p-fluid-item p-fluid-item">
+          <div className="p-field">
             <label> מזהה תפקיד </label>
             <InputText
-              id='fullRoleInfoForm-roleId'
+              id="fullRoleInfoForm-roleId"
               value={role?.roleId || '---'}
               disabled={true}
             />
@@ -368,8 +368,8 @@ const FullRoleInformationForm = forwardRef(
         </div>
 
         {!reqView && (
-          <div className='p-fluid-item p-fluid-item'>
-            <div className='p-field'>
+          <div className="p-fluid-item p-fluid-item">
+            <div className="p-field">
               <label> תאריך עדכון </label>
               <InputText
                 value={
@@ -377,18 +377,18 @@ const FullRoleInformationForm = forwardRef(
                     ? datesUtil.formattedDateTime(role.updatedAt)
                     : '---'
                 }
-                id='fullRoleInfoForm-updatedAt'
+                id="fullRoleInfoForm-updatedAt"
                 disabled={true}
               />
             </div>
           </div>
         )}
 
-        <div className='p-fluid-item p-fluid-item'>
-          <div className='p-field'>
+        <div className="p-fluid-item p-fluid-item">
+          <div className="p-field">
             <label> סיווג התפקיד </label>
             <Dropdown
-              id='fullRoleInfoForm-clearance'
+              id="fullRoleInfoForm-clearance"
               options={ROLE_CLEARANCE}
               placeholder={watch('clearance') || '---'}
               {...register('clearance')}
@@ -411,17 +411,20 @@ const FullRoleInformationForm = forwardRef(
         <div className="p-fluid-item p-fluid-item">
           <div className="p-field">
             <label> משתמש בתפקיד </label>
-            <InputText id="fullRoleInfoForm-entity" value={entity?.fullName || "---"} disabled={true} />
+            <InputText
+              id="fullRoleInfoForm-entity"
+              value={entity?.fullName || '---'}
+              disabled={true}
+            />
           </div>
         </div>
-  
 
         {!reqView && (
-          <div className='p-fluid-item p-fluid-item'>
-            <div className='p-field'>
+          <div className="p-fluid-item p-fluid-item">
+            <div className="p-field">
               <label> מזהה כרטיס </label>
               <InputText
-                id='fullRoleInfoForm-upn'
+                id="fullRoleInfoForm-upn"
                 value={digitalIdentity?.upn ? digitalIdentity.upn : '---'}
                 disabled={true}
               />
@@ -430,10 +433,10 @@ const FullRoleInformationForm = forwardRef(
         )}
 
         {!(!reqView && onlyForView) && (
-          <div className='p-fluid-item'>
+          <div className="p-fluid-item">
             <Approver
               setValue={setValue}
-              name='approvers'
+              name="approvers"
               tooltip='רס"ן ומעלה ביחידתך'
               multiple={true}
               errors={errors}
@@ -444,16 +447,16 @@ const FullRoleInformationForm = forwardRef(
         )}
 
         {(reqView || !onlyForView) && (
-          <div className='p-fluid-item p-fluid-item-flex1'>
-            <div className='p-field'>
+          <div className="p-fluid-item p-fluid-item-flex1">
+            <div className="p-field">
               <label>
                 <span></span>הערות
               </label>
               <InputTextarea
                 {...register('comments')}
-                id='fullRoleInfoForm-comments'
-                type='text'
-                placeholder='הכנס הערות לבקשה...'
+                id="fullRoleInfoForm-comments"
+                type="text"
+                placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
                 disabled={onlyForView}
               />
             </div>

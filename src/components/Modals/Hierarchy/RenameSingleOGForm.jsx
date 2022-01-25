@@ -108,10 +108,10 @@ const RenameSingleOGForm = forwardRef(
       const initializeValues = async () => {
         setValue('comments', requestObject.comments);
         setValue('roleId', requestObject.kartoffelParams.roleId);
-        setValue('hierarchy', requestObject.kartoffelParams.hierarchy); 
+        setValue('hierarchy', {name:requestObject.kartoffelParams.hierarchy}); 
         setValue(
           'currentHierarchy',
-          requestObject.kartoffelParams.oldHierarchy
+          {name:requestObject.kartoffelParams.oldHierarchy}
         );
 
         const oldRole = requestObject?.kartoffelParams?.role
