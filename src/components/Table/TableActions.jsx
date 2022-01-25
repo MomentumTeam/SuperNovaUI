@@ -10,16 +10,14 @@ import {
   TableActionsTypes as MyRequestsTableActionsTypes,
   TableNames as MyRequestsUsersTableNames,
 } from "../../constants/myRequestsTable";
-import { USER_TYPE } from "../../constants";
 import { canEditEntity } from "../../utils/entites";
 import { canEditRole } from "../../utils/roles";
 import { canEditHierarchy } from "../../utils/hierarchy";
 import { useContext } from "react";
 import { TableContext } from ".";
-import { isUserHoldType } from "../../utils/user";
+import { isUserApproverType } from "../../utils/user";
 import { canPassApply, isApproverAndCanEdit } from "../../utils/applies";
 
-// TODO: change to reducer
 const TableActions = ({ setActionType, openActionModal, setEvent }) => {
   const { selectedItem, tableType } = useContext(TableContext);
   const { userStore } = useStores();
@@ -63,7 +61,7 @@ const TableActions = ({ setActionType, openActionModal, setEvent }) => {
 
     // Add delete action
     if (tableActions.delete) {
-      if (isUserHoldType(user, USER_TYPE.COMMANDER)) {
+      if (isUserApproverType(userStore.user)) {
         actions.push(getAction("מחיקה", tableActions.delete));
       }
     }
@@ -71,6 +69,12 @@ const TableActions = ({ setActionType, openActionModal, setEvent }) => {
     // Add view action
     if (tableActions.pass && canPassApply(selectedItem[0], user))
       actions.push(getAction("העבר לטיפול גורם אחר", tableActions.pass));
+     if (
+       tableActions.return &&
+       canPassApply(selectedItem[0], user) &&
+       isApproverAndCanEdit(selectedItem[0], user)
+     )
+       actions.push(getAction('החזר לסל הבקשות', tableActions.return));
     if (tableActions.take && canPassApply(selectedItem[0], user) && !isApproverAndCanEdit(selectedItem[0], user))
       actions.push(getAction("העברה לטיפולי", tableActions.take));
 

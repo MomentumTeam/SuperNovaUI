@@ -12,14 +12,14 @@ const SideMenu = () => {
   const getNavButton = (menuItem, i) => {
     if (menuItem.label) {
       return (
-        <li key={i}>
+        <li key={i} title={menuItem.label}>
           <NavLink
             to={menuItem.path}
             className={`aside-item-btn ${menuItem.classIcon}`}
             activeClassName={`aside-item-btn ${menuItem.classIcon} active`}
             exact
           >
-            <span className='for-screnReader'>{menuItem.label}</span>
+            <span className="for-screnReader">{menuItem.label}</span>
           </NavLink>
         </li>
       );
@@ -35,7 +35,7 @@ const SideMenu = () => {
         </div>
       <nav>
         <ul>{appRoutes.map((menuItem, i) => {
-          if (!menuItem?.roles || menuItem.roles.some((role) => userTypes.includes(role)))
+          if (menuItem?.classIcon || !menuItem?.roles || menuItem.roles.some((role) => userTypes.includes(role)))
             return getNavButton(menuItem, i);
         })}</ul>
       </nav>

@@ -5,6 +5,7 @@ import {
   REQ_STATUSES,
 } from '../../../constants/';
 import { ModalContent } from '../../RequestFlowChart.styles.js';
+import { getFormattedDate } from '../../../utils/applies';
 
 class RequestFlowChart extends React.Component {
   constructor(props) {
@@ -13,36 +14,23 @@ class RequestFlowChart extends React.Component {
     this.state = {};
   }
 
-  isStageApprover(stageDecision, mustHaveDecision) {
-    return (
-      !this?.request[stageDecision] ||
-      this?.request[mustHaveDecision]?.decision === DECISIONS.APPROVED
-    );
-  }
+  // isStageApprover(stageDecision, mustHaveDecision) {
+  //   return (
+  //     !this?.request[stageDecision] ||
+  //     this?.request[mustHaveDecision]?.decision === DECISIONS.APPROVED
+  //   );
+  // }
 
-  isApproved() {
-    // console.log(this.request);
-    // console.log(
-    //   '1',
-    //   this.isStageApprover('needSuperSecurityDecision', 'superSecurityDecision')
-    // );
-    // console.log(
-    //   '2',
-    //   this.isStageApprover('needSecurityDecision', 'securityApprovers')
-    // );
-    // console.log(
-    //   '3',
-    //   this.request?.commanderDecision?.decision === DECISIONS.APPROVED
-    // );
-    return (
-      this.isStageApprover(
-        'needSuperSecurityDecision',
-        'superSecurityDecision'
-      ) &&
-      this.isStageApprover('needSecurityDecision', 'securityApprovers') &&
-      this.request?.commanderDecision?.decision === DECISIONS.APPROVED
-    );
-  }
+  // isApproved() {
+  //   return (
+  //     this.isStageApprover(
+  //       'needSuperSecurityDecision',
+  //       'superSecurityDecision'
+  //     ) &&
+  //     this.isStageApprover('needSecurityDecision', 'securityApprovers') &&
+  //     this.request?.commanderDecision?.decision === DECISIONS.APPROVED
+  //   );
+  // }
 
   tooltipContent({ decisionObj = {}, sectionName = '', status = '' }) {
     let tooltip = null;
@@ -172,7 +160,7 @@ class RequestFlowChart extends React.Component {
                     נכשל
                     {this.tooltipContent({ status: this.request?.status })}
                   </li>
-                ) : this.isApproved() ? (
+                ) :  this.request?.status === REQ_STATUSES.DONE ? (
                   <li>בוצע</li>
                 ) : null}
               </ul>
@@ -180,9 +168,7 @@ class RequestFlowChart extends React.Component {
                 תאריך בקשה
                 <br />
                 <strong>
-                  {new Date(
-                    parseInt(this.request?.createdAt)
-                  )?.toLocaleDateString()}
+                  {getFormattedDate(this.request?.createdAt)}
                 </strong>
               </p>
             </div>

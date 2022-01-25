@@ -1,8 +1,24 @@
-export const canEditRole = (selectedEntity, user) => {
-  const role =
-    selectedEntity && user.digitalIdentities.find((di) => di.role?.roleId && di.role.roleId === selectedEntity.roleId);
+import { USER_TYPE } from '../constants';
+import { useStores } from '../context/use-stores';
+import { isUserHoldType } from './user';
 
-  return role;
+export const canEditRole = (selectedEntity, user) => {
+  return (
+    isRoleBelongToEntity(user, selectedEntity) ||
+    isUserHoldType(user, USER_TYPE.SUPER_SECURITY) ||
+    isUserHoldType(user, USER_TYPE.SECURITY)
+  );
+};
+
+export const isRoleBelongToEntity = (user, role) => {
+  return (
+    role && user.digitalIdentities && user.digitalIdentities.find((di) => di.role?.roleId && di.role.roleId === role.roleId)
+  );
+}
+export const CanEditRoleFields = (selectedRole) => {
+  const { userStore } = useStores();
+  const canEdit = isRoleBelongToEntity(userStore.user, selectedRole);
+  return canEdit;
 };
 
 export const roleItemTemplate = (item) => {

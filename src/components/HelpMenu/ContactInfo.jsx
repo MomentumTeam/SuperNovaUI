@@ -1,26 +1,56 @@
-import "primereact/resources/primereact.css";
+import 'primereact/resources/primereact.css';
 
-import React, { useEffect, useState } from "react";
-import { getSupportGroupLink } from "../../service/ConfigService";
+import React, { useEffect, useState } from 'react';
+import { getSupportGroupLink } from '../../service/ConfigService';
+import { useStores } from '../../context/use-stores';
 
 const ContactInfo = () => {
-  const [supportGroupLink, setsupportGroupLink] = useState("");
+  const { configStore } = useStores();
+  const [supportGroupLink, setsupportGroupLink] = useState('');
   useEffect(() => {
     getSupportGroupLink().then(setsupportGroupLink);
   }, []);
 
   return (
-    <div style={{ textAlign: "center" }} className="contact-info">
+    <div className="contact-info">
       <p>לשאלות ותמיכה בבקשות LEGO:</p>
-      <p>
-        צוות מומנטום, ענף יסודות- לכניסה לקבוצת התמיכה{" "}
-        <a
-          href={supportGroupLink}
-          style={{ fontWeight: "700", textDecoration: "underline" }}
-        >
-          לחץ כאן
-        </a>
-      </p>
+
+      <ul>
+        <li>
+          {' '}
+         לכניסה לקבוצת התמיכה- לגו תמיכה{' '}
+          <a
+            href={supportGroupLink}
+            style={{ fontWeight: '700', textDecoration: 'underline' }}
+          >
+            לחץ כאן
+          </a>
+        </li>
+        <li style={{ marginTop: '1em' }}>
+          {' '}
+          ליצירת קשר בנושא בקשות שממתינות לאישור יחב"ם ניתן לשלוח מייל לכתובת
+          "דסק שובם" או{' '}
+          <a
+            href={`mailto:${configStore.SECURITY_MAIL}`}
+            title={configStore.SECURITY_MAIL}
+            style={{ fontWeight: '700', textDecoration: 'underline' }}
+          >
+            לחץ כאן
+          </a>
+        </li>
+        <li style={{ marginTop: '1em' }}>
+          {' '}
+          ליצירת קשר בנושא בקשות שממתינות לאישור בטח"ם ניתן לשלוח מייל לכתובת
+          "בטחם שוטף" או{' '}
+          <a
+            href={`mailto:${configStore.SUPER_SECURITY_MAIL}`}
+            title={configStore.SUPER_SECURITY_MAIL}
+            style={{ fontWeight: '700', textDecoration: 'underline' }}
+          >
+            לחץ כאן
+          </a>
+        </li>
+      </ul>
     </div>
   );
 };

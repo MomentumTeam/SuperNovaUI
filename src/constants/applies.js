@@ -1,9 +1,7 @@
 import { DateFieldTemplate } from "../components/Fields/DateFieldTemplate";
 import { RequestorFieldTemplate } from "../components/AppliesTable/RequestorFieldTemplate";
-import { StatusFieldTemplate } from "../components/Fields/StatusFieldTemplate";
 import { TextFieldTemplate } from "../components/Fields/TextFieldTemplate";
 import { getFormattedDate } from "../utils/applies";
-import { getStatus } from '.';
 import { ResponsibleFactorWithWaitingFieldTemplate } from '../components/AppliesTable/ResponsibleFactorWithWaitingFieldTemplate';
 import { StatusApproverFieldTemplate } from '../components/AppliesTable/StatusApproverFieldTemplate';
 
@@ -14,7 +12,7 @@ export const TYPES = {
   ASSIGN_ROLE_TO_ENTITY: 'חיבור משתמש חדש לתפקיד',
   CREATE_ENTITY: 'יצירת משתמש מיוחד',
   RENAME_OG: 'עריכת שם היררכיה',
-  RENAME_ROLE: 'עריכת שם תפקיד',
+  RENAME_ROLE: 'עריכת תפקיד',
   EDIT_ENTITY: 'עריכת משתמש מיוחד',
   // DELETE_OG: "מחיקת היררכיה",
   // DELETE_ROLE: "מחיקת תפקיד",
@@ -25,6 +23,26 @@ export const TYPES = {
   CREATE_ROLE_BULK: 'יצירת תפקידים חדשים',
   CHANGE_ROLE_HIERARCHY_BULK: 'מעבר היררכיה לתפקידים',
 };
+
+
+export const REQ_TYPES = {
+  CREATE_OG: 'CREATE_OG',
+  CREATE_ROLE: 'CREATE_ROLE',
+  ASSIGN_ROLE_TO_ENTITY: 'ASSIGN_ROLE_TO_ENTITY',
+  CREATE_ENTITY: 'CREATE_ENTITY',
+  RENAME_OG: 'RENAME_OG',
+  RENAME_ROLE: 'RENAME_ROLE',
+  EDIT_ENTITY: 'EDIT_ENTITY',
+  // DELETE_OG: "מחיקת היררכיה",
+  // DELETE_ROLE: "מחיקת תפקיד",
+  // DELETE_ENTITY: "מחיקת משתמש",
+  // DISCONNECT_ROLE: "ניתוק תפקיד",
+  ADD_APPROVER: 'ADD_APPROVER',
+  CHANGE_ROLE_HIERARCHY: 'CHANGE_ROLE_HIERARCHY',
+  CREATE_ROLE_BULK: 'CREATE_ROLE_BULK',
+  CHANGE_ROLE_HIERARCHY_BULK: 'CHANGE_ROLE_HIERARCHY_BULK',
+};
+
 
 export const TableNames = {
   myreqs: { tab: "myreqs", tableName: "בקשות לאישורי" },
@@ -73,18 +91,18 @@ export const TableTypes = (selectedTab, user, approverTableType) => {
       ],
       template: DateFieldTemplate,
     },
-    {
-      field: 'additionalParams.directGroup',
-      displayName: 'היררכיה',
-      template: TextFieldTemplate,
-    },
-    { field: 'comments', displayName: 'סיבה', template: TextFieldTemplate },
+    // {
+    //   field: 'additionalParams.directGroup',
+    //   displayName: 'היררכיה',
+    //   template: TextFieldTemplate,
+    // },
+    { field: 'comments', displayName: 'הערה', template: TextFieldTemplate },
     {
       field: null,
       displayName: 'סטטוס',
       templateParam: user,
-      sortable: true,
-      sortFields: sortFields.STATUS,
+      // sortable: true,
+      // sortFields: sortFields.STATUS,
       template: StatusApproverFieldTemplate,
     },
   ];
@@ -108,16 +126,18 @@ export const pageSize = 10;
 export const itemsPerRow = 5; // must be smaller than the page size
 
 export const TableAppliesActionsEnum = {
-  VIEW_APPLY: "VIEW_APPLY",
-  VIEW_MY_APPLY: "VIEW_MY_APPLY",
-  PASS_APPLY: "PASS_APPLY",
-  TAKE_APPLY: "TAKE_APPLY",
+  VIEW_APPLY: 'VIEW_APPLY',
+  VIEW_MY_APPLY: 'VIEW_MY_APPLY',
+  PASS_APPLY: 'PASS_APPLY',
+  TAKE_APPLY: 'TAKE_APPLY',
+  RETURN_APPLY: 'RETURN_APPLY',
 };
 
 export const TableAppliesActionsTypes = {
   myreqs: {
     view: TableAppliesActionsEnum.VIEW_MY_APPLY,
     pass: TableAppliesActionsEnum.PASS_APPLY,
+    return: TableAppliesActionsEnum.RETURN_APPLY,
   },
   allreqs: {
     view: TableAppliesActionsEnum.VIEW_APPLY,

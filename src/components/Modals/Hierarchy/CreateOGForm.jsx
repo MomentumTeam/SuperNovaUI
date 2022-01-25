@@ -10,34 +10,42 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { debounce } from 'lodash';
 
 import Hierarchy from '../../Fields/Hierarchy';
 import Approver from '../../Fields/Approver';
 import { isHierarchyAlreadyTakenRequest } from '../../../service/KartoffelService';
 import { useStores } from '../../../context/use-stores';
 import { GetDefaultApprovers } from '../../../utils/approver';
-import { isUserHoldType } from '../../../utils/user';
-import {
-  USER_TYPE,
-  NAME_OG_EXP,
-} from '../../../constants';
+import { isUserApproverType } from '../../../utils/user';
+import { NAME_OG_EXP } from '../../../constants';
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
 import configStore from '../../../store/Config';
 
+const errorHierarchyTaken = 'valid-hierarchy-name-not-taken';
 const validationSchema = Yup.object().shape({
   newHierarchy: Yup.string()
     .required('יש למלא שם היררכיה חדשה')
     .matches(NAME_OG_EXP, 'שם לא תקין')
     .test({
-      name: 'valid-hierarchy-name',
+      name: errorHierarchyTaken,
       message: 'יש לבחור היררכיה פנויה',
-      test: (newHierarchy, context) => {
-        return (
-          newHierarchy &&
-          !context.parent?.isHierarchyAlreadyTakenData?.isOGNameAlreadyTaken
-        );
+      test: async (newHierarchy, context) => {
+        if (context.parent?.parentHierarchy?.id) {
+          try {
+            const { isOGNameAlreadyTaken } =
+              await isHierarchyAlreadyTakenRequest(
+                newHierarchy,
+                context.parent?.parentHierarchy.id
+              );
+
+            return newHierarchy && !isOGNameAlreadyTaken;
+          } catch (error) {
+            return false;
+          }
+        }
+
+        return true;
       },
     }),
   parentHierarchy: Yup.object().required('יש לבחור היררכית אב'),
@@ -46,8 +54,8 @@ const validationSchema = Yup.object().shape({
     .when('isUserApprover', {
       is: false,
       then: Yup.array()
-        .min(1, 'יש לבחור לפחות גורם מאשר אחד')
-        .required('יש לבחור לפחות גורם מאשר אחד'),
+        .min(1, 'יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה')
+        .required('יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה'),
     })
     .test({
       name: 'check-if-valid',
@@ -55,31 +63,31 @@ const validationSchema = Yup.object().shape({
       test: async (approvers, context) => {
         let isTotalValid = true;
 
-        if (
-          approvers &&
-          Array.isArray(approvers) &&
-          context.parent?.parentHierarchy?.id
-        ) {
-          await Promise.all(
-            approvers.map(async (approver) => {
-              const { isValid } = await isApproverValid(
-                approver.entityId,
-                context.parent.parentHierarchy.id
-              );
-              if (!isValid) isTotalValid = false;
-            })
-          );
-        }
+        try {
+          if (
+            approvers &&
+            Array.isArray(approvers) &&
+            context.parent?.parentHierarchy?.id
+          ) {
+            await Promise.all(
+              approvers.map(async (approver) => {
+                const { isValid } = await isApproverValid(
+                  approver.entityId,
+                  context.parent.parentHierarchy.id
+                );
+                if (!isValid) isTotalValid = false;
+              })
+            );
+          }
 
-        return isTotalValid;
+          return isTotalValid;
+
+        } catch (error) {
+          return false;
+        }
       },
     }),
   comments: Yup.string().optional(),
-  isHierarchyAlreadyTakenData: Yup.object()
-    .shape({
-      isOGNameAlreadyTaken: Yup.boolean().oneOf([false]).required(),
-    })
-    .required(),
 });
 
 const CreateOGForm = forwardRef(
@@ -87,17 +95,18 @@ const CreateOGForm = forwardRef(
     const { appliesStore, userStore } = useStores();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
-    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
-    const isHighCommander =
-      isUserApprover && userStore.user?.rank
-        ? configStore.USER_HIGH_COMMANDER_RANKS.includes(userStore.user.rank)
-        : false;
-
-    const { register, handleSubmit, setValue, formState, watch, getValues } =
-      useForm({
-        resolver: yupResolver(validationSchema),
-        defaultValues: { isUserApprover },
-      });
+    const {
+      register,
+      handleSubmit,
+      setValue,
+      formState,
+      watch,
+      getValues,
+      clearErrors,
+    } = useForm({
+      resolver: yupResolver(validationSchema),
+      defaultValues: { isUserApprover: isUserApproverType(userStore.user) },
+    });
 
     const { errors } = formState;
 
@@ -113,8 +122,10 @@ const CreateOGForm = forwardRef(
           request: requestObject,
           onlyForView,
           user: userStore.user,
+          highCommander: true,
         });
         setDefaultApprovers(result || []);
+        setValue('isUserApprover', result.length > 0);
       }
     }, []);
 
@@ -148,55 +159,34 @@ const CreateOGForm = forwardRef(
 
       await appliesStore.createOGApply(req);
       setIsActionDone(true);
-
     };
 
     useImperativeHandle(ref, () => ({
       handleSubmit: handleSubmit(onSubmit),
     }));
 
-    const debouncedHierarchyName = useRef(
-      debounce(async (hierarchyToSearch, directGroup) => {
-        const result = await isHierarchyAlreadyTakenRequest(
-          hierarchyToSearch,
-          directGroup
-        );
-        setValue('isHierarchyAlreadyTakenData', result);
-      }, 200)
-    );
-
     const onHierarchyNameChange = async (e) => {
-      const hierarchyNameToSearch = e.target.value;
+      clearErrors('newHierarchy');
       setValue('newHierarchy', e.target.value, { shouldValidate: true });
-
-      if (hierarchyNameToSearch && getValues('parentHierarchy')?.id) {
-        debouncedHierarchyName.current(
-          hierarchyNameToSearch,
-          getValues('parentHierarchy').id
-        );
-      }
     };
 
     const handleOrgSelected = async (org) => {
-      if (isHighCommander) {
-        //this apply needs highCommander approval
+      const result = await GetDefaultApprovers({
+        request: requestObject,
+        user: userStore.user,
+        onlyForView,
+        groupId: org.id,
+        highCommander: true,
+      });
 
-        const result = await GetDefaultApprovers({
-          request: requestObject,
-          user: userStore.user,
-          onlyForView,
-          groupId: org.id,
-        });
-
-        setDefaultApprovers(result || []);
-        setValue('isUserApprover', result.length > 0);
-      }
+      setDefaultApprovers(result || []);
+      setValue('isUserApprover', result.length > 0);
+      setValue('approvers', []);
 
       if (getValues('newHierarchy')) {
-        debouncedHierarchyName.current(
-          getValues('newHierarchy'),
-          getValues('parentHierarchy').id
-        );
+        setValue('newHierarchy', getValues('newHierarchy'), {
+          shouldValidate: true,
+        });
       }
     };
 
@@ -226,7 +216,7 @@ const CreateOGForm = forwardRef(
             <span className="p-input-icon-left">
               {watch('parentHierarchy') && watch('newHierarchy') && (
                 <i>
-                  {watch('isHierarchyAlreadyTakenData')?.isOGNameAlreadyTaken
+                  {errors.newHierarchy?.type === errorHierarchyTaken
                     ? 'תפוס'
                     : 'פנוי'}
                 </i>
@@ -259,7 +249,7 @@ const CreateOGForm = forwardRef(
             errors={errors}
             isHighRank={true}
             tooltip='סא"ל ומעלה ביחידתך'
-            disabled={onlyForView || (isUserApprover && isHighCommander)}
+            disabled={onlyForView || watch('isUserApprover')}
             defaultApprovers={defaultApprovers}
           />
         </div>

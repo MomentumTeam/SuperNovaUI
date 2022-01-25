@@ -3,10 +3,11 @@ import {
   STATUSES,
   TYPES,
   checkIfRequestIsDone,
+  REQ_TYPES,
   REQ_STATUSES,
 } from '../constants';
 import datesUtil from '../utils/dates';
-import { isUserHoldType } from './user';
+import { isUserApproverType, isUserHoldType } from './user';
 
 
 export const organizeRows = (rows) => {
@@ -99,12 +100,7 @@ export const getResponsibleFactorFields = (user) => {
     fields.push('superSecurityApprovers');
   if (user === undefined || isUserHoldType(user, USER_TYPE.SECURITY))
     fields.push('securityApprovers');
-  if (
-    user === undefined ||
-    isUserHoldType(user, USER_TYPE.ADMIN) ||
-    isUserHoldType(user, USER_TYPE.COMMANDER)
-  )
-    fields.push('commanders');
+  if (user === undefined || isUserApproverType(user)) fields.push('commanders');
 
   return fields;
 };
@@ -113,10 +109,7 @@ export const getApproverComments = (apply, user) => {
   const comments = [];
   const applyComments = apply['approversComments'];
 
-  if (
-    isUserHoldType(user, USER_TYPE.COMMANDER) ||
-    isUserHoldType(user, USER_TYPE.ADMIN)
-  )
+  if (isUserApproverType(user))
     comments.push({
       comment: applyComments['commanderComment'],
       label: 'הערות גורם מאשר',
@@ -156,8 +149,7 @@ export const canEditApply = (apply, user) => {
       !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)) ||
     (isUserHoldType(user, USER_TYPE.SECURITY) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) ||
-    ((isUserHoldType(user, USER_TYPE.COMMANDER) ||
-      isUserHoldType(user, USER_TYPE.ADMIN)) &&
+    (isUserApproverType(user) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER))
   );
 };
@@ -218,12 +210,17 @@ export const IsRequestCompleteForApprover = (apply, approverType) => {
     case USER_TYPE.SECURITY:
       return (
         !apply.needSecurityDecision ||
-        isStatusComplete(apply['securityDecision']['decision'])
+        isStatusComplete(apply['securityDecision']['decision']) ||
+        apply['status'] === STATUSES.APPROVED_BY_SECURITY
       );
     case USER_TYPE.COMMANDER:
-      return isStatusComplete(apply['commanderDecision']['decision']);
+    case USER_TYPE.ADMIN:
+      return (
+        apply['status'] === STATUSES.APPROVED_BY_COMMANDER ||
+        isStatusComplete(apply['commanderDecision']['decision'])
+      );
     default:
-      break;
+      return true;
   }
 };
 
@@ -231,8 +228,9 @@ export const processApprovalTableData = (tableData) => {
   return tableData.map((action) => {
     let newAction = {};
 
+    newAction['מספר בקשה'] = action.serialNumber;
     newAction['שם מבקש'] = action.submittedBy.displayName;
-    newAction['מספר אישי'] = action.submittedBy.personalNumber;
+    newAction['מספר אישי/ת"ז'] = action.submittedBy?.personalNumber? action.submittedBy.personalNumber: action.submittedBy.identityCard;
     newAction['סוג בקשה'] = TYPES[action.type];
     newAction['תאריך יצירה'] = getFormattedDate(action.createdAt);
     newAction['סיבה'] = action.comments;
@@ -275,3 +273,14 @@ export const isSubmitterReq = (request, user) => {
     request?.status !== REQ_STATUSES.FAILED
   );
 };
+
+export const isAutomaticallyApproved = (request, user) => {
+  return (
+    request.commanders.some((commander) => commander.id === user.id) &&
+    (request?.type === REQ_TYPES.CREATE_OG ||
+    request?.type === REQ_TYPES.CREATE_ENTITY ||
+    (request?.type === REQ_TYPES.ADD_APPROVER) &&
+      request?.submittedBy?.id === user.id)
+  )
+};
+

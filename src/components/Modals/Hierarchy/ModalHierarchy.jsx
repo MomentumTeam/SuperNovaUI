@@ -4,68 +4,99 @@ import { Button } from 'primereact/button';
 import ChartForTree from '../../ChartForTree';
 
 class ModalHierarchy extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      displayBasic: false,
+      displayBasic2: false,
+      displayModal: false,
+      displayMaximizable: false,
+      displayPosition: false,
+      displayResponsive: false,
+      position: 'center',
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            displayBasic: false,
-            displayBasic2: false,
-            displayModal: false,
-            displayMaximizable: false,
-            displayPosition: false,
-            displayResponsive: false,
-            position: 'center',
+      selectedHierarchy: null,
+      visible: false,
+    };
+  }
 
-            selectedHierarchy: null,
-            visible: false,
-        };
+  toggleModalVisibility = (visible) => {
+    this.setState({
+      visible,
+    });
+  };
+
+  closeModalWithData = (sendDataBack) => {
+    if (sendDataBack && this.state.selectedHierarchy) {
+      if (
+        this.props.onSelectHierarchy &&
+        typeof this.props.onSelectHierarchy === 'function'
+      ) {
+        this.props.onSelectHierarchy(this.state.selectedHierarchy);
+      }
     }
 
-    toggleModalVisibility = (visible) => {
-        this.setState({
-            visible,
-        });
-    }
+    this.toggleModalVisibility(false);
+  };
 
-    closeModalWithData = (sendDataBack) => {
-        if (sendDataBack && this.state.selectedHierarchy) {
-            if (this.props.onSelectHierarchy && typeof this.props.onSelectHierarchy === 'function') {
-                this.props.onSelectHierarchy(this.state.selectedHierarchy);
-            }
-        }
+  renderFooter = () => {
+    return (
+      <div className="display-flex display-flex-end">
+        <Button
+          label="ביטול"
+          onClick={() => this.closeModalWithData(false)}
+          className="btn-underline"
+        />
+        <Button
+          label="בחירה"
+          onClick={() => this.closeModalWithData(true)}
+          className="btn-gradient orange"
+        />
+      </div>
+    );
+  };
 
-        this.toggleModalVisibility(false);
-    }
+  setHierarchySelected = (hierarchy) => {
+    this.setState({
+      selectedHierarchy: hierarchy,
+    });
+  };
 
-    renderFooter = () => {
-        return (
-            <div className="display-flex display-flex-end">
-                <Button label="ביטול" onClick={() => this.closeModalWithData(false)} className="btn-underline" />
-                <Button label="בחירה" onClick={() => this.closeModalWithData(true)} className="btn-gradient orange" />
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div>
+        <Button
+          className={
+            this.props.isDisplay
+              ? 'btn-border hierarchyBtn'
+              : 'OpeningHierarchy'
+          }
+          title="פתיחת עץ היררכיה"
+          type="button"
+          onClick={() => this.toggleModalVisibility(true)}
+          style={this.props.disabled && { display: 'none' }}
+        />
 
-    setHierarchySelected = (hierarchy) => {
-        this.setState({
-            selectedHierarchy: hierarchy
-        })
-    }
-
-    render() {
-        return (
+        <Dialog
+          className="dialogClass9"
+          header="היררכיה"
+          dismissableMask={true}
+          visible={this.state.visible}
+          footer={this.renderFooter()}
+          onHide={() => this.toggleModalVisibility(false)}
+        >
+          <div>
             <div>
-                <Button title="פתיחת היררכיה" className="OpeningHierarchy" type="button" label="פתיחת היררכיה" onClick={() => this.toggleModalVisibility(true)} style={ this.props.disabled && { display: 'none' }} />
-
-                <Dialog className="dialogClass9" header="היררכיה" dismissableMask={true} visible={this.state.visible} footer={this.renderFooter()} onHide={() => this.toggleModalVisibility(false)}>
-                    <div>
-                        <div>
-                            <ChartForTree onSelectNode={this.setHierarchySelected} userHierarchy={this.props.userHierarchy}/>
-                        </div>
-                    </div>
-                </Dialog>
+              <ChartForTree
+                onSelectNode={this.setHierarchySelected}
+                userHierarchy={this.props.userHierarchy}
+                isDisplay={this.props.isDisplay}
+              />
             </div>
-        );
-    }
+          </div>
+        </Dialog>
+      </div>
+    );
+  }
 }
-export default ModalHierarchy
+export default ModalHierarchy;

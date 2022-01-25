@@ -11,6 +11,7 @@ import { useStores } from '../../context/use-stores';
 import { getUserNameFromDisplayName } from '../../utils/user';
 import '../../assets/css/local/components/approver.css';
 import { useToast } from '../../context/use-toast';
+import { USER_TYPE } from '../../constants';
 
 const Approver = ({
   setValue,
@@ -19,7 +20,7 @@ const Approver = ({
   disabled = false,
   defaultApprovers,
   errors,
-  type = 'COMMANDER',
+  type = USER_TYPE.COMMANDER,
   isHighRank = false,
   tooltip = 'גורם מאשר',
 }) => {

@@ -1,16 +1,25 @@
-import * as Yup from "yup";
-import React, { useState, useEffect, forwardRef, useImperativeHandle } from "react";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from 'yup';
+import React, {
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+} from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
-import { NAME_OG_EXP, USER_TYPE } from "../../../constants";
+import { NAME_OG_EXP, USER_TYPE } from '../../../constants';
 
-import "../../../assets/css/local/general/buttons.css";
-import "../../../assets/css/local/components/modal-item.css";
-import { GetDefaultApprovers } from "../../../utils/approver";
-import { isUserHoldType } from "../../../utils/user";
-import { useStores } from "../../../context/use-stores";
-import { getHierarchy, getOuDisplayName, hierarchyConverse } from "../../../utils/hierarchy";
+import '../../../assets/css/local/general/buttons.css';
+import '../../../assets/css/local/components/modal-item.css';
+import { GetDefaultApprovers } from '../../../utils/approver';
+import { isUserApproverType, isUserHoldType } from '../../../utils/user';
+import { useStores } from '../../../context/use-stores';
+import {
+  getHierarchy,
+  getOuDisplayName,
+  hierarchyConverse,
+} from '../../../utils/hierarchy';
 import { InputForm, InputTypes } from '../../Fields/InputForm';
 
 const FullHierarchyInformationForm = forwardRef(
@@ -20,7 +29,7 @@ const FullHierarchyInformationForm = forwardRef(
   ) => {
     const { userStore, appliesStore } = useStores();
     const [isHierarchyFree, setIsHierarchyFree] = useState(true);
-    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
+    const isUserApprover = isUserApproverType(userStore.user);
     const [hierarchy, setHierarchy] = useState(requestObject);
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
@@ -63,14 +72,23 @@ const FullHierarchyInformationForm = forwardRef(
 
     const { errors } = methods.formState;
 
+    const initDefaultApprovers = async (groupId) => {
+      const result = await GetDefaultApprovers({
+        request: requestObject,
+        onlyForView,
+        user: userStore.user,
+        groupId,
+      });
+      setDefaultApprovers(result || []);
+      methods.setValue("isUserApprover", result.length > 0);
+    }
+
     useEffect(async () => {
       let groupId;
 
       if (requestObject) {
         if (reqView) {
-          const { hierarchyReadOnly, hierarchyName } = getHierarchy(
-            requestObject.adParams.ouDisplayName
-          );
+          const { hierarchyReadOnly, hierarchyName } = getHierarchy(requestObject.adParams.ouDisplayName);
           setHierarchy({
             hierarchy: hierarchyReadOnly,
             name: hierarchyName,
@@ -86,15 +104,8 @@ const FullHierarchyInformationForm = forwardRef(
         }
       }
 
-      const result = await GetDefaultApprovers({
-        request: requestObject,
-        onlyForView,
-        user: userStore.user,
-        groupId,
-      });
-      setDefaultApprovers(result || []);
-      methods.setValue('isUserApprover', result.length > 0);
-    }, []);
+      await initDefaultApprovers(groupId);
+    }, [requestObject, onlyForView]);
 
     const onSubmit = async (data) => {
       try {
@@ -133,7 +144,6 @@ const FullHierarchyInformationForm = forwardRef(
       await appliesStore.renameOGApply(req);
       setIsEdit(false);
       setIsActionDone(true);
-
     };
 
     useImperativeHandle(
@@ -146,21 +156,23 @@ const FullHierarchyInformationForm = forwardRef(
 
     const formFields = [
       {
-        fieldName: reqView ? "hierarchy": "hierarchyName",
-        displayName: reqView ? "היררכיה חדשה" : "היררכיה",
+        fieldName: reqView ? 'hierarchy' : 'hierarchyName',
+        displayName: reqView ? 'היררכיה חדשה' : 'היררכיה',
         inputType: InputTypes.HIERARCHY_CHANGE,
         force: true,
         canEdit: true,
         setFunc: (value) => setIsHierarchyFree(value),
         item: reqView ? requestObject?.kartoffelParams : null,
+        withTooltip: true,
       },
       {
         fieldName: 'oldHierarchy',
         displayName: 'היררכיה ישנה',
-        inputType: InputTypes.HIERARCHY_CHANGE,
+        inputType: InputTypes.TEXT,
         force: true,
         secured: () => reqView,
         item: requestObject?.kartoffelParams,
+        withTooltip: true,
       },
       {
         fieldName: 'jobnum',
@@ -191,14 +203,15 @@ const FullHierarchyInformationForm = forwardRef(
         inputType: InputTypes.TEXTAREA,
         force: true,
         secured: () => reqView || !onlyForView,
-        placeholder: 'הכנס הערות לבקשה...',
+        placeholder: !onlyForView && 'הכנס הערות לבקשה...',
         additionalClass: 'p-fluid-item-flex1',
         canEdit: true,
+        item: requestObject,
       },
     ];
 
     return (
-      <div className="p-fluid" id="fullHierarchyInfoForm">
+      <div className='p-fluid' id='fullHierarchyInfoForm'>
         <InputForm
           fields={formFields}
           item={hierarchy}

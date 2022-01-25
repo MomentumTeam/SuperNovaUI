@@ -1,10 +1,9 @@
 import { Dropdown } from "primereact/dropdown";
 import { useEffect, useState, useCallback } from "react";
-import { TYPES } from "../../constants";
 
-const FilterAppliesField = ({ selectedTab, setSearchFields, getData }) => {
+const FilterAppliesField = ({ selectedTab, setSearchFields, getData, searchField, searchFieldDisplayName, searchOptions }) => {
   const [filter, setFilter] = useState(null);
-  const typeOptions = Object.entries(TYPES).map(([key, value]) => {
+  const typeOptions = Object.entries(searchOptions).map(([key, value]) => {
     return { label: value, value: key };
   });
 
@@ -20,7 +19,7 @@ const FilterAppliesField = ({ selectedTab, setSearchFields, getData }) => {
 
   useEffect(() => {
     setFilter(null);
-    setSearchFields("type", null);
+    setSearchFields(searchField, null);
   }, [selectedTab]);
 
   useEffect(() => {
@@ -40,9 +39,9 @@ const FilterAppliesField = ({ selectedTab, setSearchFields, getData }) => {
             options={typeOptions}
             onChange={async (e) => {
               setFilter(e.value);
-              setSearchFields("type", e.value);
+              setSearchFields(searchField, e.value);
             }}
-            placeholder="סוג בקשה"
+            placeholder={searchFieldDisplayName}
           />
         </div>
       </div>

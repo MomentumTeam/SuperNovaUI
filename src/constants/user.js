@@ -4,6 +4,8 @@ export const USER_TYPE_TAG = {
   APPROVER: "גורם מאשר",
   SECURITY_APPROVER: "גורם מאשר במ",
   ADMIN: "מחשוב יחידתי",
+  SUPER_SECURITY_APPROVER:'גורם מאשר בטח"ם',
+  BULK:"הגשת בקשה מרובה"
 };
 
 export const USER_SEX = [
@@ -15,7 +17,7 @@ export const USER_SEX = [
 export const USER_ENTITY_TYPE = {
   Soldier: "חייל",
   Civilian: "אזרח",
-  GoalUser: "GoalUser",
+  GoalUser: "תפקידן"
 };
 
 export const USER_TYPE = {
@@ -27,3 +29,14 @@ export const USER_TYPE = {
   ADMIN: "ADMIN",
   BULK: "BULK",
 };
+
+export const APPROVER_TRANSFER_TYPE = [USER_TYPE.ADMIN, USER_TYPE.COMMANDER, USER_TYPE.SUPER_SECURITY, USER_TYPE.COMMANDER];
+
+
+export const APPROVER_TYPES = [
+  { label: "גורם מאשר ראשוני", value: USER_TYPE.COMMANDER },
+  { label: 'גורם מאשר יחב"ם', value: USER_TYPE.SECURITY },
+  { label: 'גורם מאשר בטח"ם', value: USER_TYPE.SUPER_SECURITY },
+  { label: "הרשאת בקשה מרובה", value: USER_TYPE.BULK },
+  { label: "מחשוב יחידתי", value: USER_TYPE.ADMIN },
+];

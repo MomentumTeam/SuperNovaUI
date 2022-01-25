@@ -30,7 +30,13 @@ export default class GroupsStore {
   }
 
   async loadOGChildren(id, page, pageSize, append = false) {
-    const groups = await getOGChildren({ id, page, pageSize, withRoles: true });
+    const groups = await getOGChildren({
+      id,
+      page,
+      pageSize,
+      withRoles: true,
+      withParent: true,
+    });
     this.groups = append ? [...this.groups, ...groups] : groups;
   }
 
@@ -52,7 +58,7 @@ export default class GroupsStore {
     const { query } = event;
 
     if (query.trim().length) {
-      const roles = await searchRolesByRoleId(query);
+      const roles = await searchRolesByRoleId(query.toLowerCase());
 
       if (roles.length > 0) {
         let hierarchies = [];

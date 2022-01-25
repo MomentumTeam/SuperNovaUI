@@ -1,6 +1,5 @@
-import { USER_TYPE } from "../constants";
-import { isUserHoldType, userConverse } from "./user";
-import {getDIByUniqueId, getEntityByDI, getEntityByMongoId, getEntityByRoleId} from '../service/KartoffelService';
+import { isUserApproverType, userConverse } from "./user";
+import {getDIByUniqueId, getEntityByRoleId} from '../service/KartoffelService';
 
 export const transformNode = (node) => {
   return {
@@ -11,7 +10,7 @@ export const transformNode = (node) => {
 };
 
 export const canEditHierarchy = (user) => {
-  return isUserHoldType(user, USER_TYPE.COMMANDER);
+  return isUserApproverType(user);
 };
 
 export const getHierarchy = (hierarchy) => {

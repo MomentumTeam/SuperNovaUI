@@ -2,6 +2,7 @@ import { action, makeAutoObservable, observable } from 'mobx';
 import { getTree } from '../service/TreeService';
 
 export default class TreeStore {
+  isTreeLoading = true;
   tree = [
     {
       label: '',
@@ -13,18 +14,27 @@ export default class TreeStore {
   constructor() {
     makeAutoObservable(this, {
       tree: observable,
+      isTreeLoading: observable,
       loadTreeByEntity: action,
       loadTreeByOG: action,
     });
   }
 
   async loadTreeByEntity(entity) {
-    const tree = await getTree(entity.directGroup);
-    this.tree = tree;
+    this.isTreeLoading = true;
+
+    try {
+      const tree = await getTree(entity.directGroup);
+      this.tree = tree;
+    } catch (error) {
+      console.log('problem in fetching user tree');
+    }
+
+    this.isTreeLoading = false;
   }
 
   async loadTreeByOG(rootId) {
     const tree = await getTree(rootId);
-    this.tree = {tree};
+    this.tree = { tree };
   }
 }

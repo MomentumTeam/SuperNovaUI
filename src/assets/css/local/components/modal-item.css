@@ -572,7 +572,7 @@
   background-color: transparent;
   color: #201961;
 }
-.p-dialog .p-button.btn-border {
+.p-button.btn-border {
   border: 0;
   min-width: 112px;
   min-height: 40px;
@@ -586,7 +586,7 @@
   margin: 0;
 }
 @media (max-width: 460px) {
-  .p-dialog .p-button.btn-border {
+  .p-button.btn-border {
     min-width: 72px;
   }
 }
@@ -2332,20 +2332,20 @@
   border: 1px solid #f68340;
 }
 
-.p-dialog .p-button.btn-border.blue {
+.p-button.btn-border.blue {
   border: 1px solid #1d88ec;
   color: #1d88ec;
   font-weight: 600;
 }
 
-.p-dialog .p-button.btn-border.blue:hover,
-.p-dialog .p-button.btn-border.blue:focus {
+ .p-button.btn-border.blue:hover,
+ .p-button.btn-border.blue:focus {
   color: #1d88ec;
   border: 1px solid #1d88ec;
 }
 
-.p-dialog .p-button.btn-border:hover,
-.p-dialog .p-button.btn-border:focus {
+ .p-button.btn-border:hover,
+.p-button.btn-border:focus {
   background-color: transparent;
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
   color: rgba(32, 25, 97, 0.6);
@@ -3069,4 +3069,14 @@
     top: 33px;
     left: 10px;
   }
+}
+
+
+.hierarchyBtn {
+  background-image: url(../../../images/buttons/change-view-chart-blue.svg) !important;
+  background-size: 60px !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  border: none !important;
+  padding: 40px !important;
 }

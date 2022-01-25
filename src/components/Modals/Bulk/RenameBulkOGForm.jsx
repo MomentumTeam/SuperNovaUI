@@ -22,12 +22,12 @@ import {
   getBulkChangeRoleHierarchyData,
 } from '../../../service/AppliesService';
 import { GetDefaultApprovers } from '../../../utils/approver';
-import { isUserHoldType } from '../../../utils/user';
-import { USER_TYPE } from '../../../constants';
+import { isUserApproverType } from '../../../utils/user';
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
+import { STATUSES } from '../../../constants';
+import { StatusFieldTemplate } from '../../Fields/StatusFieldTemplate';
 
-// TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
   comments: Yup.string().optional(),
   hierarchy: Yup.object()
@@ -48,8 +48,8 @@ const validationSchema = Yup.object().shape({
     .when('isUserApprover', {
       is: false,
       then: Yup.array()
-        .min(1, 'יש לבחור לפחות גורם מאשר אחד')
-        .required('יש לבחור לפחות גורם מאשר אחד'),
+        .min(1, 'יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה')
+        .required('יש לבחור לפחות גורם מאשר אחד בדרגת סא"ל ומעלה'),
     })
     .test({
       name: 'check-if-valid',
@@ -98,10 +98,9 @@ const RenameBulkOGForm = forwardRef(
     const { appliesStore, userStore } = useStores();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
-    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
     const { register, handleSubmit, setValue, formState, watch } = useForm({
       resolver: yupResolver(validationSchema),
-      defaultValues: { isUserApprover },
+      defaultValues: { isUserApprover: isUserApproverType(userStore.user) },
     });
 
     const { errors } = formState;
@@ -110,14 +109,15 @@ const RenameBulkOGForm = forwardRef(
       const getBulkData = async () => {
         const data = await getBulkChangeRoleHierarchyData(requestObject.id);
         setValue('comments', requestObject.comments);
-        setValue('hierarchy', data.request.adParams.ouDisplayName);
-        setValue('currentHierarchy', data.request.kartoffelParams.oldHierarchy);
+        setValue('hierarchy', {name:data.request.adParams.ouDisplayName});
+        setValue('currentHierarchy', {name:data.request.kartoffelParams.oldHierarchy});
         setValue('rows', data.rows);
 
         const result = await GetDefaultApprovers({
           request: requestObject,
           onlyForView,
           user: userStore.user,
+          highCommander: true,
         });
         setDefaultApprovers(result || []);
       };
@@ -159,7 +159,6 @@ const RenameBulkOGForm = forwardRef(
 
       await appliesStore.changeRoleHierarchyBulk(req);
       setIsActionDone(true);
-
     };
 
     useImperativeHandle(
@@ -170,25 +169,36 @@ const RenameBulkOGForm = forwardRef(
       []
     );
 
+    const statusTemplateEnum = (column) => {
+      if (column?.status) {
+        const status = STATUSES[column.status];
+        return <StatusFieldTemplate status={status} />;
+      } else {
+        return '---';
+      }
+    };
+
     const handleOrgSelected = async (org) => {
       const result = await GetDefaultApprovers({
         request: requestObject,
         user: userStore.user,
         onlyForView,
         groupId: org.id,
+        highCommander: true,
       });
       setDefaultApprovers(result || []);
       setValue('isUserApprover', result.length > 0);
+      setValue('approvers', []);
     };
 
     return (
-      <div className="p-fluid" id="renameBulkOGForm">
-        <div className="p-fluid-item-flex p-fluid-item">
-          <div className="p-field">
+      <div className='p-fluid' id='renameBulkOGForm'>
+        <div className='p-fluid-item'>
+          <div className='p-field'>
             <Hierarchy
               setValue={setValue}
-              name="currentHierarchy"
-              labelText="היררכיה נוכחית"
+              name='currentHierarchy'
+              labelText='היררכיה נוכחית'
               errors={errors}
               ogValue={watch('currentHierarchy')}
               disabled={onlyForView}
@@ -201,12 +211,12 @@ const RenameBulkOGForm = forwardRef(
             />
           </div>
         </div>
-        <div className="p-fluid-item-flex p-fluid-item">
-          <div className="p-field">
+        <div className='p-fluid-item'>
+          <div className='p-field'>
             <Hierarchy
               setValue={setValue}
-              name="hierarchy"
-              labelText="היררכיה חדשה"
+              name='hierarchy'
+              labelText='היררכיה חדשה'
               errors={errors}
               ogValue={watch('hierarchy')}
               disabled={onlyForView}
@@ -229,14 +239,15 @@ const RenameBulkOGForm = forwardRef(
               { field: 'currentJobTitle', header: 'תפקיד נוכחי' },
               { field: 'newJobTitle', header: 'תפקיד חדש' },
               { field: 'roleId', header: 'מזהה תפקיד' },
+              { field: 'status', header: 'סטטוס', body: statusTemplateEnum },
             ]}
           />
         )}
-        <div className="p-fluid-item-flex p-fluid-item">
+        <div className='p-fluid-item-flex p-fluid-item'>
           <Approver
             setValue={setValue}
-            name="approvers"
-            tooltip='רס"ן ומעלה ביחידתך'
+            name='approvers'
+            tooltip='סא"ל ומעלה ביחידתך'
             multiple={true}
             errors={errors}
             disabled={onlyForView || watch('isUserApprover')}
@@ -244,15 +255,15 @@ const RenameBulkOGForm = forwardRef(
           />
         </div>
 
-        <div className="p-fluid-item p-fluid-item-flex1">
-          <div className="p-field">
+        <div className='p-fluid-item p-fluid-item-flex1'>
+          <div className='p-field'>
             <label>
               <span></span>הערות
             </label>
             <InputTextarea
               {...register('comments')}
-              id="renameBulkOGForm-comments"
-              type="text"
+              id='renameBulkOGForm-comments'
+              type='text'
               placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
               disabled={onlyForView}
             />

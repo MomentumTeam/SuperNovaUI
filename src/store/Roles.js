@@ -32,7 +32,7 @@ export default class RolesStore {
       if (!query.trim().length) {
         filteredResults = [];
       } else {
-        filteredResults = await searchRolesByRoleId(query);
+        filteredResults = await searchRolesByRoleId(query.toLowerCase());
         filteredResults = filteredResults;
       }
   

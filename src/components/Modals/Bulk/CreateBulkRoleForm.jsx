@@ -16,13 +16,13 @@ import {
   uploadBulkFile,
   getCreateBulkRoleData,
 } from '../../../service/AppliesService';
-import { USER_TYPE } from '../../../constants';
-import { isUserHoldType } from '../../../utils/user';
+import { STATUSES, USER_TYPE } from '../../../constants';
+import { isUserApproverType } from "../../../utils/user";
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
+import { StatusFieldTemplate } from '../../Fields/StatusFieldTemplate';
 
-// TODO: move to different file (restructe project files...)
 const validationSchema = Yup.object().shape({
   comments: Yup.string().optional(),
   hierarchy: Yup.object().required('נא לבחור היררכיה'),
@@ -68,7 +68,7 @@ const validationSchema = Yup.object().shape({
 const RenameBulkOGForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject }, ref) => {
     const { appliesStore, userStore } = useStores();
-    const isUserApprover = isUserHoldType(userStore.user, USER_TYPE.COMMANDER);
+    const isUserApprover = isUserApproverType(userStore.user);
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
     const { register, handleSubmit, setValue, formState, watch } = useForm({
@@ -127,6 +127,16 @@ const RenameBulkOGForm = forwardRef(
       
     };
 
+    const statusTemplateEnum = (column) => {
+      if (column?.status) {
+        const status = STATUSES[column.status];
+        return <StatusFieldTemplate status={status}/>;
+
+      } else {
+        return '---'
+      }
+    };
+
     useImperativeHandle(
       ref,
       () => ({
@@ -135,6 +145,7 @@ const RenameBulkOGForm = forwardRef(
       []
     );
 
+ 
     const handleOrgSelected = async (org) => {
       const result = await GetDefaultApprovers({
         request: requestObject,
@@ -144,6 +155,7 @@ const RenameBulkOGForm = forwardRef(
       });
       setDefaultApprovers(result || []);
       setValue("isUserApprover", result.length > 0);
+      setValue('approvers', []);
     };
 
     return (
@@ -171,6 +183,7 @@ const RenameBulkOGForm = forwardRef(
               { field: "jobTitle", header: "שם תפקיד" },
               { field: "clearance", header: "סיווג תפקיד" },
               { field: "roleEntityType", header: "סוג ישות" },
+              { field: "status", header: "סטטוס", body: statusTemplateEnum },
             ]}
           />
         )}
@@ -199,7 +212,7 @@ const RenameBulkOGForm = forwardRef(
               type="text"
               autoResize="false"
               disabled={onlyForView}
-              placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
+              placeholder={!onlyForView && "הכנס הערות לבקשה..."}
             />
           </div>
         </div>
