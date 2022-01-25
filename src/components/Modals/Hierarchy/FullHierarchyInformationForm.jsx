@@ -203,10 +203,10 @@ const FullHierarchyInformationForm = forwardRef(
         inputType: InputTypes.TEXTAREA,
         force: true,
         secured: () => reqView || !onlyForView,
-        placeholder: 'הכנס הערות לבקשה...',
+        placeholder: !onlyForView && 'הכנס הערות לבקשה...',
         additionalClass: 'p-fluid-item-flex1',
         canEdit: true,
-        item: requestObject
+        item: requestObject,
       },
     ];
 
