@@ -18,7 +18,7 @@ const ContactInfo = () => {
       <ul>
         <li>
           {' '}
-         לכניסה לקבוצת התמיכה- לגו תמיכה{' '}
+          {` לכניסה לקבוצת התמיכה- ${configStore.HI_CHAT_SUPPORT_GROUP_NAME}`}{' '}
           <a
             href={supportGroupLink}
             style={{ fontWeight: '700', textDecoration: 'underline' }}
