@@ -35,11 +35,6 @@ const ResponsibleFactorWithWaitingFieldTemplate = (apply, user) => {
         return <Chip label={names[0]} icon='pi pi-user' className='person' />;
       return (
         <div>
-          {/* <Tooltip
-            target='.more-person'
-            content={displayNames}
-            position='top'
-          /> */}
           <Tooltip
             target='.more-person'
             position='top'
