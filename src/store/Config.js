@@ -20,6 +20,7 @@ class ConfigStore {
   SUPER_SECURITY_MAIL = 'T02250B49@gmail.com';
   INSTRUCTION_VIDEOS =
     'https://www.youtube.com/watch?v=OcUDK4kAUIw&ab_channel=KaliUchis-Topic';
+  HI_CHAT_SUPPORT_GROUP_NAME = 'לגו תמיכה';
 
   constructor() {
     makeAutoObservable(this, {
@@ -37,6 +38,7 @@ class ConfigStore {
       SECURITY_MAIL: observable,
       SUPER_SECURITY_MAIL: observable,
       INSTRUCTION_VIDEOS: observable,
+      HI_CHAT_SUPPORT_GROUP_NAME: observable,
     });
   }
 

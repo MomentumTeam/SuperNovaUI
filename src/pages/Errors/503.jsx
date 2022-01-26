@@ -1,8 +1,11 @@
 import { useEffect } from "react";
 import healthStore from '../../store/Health';
 import "../../assets/css/local/pages/errorpages.css";
+import { useStores } from '../../context/use-stores';
 
 const Error503 = () => {  
+  const { configStore } = useStores();
+
   useEffect(() => {
     const healthcheck = setInterval(async () => {
       await healthStore.loadHealth()
@@ -22,7 +25,7 @@ const Error503 = () => {
             <br />
             <h2>נשוב בקרוב</h2>
 
-            <h5>לתמיכה אנא פנו לצא'ט "לגו תמיכה" במערכת היי צ'אט</h5>
+            <h5>{`לתמיכה אנא פנו לצא'ט "${configStore.HI_CHAT_SUPPORT_GROUP_NAME}" במערכת היי צ'אט`}</h5>
           </div>
         </div>
       </div>

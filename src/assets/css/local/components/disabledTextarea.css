@@ -1,0 +1,12 @@
+.p-fluid .p-field .disabled {
+  background-color: #faf8fd;
+  color: #908cb1;
+  font-weight: 300;
+  border: 1px solid #b4bccb;
+}
+
+.p-fluid .p-field .disabled:hover,
+.p-fluid .p-field .disabled:focus {
+  border: 1px solid #b4bccb;
+  box-shadow: none;
+}
