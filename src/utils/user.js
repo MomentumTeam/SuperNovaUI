@@ -74,7 +74,7 @@ export const formatServiceType = (user) => {
 }
 
 export const identityOrPersonalNumber = (user) => {
-  return user[0]? user[0]: user[1]
+  return user[0]? user[0]: user[1]? user[1]: "---"
 };
 
 export const kartoffelIdentityCardValidation = (identityCard) => {
