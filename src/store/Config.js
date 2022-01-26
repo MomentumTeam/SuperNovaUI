@@ -65,8 +65,6 @@ class ConfigStore {
         this.SUPER_SECURITY_MAIL = config.SUPER_SECURITY_MAIL;
       if (config?.INSTRUCTION_VIDEOS)
         this.INSTRUCTION_VIDEOS = config.INSTRUCTION_VIDEOS;
-      if (config?.HI_CHAT_SUPPORT_GROUP_NAME)
-        this.HI_CHAT_SUPPORT_GROUP_NAME = config.HI_CHAT_SUPPORT_GROUP_NAME;
     } catch (error) {
       console.log('problem with config');
     }
