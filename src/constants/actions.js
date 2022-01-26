@@ -72,7 +72,7 @@ export const actions = [
     id: 6,
     className: "btn-actions btn-actions6",
     actionName: "בקשה להרשאות",
-    infoText: `בקשה לקבלת הרשאות שונות במערכת:
+    infoText: `בקשה לקבלת הרשאות שונות במערכת LEGO:
     בחירת סוג הגורם המאשר הרצוי
     ▼
     הכנסת פרטי המשתמש עבורו תינתן ההרשאה

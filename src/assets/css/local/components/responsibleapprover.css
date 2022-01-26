@@ -1,24 +1,34 @@
 .p-chip {
-    max-width: 110px;
-    font-size: 12px;
-    line-height: 0.5;
- }
+  max-width: 110px;
+  font-size: 12px;
+  line-height: 0.5;
+}
 
 .waiting {
-    font-size: 13px;
-    opacity: 0.4;
+  font-size: 13px;
+  opacity: 0.4;
 }
 
 .more-person {
- color: black;
- background: rgb(194, 194, 194);
- /* opacity: 0.6; */
- font-size: 10px;
- margin-right: 11px!important;
- margin-top: 7px !important;
+  color: black;
+  background: rgb(194, 194, 194);
+  /* opacity: 0.6; */
+  font-size: 10px;
+  margin-right: 11px !important;
+  margin-top: 7px !important;
 }
 
 .person {
-     background: rgb(236, 236, 236);
+  background: rgb(236, 236, 236);
+}
 
+.approvers-tooltip.p-tooltip .p-tooltip-arrow {
+  border-top-color: #ececec;
+}
+.approvers-tooltip.p-tooltip .p-tooltip-text {
+  background-color: #ececec;
+}
+
+.approvers-tooltip.p-tooltip * {
+  color: #767b80;
 }

@@ -17,6 +17,7 @@ import {
   getRoleByRoleId,
   searchRolesByRoleId,
   getOGById,
+  getEntityByRoleId,
 } from '../../../service/KartoffelService';
 import HorizontalLine from '../../HorizontalLine';
 import { GetDefaultApprovers } from '../../../utils/approver';
@@ -25,6 +26,7 @@ import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { getSamAccountNameFromUniqueId } from '../../../utils/fields';
 import { AutoComplete } from 'primereact/autocomplete';
 import { isApproverValid } from '../../../service/ApproverService';
+import { InputText } from 'primereact/inputtext';
 
 const validationSchema = Yup.object().shape({
   role: Yup.object().required('יש לבחור תפקיד מהרשימה'),
@@ -108,18 +110,21 @@ const RenameSingleOGForm = forwardRef(
       const initializeValues = async () => {
         setValue('comments', requestObject.comments);
         setValue('roleId', requestObject.kartoffelParams.roleId);
-        setValue('hierarchy', {name:requestObject.kartoffelParams.hierarchy}); 
-        setValue(
-          'currentHierarchy',
-          {name:requestObject.kartoffelParams.oldHierarchy}
-        );
+        setValue('hierarchy', {
+          name: requestObject.kartoffelParams.hierarchy,
+        });
+        setValue('currentHierarchy', {
+          name: requestObject.kartoffelParams.oldHierarchy,
+        });
 
         const oldRole = requestObject?.kartoffelParams?.role
           ? requestObject?.kartoffelParams?.role
           : await getRoleByRoleId(requestObject.kartoffelParams.roleId);
 
-        setValue("role", oldRole);
+        setValue('role', oldRole);
         setRoles([oldRole]);
+
+        await updateCurrentRoleUser(requestObject.kartoffelParams.roleId);
 
         const result = await GetDefaultApprovers({
           request: requestObject,
@@ -182,16 +187,19 @@ const RenameSingleOGForm = forwardRef(
       setDefaultApprovers(result || []);
       setValue('isUserApprover', result.length > 0);
       setValue('approvers', []);
-
-      const roles = await getRolesUnderOG({ id: org.id, direct: true });
-      setRoles(roles || []);
       setValue('roleId', '');
       setValue('role', null);
+      setValue('currentRoleUser', null);
+
+      const roles = await getRolesUnderOG({ id: org.id, direct: true });
+
+      setRoles(roles || []);
     };
 
     const initializeRoleIdDependencies = () => {
       setValue('currentHierarchy', '');
       setValue('role', '');
+      setValue('currentRoleUser', '');
       setRoles([]);
     };
 
@@ -213,6 +221,8 @@ const RenameSingleOGForm = forwardRef(
           if (!hierarchy) {
             hierarchy = await getOGById(role.directGroup);
           }
+
+          await updateCurrentRoleUser(role.roleId);
 
           const result = await GetDefaultApprovers({
             request: requestObject,
@@ -245,16 +255,32 @@ const RenameSingleOGForm = forwardRef(
       }
     };
 
+    const onChangeRoleFromList = async (e) => {
+      setValue('roleId', e.target.value.roleId);
+      setValue('role', e.target.value);
+
+      await updateCurrentRoleUser(e.target.value.roleId);
+    };
+
+    const updateCurrentRoleUser = async (roleId) => {
+      try {
+        let currentRoleUser = await getEntityByRoleId(roleId);
+        setValue('currentRoleUser', currentRoleUser.fullName);
+      } catch {
+        setValue('currentRoleUser', '- - -');
+      }
+    };
+
     return (
-      <div className="p-fluid" id="renameSingleOGForm">
-        <div className="display-flex title-wrap" style={{ width: 'inherit' }}>
+      <div className='p-fluid' id='renameSingleOGForm'>
+        <div className='display-flex title-wrap' style={{ width: 'inherit' }}>
           <h2>היררכיה נוכחית</h2>
         </div>
-        <div className="p-fluid-item p-fluid-item-flex1">
-          <div className="p-field">
+        <div className='p-fluid-item p-fluid-item-flex1'>
+          <div className='p-field'>
             <Hierarchy
               setValue={setValue}
-              name="currentHierarchy"
+              name='currentHierarchy'
               onOrgSelected={handleOrgSelected}
               ogValue={watch('currentHierarchy')}
               errors={errors}
@@ -267,25 +293,22 @@ const RenameSingleOGForm = forwardRef(
             />
           </div>
         </div>
-        <div className="p-fluid-item p-fluid-item">
-          <div className="p-field">
+        <div className='p-fluid-item p-fluid-item'>
+          <div className='p-field'>
             <label>
-              <span className="required-field">*</span>בחירת תפקיד מתוך רשימה
+              <span className='required-field'>*</span>בחירת תפקיד מתוך רשימה
             </label>
             <Dropdown
-              id="renameSingleOGForm-role"
+              id='renameSingleOGForm-role'
               options={roles}
-              optionLabel="jobTitle"
-              placeholder="תפקיד"
+              optionLabel='jobTitle'
+              placeholder='תפקיד'
               {...register('role')}
-              onChange={(e) => {
-                setValue('roleId', e.target.value.roleId);
-                setValue('role', e.target.value);
-              }}
+              onChange={onChangeRoleFromList}
               value={watch('role')}
               disabled={onlyForView}
             />
-            <label htmlFor="2021">
+            <label htmlFor='2021'>
               {' '}
               {errors.role && (
                 <small style={{ color: 'red' }}>
@@ -297,25 +320,26 @@ const RenameSingleOGForm = forwardRef(
             </label>{' '}
           </div>
         </div>
-        <div className="p-fluid-item-flex p-fluid-item">
-          <div className="p-field">
+        <div className='p-fluid-item-flex p-fluid-item'>
+          <div className='p-field'>
             <label>
-              <span className="required-field">*</span>מזהה תפקיד
+              <span className='required-field'>*</span>מזהה תפקיד
             </label>
             <AutoComplete
-              id="renameSingleOGForm-roleId"
+              id='renameSingleOGForm-roleId'
               value={watch('roleId')}
-              field="roleId"
+              field='roleId'
               suggestions={roleSuggestions}
               completeMethod={onSearchRoleId}
               onChange={(e) => {
                 setValue('role', null);
+                setValue('currentRoleUser', '');
                 setValue('roleId', e.value.roleId ? e.value.roleId : e.value);
               }}
               onSelect={() => onRoleIdSelected()}
-              type="text"
+              type='text'
               required
-              placeholder="מזהה תפקיד"
+              placeholder='מזהה תפקיד'
               disabled={onlyForView}
               tooltip={onlyForView ? '' : 'לדוגמה: "T12345678"'}
               tooltipOptions={{ position: 'top' }}
@@ -331,15 +355,29 @@ const RenameSingleOGForm = forwardRef(
             </label>
           </div>
         </div>
+        <div className="p-fluid-item">
+          <div className="p-field">
+            <label htmlFor="2026">מבצע תפקיד נוכחי</label>
+            <InputText
+              {...register('currentRoleUser')}
+              id="assignRoleToEntityForm-currentRoleUser"
+              style={{
+                textAlign: watch('currentRoleUser') === '- - -' && 'center',
+              }}
+              type="text"
+              disabled
+            />
+          </div>
+        </div>
         <HorizontalLine />
-        <div className="display-flex title-wrap" style={{ width: 'inherit' }}>
+        <div className='display-flex title-wrap' style={{ width: 'inherit' }}>
           <h2>היררכיה חדשה</h2>
         </div>
-        <div className="p-fluid-item-flex p-fluid-item">
-          <div className="p-field">
+        <div className='p-fluid-item-flex p-fluid-item'>
+          <div className='p-field'>
             <Hierarchy
               setValue={setValue}
-              name="hierarchy"
+              name='hierarchy'
               errors={errors}
               ogValue={watch('hierarchy')}
               disabled={onlyForView}
@@ -352,10 +390,10 @@ const RenameSingleOGForm = forwardRef(
             />
           </div>
         </div>
-        <div className="p-fluid-item">
+        <div className='p-fluid-item'>
           <Approver
             setValue={setValue}
-            name="approvers"
+            name='approvers'
             multiple={true}
             errors={errors}
             tooltip='סא"ל ומעלה ביחידתך'
@@ -363,17 +401,18 @@ const RenameSingleOGForm = forwardRef(
             defaultApprovers={defaultApprovers}
           />
         </div>
-        <div className="p-fluid-item p-fluid-item-flex1">
-          <div className="p-field">
+        <div className='p-fluid-item p-fluid-item-flex1'>
+          <div className='p-field'>
             <label>
               <span></span>הערות
             </label>
             <InputTextarea
-              id="renameSingleOGForm-comments"
+              id='renameSingleOGForm-comments'
               {...register('comments')}
-              type="text"
-              autoResize="false"
-              disabled={onlyForView}
+              type='text'
+              autoResize='false'
+              readOnly={onlyForView}
+              className={onlyForView ? 'disabled' : ''}
               placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
             />
           </div>

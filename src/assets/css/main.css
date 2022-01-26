@@ -1,4 +1,4 @@
-.cut-text { 
+.cut-text {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -23,7 +23,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent linear-gradient(180deg, #3bbb9e 0%, #00aabf 100%) 0% 0% no-repeat padding-box;
+  background: transparent linear-gradient(180deg, #3bbb9e 0%, #00aabf 100%) 0%
+    0% no-repeat padding-box;
   box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.2);
   border-radius: 34px;
   border: 0;
@@ -38,14 +39,16 @@
 .btn-green-gradient:focus,
 .p-button.p-component.btn-green-gradient:hover,
 .p-button.p-component.btn-green-gradient:focus {
-  background: transparent linear-gradient(180deg, #00aabf 0%, #3bbb9e 100%) 0% 0% no-repeat padding-box;
+  background: transparent linear-gradient(180deg, #00aabf 0%, #3bbb9e 100%) 0%
+    0% no-repeat padding-box;
 }
 
 .btn-orange-gradient {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent linear-gradient(180deg, #feb557 0%, #f68340 100%) 0% 0% no-repeat padding-box;
+  background: transparent linear-gradient(180deg, #feb557 0%, #f68340 100%) 0%
+    0% no-repeat padding-box;
   box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.2);
   border-radius: 34px;
   border: 0;
@@ -58,7 +61,8 @@
 
 .btn-orange-gradient:hover,
 .btn-orange-gradient:focus {
-  background: transparent linear-gradient(180deg, #f68340 0%, #feb557 100%) 0% 0% no-repeat padding-box;
+  background: transparent linear-gradient(180deg, #f68340 0%, #feb557 100%) 0%
+    0% no-repeat padding-box;
 }
 
 .btn {
@@ -211,7 +215,8 @@
 }
 
 .logout-btn-wrap {
-  background: transparent linear-gradient(180deg, #feb557 0%, #f68340 100%) 0% 0% no-repeat padding-box;
+  background: transparent linear-gradient(180deg, #feb557 0%, #f68340 100%) 0%
+    0% no-repeat padding-box;
   width: 50px;
   height: 49px;
   border-radius: 50%;
@@ -231,7 +236,8 @@
 
 .logout-btn-wrap:hover,
 .logout-btn-wrap:focus {
-  background: transparent linear-gradient(180deg, #f68340 0%, #feb557 100%) 0% 0% no-repeat padding-box;
+  background: transparent linear-gradient(180deg, #f68340 0%, #feb557 100%) 0%
+    0% no-repeat padding-box;
 }
 
 fieldset {
@@ -300,7 +306,7 @@ legend {
   border: 1px solid #e7e8ea;
   border-radius: 8px;
   background-color: #ffffff;
-  font-family: "Heebo", sans-serif;
+  font-family: 'Heebo', sans-serif;
   margin: 0px;
   display: flex;
   align-items: center;
@@ -328,7 +334,7 @@ legend {
   color: #201961;
   opacity: 1;
   /* Firefox */
-  font-family: "Heebo", sans-serif;
+  font-family: 'Heebo', sans-serif;
 }
 
 .input-unit-wrap .input-unit-regular select,
@@ -388,8 +394,8 @@ legend {
 }
 
 .input-unit-wrap .input-unit-search::before {
-  content: "";
-  background-image: url("../images/search.svg");
+  content: '';
+  background-image: url('../images/search.svg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: 18px;
@@ -451,7 +457,7 @@ legend {
   border: 1px solid #e7e8ea;
   border-radius: 8px;
   background-color: #ffffff;
-  font-family: "Heebo", sans-serif;
+  font-family: 'Heebo', sans-serif;
   margin: 0px;
   display: flex;
   align-items: center;
@@ -511,7 +517,7 @@ legend {
   color: #201961;
   opacity: 1;
   /* Firefox */
-  font-family: "Heebo", sans-serif;
+  font-family: 'Heebo', sans-serif;
 }
 
 .p-fluid .p-field textarea .p-dropdown-label,
@@ -525,7 +531,7 @@ legend {
   box-sizing: border-box;
   text-align: right;
   background-color: #ffffff;
-  font-family: "Heebo", sans-serif;
+  font-family: 'Heebo', sans-serif;
   margin: 0px;
   padding: 0;
 }
@@ -556,7 +562,7 @@ legend {
   border: 1px solid #e7e8ea;
   border-radius: 10px;
   background-color: #ffffff;
-  font-family: "Heebo", sans-serif;
+  font-family: 'Heebo', sans-serif;
   margin: 0px;
   display: flex;
   align-items: center;
@@ -577,7 +583,7 @@ legend {
   color: #201961;
   opacity: 1;
   /* Firefox */
-  font-family: "Heebo", sans-serif;
+  font-family: 'Heebo', sans-serif;
 }
 
 .p-fluid .p-field.p-field-green .p-dropdown-label {
@@ -622,9 +628,9 @@ legend {
   background-color: rgba(255, 255, 255, 0.5);
 }
 
-
 .search-row {
-  background: transparent linear-gradient(180deg, #c2e6e7 0%, #67c8c9 100%) 0% 0% no-repeat padding-box;
+  background: transparent linear-gradient(180deg, #c2e6e7 0%, #67c8c9 100%) 0%
+    0% no-repeat padding-box;
   box-shadow: 0px 10px 10px rgba(116, 89, 212, 0.1);
   padding: 17px 20px;
   border-radius: 26px;
@@ -705,7 +711,7 @@ legend {
   border: 1px solid #e7e8ea;
   border-radius: 8px;
   background-color: #ffffff;
-  font-family: "Heebo", sans-serif;
+  font-family: 'Heebo', sans-serif;
   margin: 0px;
   display: flex;
   align-items: center;
@@ -726,24 +732,84 @@ legend {
   font-weight: 400;
 }
 
-.search-row-inner .search-item .autocomplete-wrap .p-float-label input:focus ~ label,
-.search-row-inner .search-item .autocomplete-wrap .p-float-label input.p-filled ~ label,
-.search-row-inner .search-item .autocomplete-wrap .p-float-label textarea:focus ~ label,
-.search-row-inner .search-item .autocomplete-wrap .p-float-label textarea.p-filled ~ label,
-.search-row-inner .search-item .autocomplete-wrap .p-float-label .p-inputwrapper-focus ~ label,
-.search-row-inner .search-item .autocomplete-wrap .p-float-label .p-inputwrapper-filled ~ label {
+.search-row-inner
+  .search-item
+  .autocomplete-wrap
+  .p-float-label
+  input:focus
+  ~ label,
+.search-row-inner
+  .search-item
+  .autocomplete-wrap
+  .p-float-label
+  input.p-filled
+  ~ label,
+.search-row-inner
+  .search-item
+  .autocomplete-wrap
+  .p-float-label
+  textarea:focus
+  ~ label,
+.search-row-inner
+  .search-item
+  .autocomplete-wrap
+  .p-float-label
+  textarea.p-filled
+  ~ label,
+.search-row-inner
+  .search-item
+  .autocomplete-wrap
+  .p-float-label
+  .p-inputwrapper-focus
+  ~ label,
+.search-row-inner
+  .search-item
+  .autocomplete-wrap
+  .p-float-label
+  .p-inputwrapper-filled
+  ~ label {
   top: -8px;
   font-weight: 500;
   font-size: 12px;
 }
 
 @media (max-width: 700px) {
-  .search-row-inner .search-item .autocomplete-wrap .p-float-label input:focus ~ label,
-  .search-row-inner .search-item .autocomplete-wrap .p-float-label input.p-filled ~ label,
-  .search-row-inner .search-item .autocomplete-wrap .p-float-label textarea:focus ~ label,
-  .search-row-inner .search-item .autocomplete-wrap .p-float-label textarea.p-filled ~ label,
-  .search-row-inner .search-item .autocomplete-wrap .p-float-label .p-inputwrapper-focus ~ label,
-  .search-row-inner .search-item .autocomplete-wrap .p-float-label .p-inputwrapper-filled ~ label {
+  .search-row-inner
+    .search-item
+    .autocomplete-wrap
+    .p-float-label
+    input:focus
+    ~ label,
+  .search-row-inner
+    .search-item
+    .autocomplete-wrap
+    .p-float-label
+    input.p-filled
+    ~ label,
+  .search-row-inner
+    .search-item
+    .autocomplete-wrap
+    .p-float-label
+    textarea:focus
+    ~ label,
+  .search-row-inner
+    .search-item
+    .autocomplete-wrap
+    .p-float-label
+    textarea.p-filled
+    ~ label,
+  .search-row-inner
+    .search-item
+    .autocomplete-wrap
+    .p-float-label
+    .p-inputwrapper-focus
+    ~ label,
+  .search-row-inner
+    .search-item
+    .autocomplete-wrap
+    .p-float-label
+    .p-inputwrapper-filled
+    ~ label {
     right: 0rem;
   }
 }
@@ -770,7 +836,11 @@ legend {
   padding: 0;
 }
 
-.search-row-inner .search-item .autocomplete-wrap .p-autocomplete .p-autocomplete-multiple-container {
+.search-row-inner
+  .search-item
+  .autocomplete-wrap
+  .p-autocomplete
+  .p-autocomplete-multiple-container {
   font-size: 14px;
   font-weight: 300;
   color: #201961;
@@ -782,14 +852,22 @@ legend {
   border: 1px solid #e7e8ea;
   border-radius: 8px;
   background-color: #ffffff;
-  font-family: "Heebo", sans-serif;
+  font-family: 'Heebo', sans-serif;
   margin: 0px;
   display: flex;
   align-items: center;
 }
 
-.search-row-inner .search-item .autocomplete-wrap .p-autocomplete .p-autocomplete-multiple-container:hover,
-.search-row-inner .search-item .autocomplete-wrap .p-autocomplete .p-autocomplete-multiple-container:focus {
+.search-row-inner
+  .search-item
+  .autocomplete-wrap
+  .p-autocomplete
+  .p-autocomplete-multiple-container:hover,
+.search-row-inner
+  .search-item
+  .autocomplete-wrap
+  .p-autocomplete
+  .p-autocomplete-multiple-container:focus {
   border: 1px solid #5b7184;
 }
 
@@ -819,17 +897,17 @@ legend {
 
 * {
   box-sizing: border-box;
-  font-family: "Heebo", sans-serif;
+  font-family: 'Heebo', sans-serif;
 }
 
 html {
-  font-family: "Heebo", sans-serif;
+  font-family: 'Heebo', sans-serif;
   line-height: 1.15;
   direction: rtl;
 }
 
 body {
-  font-family: "Heebo", sans-serif;
+  font-family: 'Heebo', sans-serif;
   margin: 0;
   padding: 0;
   color: #201961;
@@ -847,7 +925,7 @@ body {
 }
 
 body.hm-bg {
-  background-image: url("../images/hp-bg.png");
+  background-image: url('../images/hp-bg.png');
   background-repeat: no-repeat;
   background-position: top;
   background-size: cover;
@@ -874,7 +952,7 @@ textarea {
 
 button {
   cursor: pointer;
-  font-family: "Heebo", sans-serif;
+  font-family: 'Heebo', sans-serif;
 }
 
 button:focus {
@@ -946,7 +1024,6 @@ img {
 
 .display-flex.display-flex-start {
   justify-content: flex-start;
-  
 }
 
 .for-screnReader {
@@ -974,34 +1051,33 @@ main .main-wrap {
 
 @media (max-height: 935px) {
   main .main-wrap {
-    margin:40px auto;
+    margin: 40px auto;
   }
 }
 
 @media (max-height: 925px) {
   main .main-wrap {
-    margin:30px auto;
+    margin: 30px auto;
   }
 }
 
 @media (max-height: 905px) {
   main .main-wrap {
-    margin:20px auto;
+    margin: 20px auto;
   }
 }
 
 @media (max-height: 885px) {
   main .main-wrap {
-    margin:10px auto;
+    margin: 10px auto;
   }
 }
 
 @media (max-height: 875px) {
   main .main-wrap {
-    margin:0px auto;
+    margin: 0px auto;
   }
 }
-
 
 @media (max-width: 1630px) {
   main .main-wrap {
@@ -1056,8 +1132,8 @@ main .main-wrap .main-inner-wrap {
   display: none;
 }
 
-.dropdown-options{ 
- width: 230px;
+.dropdown-options {
+  width: 230px;
 }
 .dropdown-options .p-dropdown-clear-icon {
   position: initial !important;
@@ -1065,22 +1141,22 @@ main .main-wrap .main-inner-wrap {
 }
 
 .dropdown-autocomplete {
-  width:170px !important;
+  width: 170px !important;
   margin-top: 40px !important;
   margin-left: 5px !important;
 }
 
 .flex-container {
-    display: flex;
+  display: flex;
 }
 
 .flex-child {
-    flex: 1;
-}  
+  flex: 1;
+}
 
 .flex-child:first-child {
-    margin-right: 20px;
-} 
+  margin-right: 20px;
+}
 .tree-loading-spinner {
   position: absolute !important;
   z-index: 1000;
@@ -1088,4 +1164,18 @@ main .main-wrap .main-inner-wrap {
   left: 50%;
   margin: -25px 0 0 -25px;
   transform: translate(-50%, -50%);
+}
+
+.p-fluid .p-field .disabled {
+  background-color: #f7f5fd;
+  color: #495057;
+  font-weight: 300;
+  border: 1px solid #b4bccb;
+  opacity: 0.8;
+}
+
+.p-fluid .p-field .disabled:hover,
+.p-fluid .p-field .disabled:focus {
+  border: 1px solid #b4bccb;
+  box-shadow: none;
 }

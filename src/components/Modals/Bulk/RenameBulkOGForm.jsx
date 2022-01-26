@@ -109,8 +109,10 @@ const RenameBulkOGForm = forwardRef(
       const getBulkData = async () => {
         const data = await getBulkChangeRoleHierarchyData(requestObject.id);
         setValue('comments', requestObject.comments);
-        setValue('hierarchy', {name:data.request.adParams.ouDisplayName});
-        setValue('currentHierarchy', {name:data.request.kartoffelParams.oldHierarchy});
+        setValue('hierarchy', { name: data.request.adParams.ouDisplayName });
+        setValue('currentHierarchy', {
+          name: data.request.kartoffelParams.oldHierarchy,
+        });
         setValue('rows', data.rows);
 
         const result = await GetDefaultApprovers({
@@ -265,7 +267,8 @@ const RenameBulkOGForm = forwardRef(
               id='renameBulkOGForm-comments'
               type='text'
               placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
-              disabled={onlyForView}
+              readOnly={onlyForView}
+              className={onlyForView ? 'disabled' : ''}
             />
           </div>
         </div>
