@@ -21,6 +21,8 @@ import { NAME_OG_EXP } from '../../../constants';
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
 import configStore from '../../../store/Config';
+import '../../../assets/css/local/components/disabledTextarea.css';
+// import '../../../assets/css/local/components/approverForm.css';
 
 const errorHierarchyTaken = 'valid-hierarchy-name-not-taken';
 const validationSchema = Yup.object().shape({
@@ -81,7 +83,6 @@ const validationSchema = Yup.object().shape({
           }
 
           return isTotalValid;
-
         } catch (error) {
           return false;
         }
@@ -191,11 +192,11 @@ const CreateOGForm = forwardRef(
     };
 
     return (
-      <div className="p-fluid" id="createOGForm">
-        <div className="p-fluid-item p-fluid-item-flex1">
+      <div className='p-fluid' id='createOGForm'>
+        <div className='p-fluid-item p-fluid-item-flex1'>
           <Hierarchy
             setValue={setValue}
-            name="parentHierarchy"
+            name='parentHierarchy'
             errors={errors}
             labelText={'היררכיית אב'}
             ogValue={watch('parentHierarchy')}
@@ -208,12 +209,12 @@ const CreateOGForm = forwardRef(
             onOrgSelected={handleOrgSelected}
           />
         </div>
-        <div className="p-fluid-item">
-          <div className="p-field">
-            <label htmlFor="2021">
-              <span className="required-field">*</span>שם היררכיה חדשה
+        <div className='p-fluid-item'>
+          <div className='p-field'>
+            <label htmlFor='2021'>
+              <span className='required-field'>*</span>שם היררכיה חדשה
             </label>
-            <span className="p-input-icon-left">
+            <span className='p-input-icon-left'>
               {watch('parentHierarchy') && watch('newHierarchy') && (
                 <i>
                   {errors.newHierarchy?.type === errorHierarchyTaken
@@ -223,8 +224,8 @@ const CreateOGForm = forwardRef(
               )}
               <InputText
                 {...register('newHierarchy')}
-                id="createOGForm-newHierarchy"
-                type="text"
+                id='createOGForm-newHierarchy'
+                type='text'
                 required
                 disabled={onlyForView}
                 onChange={onHierarchyNameChange}
@@ -241,10 +242,10 @@ const CreateOGForm = forwardRef(
             </span>
           </div>
         </div>
-        <div className="p-fluid-item">
+        <div className='p-fluid-item'>
           <Approver
             setValue={setValue}
-            name="approvers"
+            name='approvers'
             multiple={true}
             errors={errors}
             isHighRank={true}
@@ -253,15 +254,16 @@ const CreateOGForm = forwardRef(
             defaultApprovers={defaultApprovers}
           />
         </div>
-        <div className="p-fluid-item p-fluid-item-flex1">
-          <div className="p-field">
-            <label htmlFor="2023">הערות</label>
+        <div className='p-fluid-item p-fluid-item-flex1'>
+          <div className='p-field'>
+            <label htmlFor='2023'>הערות</label>
             <InputTextarea
               {...register('comments')}
-              id="createOGForm-comments"
-              type="text"
+              id='createOGForm-comments'
+              type='text'
               placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
-              disabled={onlyForView}
+              readOnly={onlyForView}
+              className={onlyForView ? 'disabled' : ''}
             />
           </div>
         </div>
