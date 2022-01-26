@@ -103,7 +103,9 @@ const PassRequestForm = forwardRef(({ request, setActionIsDone }, ref) => {
                   ? request.commanders
                   : []
               }
+              tooltip={`גורם מאשר מסוג: ${passOptions.find(passOption => passOption.value === watch('approverType')).label}`}
               multiple={watch("approverType") === USER_TYPE.COMMANDER}
+              title={`גורם מאשר מסוג: ${passOptions.find(passOption => passOption.value === watch('approverType')).label}`}
             />
           </div>
         </div>

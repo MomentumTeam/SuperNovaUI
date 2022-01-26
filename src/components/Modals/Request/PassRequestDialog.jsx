@@ -33,7 +33,7 @@ const PassRequestDialog = ({ request, isDialogVisible, setDialogVisiblity, actio
       await passForm.current.handleSubmit();
 
     } catch (e) {
-      actionPopup(e);
+      actionPopup("העברת בקשה", e);
     }
     
   };
