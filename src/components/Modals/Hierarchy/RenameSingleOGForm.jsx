@@ -17,6 +17,7 @@ import {
   getRoleByRoleId,
   searchRolesByRoleId,
   getOGById,
+  getEntityByRoleId,
 } from '../../../service/KartoffelService';
 import HorizontalLine from '../../HorizontalLine';
 import { GetDefaultApprovers } from '../../../utils/approver';
@@ -25,6 +26,7 @@ import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { getSamAccountNameFromUniqueId } from '../../../utils/fields';
 import { AutoComplete } from 'primereact/autocomplete';
 import { isApproverValid } from '../../../service/ApproverService';
+import { InputText } from 'primereact/inputtext';
 
 const validationSchema = Yup.object().shape({
   role: Yup.object().required('יש לבחור תפקיד מהרשימה'),
@@ -108,18 +110,21 @@ const RenameSingleOGForm = forwardRef(
       const initializeValues = async () => {
         setValue('comments', requestObject.comments);
         setValue('roleId', requestObject.kartoffelParams.roleId);
-        setValue('hierarchy', {name:requestObject.kartoffelParams.hierarchy}); 
-        setValue(
-          'currentHierarchy',
-          {name:requestObject.kartoffelParams.oldHierarchy}
-        );
+        setValue('hierarchy', {
+          name: requestObject.kartoffelParams.hierarchy,
+        });
+        setValue('currentHierarchy', {
+          name: requestObject.kartoffelParams.oldHierarchy,
+        });
 
         const oldRole = requestObject?.kartoffelParams?.role
           ? requestObject?.kartoffelParams?.role
           : await getRoleByRoleId(requestObject.kartoffelParams.roleId);
 
-        setValue("role", oldRole);
+        setValue('role', oldRole);
         setRoles([oldRole]);
+
+        await updateCurrentRoleUser(requestObject.kartoffelParams.roleId);
 
         const result = await GetDefaultApprovers({
           request: requestObject,
@@ -182,16 +187,18 @@ const RenameSingleOGForm = forwardRef(
       setDefaultApprovers(result || []);
       setValue('isUserApprover', result.length > 0);
       setValue('approvers', []);
+      setValue('roleId', '');
+      setValue('role', null);
+      setValue('currentRoleUser', null);
 
       const roles = await getRolesUnderOG({ id: org.id, direct: true });
       setRoles(roles || []);
-      setValue('roleId', '');
-      setValue('role', null);
     };
 
     const initializeRoleIdDependencies = () => {
       setValue('currentHierarchy', '');
       setValue('role', '');
+      setValue('currentRoleUser', '');
       setRoles([]);
     };
 
@@ -213,6 +220,8 @@ const RenameSingleOGForm = forwardRef(
           if (!hierarchy) {
             hierarchy = await getOGById(role.directGroup);
           }
+
+          await updateCurrentRoleUser(role.roleId);
 
           const result = await GetDefaultApprovers({
             request: requestObject,
@@ -242,6 +251,22 @@ const RenameSingleOGForm = forwardRef(
         setRoleSuggestions(result || []);
       } else {
         setRoleSuggestions([]);
+      }
+    };
+
+    const onChangeRoleFromList = async (e) => {
+      setValue('roleId', e.target.value.roleId);
+      setValue('role', e.target.value);
+
+      await updateCurrentRoleUser(e.target.value.roleId);
+    };
+
+    const updateCurrentRoleUser = async (roleId) => {
+      try {
+        let currentRoleUser = await getEntityByRoleId(roleId);
+        setValue('currentRoleUser', currentRoleUser.fullName);
+      } catch {
+        setValue('currentRoleUser', '- - -');
       }
     };
 
@@ -278,10 +303,7 @@ const RenameSingleOGForm = forwardRef(
               optionLabel="jobTitle"
               placeholder="תפקיד"
               {...register('role')}
-              onChange={(e) => {
-                setValue('roleId', e.target.value.roleId);
-                setValue('role', e.target.value);
-              }}
+              onChange={onChangeRoleFromList}
               value={watch('role')}
               disabled={onlyForView}
             />
@@ -329,6 +351,20 @@ const RenameSingleOGForm = forwardRef(
                 </small>
               )}
             </label>
+          </div>
+        </div>
+        <div className="p-fluid-item">
+          <div className="p-field">
+            <label htmlFor="2026">מבצע תפקיד נוכחי</label>
+            <InputText
+              {...register('currentRoleUser')}
+              id="assignRoleToEntityForm-currentRoleUser"
+              style={{
+                textAlign: watch('currentRoleUser') === '- - -' && 'center',
+              }}
+              type="text"
+              disabled
+            />
           </div>
         </div>
         <HorizontalLine />
