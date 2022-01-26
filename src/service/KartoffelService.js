@@ -71,7 +71,7 @@ export const getRoleByDI = async (uniqueId) => {
 };
 
 export const searchRolesByRoleId = async (roleId) => {
-  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/roles/search/${roleId}`);
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/roles/search/${roleId.toLowerCase()}`);
 
   return response.data.roles;
 };

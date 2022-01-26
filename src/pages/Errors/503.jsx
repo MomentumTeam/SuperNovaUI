@@ -10,7 +10,7 @@ const Error503 = () => {
     const healthcheck = setInterval(async () => {
       await healthStore.loadHealth()
       if (healthStore.isApiHealthy) return window.location.replace('/');
-    }, 10000);
+    }, 50000);
     return () => clearInterval(healthcheck);
   }, []);
 
