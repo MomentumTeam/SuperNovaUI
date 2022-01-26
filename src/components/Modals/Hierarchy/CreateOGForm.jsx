@@ -21,9 +21,6 @@ import { NAME_OG_EXP } from '../../../constants';
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
 import configStore from '../../../store/Config';
-import '../../../assets/css/local/components/disabledTextarea.css';
-// import '../../../assets/css/local/components/approverForm.css';
-
 const errorHierarchyTaken = 'valid-hierarchy-name-not-taken';
 const validationSchema = Yup.object().shape({
   newHierarchy: Yup.string()
