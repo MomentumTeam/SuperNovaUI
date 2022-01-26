@@ -193,14 +193,23 @@ const AssignRoleToEntityForm = forwardRef(
 
       const initializeValues = async () => {
         const roleId = requestObject.kartoffelParams.roleId;
-        setValue("roleId", roleId);
-        setValue("comments", requestObject.comments);
-        setValue("userName", requestObject.adParams.fullName);
-        setValue("changeRoleAt", +requestObject.due);
-        setValue("hierarchy", {name:requestObject.kartoffelParams.hierarchy});
-        setValue("currentRoleUser", requestObject?.kartoffelParams?.name ? requestObject.kartoffelParams.name : "");
+        setValue('roleId', roleId);
+        setValue('comments', requestObject.comments);
+        setValue('userName', requestObject.adParams.fullName);
+        setValue('changeRoleAt', +requestObject.due);
+        setValue('hierarchy', {
+          name: requestObject.kartoffelParams.hierarchy,
+        });
+        setValue(
+          'currentRoleUser',
+          requestObject?.kartoffelParams?.name
+            ? requestObject.kartoffelParams.name
+            : ''
+        );
 
-        await Promise.all[getNewEntity(), getOldRole(roleId), initDefaultApprovers()]
+        await Promise.all[
+          (getNewEntity(), getOldRole(roleId), initDefaultApprovers())
+        ];
       };
 
       if (requestObject) {
@@ -735,7 +744,8 @@ const AssignRoleToEntityForm = forwardRef(
               id='assignRoleToEntityForm-comments'
               type='text'
               placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
-              disabled={onlyForView}
+              readOnly={onlyForView}
+              className={onlyForView ? 'disabled' : ''}
             />
           </div>
         </div>
