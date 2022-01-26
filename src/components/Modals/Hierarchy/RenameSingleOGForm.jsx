@@ -192,6 +192,7 @@ const RenameSingleOGForm = forwardRef(
       setValue('currentRoleUser', null);
 
       const roles = await getRolesUnderOG({ id: org.id, direct: true });
+
       setRoles(roles || []);
     };
 
@@ -332,6 +333,7 @@ const RenameSingleOGForm = forwardRef(
               completeMethod={onSearchRoleId}
               onChange={(e) => {
                 setValue('role', null);
+                setValue('currentRoleUser', '');
                 setValue('roleId', e.value.roleId ? e.value.roleId : e.value);
               }}
               onSelect={() => onRoleIdSelected()}
