@@ -40,15 +40,31 @@ import { hierarchyConverse } from '../../utils/hierarchy';
 import configStore from '../../store/Config';
 
 const validationSchema = Yup.object().shape({
+  isSwitchRole: Yup.boolean(),
   user: Yup.object()
     .required('נא לבחור משתמש')
     .typeError('נא לבחור משתמש')
-    .test({
-      name: 'user-has-role',
-      message: `נראה שהמשתמש כבר מחובר לתפקיד, נא לעבור לטופס של מעבר תפקיד`,
-      test: (user) => {
-        return user.digitalIdentities.length === 0;
-      },
+    .when('isSwitchRole', {
+      is: true,
+      then: Yup.object()
+        .typeError('נא לבחור משתמש')
+        .test({
+          name: 'user-doesnt-have-role',
+          message: `נראה שהמשתמש אינו מחובר לתפקיד, לא ניתן לקיים את הבקשה, נא לעבור לטופס של משתמש חדש`,
+          test: (user) => {
+            return user.digitalIdentities.length !== 0;
+          },
+        }),
+      otherwise: Yup.object()
+        .typeError('נא לבחור משתמש')
+        .test({
+          name: 'user-has-role',
+          message: `נראה שהמשתמש כבר מחובר לתפקיד, לא ניתן לקיים את הבקשה, נא לעבור לטופס של משתמש חדש`,
+          test: (user) => {
+            console.log(user, 'im here');
+            return user.digitalIdentities.length === 0;
+          },
+        }),
     }),
   userName: Yup.string()
     .required('יש למלא שם משתמש')
@@ -146,9 +162,9 @@ const AssignRoleToEntityForm = forwardRef(
     const [userSuggestions, setUserSuggestions] = useState([]);
     const [roleSuggestions, setRoleSuggestions] = useState([]);
     const [defaultApprovers, setDefaultApprovers] = useState([]);
-
+    
     const isUserApprover = isUserApproverType(userStore.user);
-
+    
     const {
       register,
       handleSubmit,
@@ -161,10 +177,12 @@ const AssignRoleToEntityForm = forwardRef(
       resolver: yupResolver(validationSchema),
       defaultValues: { isUserApprover, role: null, user: null },
     });
-
+    
     const { errors } = formState;
-
+    
     useEffect(() => {
+      setValue('isSwitchRole', showJob);
+
       const getNewEntity = async () => {
         // new entity
         try {
