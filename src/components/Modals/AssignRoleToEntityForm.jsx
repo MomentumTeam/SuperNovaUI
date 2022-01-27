@@ -40,7 +40,16 @@ import { hierarchyConverse } from '../../utils/hierarchy';
 import configStore from '../../store/Config';
 
 const validationSchema = Yup.object().shape({
-  user: Yup.object().required('נא לבחור משתמש'),
+  user: Yup.object()
+    .required('נא לבחור משתמש')
+    .typeError('נא לבחור משתמש')
+    .test({
+      name: 'user-has-role',
+      message: `נראה שהמשתמש כבר מחובר לתפקיד, נא לעבור לטופס של מעבר תפקיד`,
+      test: (user) => {
+        return user.digitalIdentities.length === 0;
+      },
+    }),
   userName: Yup.string()
     .required('יש למלא שם משתמש')
     .test({
@@ -561,6 +570,16 @@ const AssignRoleToEntityForm = forwardRef(
               </div>
             </div>
           ) : null}
+          <label htmlFor='2020'>
+            {' '}
+            <br></br>
+            {errors.user && (
+              <small style={{ color: 'red' }}>
+                {' '}
+                {errors.user?.message ? errors.user.message : 'יש למלא ערך'}
+              </small>
+            )}
+          </label>
         </div>
         <HorizontalLine />
         <div
