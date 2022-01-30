@@ -27,7 +27,6 @@ const ResponsibleFactorWithWaitingFieldTemplate = (apply, user) => {
 
 names = [...new Set(names)] 
 const getFormatted = () => {
-    console.log(names);
     if (waiting != null) {
       return <span className='waiting'>{waiting}</span>;
     } else {

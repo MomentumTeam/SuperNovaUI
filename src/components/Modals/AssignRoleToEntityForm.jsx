@@ -61,7 +61,6 @@ const validationSchema = Yup.object().shape({
           name: 'user-has-role',
           message: `נראה שהמשתמש כבר מחובר לתפקיד, לא ניתן לקיים את הבקשה, נא לעבור לטופס של משתמש חדש`,
           test: (user) => {
-            console.log(user, 'im here');
             return user.digitalIdentities.length === 0;
           },
         }),
