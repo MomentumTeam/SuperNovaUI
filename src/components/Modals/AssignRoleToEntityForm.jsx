@@ -59,7 +59,7 @@ const validationSchema = Yup.object().shape({
         .typeError('נא לבחור משתמש')
         .test({
           name: 'user-has-role',
-          message: `נראה שהמשתמש כבר מחובר לתפקיד, לא ניתן לקיים את הבקשה, נא לעבור לטופס של משתמש חדש`,
+          message: `נראה שהמשתמש כבר מחובר לתפקיד, לא ניתן לקיים את הבקשה, נא לעבור לטופס של מעבר תפקיד`,
           test: (user) => {
             return user.digitalIdentities.length === 0;
           },
@@ -181,7 +181,7 @@ const AssignRoleToEntityForm = forwardRef(
     
     useEffect(() => {
       setValue('isSwitchRole', showJob);
-
+      console.log(watch('isSwitchRole'))
       const getNewEntity = async () => {
         // new entity
         try {
