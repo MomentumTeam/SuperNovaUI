@@ -260,7 +260,7 @@ const ApproverForm = forwardRef(
     };
 
     return (
-      <div className='p-fluid'>
+      <div className="p-fluid">
         <div
           className={
             watch('approverType') == USER_TYPE.ADMIN
@@ -268,17 +268,17 @@ const ApproverForm = forwardRef(
               : 'p-fluid-item p-fluid-item-flex1'
           }
         >
-          <div className='p-field'>
-            <label htmlFor='2011'>
-              <span className='required-field'>*</span>סוג גורם מאשר
+          <div className="p-field" id="form-hierarchy">
+            <label htmlFor="2011">
+              <span className="required-field">*</span>סוג גורם מאשר במערכת LEGO
             </label>
             <Dropdown
               {...register('approverType')}
               disabled={onlyForView}
               className={`${onlyForView ? 'disabled' : ''} approverType`}
               value={approverType}
-              id='approverForm-approverType'
-              inputId='2011'
+              id="approverForm-approverType"
+              inputId="2011"
               required
               options={APPROVER_TYPES}
               onChange={handleApprover}
@@ -286,35 +286,33 @@ const ApproverForm = forwardRef(
           </div>
         </div>
         {watch('approverType') === USER_TYPE.ADMIN && (
-          <div className='p-fluid-item'>
-            <div className='p-field'>
+          <div className="p-fluid-item">
+            <div className="p-field">
               <Hierarchy
                 setValue={setValue}
-                name='hierarchyApproverOf'
+                name="hierarchyApproverOf"
                 errors={errors}
                 ogValue={watch('hierarchyApproverOf')}
                 disabled={onlyForView}
-                labelText='ההיררכיה שבה תהיו מחשוב יחידתי'
+                labelText="ההיררכיה שבה תהיו מחשוב יחידתי"
                 onOrgSelected={handleOrgSelected}
               />
             </div>
           </div>
         )}
-        <div className='p-fluid-item'>
-          <div className='p-field'>
-            <label htmlFor='2020'>
-              <span className='required-field'>*</span>שם מלא
+        <div className="p-fluid-item">
+          <div className="p-field">
+            <label htmlFor="2020">
+              <span className="required-field">*</span>שם מלא
             </label>
-            {onlyForView && (
-              <Tooltip target={`.userNameText`} content={watch('userName')} />
-            )}
+            {onlyForView && <Tooltip content={watch('userName')} />}
 
             <button
-              className='btn-underline left19 approver-fillMe'
+              className="btn-underline left19 approver-fillMe"
               onClick={setCurrentUser}
-              type='button'
-              title='עבורי'
-              id='approverForm-forme'
+              type="button"
+              title="עבורי"
+              id="approverForm-forme"
               style={onlyForView && { display: 'none' }}
             >
               עבורי
@@ -323,10 +321,10 @@ const ApproverForm = forwardRef(
               value={watch('userName')}
               suggestions={userSuggestions}
               completeMethod={onSearchUser}
-              id='approverForm-userName'
-              type='text'
+              id="approverForm-userName"
+              type="text"
               itemTemplate={userTemplate}
-              className='userNameText'
+              className="userNameText"
               field={userConverse}
               onSelect={(e) => {
                 setValue('user', e.value, { shouldValidate: true });
@@ -359,17 +357,17 @@ const ApproverForm = forwardRef(
             )}
           </div>
         </div>
-        <div className='p-fluid-item'>
-          <div className='p-field'>
-            <label htmlFor='2021'>
+        <div className="p-fluid-item">
+          <div className="p-field">
+            <label htmlFor="2021">
               {' '}
-              <span className='required-field'>*</span>מ"א/ת"ז
+              <span className="required-field">*</span>מ"א/ת"ז
             </label>
             <InputText
               {...register('personalNumber', { required: true })}
-              id='approverForm-personalNumber'
-              type='text'
-              keyfilter='pnum'
+              id="approverForm-personalNumber"
+              type="text"
+              keyfilter="pnum"
               required
               onBlur={onSearchUserByPersonalNumber}
               onKeyDown={(e) => {
@@ -395,11 +393,11 @@ const ApproverForm = forwardRef(
             )}
           </div>
         </div>
-        <div className='p-fluid-item'>
+        <div className="p-fluid-item">
           <Hierarchy
             disabled={true}
             setValue={setValue}
-            name='hierarchy'
+            name="hierarchy"
             ogValue={
               onlyForView
                 ? getValues('hierarchy')
@@ -413,10 +411,10 @@ const ApproverForm = forwardRef(
             }
           />
         </div>
-        <div className='p-fluid-item'>
+        <div className="p-fluid-item">
           <Approver
             setValue={setValue}
-            name='approvers'
+            name="approvers"
             multiple={true}
             errors={errors}
             tooltip={'סא"ל ומעלה ביחידתך'}
@@ -425,13 +423,13 @@ const ApproverForm = forwardRef(
             defaultApprovers={defaultApprovers}
           />
         </div>
-        <div className='p-fluid-item p-fluid-item-flex1'>
-          <div className='p-field'>
-            <label htmlFor='2016'>הערות</label>
+        <div className="p-fluid-item p-fluid-item-flex1">
+          <div className="p-field">
+            <label htmlFor="2016">הערות</label>
             <InputTextarea
               {...register('comments')}
-              id='approverForm-comments'
-              type='text'
+              id="approverForm-comments"
+              type="text"
               placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
               readOnly={onlyForView}
               className={onlyForView ? 'disabled' : ''}

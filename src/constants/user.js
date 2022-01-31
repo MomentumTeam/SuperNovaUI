@@ -34,9 +34,9 @@ export const APPROVER_TRANSFER_TYPE = [USER_TYPE.ADMIN, USER_TYPE.COMMANDER, USE
 
 
 export const APPROVER_TYPES = [
-  { label: "גורם מאשר ראשוני", value: USER_TYPE.COMMANDER },
-  { label: 'גורם מאשר יחב"ם', value: USER_TYPE.SECURITY },
-  { label: 'גורם מאשר בטח"ם', value: USER_TYPE.SUPER_SECURITY },
-  { label: "הרשאת בקשה מרובה", value: USER_TYPE.BULK },
-  { label: "מחשוב יחידתי", value: USER_TYPE.ADMIN },
+  { label: "גורם מאשר ראשוני - גורם מאשר המוסמך לאשר בקשות באופן ראשוני", value: USER_TYPE.COMMANDER },
+  { label: 'גורם מאשר יחב"ם - גורם ביטחון מידע המוסמך לאשר בקשות', value: USER_TYPE.SECURITY },
+  { label: 'גורם מאשר בטח"ם - גורם ביטחון מידע המוסמך לאשר בקשות', value: USER_TYPE.SUPER_SECURITY },
+  { label: "הרשאת בקשה מרובה - גורם המוסמך להגיש בקשות מרובות", value: USER_TYPE.BULK },
+  { label: "מחשוב יחידתי - גורם מחשוב ביחידה המוסמך לאשר בקשות", value: USER_TYPE.ADMIN },
 ];

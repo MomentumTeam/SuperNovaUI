@@ -18,14 +18,15 @@ const ResponsibleFactorWithWaitingFieldTemplate = (apply, user) => {
       if (typeof responsibles[index] === 'string') {
         waiting = responsibles[index];
       } else {
-        names = [
+        names = [ 
           ...names,
           getUserNameFromDisplayName(responsibles[index].displayName),
         ];
       }
     });
 
-  const getFormatted = () => {
+names = [...new Set(names)] 
+const getFormatted = () => {
     if (waiting != null) {
       return <span className='waiting'>{waiting}</span>;
     } else {
