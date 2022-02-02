@@ -20,7 +20,11 @@ import {
 } from '../../service/KartoffelService';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { APPROVER_TYPES, USER_TYPE } from '../../constants';
+import {
+  APPROVER_TYPES,
+  USER_TYPE,
+  APPROVER_TYPES_PREVIEW_LABEL,
+} from '../../constants';
 import {
   isUserApproverType,
   userConverse,
@@ -268,21 +272,34 @@ const ApproverForm = forwardRef(
               : 'p-fluid-item p-fluid-item-flex1'
           }
         >
-          <div className="p-field" id="form-hierarchy">
+          <div className="p-field">
+            {onlyForView && (
+              <Tooltip
+                target={`.approverTypeDiv`}
+                content={
+                  APPROVER_TYPES.find((type) => type.value === approverType)
+                    ?.label
+                }
+                tooltipOptions={{ showOnDisabled: true }}
+                position="top"
+              />
+            )}
             <label htmlFor="2011">
               <span className="required-field">*</span>סוג גורם מאשר במערכת LEGO
             </label>
-            <Dropdown
-              {...register('approverType')}
-              disabled={onlyForView}
-              className={`${onlyForView ? 'disabled' : ''} approverType`}
-              value={approverType}
-              id="approverForm-approverType"
-              inputId="2011"
-              required
-              options={APPROVER_TYPES}
-              onChange={handleApprover}
-            />
+            <div className="approverTypeDiv">
+              <Dropdown
+                {...register('approverType')}
+                disabled={onlyForView}
+                className={`approverType ${onlyForView ? `disabled` : ''} `}
+                value={approverType}
+                id="approverForm-approverType"
+                inputId="2011"
+                required
+                options={APPROVER_TYPES}
+                onChange={handleApprover}
+              />
+            </div>
           </div>
         </div>
         {watch('approverType') === USER_TYPE.ADMIN && (
@@ -300,12 +317,19 @@ const ApproverForm = forwardRef(
             </div>
           </div>
         )}
-        <div className="p-fluid-item">
+        <div className="p-fluid-item" id="username-form">
           <div className="p-field">
+            {onlyForView && (
+              <Tooltip
+                target={`.userNameText`}
+                content={watch('userName')}
+                tooltipOptions={{ showOnDisabled: true }}
+                position="top"
+              />
+            )}
             <label htmlFor="2020">
               <span className="required-field">*</span>שם מלא
             </label>
-            {onlyForView && <Tooltip content={watch('userName')} />}
 
             <button
               className="btn-underline left19 approver-fillMe"
