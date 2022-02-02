@@ -644,7 +644,7 @@ const AssignRoleToEntityForm = forwardRef(
                 id='assignRoleToEntityForm-roleId'
                 type='text'
                 field='roleId'
-                tooltip={'לדוגמה: "T12345678"'}
+                tooltip={!onlyForView && 'לדוגמה: "T12345678"'}
                 tooltipOptions={{ position: 'top' }}
                 onSelect={() => onRoleIdSelected()}
                 onChange={(e) => {
