@@ -23,7 +23,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import {
   APPROVER_TYPES,
   USER_TYPE,
-  APPROVER_TYPES_PREVIEW_LABEL,
 } from '../../constants';
 import {
   isUserApproverType,
@@ -277,8 +276,9 @@ const ApproverForm = forwardRef(
               <Tooltip
                 target={`.approverTypeDiv`}
                 content={
-                  APPROVER_TYPES.find((type) => type.value === approverType)
-                    ?.label
+                  APPROVER_TYPES.find(
+                    (type) => type.value === watch('approverType')
+                  )?.label
                 }
                 tooltipOptions={{ showOnDisabled: true }}
                 position="top"
