@@ -34,10 +34,9 @@ import { getUserTypeReq, isApproverValid } from '../../service/ApproverService';
 import { USER_TYPE } from '../../constants';
 import { isUserApproverType } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
-import { getSamAccountNameFromUniqueId } from '../../utils/fields';
+import { getSamAccountNameFromUniqueId, getUserRelevantIdentity } from '../../utils/fields';
 import { InputCalanderField } from '../Fields/InputCalander';
 import { hierarchyConverse } from '../../utils/hierarchy';
-import configStore from '../../store/Config';
 
 const validationSchema = Yup.object().shape({
   isSwitchRole: Yup.boolean(),
@@ -52,7 +51,8 @@ const validationSchema = Yup.object().shape({
           name: 'user-doesnt-have-role',
           message: `נראה שהמשתמש אינו מחובר לתפקיד, לא ניתן לקיים את הבקשה, נא לעבור לטופס של משתמש חדש`,
           test: (user) => {
-            return user.digitalIdentities.length !== 0;
+            const relevantIdentity = getUserRelevantIdentity(user);
+            return relevantIdentity;
           },
         }),
       otherwise: Yup.object()
@@ -61,7 +61,8 @@ const validationSchema = Yup.object().shape({
           name: 'user-has-role',
           message: `נראה שהמשתמש כבר מחובר לתפקיד, לא ניתן לקיים את הבקשה, נא לעבור לטופס של מעבר תפקיד`,
           test: (user) => {
-            return user.digitalIdentities.length === 0;
+            const relevantIdentity = getUserRelevantIdentity(user);
+            return !relevantIdentity;
           },
         }),
     }),
@@ -181,7 +182,6 @@ const AssignRoleToEntityForm = forwardRef(
     
     useEffect(() => {
       setValue('isSwitchRole', showJob);
-      console.log(watch('isSwitchRole'))
       const getNewEntity = async () => {
         // new entity
         try {
@@ -312,9 +312,7 @@ const AssignRoleToEntityForm = forwardRef(
         user?.digitalIdentities &&
         Array.isArray(user?.digitalIdentities)
       ) {
-        const relevantIdentity = user.digitalIdentities.find(
-          (identity) => identity.source === configStore.USER_SOURCE_DI
-        );
+        const relevantIdentity = getUserRelevantIdentity(user);
         if (relevantIdentity && relevantIdentity.role)
           return relevantIdentity.role;
       }
