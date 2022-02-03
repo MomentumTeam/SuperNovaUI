@@ -20,6 +20,8 @@ const ContactInfo = () => {
           {' '}
           {` לכניסה לקבוצת התמיכה- ${configStore.HI_CHAT_SUPPORT_GROUP_NAME}`}{' '}
           <a
+            target="_blank"
+            rel="noopener noreferrer"
             href={supportGroupLink}
             style={{ fontWeight: '700', textDecoration: 'underline' }}
           >
