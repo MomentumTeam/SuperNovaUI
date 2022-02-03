@@ -20,6 +20,7 @@ import { isUserApproverType, isUserHoldType } from '../../../utils/user';
 import { InputForm, InputTypes } from '../../Fields/InputForm';
 import datesUtil from '../../../utils/dates';
 import { kartoffelIdentityCardValidation } from '../../../utils/user';
+import { getEntityByIdentifier } from '../../../service/KartoffelService';
 
 const validationSchema = Yup.object().shape({
   firstName: Yup.string()
@@ -36,6 +37,23 @@ const validationSchema = Yup.object().shape({
       message: 'ת"ז לא תקין!',
       test: async (identityNumber) => {
         return kartoffelIdentityCardValidation(identityNumber);
+      },
+    })
+    .test({
+      name: 'check-if-identity-number-already-taken-in-kartoffel',
+      message: 'קיים משתמש עם הת"ז הזה!',
+      test: async (identityNumber) => {
+        try {
+          const isAlreadyTaken = await getEntityByIdentifier(
+            identityNumber
+          );
+
+          if (isAlreadyTaken) {
+            return false;
+          }
+        } catch (err) {}
+
+        return true;
       },
     }),
   mobilePhone: Yup.string()
@@ -187,6 +205,7 @@ const CreateSpecialEntityForm = forwardRef(
         canEdit: true,
         options: configStore.USER_CLEARANCE,
         force: true,
+        additionalClass: 'dropDownInput',
       },
       {
         fieldName: 'sex',
@@ -196,6 +215,7 @@ const CreateSpecialEntityForm = forwardRef(
         options: USER_SEX,
         force: true,
         required: false,
+        additionalClass: 'dropDownInput',
       },
       {
         fieldName: 'birthdate',
