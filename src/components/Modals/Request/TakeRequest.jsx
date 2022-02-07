@@ -14,13 +14,14 @@ const TakeRequest = ({ request, actionPopup }) => {
       approvers,
       approversType: user.types,
       reqId: request.id,
+      overrideApprovers: false,
     };
 
     try {
       await appliesStore.transferApprovers(req);
-      actionPopup();
+      actionPopup("העברה לטיפולי");
     } catch (e) {
-      actionPopup(e);
+      actionPopup("העברה לטיפולי", e);
     }
   };
 

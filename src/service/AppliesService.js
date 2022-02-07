@@ -336,15 +336,23 @@ export const transferApproverRequest = async ({
   approvers,
   type,
   comment,
+  overrideApprovers
 }) => {
-  const response = await axiosApiInstance.put(
-    `${apiBaseUrl}/api/requests/approver/transfer/${reqId}`,
-    {
-      approvers,
-      type,
-      commentForApprovers: comment,
-    }
-  );
+  const response = await axiosApiInstance.put(`${apiBaseUrl}/api/requests/approver/transfer/${reqId}`, {
+    approvers,
+    type,
+    commentForApprovers: comment,
+    overrideApprovers,
+  });
+
+  return response.data;
+};
+
+export const removeApproverFromApproversRequest = async ({ reqId, approverId, type }) => {
+  const response = await axiosApiInstance.put(`${apiBaseUrl}/api/requests/approver/delete/${reqId}`, {
+    approverId,
+    type,
+  });
 
   return response.data;
 };

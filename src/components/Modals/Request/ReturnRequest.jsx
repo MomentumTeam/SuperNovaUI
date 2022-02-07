@@ -7,20 +7,18 @@ const ReturnRequest = ({ request, actionPopup }) => {  //return apply back to ap
   const user = toJS(userStore.user);
 
   const onSubmit = async () => {
-    const approvers = [];
-
     const req = {
       user,
-      approvers,
+      approverId: user.id,
       approversType: user.types,
       reqId: request.id,
     };
 
     try {
-      await appliesStore.transferApprovers(req);
-      actionPopup();
+      await appliesStore.removeApproverFromApprovers(req);
+      actionPopup("החזרה לסל");
     } catch (e) {
-      actionPopup(e);
+      actionPopup("החזרה לסל", e);
     }
   };
 
