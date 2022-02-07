@@ -1,13 +1,12 @@
 import React, { useEffect } from "react";
-
 import Entities from "./Entity";
 import { useStores } from "../../context/use-stores";
 
 const TableEntity = () => {
-  const { userStore } = useStores();
+  const { userStore, notificationStore } = useStores();
 
   useEffect(() => {
-    userStore.fetchUserNotifications(userStore.user?.id);
+    notificationStore.fetchUserNotifications(userStore.user?.id);
   }, [userStore.user]);
 
 

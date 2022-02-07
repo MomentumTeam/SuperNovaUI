@@ -1,6 +1,5 @@
 import { action, makeAutoObservable, observable } from 'mobx';
 import { getPictureByConnectedEntity, getUser } from "../service/UserService";
-import { getMyNotifications, markAsRead } from '../service/NotificationService';
 import { Base64 } from 'js-base64';
 import cookies from 'js-cookie';
 import configStore from './Config';
@@ -9,16 +8,12 @@ export default class UserStore {
   isUserLoading = true;
   user = null;
   users = null;
-  userNotifications = [];
-  userUnreadNotifications = [];
 
   constructor() {
     makeAutoObservable(this, {
       user: observable,
       isUserLoading: observable,
-      userUnreadNotifications: observable,
       fetchUserInfo: action,
-      fetchUserNotifications: action,
       getMyPicture: action,
     });
 
@@ -59,16 +54,6 @@ export default class UserStore {
     } catch (err) {
       console.log(err);
     }
-  }
-
-  async fetchUserNotifications() {
-    const userUnreadNotifications = await getMyNotifications(false);
-    this.userUnreadNotifications.replace(userUnreadNotifications.notifications);
-  }
-
-  async markNotificationsAsRead(ids) {
-    await markAsRead(ids);
-    this.userUnreadNotifications.clear();
   }
 
   async getMyPicture() {

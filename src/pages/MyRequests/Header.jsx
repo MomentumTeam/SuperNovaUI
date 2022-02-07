@@ -1,18 +1,17 @@
-import { useEffect } from "react";
-
-import { TableNames } from "../../constants/myRequestsTable";
-import { useStores } from "../../context/use-stores";
 import Norifications from "../../components/Notifications/Notifications";
 import { toJS } from "mobx";
+import { useEffect } from "react";
+import { TableNames } from "../../constants/myRequestsTable";
+import { useStores } from "../../context/use-stores";
 
 import "../../assets/css/main.css";
 
 const Header = ({ setTab, selectedTab }) => {
-  const { userStore } = useStores();
-  const notifications = toJS(userStore.userUnreadNotifications);
+  const { userStore, notificationStore } = useStores();
+  const notifications = toJS(notificationStore.userUnreadNotifications);
 
   useEffect(() => {
-    userStore.fetchUserNotifications();
+    notificationStore.fetchUserNotifications();
   }, [userStore]);
 
   return (

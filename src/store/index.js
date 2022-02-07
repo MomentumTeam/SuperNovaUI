@@ -1,6 +1,5 @@
 import { createContext } from "react";
 import configStore from './Config';
-import ToastStore from "./Toast";
 import RolesStore from "./Roles";
 import EntitiesStore from "./Entities";
 import GroupsStore from "./Groups";
@@ -9,6 +8,7 @@ import TreeStore from "./Tree";
 import UserStore from "./User";
 import MyRequestsStore from "./MyRequests";
 import healthStore from './Health';
+import NotificationsStore from './Notifications';
 
 const stores = {
   configStore,
@@ -17,6 +17,7 @@ const stores = {
   entitiesStore: new EntitiesStore(),
   groupsStore: new GroupsStore(),
   userStore: new UserStore(),
+  notificationStore: new NotificationsStore(),
   appliesStore: new AppliesStore(),
   treeStore: new TreeStore(),
   myRequestsStore: new MyRequestsStore(),

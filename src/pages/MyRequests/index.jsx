@@ -4,10 +4,10 @@ import MyRequests from "./MyRequests";
 
 
 const TableMyRequests = () => {
-  const { userStore } = useStores();
+  const { userStore, notificationStore } = useStores();
 
   useEffect(() => {
-    userStore.fetchUserNotifications();
+    notificationStore.fetchUserNotifications();
   }, [userStore]);
 
   return <MyRequests />
