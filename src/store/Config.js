@@ -4,8 +4,13 @@ import { getConfig } from '../service/ConfigService';
 class ConfigStore {
   // USER
   USER_CITIZEN_ENTITY_TYPE = 'digimon';
-  USER_ANON_ENTITY_TYPE = 'anonnymous';
+  USER_EXTERNAL_ENTITY_TYPE = 'external';
+  KARTOFFEL_CIVILIAN = 'Civilian';
+  KARTOFFEL_SOLDIER = 'Soldier';
+  KARTOFFEL_WORKER = 'Worker';
   USER_CLEARANCE = ['1', '2', '3', '4', '5', '6'];
+  KARTOFFEL_RANKS = ['טוראי', 'רב"ט', 'סמל', 'סמ"ר']
+  KARTOFFEL_SERVICE_TYPES= ['חובה', 'חובה בתנאי קבע', 'קבע', 'מילואים']
   USER_SOURCE_DI = 'sf_name';
   USER_NO_PICTURE = 'pictureUrl';
   USER_HIGH_COMMANDER_RANKS = ['rookie', 'champion'];
@@ -26,7 +31,11 @@ class ConfigStore {
   constructor() {
     makeAutoObservable(this, {
       USER_CITIZEN_ENTITY_TYPE: observable,
-      USER_ANON_ENTITY_TYPE: observable,
+      USER_EXTERNAL_ENTITY_TYPE: observable,
+      KARTOFFEL_CIVILIAN: observable,
+      KARTOFFEL_SOLDIER: observable,
+      KARTOFFEL_WORKER: observable,
+      KARTOFFEL_SERVICE_TYPES: observable,
       USER_CLEARANCE: observable,
       USER_SOURCE_DI: observable,
       USER_NO_PICTURE: observable,
@@ -49,8 +58,18 @@ class ConfigStore {
       const config = await getConfig();
       if (config?.USER_CITIZEN_ENTITY_TYPE)
         this.USER_CITIZEN_ENTITY_TYPE = config.USER_CITIZEN_ENTITY_TYPE;
-      if (config?.USER_ANON_ENTITY_TYPE)
-        this.USER_ANON_ENTITY_TYPE = config.USER_ANON_ENTITY_TYPE;
+      if (config?.USER_EXTERNAL_ENTITY_TYPE)
+        this.USER_EXTERNAL_ENTITY_TYPE = config.USER_EXTERNAL_ENTITY_TYPE;
+      if (config?.KARTOFFEL_CIVILIAN)
+              this.KARTOFFEL_CIVILIAN = config.KARTOFFEL_CIVILIAN;
+      if (config?.KARTOFFEL_SOLDIER)
+        this.KARTOFFEL_SOLDIER = config.KARTOFFEL_SOLDIER;
+      if (config?.KARTOFFEL_WORKER)
+        this.KARTOFFEL_WORKER = config.KARTOFFEL_WORKER;
+      if (config?.KARTOFFEL_RANKS)
+          this.KARTOFFEL_RANKS = config.KARTOFFEL_RANKS;
+      if (config?.KARTOFFEL_SERVICE_TYPES)
+        this.KARTOFFEL_SERVICE_TYPES = config.KARTOFFEL_SERVICE_TYPES;
       if (config?.USER_CLEARANCE) this.USER_CLEARANCE = config.USER_CLEARANCE;
       if (config?.USER_SOURCE_DI) this.USER_SOURCE_DI = config.USER_SOURCE_DI;
       if (config?.USER_NO_PICTURE)
