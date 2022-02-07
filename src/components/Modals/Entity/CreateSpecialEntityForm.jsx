@@ -54,7 +54,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const CreateSpecialEntityForm = forwardRef(
-  ({ setIsActionDone, onlyForView, requestObject }, ref) => {
+  ({ setIsActionDone, isAnonUser = false, onlyForView, requestObject }, ref) => {
     const { appliesStore, userStore, configStore } = useStores();
     const isUserApprover = isUserApproverType(userStore.user);
     const [defaultApprovers, setDefaultApprovers] = useState([]);
@@ -127,7 +127,7 @@ const CreateSpecialEntityForm = forwardRef(
           mobilePhone: [mobilePhone],
           phone: [mobilePhone],
           clearance: classification,
-          entityType: configStore.USER_CITIZEN_ENTITY_TYPE,
+          entityType: isAnonUser ? configStore.USER_ANON_ENTITY_TYPE : configStore.USER_CITIZEN_ENTITY_TYPE,
           ...(sex && sex !== '' && { sex }),
           ...(birthdate && { birthdate: datesUtil.getTime(birthdate) }),
         },
@@ -147,50 +147,76 @@ const CreateSpecialEntityForm = forwardRef(
       []
     );
 
-    const formFields = [
+    const anonUserFormFields = [
       {
-        fieldName: 'firstName',
-        displayName: 'שם פרטי',
-        inputType: InputTypes.TEXT,
+        fieldName: "unitId",
+        displayName: "מזהה יחידה",
+        inputType: InputTypes.DROPDOWN,
+        type: "num",
+        keyFilter: "num",
         canEdit: true,
         force: true,
       },
       {
-        fieldName: 'lastName',
-        displayName: 'שם משפחה',
+        fieldName: "workerNumber",
+        displayName: "מספר עובד",
         inputType: InputTypes.TEXT,
+        type: "num",
+        keyFilter: "num",
         canEdit: true,
         force: true,
-      },
+      }
+    ]
+
+    const civilianUserFormFields = [
       {
-        fieldName: 'identityNumber',
+        fieldName: "identityNumber",
         displayName: 'ת"ז',
         inputType: InputTypes.TEXT,
-        type: 'num',
-        keyFilter: 'num',
+        type: "num",
+        keyFilter: "num",
         canEdit: true,
         force: true,
-      },
+      }
+    ]
+
+    let fields = isAnonUser ? anonUserFormFields : civilianUserFormFields;
+    const formFields = [
       {
-        fieldName: 'mobilePhone',
-        displayName: 'פלאפון נייד',
+        fieldName: "firstName",
+        displayName: "שם פרטי",
         inputType: InputTypes.TEXT,
-        type: 'num',
-        keyFilter: 'num',
         canEdit: true,
         force: true,
       },
       {
-        fieldName: 'classification',
-        displayName: 'סיווג המשתמש',
+        fieldName: "lastName",
+        displayName: "שם משפחה",
+        inputType: InputTypes.TEXT,
+        canEdit: true,
+        force: true,
+      },
+      ...fields,
+      {
+        fieldName: "mobilePhone",
+        displayName: "פלאפון נייד",
+        inputType: InputTypes.TEXT,
+        type: "num",
+        keyFilter: "num",
+        canEdit: true,
+        force: true,
+      },
+      {
+        fieldName: "classification",
+        displayName: "סיווג המשתמש",
         inputType: InputTypes.DROPDOWN,
         canEdit: true,
         options: configStore.USER_CLEARANCE,
         force: true,
       },
       {
-        fieldName: 'sex',
-        displayName: 'מגדר',
+        fieldName: "sex",
+        displayName: "מגדר",
         inputType: InputTypes.DROPDOWN,
         canEdit: true,
         options: USER_SEX,
@@ -198,8 +224,8 @@ const CreateSpecialEntityForm = forwardRef(
         required: false,
       },
       {
-        fieldName: 'birthdate',
-        displayName: 'תאריך לידה',
+        fieldName: "birthdate",
+        displayName: "תאריך לידה",
         inputType: InputTypes.CALANDER,
         canEdit: true,
         force: true,
@@ -207,20 +233,20 @@ const CreateSpecialEntityForm = forwardRef(
         untilNow: true,
       },
       {
-        fieldName: 'approvers',
+        fieldName: "approvers",
         inputType: InputTypes.APPROVER,
         tooltip: 'רס"ן ומעלה ביחידתך',
         default: defaultApprovers,
-        disabled: onlyForView || methods.watch('isUserApprover'),
+        disabled: onlyForView || methods.watch("isUserApprover"),
         force: true,
       },
       {
-        fieldName: 'comments',
-        displayName: 'הערות',
+        fieldName: "comments",
+        displayName: "הערות",
         inputType: InputTypes.TEXTAREA,
         force: true,
-        placeholder: !onlyForView && 'הכנס הערות לבקשה...',
-        additionalClass: 'p-fluid-item-flex1',
+        placeholder: !onlyForView && "הכנס הערות לבקשה...",
+        additionalClass: "p-fluid-item-flex1",
         canEdit: true,
       },
     ];

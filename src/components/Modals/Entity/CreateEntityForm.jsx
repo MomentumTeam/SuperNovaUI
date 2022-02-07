@@ -9,9 +9,11 @@ import AssignRoleToEntityForm from "../AssignRoleToEntityForm";
 import CreateSpecialEntityForm from "../Entity/CreateSpecialEntityForm";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import renderHeader from "../accordionTabHeaders";
+import { InputSwitch } from 'primereact/inputswitch';
 
 const CreateEntityForm = forwardRef(({ setIsActionDone }, ref) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isAnonUser, setIsAnonUser] = useState(false);
   const formRefs = useMemo(() => ({ 0: createRef(), 1: createRef() }), []);
 
   useImperativeHandle(
@@ -45,9 +47,11 @@ const CreateEntityForm = forwardRef(({ setIsActionDone }, ref) => {
         />
       </AccordionTab>
       <AccordionTab header={renderHeader("יצירת משתמש מיוחד", true)}>
+        <InputSwitch checked={isAnonUser} onChange={(e) => {setIsAnonUser(e.value);}} />
         <CreateSpecialEntityForm
           ref={formRefs[1]}
           setIsActionDone={setIsActionDone}
+          isAnonUser={isAnonUser}
         />
       </AccordionTab>
     </Accordion>

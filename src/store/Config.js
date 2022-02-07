@@ -4,6 +4,7 @@ import { getConfig } from '../service/ConfigService';
 class ConfigStore {
   // USER
   USER_CITIZEN_ENTITY_TYPE = 'digimon';
+  USER_ANON_ENTITY_TYPE = 'anonnymous';
   USER_CLEARANCE = ['1', '2', '3', '4', '5', '6'];
   USER_SOURCE_DI = 'sf_name';
   USER_NO_PICTURE = 'pictureUrl';
@@ -25,6 +26,7 @@ class ConfigStore {
   constructor() {
     makeAutoObservable(this, {
       USER_CITIZEN_ENTITY_TYPE: observable,
+      USER_ANON_ENTITY_TYPE: observable,
       USER_CLEARANCE: observable,
       USER_SOURCE_DI: observable,
       USER_NO_PICTURE: observable,
@@ -47,6 +49,8 @@ class ConfigStore {
       const config = await getConfig();
       if (config?.USER_CITIZEN_ENTITY_TYPE)
         this.USER_CITIZEN_ENTITY_TYPE = config.USER_CITIZEN_ENTITY_TYPE;
+      if (config?.USER_ANON_ENTITY_TYPE)
+        this.USER_ANON_ENTITY_TYPE = config.USER_ANON_ENTITY_TYPE;
       if (config?.USER_CLEARANCE) this.USER_CLEARANCE = config.USER_CLEARANCE;
       if (config?.USER_SOURCE_DI) this.USER_SOURCE_DI = config.USER_SOURCE_DI;
       if (config?.USER_NO_PICTURE)
