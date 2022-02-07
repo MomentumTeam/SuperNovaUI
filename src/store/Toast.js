@@ -17,7 +17,7 @@ const ToastProvider = ({children}) => {
       } else {
         toastRef.current.show({
           severity: "error",
-          summary: "Error Message",
+          summary: `פעולה ${actionType} נכשלה`,
           detail: error.message || `פעולה ${actionType} נכשלה`,
           life: 3000,
         });
