@@ -46,6 +46,7 @@ const PassRequestForm = forwardRef(({ request, setActionIsDone }, ref) => {
       approvers,
       approversType: approverType,
       reqId: request.id,
+      overrideApprovers: true,
     };
 
     if (comment.length > 0) req.comment = comment;
