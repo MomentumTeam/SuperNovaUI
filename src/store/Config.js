@@ -11,6 +11,7 @@ class ConfigStore {
   USER_CLEARANCE = ['1', '2', '3', '4', '5', '6'];
   KARTOFFEL_RANKS = ['טוראי', 'רב"ט', 'סמל', 'סמ"ר']
   KARTOFFEL_SERVICE_TYPES= ['חובה', 'חובה בתנאי קבע', 'קבע', 'מילואים']
+  CREATE_SOLDIER_APPROVERS = ['8334560', '2331281']
   USER_SOURCE_DI = 'sf_name';
   USER_NO_PICTURE = 'pictureUrl';
   USER_HIGH_COMMANDER_RANKS = ['rookie', 'champion'];
@@ -36,6 +37,7 @@ class ConfigStore {
       KARTOFFEL_SOLDIER: observable,
       KARTOFFEL_WORKER: observable,
       KARTOFFEL_SERVICE_TYPES: observable,
+      CREATE_SOLDIER_APPROVERS: observable,
       USER_CLEARANCE: observable,
       USER_SOURCE_DI: observable,
       USER_NO_PICTURE: observable,
@@ -70,6 +72,8 @@ class ConfigStore {
           this.KARTOFFEL_RANKS = config.KARTOFFEL_RANKS;
       if (config?.KARTOFFEL_SERVICE_TYPES)
         this.KARTOFFEL_SERVICE_TYPES = config.KARTOFFEL_SERVICE_TYPES;
+      if (config?.CREATE_SOLDIER_APPROVERS)
+         this.CREATE_SOLDIER_APPROVERS = config.CREATE_SOLDIER_APPROVERS;
       if (config?.USER_CLEARANCE) this.USER_CLEARANCE = config.USER_CLEARANCE;
       if (config?.USER_SOURCE_DI) this.USER_SOURCE_DI = config.USER_SOURCE_DI;
       if (config?.USER_NO_PICTURE)
