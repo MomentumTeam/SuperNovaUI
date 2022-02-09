@@ -20,11 +20,7 @@ import {
 } from '../../service/KartoffelService';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  APPROVER_TYPES,
-  USER_TYPE,
-  APPROVER_TYPES_PREVIEW_LABEL,
-} from '../../constants';
+import { APPROVER_TYPES, USER_TYPE } from '../../constants';
 import {
   isUserApproverType,
   userConverse,
@@ -74,7 +70,7 @@ const validationSchema = Yup.object().shape({
 
 const ApproverForm = forwardRef(
   ({ onlyForView, requestObject, setIsActionDone }, ref) => {
-    const { appliesStore, userStore } = useStores();
+    const { appliesStore, userStore, configStore } = useStores();
     const [approverType, setApproverType] = useState();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
@@ -202,6 +198,9 @@ const ApproverForm = forwardRef(
         setDefaultApprovers(result || []);
         setValue('isUserApprover', result.length > 0);
         setValue('approvers', []);
+      } else {
+        setDefaultApprovers(toJS(configStore.adminRequestsApprovers) || []);
+        setValue('approvers', toJS(configStore.adminRequestsApprovers));
       }
     };
 
@@ -248,16 +247,7 @@ const ApproverForm = forwardRef(
       });
     };
 
-    const handleOrgSelected = async (org) => {
-      const result = await GetDefaultApprovers({
-        request: requestObject,
-        user: userStore.user,
-        onlyForView,
-        groupId: org.id,
-        highCommander: true,
-      });
-      setDefaultApprovers(result || []);
-      setValue('isUserApprover', result.length > 0);
+    const handleOrgSelected = async () => {
       if (getValues('hierarchyApproverOf')?.id) {
         setValue('groupInChargeId', watch('hierarchyApproverOf').id);
       }
@@ -277,8 +267,9 @@ const ApproverForm = forwardRef(
               <Tooltip
                 target={`.approverTypeDiv`}
                 content={
-                  APPROVER_TYPES.find((type) => type.value === approverType)
-                    ?.label
+                  APPROVER_TYPES.find(
+                    (type) => type.value === watch('approverType')
+                  )?.label
                 }
                 tooltipOptions={{ showOnDisabled: true }}
                 position="top"
@@ -291,7 +282,7 @@ const ApproverForm = forwardRef(
               <Dropdown
                 {...register('approverType')}
                 disabled={onlyForView}
-                className={`approverType ${onlyForView ? `disabled` : ''} `}
+                className={`dropDownInput ${onlyForView ? `disabled` : ''} `}
                 value={approverType}
                 id="approverForm-approverType"
                 inputId="2011"
@@ -443,7 +434,11 @@ const ApproverForm = forwardRef(
             errors={errors}
             tooltip={'סא"ל ומעלה ביחידתך'}
             isHighRank={true}
-            disabled={onlyForView || watch('isUserApprover')}
+            disabled={
+              onlyForView ||
+              watch('isUserApprover') ||
+              watch('approverType') === USER_TYPE.ADMIN
+            }
             defaultApprovers={defaultApprovers}
           />
         </div>
