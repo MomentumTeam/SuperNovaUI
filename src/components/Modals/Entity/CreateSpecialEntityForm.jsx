@@ -140,7 +140,7 @@ const CreateSpecialEntityForm = forwardRef(
             ? parseInt(requestObject.kartoffelParams.birthdate)
             : ''
         );
-        
+
         // soldier
         methods.setValue(
           'serviceType',
@@ -161,7 +161,7 @@ const CreateSpecialEntityForm = forwardRef(
       });
 
       setDefaultApprovers(result || []);
-      setKartoffelApprovers(getKartoffelApprovers());
+      setKartoffelApprovers(configStore.createSoldierRequestsApprovers);
     }, [selectedUserType]);
 
     const onSubmit = async (data) => {
@@ -217,14 +217,6 @@ const CreateSpecialEntityForm = forwardRef(
       }),
       []
     );
-
-    const getKartoffelApprovers = () => {
-      let approvers = [];
-      configStore.CREATE_SOLDIER_APPROVERS.forEach(async (approverId) => {
-        approvers.push(await getEntityByIdentifier(approverId));
-      });
-      return approvers;
-    };
 
     const anonUserFormFields = [
       {
@@ -372,7 +364,10 @@ const CreateSpecialEntityForm = forwardRef(
           configStore.KARTOFFEL_SOLDIER == methods.watch('userType')
             ? kartoffelApprovers
             : defaultApprovers,
-        disabled: onlyForView || methods.watch('isUserApprover'),
+        disabled:
+          onlyForView ||
+          methods.watch('isUserApprover') ||
+          methods.watch('userType') === configStore.KARTOFFEL_SOLDIER,
         force: true,
       },
       {

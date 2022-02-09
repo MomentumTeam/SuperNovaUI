@@ -199,8 +199,10 @@ const ApproverForm = forwardRef(
         setValue('isUserApprover', result.length > 0);
         setValue('approvers', []);
       } else {
-        setDefaultApprovers(toJS(configStore.adminRequestsApprovers) || []);
-        setValue('approvers', toJS(configStore.adminRequestsApprovers));
+        setDefaultApprovers(
+          toJS(configStore.createAdminRequestsApprovers) || []
+        );
+        setValue('approvers', toJS(configStore.createAdminRequestsApprovers));
       }
     };
 
