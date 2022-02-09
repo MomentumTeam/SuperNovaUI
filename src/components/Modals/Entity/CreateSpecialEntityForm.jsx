@@ -11,7 +11,6 @@ import { useStores } from '../../../context/use-stores';
 import {
   NAME_REG_EXP,
   PHONE_REG_EXP,
-  USER_TYPE,
   USER_SEX,
   IDENTITY_CARD_EXP,
 } from '../../../constants';
@@ -92,7 +91,7 @@ const CreateSpecialEntityForm = forwardRef(
     const isUserApprover = isUserApproverType(userStore.user);
     const [defaultApprovers, setDefaultApprovers] = useState([]);
     const [kartoffelApprovers, setKartoffelApprovers] = useState([]);
-    
+
     const userTypes = [
       { name: 'אזרח', key: configStore.KARTOFFEL_CIVILIAN },
       { name: 'חייל ', key: configStore.KARTOFFEL_SOLDIER },
@@ -102,21 +101,30 @@ const CreateSpecialEntityForm = forwardRef(
 
     const methods = useForm({
       resolver: yupResolver(validationSchema),
-      defaultValues: { isUserApprover },
+      defaultValues: {
+        isUserApprover,
+        userType: requestObject?.kartoffelParams?.entityType
+          ? requestObject?.kartoffelParams?.entityType
+          : selectedUserType.key,
+      },
+      mode: 'onChange',
     });
     const { errors } = methods.formState;
 
     useEffect(async () => {
-      methods.setValue('userType', selectedUserType.key)
       if (requestObject) {
-        console.log(requestObject)
-        methods.setValue('comments', requestObject.comments);
-        methods.setValue('firstName', requestObject.kartoffelParams.firstName);
-        methods.setValue('lastName', requestObject.kartoffelParams.lastName);
+        methods.setValue('userType', requestObject.kartoffelParams.entityType);
+
+        // soldier and civilian
         methods.setValue(
           'identityNumber',
           requestObject.kartoffelParams.identityCard
         );
+
+        // general
+        methods.setValue('comments', requestObject.comments);
+        methods.setValue('firstName', requestObject.kartoffelParams.firstName);
+        methods.setValue('lastName', requestObject.kartoffelParams.lastName);
         methods.setValue(
           'mobilePhone',
           requestObject.kartoffelParams.mobilePhone[0]
@@ -132,22 +140,29 @@ const CreateSpecialEntityForm = forwardRef(
             ? parseInt(requestObject.kartoffelParams.birthdate)
             : ''
         );
-        methods.setValue('userType', requestObject.kartoffelParams.entityType);
-        methods.setValue('serviceType', requestObject.kartoffelParams.serviceType);
-        methods.setValue('rank', requestObject.kartoffelParams.rank);
-        methods.setValue('personalNumber', requestObject.kartoffelParams.personalNumber);
         
+        // soldier
+        methods.setValue(
+          'serviceType',
+          requestObject.kartoffelParams.serviceType
+        );
+        methods.setValue('rank', requestObject.kartoffelParams.rank);
+        methods.setValue(
+          'personalNumber',
+          requestObject.kartoffelParams.personalNumber
+        );
+      } else {
+        methods.setValue('userType', selectedUserType.key);
       }
-
       const result = await GetDefaultApprovers({
-              request: requestObject,
-              onlyForView,
-              user: userStore.user,
-            })
-      
+        request: requestObject,
+        onlyForView,
+        user: userStore.user,
+      });
+
       setDefaultApprovers(result || []);
       setKartoffelApprovers(getKartoffelApprovers());
-    }, []);
+    }, [selectedUserType]);
 
     const onSubmit = async (data) => {
       try {
@@ -168,10 +183,9 @@ const CreateSpecialEntityForm = forwardRef(
         birthdate,
         rank,
         serviceType,
-        personalNumber
+        personalNumber,
       } = data;
-      console.log(data)
-      console.log(approvers)
+
       const req = {
         commanders: approvers,
         kartoffelParams: {
@@ -192,7 +206,6 @@ const CreateSpecialEntityForm = forwardRef(
         adParams: {},
       };
 
-      console.log(req);
       await appliesStore.createEntityApply(req);
       await setIsActionDone(true);
     };
@@ -204,48 +217,47 @@ const CreateSpecialEntityForm = forwardRef(
       }),
       []
     );
-    
+
     const getKartoffelApprovers = () => {
       let approvers = [];
       configStore.CREATE_SOLDIER_APPROVERS.forEach(async (approverId) => {
-          approvers.push(await getEntityByIdentifier(approverId));
-        }
-      );
+        approvers.push(await getEntityByIdentifier(approverId));
+      });
       return approvers;
     };
 
     const anonUserFormFields = [
       {
-        fieldName: "unitId",
-        displayName: "מזהה יחידה",
+        fieldName: 'unitId',
+        displayName: 'מזהה יחידה',
         inputType: InputTypes.DROPDOWN,
-        type: "num",
-        keyFilter: "num",
+        type: 'num',
+        keyFilter: 'num',
         canEdit: true,
         force: true,
       },
       {
-        fieldName: "employeeId",
-        displayName: "מספר עובד",
+        fieldName: 'employeeId',
+        displayName: 'מספר עובד',
         inputType: InputTypes.TEXT,
-        type: "num",
-        keyFilter: "num",
+        type: 'num',
+        keyFilter: 'num',
         canEdit: true,
         force: true,
-      }
-    ]
+      },
+    ];
 
     const civilianUserFormFields = [
       {
-        fieldName: "identityNumber",
+        fieldName: 'identityNumber',
         displayName: 'ת"ז',
         inputType: InputTypes.TEXT,
-        type: "num",
-        keyFilter: "num",
+        type: 'num',
+        keyFilter: 'num',
         canEdit: true,
         force: true,
-      }
-    ]
+      },
+    ];
 
     const soldierUserFormFields = [
       {
@@ -295,7 +307,7 @@ const CreateSpecialEntityForm = forwardRef(
         fields = anonUserFormFields;
         break;
       case configStore.KARTOFFEL_SOLDIER:
-        fields = soldierUserFormFields; 
+        fields = soldierUserFormFields;
         break;
     }
 
@@ -328,8 +340,8 @@ const CreateSpecialEntityForm = forwardRef(
         fieldName: 'classification',
         displayName: 'סיווג המשתמש',
         inputType: InputTypes.DROPDOWN,
-        canEdit: true,
         options: configStore.USER_CLEARANCE,
+        canEdit: true,
         force: true,
         additionalClass: 'dropDownInput',
       },
@@ -337,8 +349,8 @@ const CreateSpecialEntityForm = forwardRef(
         fieldName: 'sex',
         displayName: 'מגדר',
         inputType: InputTypes.DROPDOWN,
-        canEdit: true,
         options: USER_SEX,
+        canEdit: true,
         force: true,
         required: false,
         additionalClass: 'dropDownInput',
@@ -373,6 +385,7 @@ const CreateSpecialEntityForm = forwardRef(
         canEdit: true,
       },
     ];
+
     return (
       <div>
         <div className='userTypePick' style={{ display: 'inline-flex' }}>
@@ -385,7 +398,7 @@ const CreateSpecialEntityForm = forwardRef(
                   value={userType}
                   onChange={(e) => {
                     setSelectedUserType(e.value);
-                    methods.setValue('userType', e.value.key)
+                    methods.setValue('userType', e.value.key);
                   }}
                   checked={methods.watch('userType') === userType.key}
                   style={{ marginRight: '10px' }}
