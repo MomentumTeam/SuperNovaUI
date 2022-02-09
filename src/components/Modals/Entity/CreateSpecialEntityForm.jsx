@@ -383,17 +383,36 @@ const CreateSpecialEntityForm = forwardRef(
 
     return (
       <div>
-        <div className='userTypePick' style={{ display: 'inline-flex' }}>
+        <div
+          className="userTypePick"
+          style={{ display: 'inline-flex', marginRight: '16%' }}
+        >
           {userTypes.map((userType) => {
             return (
-              <div key={userType.key} className='field-radiobutton'>
+              <div
+                key={userType.key}
+                className="field-radiobutton"
+                style={{
+                  marginBottom: '40px',
+                  marginTop: '15px',
+                  marginRight: '75px',
+                }}
+              >
                 <RadioButton
                   inputId={userType.key}
-                  name='userType'
+                  name="userType"
                   value={userType}
                   onChange={(e) => {
                     setSelectedUserType(e.value);
                     methods.setValue('userType', e.value.key);
+                    if (
+                      methods.watch('userType') ===
+                      configStore.KARTOFFEL_SOLDIER
+                    ) {
+                      methods.setValue('approvers', kartoffelApprovers);
+                    } else {
+                      methods.setValue('approvers', defaultApprovers);
+                    }
                   }}
                   checked={methods.watch('userType') === userType.key}
                   style={{ marginRight: '10px' }}
@@ -406,7 +425,7 @@ const CreateSpecialEntityForm = forwardRef(
             );
           })}
         </div>
-        <div className='p-fluid' id='createSpecialEntityForm'>
+        <div className="p-fluid" id="createSpecialEntityForm">
           <InputForm
             fields={formFields}
             errors={errors}
