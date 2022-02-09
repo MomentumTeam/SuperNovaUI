@@ -19,14 +19,6 @@ export default class GroupsStore {
       getHierarchyByRoleId: action,
     });
 
-    // this.getMyOg();
-  }
-
-  async getMyOg() {
-    // const myOg = await getMyOG();
-    //ask barak for route
-    //then add myGroup to the top of all search result
-    // this.myGroup = myOg;
   }
 
   async loadOGChildren(id, page, pageSize, append = false) {

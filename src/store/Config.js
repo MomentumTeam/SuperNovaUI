@@ -1,7 +1,10 @@
-import { makeAutoObservable, observable } from 'mobx';
+import { action, makeAutoObservable, observable } from 'mobx';
 import { getConfig } from '../service/ConfigService';
+import { getEntityByMongoId } from '../service/KartoffelService';
 
 class ConfigStore {
+  adminRequestsApprovers = [];
+
   // USER
   USER_CITIZEN_ENTITY_TYPE = 'digimon';
   USER_EXTERNAL_ENTITY_TYPE = 'external';
@@ -28,6 +31,7 @@ class ConfigStore {
   INSTRUCTION_VIDEOS =
     'https://www.youtube.com/watch?v=OcUDK4kAUIw&ab_channel=KaliUchis-Topic';
   HI_CHAT_SUPPORT_GROUP_NAME = 'לגו תמיכה';
+  ADMIN_REQS_APPROVERS = ['619e3a6fe4de0300121d78c7,61c039d8e4de0300121de45a'];
 
   constructor() {
     makeAutoObservable(this, {
@@ -52,6 +56,10 @@ class ConfigStore {
       SUPER_SECURITY_MAIL: observable,
       INSTRUCTION_VIDEOS: observable,
       HI_CHAT_SUPPORT_GROUP_NAME: observable,
+      ADMIN_REQS_APPROVERS: observable,
+      adminRequestsApprovers: observable,
+      loadConfig: action,
+      loadAdminApprovers: action,
     });
   }
 
@@ -92,9 +100,30 @@ class ConfigStore {
         this.SUPER_SECURITY_MAIL = config.SUPER_SECURITY_MAIL;
       if (config?.INSTRUCTION_VIDEOS)
         this.INSTRUCTION_VIDEOS = config.INSTRUCTION_VIDEOS;
+      if (config?.ADMIN_REQS_APPROVERS) {
+        this.ADMIN_REQS_APPROVERS = config.ADMIN_REQS_APPROVERS;
+        await this.loadAdminApprovers();
+      }
     } catch (error) {
       console.log('problem with config');
     }
+  }
+
+  async loadAdminApprovers() {
+    const approverForAdmin = await Promise.all(
+      this.ADMIN_REQS_APPROVERS.map(async (id) => {
+        try {
+          const entity = await getEntityByMongoId(id);
+          return entity;
+        } catch {
+          return null;
+        }
+      })
+    );
+
+    this.adminRequestsApprovers = approverForAdmin.filter(
+      (approver) => approver !== null
+    );
   }
 }
 
