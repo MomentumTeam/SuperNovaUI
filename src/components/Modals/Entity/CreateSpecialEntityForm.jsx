@@ -15,12 +15,13 @@ import {
   IDENTITY_CARD_EXP,
 } from '../../../constants';
 import { GetDefaultApprovers } from '../../../utils/approver';
-import { isUserApproverType, isUserHoldType } from '../../../utils/user';
+import { isUserApproverType } from '../../../utils/user';
 import { InputForm, InputTypes } from '../../Fields/InputForm';
 import datesUtil from '../../../utils/dates';
 import { kartoffelIdentityCardValidation } from '../../../utils/user';
 import { RadioButton } from 'primereact/radiobutton';
 import { getEntityByIdentifier } from '../../../service/KartoffelService';
+import { getUniqueFieldsByUserType } from '../../../utils/uniqueFormFields';
 
 const validationSchema = Yup.object().shape({
   firstName: Yup.string()
@@ -218,91 +219,7 @@ const CreateSpecialEntityForm = forwardRef(
       []
     );
 
-    const anonUserFormFields = [
-      {
-        fieldName: 'unitId',
-        displayName: 'מזהה יחידה',
-        inputType: InputTypes.DROPDOWN,
-        type: 'num',
-        keyFilter: 'num',
-        canEdit: true,
-        force: true,
-      },
-      {
-        fieldName: 'employeeId',
-        displayName: 'מספר עובד',
-        inputType: InputTypes.TEXT,
-        type: 'num',
-        keyFilter: 'num',
-        canEdit: true,
-        force: true,
-      },
-    ];
-
-    const civilianUserFormFields = [
-      {
-        fieldName: 'identityNumber',
-        displayName: 'ת"ז',
-        inputType: InputTypes.TEXT,
-        type: 'num',
-        keyFilter: 'num',
-        canEdit: true,
-        force: true,
-      },
-    ];
-
-    const soldierUserFormFields = [
-      {
-        fieldName: 'identityNumber',
-        displayName: 'ת"ז',
-        inputType: InputTypes.TEXT,
-        type: 'num',
-        keyFilter: 'num',
-        canEdit: true,
-        force: true,
-      },
-      {
-        fieldName: 'personalNumber',
-        displayName: 'מספר אישי',
-        inputType: InputTypes.TEXT,
-        type: 'num',
-        keyFilter: 'num',
-        canEdit: true,
-        force: true,
-      },
-      {
-        fieldName: 'serviceType',
-        inputType: InputTypes.DROPDOWN,
-        canEdit: true,
-        options: configStore.KARTOFFEL_SERVICE_TYPES,
-        displayName: 'סוג שירות ',
-        force: true,
-        additionalClass: 'dropDownInput',
-      },
-      {
-        fieldName: 'rank',
-        displayName: 'דרגה ',
-        inputType: InputTypes.DROPDOWN,
-        canEdit: true,
-        options: configStore.KARTOFFEL_RANKS,
-        force: true,
-        additionalClass: 'dropDownInput',
-      },
-    ];
-
-    let fields = civilianUserFormFields;
-    switch (methods.watch('userType')) {
-      case configStore.KARTOFFEL_CIVILIAN:
-        fields = civilianUserFormFields;
-        break;
-      case configStore.KARTOFFEL_WORKER:
-        fields = anonUserFormFields;
-        break;
-      case configStore.KARTOFFEL_SOLDIER:
-        fields = soldierUserFormFields;
-        break;
-    }
-
+    let fields = getUniqueFieldsByUserType(configStore, methods.watch('userType'));
     const formFields = [
       {
         fieldName: 'firstName',
@@ -383,24 +300,13 @@ const CreateSpecialEntityForm = forwardRef(
 
     return (
       <div>
-        <div
-          className="userTypePick"
-          style={{ display: 'inline-flex', marginRight: '16%' }}
-        >
+        <div className='userTypePick'>
           {userTypes.map((userType) => {
             return (
-              <div
-                key={userType.key}
-                className="field-radiobutton"
-                style={{
-                  marginBottom: '40px',
-                  marginTop: '15px',
-                  marginRight: '75px',
-                }}
-              >
+              <div key={userType.key} className='field-radiobutton' style={{}}>
                 <RadioButton
                   inputId={userType.key}
-                  name="userType"
+                  name='userType'
                   value={userType}
                   onChange={(e) => {
                     setSelectedUserType(e.value);
@@ -415,7 +321,7 @@ const CreateSpecialEntityForm = forwardRef(
                     }
                   }}
                   checked={methods.watch('userType') === userType.key}
-                  style={{ marginRight: '10px' }}
+                  style={{}}
                   disabled={onlyForView}
                 />
                 <label htmlFor={userType.key} style={{ padding: '5px' }}>
@@ -425,7 +331,7 @@ const CreateSpecialEntityForm = forwardRef(
             );
           })}
         </div>
-        <div className="p-fluid" id="createSpecialEntityForm">
+        <div className='p-fluid' id='createSpecialEntityForm'>
           <InputForm
             fields={formFields}
             errors={errors}
