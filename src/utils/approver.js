@@ -30,3 +30,28 @@ export const GetDefaultApprovers = async ({request, onlyForView, user, showJob =
   
   return [];
 };
+
+export const checkValidExternalApprover = async ({
+  user,
+  organizationNumber = null,
+}) => {
+  const organizationId = configStore.organizationNumberToGroupId[organizationNumber]
+  console.log(user, organizationNumber, organizationId)
+    if (isUserHoldType(user, USER_TYPE.SECURITY) || isUserHoldType(user, USER_TYPE.SUPER_SECURITY)) 
+      return [user];
+    if (!user?.rank || !configStore.USER_HIGH_COMMANDER_RANKS.includes(user.rank)) return [];
+
+    if (organizationId) {
+      try {
+        let isOrganization = true;
+        const {
+          isValid
+        } = await isApproverValid(user?.entityId || user?.id, organizationId, isOrganization);
+        if (!isValid) return [];
+      } catch (error) {
+        return [];
+      }
+      return [user];
+    }
+    return [];
+  };

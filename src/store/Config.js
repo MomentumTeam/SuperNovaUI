@@ -4,14 +4,14 @@ import { getEntityByMongoId } from '../service/KartoffelService';
 
 class ConfigStore {
   createAdminRequestsApprovers = [];
-  createSoldierRequestsApprovers = [];
+  soldierRequestsApprovers = [];
 
   // USER
   USER_CITIZEN_ENTITY_TYPE = 'digimon';
-  USER_EXTERNAL_ENTITY_TYPE = 'external';
+  USER_EXTERNAL_ENTITY_TYPE = 'External';
   KARTOFFEL_CIVILIAN = 'Civilian';
   KARTOFFEL_SOLDIER = 'Soldier';
-  KARTOFFEL_WORKER = 'Worker';
+  KARTOFFEL_WORKER = 'External';
   USER_CLEARANCE = ['1', '2', '3', '4', '5', '6'];
   KARTOFFEL_RANKS = ['טוראי', 'רב"ט', 'סמל', 'סמ"ר']
   KARTOFFEL_SERVICE_TYPES= ['חובה', 'חובה בתנאי קבע', 'קבע', 'מילואים']
@@ -33,16 +33,14 @@ class ConfigStore {
   HI_CHAT_SUPPORT_GROUP_NAME = 'לגו תמיכה';
   CREATE_ADMIN_REQS_APPROVERS = ['619e3a6fe4de0300121d78c7,61c039d8e4de0300121de45a'];
   CREATE_SOLDIER_APPROVERS = ['619e3a6fe4de0300121d78c7', '619e406ee4de0300121dc4c8'];
+  CREATE_WORKER_APPROVERS = ['619e3a6fe4de0300121d78c7,61c039d8e4de0300121de45a'];
+  WORKER_ORGANIZATION_PREFIXES = ['8747', '8200', '8100'];
+  WORKER_ORGANIZATIONS_ID_LIST = ['619e3210f235dc001846faff'];
 
   constructor() {
     makeAutoObservable(this, {
-      USER_CITIZEN_ENTITY_TYPE: observable,
-      USER_EXTERNAL_ENTITY_TYPE: observable,
-      KARTOFFEL_CIVILIAN: observable,
-      KARTOFFEL_SOLDIER: observable,
       KARTOFFEL_WORKER: observable,
-      KARTOFFEL_SERVICE_TYPES: observable,
-      USER_CLEARANCE: observable,
+      USER_CITIZEN_ENTITY_TYPE: observable,
       USER_SOURCE_DI: observable,
       USER_NO_PICTURE: observable,
       USER_HIGH_COMMANDER_RANKS: observable,
@@ -58,7 +56,7 @@ class ConfigStore {
       HI_CHAT_SUPPORT_GROUP_NAME: observable,
       ADMIN_REQS_APPROVERS: observable,
       createAdminRequestsApprovers: observable,
-        createSoldierRequestsApprovers: observable,
+      soldierRequestsApprovers: observable,
       loadConfig: action,
       loadAdminApprovers: action,
     });
@@ -104,11 +102,18 @@ class ConfigStore {
         const approvers = await this.loadApprovers(this.CREATE_ADMIN_APPROVERS);
         this.createAdminRequestsApprovers = approvers
         }
-        if (config.CREATE_SOLDIER_APPROVERS) {
-          this.CREATE_SOLDIER_APPROVERS = config.CREATE_SOLDIER_APPROVERS;
-          const approvers = await this.loadApprovers(this.CREATE_SOLDIER_APPROVERS);
-          this.createSoldierRequestsApprovers = approvers
+      if (config.CREATE_SOLDIER_APPROVERS) {
+        this.CREATE_SOLDIER_APPROVERS = config.CREATE_SOLDIER_APPROVERS;
+        const approvers = await this.loadApprovers(this.CREATE_SOLDIER_APPROVERS);
+        this.soldierRequestsApprovers = approvers
       }
+      if (config?.organizationNumbers)
+        this.organizationNumbers = config.organizationNumbers;
+      if (config?.organizationIds)
+        this.organizationIds = config.organizationIds;
+      if (config?.organizationNumberToGroupId)
+        this.organizationNumberToGroupId = config.organizationNumberToGroupId;
+
     } catch (error) {
       console.log('problem with config');
     }

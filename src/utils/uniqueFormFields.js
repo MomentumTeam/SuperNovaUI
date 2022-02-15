@@ -3,17 +3,17 @@ import {
 } from '../components/Fields/InputForm';
 
 export const getUniqueFieldsByUserType = (configStore, userType) => {
-    const anonUserFormFields = [{
-            fieldName: 'unitId',
+    const externalUserFormFields = [{
+            fieldName: 'organization',
             displayName: 'מזהה יחידה',
             inputType: InputTypes.DROPDOWN,
-            type: 'num',
-            keyFilter: 'num',
+            options: configStore.organizationNumbers,
             canEdit: true,
             force: true,
+            additionalClass: 'dropDownInput',
         },
         {
-            fieldName: 'employeeId',
+            fieldName: 'employeeNumber',
             displayName: 'מספר עובד',
             inputType: InputTypes.TEXT,
             type: 'num',
@@ -77,7 +77,7 @@ export const getUniqueFieldsByUserType = (configStore, userType) => {
             fields = civilianUserFormFields;
             break;
         case configStore.KARTOFFEL_WORKER:
-            fields = anonUserFormFields;
+            fields = externalUserFormFields;
             break;
         case configStore.KARTOFFEL_SOLDIER:
             fields = soldierUserFormFields;
