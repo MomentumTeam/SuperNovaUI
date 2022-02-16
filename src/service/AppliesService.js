@@ -252,18 +252,12 @@ export const deleteRequest = async (requestId) => {
 };
 
 export const uploadBulkFile = async (file, type) => {
-  try {
-    const response = await axiosApiInstance.post(
-      `${apiBaseUrl}/api/bulk/upload?type=${type}`,
-      file,
-      { headers: { 'Content-Type': 'multipart/form-data' } }
-    );
-    return response.data;
-  } catch (error) {
-    if (error.response.status === 500) {
-      return false;
-    }
-  }
+  const response = await axiosApiInstance.post(
+    `${apiBaseUrl}/api/bulk/upload?type=${type}`,
+    file,
+    { headers: { 'Content-Type': 'multipart/form-data' } }
+  );
+  return response.data.uploadFilesInfo;
 };
 
 export const createRoleBulkRequest = async (data) => {
@@ -362,7 +356,7 @@ export const updateApproversCommentsRequest = async ({
   approversType,
   comment,
 }) => {
-  
+
   const response = await axiosApiInstance.put(
     `${apiBaseUrl}/api/requests/approver/comments/${requestId}`,
     {
