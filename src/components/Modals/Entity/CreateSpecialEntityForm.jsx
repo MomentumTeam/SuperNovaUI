@@ -147,19 +147,23 @@ const CreateSpecialEntityForm = forwardRef(
       resolver: yupResolver(validationSchema),
       defaultValues: {
         isUserApprover,
+        userType: requestObject?.kartoffelParams?.entityType
+          ? requestObject?.kartoffelParams?.entityType
+          : selectedUserType.key,
       },
     });
     const { errors } = methods.formState;
 
     useEffect(() => {
       const setFormDataFromReqObj = (requestObject) => {
+        console.log(requestObject)
         methods.setValue('soldierEntityType', configStore.KARTOFFEL_SOLDIER);
         methods.setValue('workerEntityType', configStore.KARTOFFEL_WORKER);
 
         if (requestObject) {
           console.log(requestObject);
           methods.setValue('userType', requestObject.kartoffelParams.entityType);
-
+         console.log(methods.watch('userType'))
           // SOLDIER and CIVILIAN
           methods.setValue(
             'identityNumber',
@@ -211,7 +215,7 @@ const CreateSpecialEntityForm = forwardRef(
 
       const setDefaultApprovers = async (requestObject, onlyForView, userStore) => {
         let approvers = []
-        switch (selectedUserType.key){
+        switch (methods.watch('userType')){
           case configStore.KARTOFFEL_SOLDIER: 
             approvers = configStore.soldierRequestsApprovers
             break;
@@ -225,14 +229,17 @@ const CreateSpecialEntityForm = forwardRef(
           case configStore.KARTOFFEL_WORKER:
             break;
           default: 
-            approvers = [];
+            approvers = await GetDefaultApprovers({
+              request: requestObject,
+              onlyForView,
+              user: userStore.user,
+            });;
         }
         methods.setValue('approvers', approvers)  
       }
 
       setFormDataFromReqObj(requestObject);
       setDefaultApprovers(requestObject, onlyForView, userStore);
-      methods.setValue('userType', selectedUserType.key)
     }, [selectedUserType]);
 
 
@@ -259,13 +266,13 @@ const CreateSpecialEntityForm = forwardRef(
         organization,
         employeeNumber,
       } = data;
-
+      console.log(data, identityNumber)
       const req = {
         commanders: approvers,
         kartoffelParams: {
           firstName,
           lastName,
-          ...(identityNumber && identityNumber !== '' && { identityNumber }),
+          identityNumber,
           mobilePhone: [mobilePhone],
           phone: [mobilePhone],
           clearance: classification,
@@ -282,7 +289,7 @@ const CreateSpecialEntityForm = forwardRef(
         comments,
         adParams: {},
       };
-
+console.log(req)
       await appliesStore.createEntityApply(req);
       await setIsActionDone(true);
     };
@@ -294,10 +301,12 @@ const CreateSpecialEntityForm = forwardRef(
       }),
     );
 
+
     let fields = getUniqueFieldsByUserType(
       configStore,
-      selectedUserType.key
+      methods.watch('userType')
     );
+    console.log(fields, methods.watch('userType'))
     const formFields = [
       {
         fieldName: 'firstName',
@@ -358,7 +367,7 @@ const CreateSpecialEntityForm = forwardRef(
         default: methods.watch('approvers'),
         disabled:
           onlyForView ||
-          (selectedUserType.key === configStore.KARTOFFEL_WORKER &&
+          (methods.watch('userType') === configStore.KARTOFFEL_WORKER &&
             methods.watch('isUserWorkerApprover')) ||
           methods.watch('isUserApprover'),
         force: true,
@@ -391,8 +400,9 @@ const CreateSpecialEntityForm = forwardRef(
                     value={userType}
                     onChange={(e) => {
                       setSelectedUserType(e.value);
+                      methods.setValue('userType', e.value.key)
                     }}
-                    checked={selectedUserType.key === userType.key}
+                    checked={methods.watch('userType') === userType.key}
                     disabled={onlyForView}
                   />
                   <label htmlFor={userType.key} style={{ padding: '5px' }}>
