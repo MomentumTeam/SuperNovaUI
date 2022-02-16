@@ -66,7 +66,7 @@ export default class UserStore {
   
   checkIfUserExternal() {
      configStore.WORKER_ORGANIZATIONS_ID_LIST.forEach((ogId) => {
-       if (ogId === this.user.directGroup) {
+       if (this?.user && ogId === this.user?.directGroup) {
          this.isUserExternal = true;
        }
      })

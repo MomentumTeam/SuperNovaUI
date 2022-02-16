@@ -82,6 +82,8 @@ export const getUniqueFieldsByUserType = (configStore, userType) => {
         case configStore.KARTOFFEL_SOLDIER:
             fields = soldierUserFormFields;
             break;
+        default:
+            fields = []
     }
     return fields;
 }

@@ -60,7 +60,7 @@ const validationSchema = Yup.object().shape({
             if (isAlreadyTaken) {
               return false;
             }
-          } catch (err) {}
+          } catch (err) { }
 
           return true;
         },
@@ -90,7 +90,7 @@ const validationSchema = Yup.object().shape({
         isUserApprover
       ) =>
         (userType === workerEntityType && isUserExternalApprover === false) ||
-        (userType != workerEntityType && isUserApprover === false),
+        (userType !== workerEntityType && isUserApprover === false),
       then: Yup.array()
         .min(1, 'יש לבחור לפחות גורם מאשר אחד')
         .required('יש לבחור לפחות גורם מאשר אחד')
@@ -135,11 +135,6 @@ const CreateSpecialEntityForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject }, ref) => {
     const { appliesStore, userStore, configStore } = useStores();
     const isUserApprover = isUserApproverType(userStore.user);
-    // change number to userStore.organization before commiting!!!
-    // const isUserExternalApprover;
-    // = await checkValidExternalApprover(userStore.user, 8200);
-
-    const [defaultApprovers, setDefaultApprovers] = useState([]);
 
     const userTypes = [
       { name: 'אזרח', key: configStore.KARTOFFEL_CIVILIAN },
@@ -152,83 +147,94 @@ const CreateSpecialEntityForm = forwardRef(
       resolver: yupResolver(validationSchema),
       defaultValues: {
         isUserApprover,
-        userType: requestObject?.kartoffelParams?.entityType
-          ? requestObject?.kartoffelParams?.entityType
-          : selectedUserType.key,
       },
     });
     const { errors } = methods.formState;
 
-    useEffect(async () => {
-      methods.setValue('soldierEntityType', configStore.KARTOFFEL_SOLDIER);
-      methods.setValue('workerEntityType', configStore.KARTOFFEL_WORKER);
+    useEffect(() => {
+      const setFormDataFromReqObj = (requestObject) => {
+        methods.setValue('soldierEntityType', configStore.KARTOFFEL_SOLDIER);
+        methods.setValue('workerEntityType', configStore.KARTOFFEL_WORKER);
 
-      if (requestObject) {
-        console.log(requestObject);
-        methods.setValue('userType', requestObject.kartoffelParams.entityType);
+        if (requestObject) {
+          console.log(requestObject);
+          methods.setValue('userType', requestObject.kartoffelParams.entityType);
 
-        // SOLDIER and CIVILIAN
-        methods.setValue(
-          'identityNumber',
-          requestObject.kartoffelParams.identityCard
-        );
+          // SOLDIER and CIVILIAN
+          methods.setValue(
+            'identityNumber',
+            requestObject.kartoffelParams.identityCard
+          );
 
-        // general fields
-        methods.setValue('comments', requestObject.comments);
-        methods.setValue('firstName', requestObject.kartoffelParams.firstName);
-        methods.setValue('lastName', requestObject.kartoffelParams.lastName);
-        methods.setValue(
-          'mobilePhone',
-          requestObject.kartoffelParams.mobilePhone[0]
-        );
-        methods.setValue(
-          'classification',
-          requestObject.kartoffelParams.clearance
-        );
-        methods.setValue('sex', requestObject.kartoffelParams.sex);
-        methods.setValue(
-          'birthdate',
-          requestObject.kartoffelParams?.birthdate
-            ? parseInt(requestObject.kartoffelParams.birthdate)
-            : ''
-        );
+          // general fields
+          methods.setValue('comments', requestObject.comments);
+          methods.setValue('firstName', requestObject.kartoffelParams.firstName);
+          methods.setValue('lastName', requestObject.kartoffelParams.lastName);
+          methods.setValue(
+            'mobilePhone',
+            requestObject.kartoffelParams.mobilePhone[0]
+          );
+          methods.setValue(
+            'classification',
+            requestObject.kartoffelParams.clearance
+          );
+          methods.setValue('sex', requestObject.kartoffelParams.sex);
+          methods.setValue(
+            'birthdate',
+            requestObject.kartoffelParams?.birthdate
+              ? parseInt(requestObject.kartoffelParams.birthdate)
+              : ''
+          );
 
-        // SOLDIER
-        methods.setValue(
-          'serviceType',
-          requestObject.kartoffelParams.serviceType
-        );
-        methods.setValue('rank', requestObject.kartoffelParams.rank);
-        methods.setValue(
-          'personalNumber',
-          requestObject.kartoffelParams.personalNumber
-        );
+          // SOLDIER
+          methods.setValue(
+            'serviceType',
+            requestObject.kartoffelParams.serviceType
+          );
+          methods.setValue('rank', requestObject.kartoffelParams.rank);
+          methods.setValue(
+            'personalNumber',
+            requestObject.kartoffelParams.personalNumber
+          );
 
-        // WORKER
-        methods.setValue(
-          'organization',
-          requestObject.kartoffelParams.organization
-        );
-        methods.setValue(
-          'employeeNumber',
-          requestObject.kartoffelParams.employeeNumber
-        );
+          // WORKER
+          methods.setValue(
+            'organization',
+            requestObject.kartoffelParams.organization
+          );
+          methods.setValue(
+            'employeeNumber',
+            requestObject.kartoffelParams.employeeNumber
+          );
+        }
       }
 
-      const result =
-        methods.watch('userType') === configStore.KARTOFFEL_WORKER
-          ? await checkValidExternalApprover({
-              user: userStore.user,
-              organizationNumber: methods.watch('organizationNumber'),
-            })
-          : await GetDefaultApprovers({
+      const setDefaultApprovers = async (requestObject, onlyForView, userStore) => {
+        let approvers = []
+        switch (selectedUserType.key){
+          case configStore.KARTOFFEL_SOLDIER: 
+            approvers = configStore.soldierRequestsApprovers
+            break;
+          case configStore.KARTOFFEL_CIVILIAN: 
+            approvers = await GetDefaultApprovers({
               request: requestObject,
               onlyForView,
               user: userStore.user,
             });
+            break;
+          case configStore.KARTOFFEL_WORKER:
+            break;
+          default: 
+            approvers = [];
+        }
+        methods.setValue('approvers', approvers)  
+      }
 
-      setDefaultApprovers(result || []);
+      setFormDataFromReqObj(requestObject);
+      setDefaultApprovers(requestObject, onlyForView, userStore);
+      methods.setValue('userType', selectedUserType.key)
     }, [selectedUserType]);
+
 
     const onSubmit = async (data) => {
       try {
@@ -237,7 +243,6 @@ const CreateSpecialEntityForm = forwardRef(
         throw new Error(err.errors);
       }
 
-      console.log(data);
       const {
         firstName,
         lastName,
@@ -268,11 +273,11 @@ const CreateSpecialEntityForm = forwardRef(
           ...(sex && sex !== '' && { sex }),
           ...(sex && sex !== '' && { sex }),
           ...(birthdate && { birthdate: datesUtil.getTime(birthdate) }),
-          ...(rank && rank != '' && { rank }),
-          ...(serviceType && serviceType != '' && { serviceType }),
+          ...(rank && rank !== '' && { rank }),
+          ...(serviceType && serviceType !== '' && { serviceType }),
           ...(personalNumber && personalNumber !== '' && { personalNumber }),
-          ...(organization && organization != '' && { organization }),
-          ...(employeeNumber && employeeNumber != '' && { employeeNumber }),
+          ...(organization && organization !== '' && { organization }),
+          ...(employeeNumber && employeeNumber !== '' && { employeeNumber }),
         },
         comments,
         adParams: {},
@@ -287,12 +292,11 @@ const CreateSpecialEntityForm = forwardRef(
       () => ({
         handleSubmit: methods.handleSubmit(onSubmit),
       }),
-      []
     );
 
     let fields = getUniqueFieldsByUserType(
       configStore,
-      methods.watch('userType')
+      selectedUserType.key
     );
     const formFields = [
       {
@@ -354,7 +358,7 @@ const CreateSpecialEntityForm = forwardRef(
         default: methods.watch('approvers'),
         disabled:
           onlyForView ||
-          (methods.watch('userType') === configStore.KARTOFFEL_WORKER &&
+          (selectedUserType.key === configStore.KARTOFFEL_WORKER &&
             methods.watch('isUserWorkerApprover')) ||
           methods.watch('isUserApprover'),
         force: true,
@@ -375,9 +379,9 @@ const CreateSpecialEntityForm = forwardRef(
         <div className='userTypePick'>
           {userTypes.map((userType) => {
             if (
-              userType.key != configStore.KARTOFFEL_WORKER ||
+              userType.key !== configStore.KARTOFFEL_WORKER ||
               (userType.key === configStore.KARTOFFEL_WORKER &&
-                userStore.isUserExternal == true)
+                userStore.isUserExternal === true)
             ) {
               return (
                 <div key={userType.key} className='field-radiobutton'>
@@ -387,25 +391,8 @@ const CreateSpecialEntityForm = forwardRef(
                     value={userType}
                     onChange={(e) => {
                       setSelectedUserType(e.value);
-                      methods.setValue('userType', e.value.key);
-                      if (
-                        methods.watch('userType') ===
-                        configStore.KARTOFFEL_SOLDIER
-                      ) {
-                        methods.setValue(
-                          'approvers',
-                          configStore.soldierRequestsApprovers
-                        );
-                      // } else if (
-                      //   methods.watch('userType') ===
-                      //   configStore.KARTOFFEL_WORKER
-                      // ) {
-                      //   console.log('here');
-                      } else {
-                        methods.setValue('approvers', defaultApprovers);
-                      }
                     }}
-                    checked={methods.watch('userType') === userType.key}
+                    checked={selectedUserType.key === userType.key}
                     disabled={onlyForView}
                   />
                   <label htmlFor={userType.key} style={{ padding: '5px' }}>
@@ -414,6 +401,7 @@ const CreateSpecialEntityForm = forwardRef(
                 </div>
               );
             }
+            return <></>;
           })}
         </div>
         <div className='p-fluid' id='createSpecialEntityForm'>
