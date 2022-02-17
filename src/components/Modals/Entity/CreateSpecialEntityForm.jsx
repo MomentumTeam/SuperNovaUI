@@ -13,13 +13,14 @@ import {
   PHONE_REG_EXP,
   USER_SEX,
   IDENTITY_CARD_EXP,
+  USER_TYPE
 } from '../../../constants';
 import {
   GetDefaultApprovers,
   checkValidExternalApprover,
 } from '../../../utils/approver';
 import {
-  isUserApproverType
+  isUserApproverType,
 } from '../../../utils/user';
 import { InputForm, InputTypes } from '../../Fields/InputForm';
 import datesUtil from '../../../utils/dates';
@@ -27,31 +28,32 @@ import { kartoffelIdentityCardValidation } from '../../../utils/user';
 import { RadioButton } from 'primereact/radiobutton';
 import { getEntityByIdentifier } from '../../../service/KartoffelService';
 import { getUniqueFieldsByUserType } from '../../../utils/uniqueFormFields';
+import { isApproverValid } from '../../../service/ApproverService';
 
 const validationSchema = Yup.object().shape({
   workerEntityType: Yup.string(),
   soldierEntityType: Yup.string(),
   firstName: Yup.string()
-    .required('יש למלא שם פרטי')
-    .matches(NAME_REG_EXP, 'שם לא תקין'),
+    .required("יש למלא שם פרטי")
+    .matches(NAME_REG_EXP, "שם לא תקין"),
   lastName: Yup.string()
-    .required('יש למלא שם משפחה')
-    .matches(NAME_REG_EXP, 'שם לא תקין'),
-  identityNumber: Yup.string().when(['userType', 'workerEntityType'], {
+    .required("יש למלא שם משפחה")
+    .matches(NAME_REG_EXP, "שם לא תקין"),
+  identityNumber: Yup.string().when(["userType", "workerEntityType"], {
     is: (userType, workerEntityType) => userType === workerEntityType,
     then: Yup.string().optional(),
     otherwise: Yup.string()
       .required('יש להזין ת"ז')
       .matches(IDENTITY_CARD_EXP, 'ת"ז לא תקין')
       .test({
-        name: 'check-if-valid',
+        name: "check-if-valid",
         message: 'ת"ז לא תקין!',
         test: async (identityNumber) => {
           return kartoffelIdentityCardValidation(identityNumber);
         },
       })
       .test({
-        name: 'check-if-identity-number-already-taken-in-kartoffel',
+        name: "check-if-identity-number-already-taken-in-kartoffel",
         message: 'קיים משתמש עם הת"ז הזה!',
         test: async (identityNumber) => {
           try {
@@ -60,74 +62,103 @@ const validationSchema = Yup.object().shape({
             if (isAlreadyTaken) {
               return false;
             }
-          } catch (err) { }
+          } catch (err) {}
 
           return true;
         },
       }),
   }),
-  mobilePhone: Yup.string().when(['userType', 'workerEntityType'], {
+  mobilePhone: Yup.string().when(["userType", "workerEntityType"], {
     is: (userType, workerEntityType) => userType === workerEntityType,
     then: Yup.string().optional(),
     otherwise: Yup.string()
-      .required('יש למלא מספר פלאפון נייד')
-      .matches(PHONE_REG_EXP, 'מספר לא תקין'),
+      .required("יש למלא מספר פלאפון נייד")
+      .matches(PHONE_REG_EXP, "מספר לא תקין"),
   }),
-  classification: Yup.string().required('יש לבחור סיווג'),
+  classification: Yup.string().required("יש לבחור סיווג"),
   isUserApprover: Yup.boolean(),
+  isUserExternalApprover: Yup.boolean(),
   approvers: Yup.array().when(
     [
-      'userType',
-      'workerEntityType',
-      'isUserExternalApprover',
-      'isUserApprover',
+      "isUserApprover",
+      "isUserExternalApprover",
+      "userType",
+      "workerEntityType",
     ],
     {
       is: (
-        userType,
-        workerEntityType,
+        isUserApprover,
         isUserExternalApprover,
-        isUserApprover
-      ) =>
-        (userType === workerEntityType && isUserExternalApprover === false) ||
-        (userType !== workerEntityType && isUserApprover === false),
+        userType,
+        workerEntityType
+      ) => {
+        return (
+          userType === workerEntityType && isUserExternalApprover === false
+        );
+      },
       then: Yup.array()
-        .min(1, 'יש לבחור לפחות גורם מאשר אחד')
-        .required('יש לבחור לפחות גורם מאשר אחד')
+        .min(1, "יש לבחור לפחות גורם מאשר אחד")
+        .required("יש לבחור לפחות גורם מאשר אחד")
         .test({
-          name: 'check-if-valid-approver',
-          message: 'מאשר לא תקין, נא לבחור מאשר שנמצא תחת ההיררכיות המורשות',
-          test: async (approvers) => {
-            console.log(approvers);
+          name: "check-if-valid-approver",
+          message: "מאשר לא תקין, נא לבחור מאשר שנמצא תחת ההיררכיות המורשות",
+          test: async function (approvers, context) {
+            let isTotalValid = true;
+              await Promise.all(
+                approvers.map(async (approver) => {
+                  if (context.parent.organization &&
+                   ( !approver?.types ||
+                    !approver?.types.includes(USER_TYPE.SECURITY) ||
+                    !approver?.types.includes(USER_TYPE.SUPER_SECURITY))
+                  ) {
+                    const { isValid } = await isApproverValid(
+                      approver?.entityId || approver?.id,
+                      context.parent.organization?.orgId,
+                      context.parent.userType ===
+                        context.parent.soldierEntityType
+                    );
+
+                    if (!isValid) isTotalValid = false;
+                  }
+                })
+              );
+              return isTotalValid;
+            } 
           },
-        }),
+        ),
+      otherwise: Yup.array().when("isUserApprover", {
+        is: false,
+        then: Yup.array()
+          .min(1, "יש לבחור לפחות גורם מאשר אחד")
+          .required("יש לבחור לפחות גורם מאשר אחד"),
+      }),
     }
   ),
   comments: Yup.string().optional(),
   sex: Yup.string().optional().nullable(),
   userType: Yup.string(),
-  personalNumber: Yup.string().when(['userType', 'soldierEntityType'], {
+  personalNumber: Yup.string().when(["userType", "soldierEntityType"], {
     is: (userType, soldierEntityType) => userType === soldierEntityType,
-    then: Yup.string().required('יש להכניס מספר אישי'),
+    then: Yup.string().required("יש להכניס מספר אישי"),
     otherwise: Yup.string().optional(),
   }),
-  serviceType: Yup.string().when(['userType', 'soldierEntityType'], {
+  serviceType: Yup.string().when(["userType", "soldierEntityType"], {
     is: (userType, soldierEntityType) => userType === soldierEntityType,
-    then: Yup.string().required('יש לבחור סוג שירות'),
+    then: Yup.string().required("יש לבחור סוג שירות"),
     otherwise: Yup.string().optional(),
   }),
-  rank: Yup.string().when(['userType', 'soldierEntityType'], {
+  rank: Yup.string().when(["userType", "soldierEntityType"], {
     is: (userType, soldierEntityType) => userType === soldierEntityType,
-    then: Yup.string().required('יש לבחור דרגה'),
+    then: Yup.string().required("יש לבחור דרגה"),
     otherwise: Yup.string().optional(),
   }),
-  employeeNumber: Yup.number().when(['userType', 'workerEntityType'], {
+  employeeNumber: Yup.number().when(["userType", "workerEntityType"], {
     is: (userType, workerEntityType) => userType === workerEntityType,
-    then: Yup.number().required('יש להכניס מספר עובד'),
+    then: Yup.number().required("יש להכניס מספר עובד"),
   }),
-  organization: Yup.number().when(['userType', 'workerEntityType'], {
+  organization: Yup.object().when(["userType", "workerEntityType"], {
     is: (userType, workerEntityType) => userType === workerEntityType,
-    then: Yup.number().required('יש לבחור מספר ארגון'),
+    then: Yup.object().required("יש לבחור ארגון"),
   }),
 });
 
@@ -135,6 +166,7 @@ const CreateSpecialEntityForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject }, ref) => {
     const { appliesStore, userStore, configStore } = useStores();
     const isUserApprover = isUserApproverType(userStore.user);
+    const isUserExternalApprover = isUserApproverType(userStore.user) && userStore.isUserExternal;
 
     const userTypes = [
       { name: 'אזרח', key: configStore.KARTOFFEL_CIVILIAN },
@@ -147,6 +179,7 @@ const CreateSpecialEntityForm = forwardRef(
       resolver: yupResolver(validationSchema),
       defaultValues: {
         isUserApprover,
+        isUserExternalApprover,
         userType: requestObject?.kartoffelParams?.entityType
           ? requestObject?.kartoffelParams?.entityType
           : selectedUserType.key,
@@ -163,7 +196,7 @@ const CreateSpecialEntityForm = forwardRef(
         if (requestObject) {
           console.log(requestObject);
           methods.setValue('userType', requestObject.kartoffelParams.entityType);
-         console.log(methods.watch('userType'))
+          
           // SOLDIER and CIVILIAN
           methods.setValue(
             'identityNumber',
@@ -210,6 +243,10 @@ const CreateSpecialEntityForm = forwardRef(
             'employeeNumber',
             requestObject.kartoffelParams.employeeNumber
           );
+          methods.setValue(
+            'approvers',
+            requestObject.commanders
+          );
         }
       }
 
@@ -227,6 +264,11 @@ const CreateSpecialEntityForm = forwardRef(
             });
             break;
           case configStore.KARTOFFEL_WORKER:
+            approvers = await checkValidExternalApprover({
+              request: requestObject,
+              user: userStore.user,
+              isExternalUser: userStore.isUserExternal
+            });
             break;
           default: 
             approvers = await GetDefaultApprovers({
@@ -266,13 +308,13 @@ const CreateSpecialEntityForm = forwardRef(
         organization,
         employeeNumber,
       } = data;
-      console.log(data, identityNumber)
+      console.log(data)
       const req = {
         commanders: approvers,
         kartoffelParams: {
           firstName,
           lastName,
-          identityNumber,
+          ...(identityNumber && identityNumber !== '' && { identityNumber }),
           mobilePhone: [mobilePhone],
           phone: [mobilePhone],
           clearance: classification,
@@ -302,11 +344,31 @@ console.log(req)
     );
 
 
+    const shouldApproversBeDisabled = (onlyForView) => {
+      if(onlyForView) return true;
+
+      let disabled = false;
+      switch (methods.watch('userType')) { 
+        case configStore.KARTOFFEL_SOLDIER:
+          disabled = true;
+          break;
+        case configStore.KARTOFFEL_WORKER:
+          if(isUserExternalApprover) disabled = true;
+          break;
+        case configStore.KARTOFFEL_CIVILIAN:
+          if(isUserApprover) disabled = true;
+          break;
+        default:
+          disabled = false;
+      }
+
+      return disabled;
+    }
+
     let fields = getUniqueFieldsByUserType(
       configStore,
       methods.watch('userType')
     );
-    console.log(fields, methods.watch('userType'))
     const formFields = [
       {
         fieldName: 'firstName',
@@ -365,11 +427,7 @@ console.log(req)
         inputType: InputTypes.APPROVER,
         tooltip: 'רס"ן ומעלה ביחידתך',
         default: methods.watch('approvers'),
-        disabled:
-          onlyForView ||
-          (methods.watch('userType') === configStore.KARTOFFEL_WORKER &&
-            methods.watch('isUserWorkerApprover')) ||
-          methods.watch('isUserApprover'),
+        disabled: shouldApproversBeDisabled(onlyForView),
         force: true,
       },
       {

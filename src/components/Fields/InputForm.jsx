@@ -69,6 +69,7 @@ const InputForm = ({ fields, item = null, methods, isEdit, errors }) => {
             fieldName={field.fieldName}
             displayName={field.displayName}
             options={field.options}
+            optionLabel={field?.optionLabel}
             isEdit={isEdit}
             canEdit={field?.canEdit}
             additionalClass={field?.additionalClass}
