@@ -12,6 +12,7 @@ import renderHeader from "../accordionTabHeaders";
 
 const CreateEntityForm = forwardRef(({ setIsActionDone }, ref) => {
   const [activeIndex, setActiveIndex] = useState(0);
+
   const formRefs = useMemo(() => ({ 0: createRef(), 1: createRef() }), []);
 
   useImperativeHandle(
@@ -24,8 +25,8 @@ const CreateEntityForm = forwardRef(({ setIsActionDone }, ref) => {
 
   return (
     <Accordion
-      expandIcon="pi pi-chevron-left"
-      style={{ marginBottom: "20px" }}
+      expandIcon='pi pi-chevron-left'
+      style={{ marginBottom: '20px' }}
       activeIndex={activeIndex}
       onTabChange={({ index }) => {
         setActiveIndex((currentIndex) => {
@@ -37,14 +38,14 @@ const CreateEntityForm = forwardRef(({ setIsActionDone }, ref) => {
         });
       }}
     >
-      <AccordionTab header={renderHeader("חיבור משתמש חדש לתפקיד", true)}>
+      <AccordionTab header={renderHeader('חיבור משתמש חדש לתפקיד', true)}>
         <AssignRoleToEntityForm
           ref={formRefs[0]}
           showJob={false}
           setIsActionDone={setIsActionDone}
         />
       </AccordionTab>
-      <AccordionTab header={renderHeader("יצירת משתמש מיוחד", true)}>
+      <AccordionTab header={renderHeader('יצירת משתמש מיוחד', true)}>
         <CreateSpecialEntityForm
           ref={formRefs[1]}
           setIsActionDone={setIsActionDone}
