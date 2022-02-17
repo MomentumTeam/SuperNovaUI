@@ -230,7 +230,7 @@ export const processApprovalTableData = (tableData) => {
 
     newAction['מספר בקשה'] = action.serialNumber;
     newAction['שם מבקש'] = action.submittedBy.displayName;
-    newAction['מספר אישי/ת"ז'] = action.submittedBy?.personalNumber? action.submittedBy.personalNumber: action.submittedBy.identityCard;
+    newAction['מספר אישי/ת"ז'] = action.submittedBy?.personalNumber ? action.submittedBy.personalNumber : action.submittedBy.identityCard;
     newAction['סוג בקשה'] = TYPES[action.type];
     newAction['תאריך יצירה'] = getFormattedDate(action.createdAt);
     newAction['סיבה'] = action.comments;
@@ -278,9 +278,15 @@ export const isAutomaticallyApproved = (request, user) => {
   return (
     request.commanders.some((commander) => commander.id === user.id) &&
     (request?.type === REQ_TYPES.CREATE_OG ||
-    request?.type === REQ_TYPES.CREATE_ENTITY ||
-    (request?.type === REQ_TYPES.ADD_APPROVER) &&
+      request?.type === REQ_TYPES.CREATE_ENTITY ||
+      (request?.type === REQ_TYPES.ADD_APPROVER) &&
       request?.submittedBy?.id === user.id)
   )
 };
 
+
+
+export const isCreateSoldierApply = (apply,kartoffelSoldierEnum) => {
+  return apply?.type === REQ_TYPES.CREATE_ENTITY &&
+    apply?.kartoffelParams?.entityType === kartoffelSoldierEnum
+};

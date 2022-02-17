@@ -31,36 +31,42 @@ const validationSchema = Yup.object().shape({
     is: false,
     then: Yup.array().min(1, 'יש לבחור לפחות גורם מאשר אחד').required('יש לבחור לפחות גורם מאשר אחד'),
   }).test({
-      name: "check-if-valid",
-      message: "יש לבחור מאשרים תקינים (מהיחידה בלבד)",
-      test: async (approvers, context) => {
-        let isTotalValid = true;
+    name: "check-if-valid",
+    message: "יש לבחור מאשרים תקינים (מהיחידה בלבד)",
+    test: async (approvers, context) => {
+      let isTotalValid = true;
 
-        if (context.parent?.hierarchy?.id && Array.isArray(approvers)) {
-          await Promise.all(
-            approvers.map(async (approver) => {
-              const { isValid } = await isApproverValid(approver.entityId, context.parent.hierarchy.id);
-              if (!isValid) isTotalValid = false;
-            })
-          );
-        }
+      if (context.parent?.hierarchy?.id && Array.isArray(approvers)) {
+        await Promise.all(
+          approvers.map(async (approver) => {
+            const { isValid } = await isApproverValid(approver.entityId, context.parent.hierarchy.id);
+            if (!isValid) isTotalValid = false;
+          })
+        );
+      }
 
-        return isTotalValid;
-      },
+      return isTotalValid;
+    },
   }),
   bulkFile: Yup.mixed()
     .test('required', 'יש להעלות קובץ!', (value) => {
       return value && value.length;
     })
-    .test('', 'יש להעלות קובץ תקין! ראה פורמט', async (value) => {
+    .test('',  async (value, { createError,path }) => {
       const formData = new FormData();
       formData.append('bulkFiles', value[0]);
       const uploadFilesRes = await uploadBulkFile(formData, BulkTypes[0]);
-      if (!uploadFilesRes) {
-        //Table uploaded is illegl !
-        return false;
-      } else {
-        return uploadFilesRes?.uploadFiles[0];
+
+      if (!uploadFilesRes[0]?.valid) {
+        if (uploadFilesRes[0]?.errorRows.length === 0) {
+          return createError({ path, message: `הקובץ ריק/לא תקין.` });
+        }
+        else if (uploadFilesRes[0]?.errorRows.length > 0) {
+          const errorLines=await Promise.all(uploadFilesRes[0]?.errorRows.map((row)=>row+2));
+          return createError({ path, message: `הקובץ לא תקין. אנא תקן/י את שורות ${errorLines.toString()}.` });
+        }
+      } else {  //when the uploaded file is valid
+        return true;
       }
     }),
 });
@@ -82,7 +88,7 @@ const RenameBulkOGForm = forwardRef(
       const getBulkData = async () => {
         const data = await getCreateBulkRoleData(requestObject.id);
         setValue('comments', requestObject.comments);
-        setValue('hierarchy', { name: requestObject.kartoffelParams.hierarchy }); 
+        setValue('hierarchy', { name: requestObject.kartoffelParams.hierarchy });
         setValue('rows', data.rows);
 
         const result = await GetDefaultApprovers({ request: requestObject, onlyForView, user: userStore.user });
@@ -103,7 +109,7 @@ const RenameBulkOGForm = forwardRef(
 
       const formData = new FormData();
       formData.append('bulkFiles', bulkFile[0]);
-      const { uploadFiles } = await uploadBulkFile(formData, BulkTypes[0]);
+      const uploadFilesRes = await uploadBulkFile(formData, BulkTypes[0]);
 
       const req = {
         commanders: approvers,
@@ -114,7 +120,7 @@ const RenameBulkOGForm = forwardRef(
         adParams: {
           ouDisplayName: getOuDisplayName(hierarchy.hierarchy, hierarchy.name),
         },
-        excelFilePath: uploadFiles[0],
+        excelFilePath: uploadFilesRes[0]?.name,
         comments,
       };
 
@@ -124,7 +130,7 @@ const RenameBulkOGForm = forwardRef(
 
       await appliesStore.createRoleBulk(req);
       setIsActionDone(true);
-      
+
     };
 
     const statusTemplateEnum = (column) => {
@@ -145,7 +151,7 @@ const RenameBulkOGForm = forwardRef(
       []
     );
 
- 
+
     const handleOrgSelected = async (org) => {
       const result = await GetDefaultApprovers({
         request: requestObject,
