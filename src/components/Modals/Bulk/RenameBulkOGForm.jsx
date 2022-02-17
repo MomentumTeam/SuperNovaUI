@@ -80,7 +80,7 @@ const validationSchema = Yup.object().shape({
     .test('required', 'יש להעלות קובץ!', (value) => {
       return value && value.length;
     })
-    .test('', 'יש להעלות קובץ תקין! ראה פורמט', async (value) => {
+    .test('', 'יש להעלות קובץ תקין! ראה פורמט', async (value, { createError, path }) => {
       const formData = new FormData();
       formData.append('bulkFiles', value[0]);
       const uploadFilesRes = await uploadBulkFile(formData, BulkTypes[0]);
@@ -90,7 +90,7 @@ const validationSchema = Yup.object().shape({
           return createError({ path, message: `הקובץ ריק/לא תקין.` });
         }
         else if (uploadFilesRes[0]?.errorRows.length > 0) {
-          const errorLines=await Promise.all(uploadFilesRes[0]?.errorRows.map((row)=>row+2));
+          const errorLines = await Promise.all(uploadFilesRes[0]?.errorRows.map((row) => row + 2));
           return createError({ path, message: `הקובץ לא תקין. אנא תקן/י את שורות ${errorLines.toString()}.` });
         }
       } else {  //when the uploaded file is valid
