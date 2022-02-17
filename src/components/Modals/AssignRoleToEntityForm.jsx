@@ -99,9 +99,9 @@ const validationSchema = Yup.object().shape({
           const hasDigitalIdentityAlready =
             user?.digitalIdentities && isRoleConnectedToUser
               ? user.digitalIdentities.find(
-                  (identity) =>
-                    identity.uniqueId === role.digitalIdentityUniqueId
-                )
+                (identity) =>
+                  identity.uniqueId === role.digitalIdentityUniqueId
+              )
               : false;
 
           return !hasDigitalIdentityAlready;
@@ -162,9 +162,9 @@ const AssignRoleToEntityForm = forwardRef(
     const [userSuggestions, setUserSuggestions] = useState([]);
     const [roleSuggestions, setRoleSuggestions] = useState([]);
     const [defaultApprovers, setDefaultApprovers] = useState([]);
-    
+
     const isUserApprover = isUserApproverType(userStore.user);
-    
+
     const {
       register,
       handleSubmit,
@@ -177,9 +177,9 @@ const AssignRoleToEntityForm = forwardRef(
       resolver: yupResolver(validationSchema),
       defaultValues: { isUserApprover, role: null, user: null },
     });
-    
+
     const { errors } = formState;
-    
+
     useEffect(() => {
       setValue('isSwitchRole', showJob);
       const getNewEntity = async () => {
@@ -190,7 +190,7 @@ const AssignRoleToEntityForm = forwardRef(
           );
           setValue('user', user);
           setValue('personalNumber', user.personalNumber || user.identityCard);
-        } catch (error) {}
+        } catch (error) { }
       };
 
       const getOldRole = async (roleId) => {
@@ -201,9 +201,14 @@ const AssignRoleToEntityForm = forwardRef(
             : await getRoleByRoleId(roleId);
 
           setValue('role', oldRole, { shouldValidate: true });
+          setValue('clearance', oldRole?.clearance || '- - -');
+
           setRoles([oldRole]);
         } catch (error) {
           setValue('role', {});
+          setValue('role', "");
+          setValue('clearance', '- - -');
+
           setRoles([]);
         }
       };
@@ -361,6 +366,8 @@ const AssignRoleToEntityForm = forwardRef(
       setRoles(result || []);
       setValue('roleId', '');
       setValue('currentRoleUser', '');
+      setValue('clearance', '- - -');
+
     };
 
     const handleRoleSelected = async (roleId) => {
@@ -403,7 +410,7 @@ const AssignRoleToEntityForm = forwardRef(
           });
           approver = result;
         }
-      } catch (error) {}
+      } catch (error) { }
       setDefaultApprovers(approver);
       setValue('approvers', approver);
       setValue('isUserApprover', approver.length > 0);
@@ -425,6 +432,7 @@ const AssignRoleToEntityForm = forwardRef(
         setValue('jobTitle', '');
         setValue('role', null);
         setValue('currentRoleUser', '');
+        setValue('clearance', '- - -');
 
         if (isUserApprover) {
           setDefaultApprovers([]);
@@ -450,6 +458,7 @@ const AssignRoleToEntityForm = forwardRef(
       setValue('hierarchy', hierarchy, { shouldValidate: true });
       setRoles(Array.from(new Set([...roles, role])));
       setValue('role', role, { shouldValidate: true });
+      setValue('clearance', role?.clearance || '- - -');
 
       handleRoleSelected(role.roleId);
     };
@@ -622,6 +631,7 @@ const AssignRoleToEntityForm = forwardRef(
                 setValue('role', '');
                 setValue('roleId', '');
                 setValue('currentRoleUser', '');
+                setValue('clearance', '- - -');
                 setValue(name, value);
               }}
               name='hierarchy'
@@ -647,6 +657,7 @@ const AssignRoleToEntityForm = forwardRef(
                 onChange={(e) => {
                   setValue('role', e.value, { shouldValidate: true });
                   setValue('roleId', e.value.roleId, { shouldValidate: true });
+                  setValue('clearance', e.value?.clearance || '- - -');
                   setValue('approvers', [], { shouldValidate: true });
                   setDefaultApprovers([]);
 
@@ -690,6 +701,8 @@ const AssignRoleToEntityForm = forwardRef(
 
                   setValue('currentRoleUser', '');
                   setValue('role', '');
+                  setValue('clearance', '- - -');
+
                   setValue('approvers', []);
                   setDefaultApprovers([]);
                 }}
@@ -707,14 +720,26 @@ const AssignRoleToEntityForm = forwardRef(
             </div>
           </div>
           <div className='p-fluid-item-flex p-fluid-item'>
+            {showJob && watch('role') && (
+              <div className='p-field' style={{ marginLeft: '10px' }}>
+                <label htmlFor='2030'>סיווג התפקיד</label>
+                <InputText
+                  {...register('clearance')}
+                  id='assignRoleToEntityForm-clearance'
+                  type='text'
+                  disabled
+                  style={{
+                    textAlign: watch('clearance') === '- - -' && 'center',
+                  }}
+                />
+              </div>
+            )}
             {watch('roleId') &&
               watch('role') &&
               watch('role')?.digitalIdentityUniqueId && (
                 <div
-                  className={`p-field ${
-                    watch('currentRoleUser') ? 'p-field-red' : 'p-field-green'
-                  }`}
-                  style={{ marginLeft: '10px' }}
+                  className={`p-field ${watch('currentRoleUser') ? 'p-field-red' : 'p-field-green'
+                    }`}
                 >
                   <label htmlFor='2024'>סטטוס תפקיד</label>
                   <InputText
@@ -726,7 +751,12 @@ const AssignRoleToEntityForm = forwardRef(
                   />
                 </div>
               )}
-            {watch('currentRoleUser') && (
+          </div>
+        </div>
+        <div className='row3flex'>
+          {watch('currentRoleUser') && (
+            <div className='p-fluid-item'>
+
               <div className='p-field'>
                 <label htmlFor='2030'>מבצע תפקיד נוכחי</label>
                 <InputText
@@ -737,10 +767,8 @@ const AssignRoleToEntityForm = forwardRef(
                   placeholder='מבצע תפקיד'
                 />
               </div>
-            )}
-          </div>
-        </div>
-        <div className='row3flex'>
+            </div>
+          )}
           {watch('currentRoleUser') && (
             <InputCalanderField
               setValue={setValue}
