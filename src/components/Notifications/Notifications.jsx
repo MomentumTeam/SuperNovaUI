@@ -4,31 +4,28 @@ import NotificationsScroll from "./NotificationsScroll";
 import { useRef, useState, useEffect } from "react";
 import { Badge } from "primereact/badge";
 import { OverlayPanel } from "primereact/overlaypanel";
-import { getMyNotifications } from "../../service/NotificationService";
-
-import "../../assets/css/local/components/notifications.css";
+import { observer } from "mobx-react";
 import { useStores } from '../../context/use-stores';
 
-const Notifications = () => {
+import "../../assets/css/local/components/notifications.css";
+
+const Notifications = observer(() => {
   const op = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
-  const [readNotifications, setReadNotifications] = useState([]);
   const {notificationStore} = useStores();
-  const [unreadNotifications, setUnreadNotifications] = useState(notificationStore.userUnreadNotifications);
+  const [isVisible, setIsVisible] = useState(false);
+  const [hasUnreadNotify, setHasUnreadNotify] = useState(false);
+  const unreadNotifications = notificationStore.userUnreadNotifications;
 
   useEffect(() => {
     const updateReadNotifications = async () => {
-      const data = (await getMyNotifications(true, 1, 5)).notifications;
-      setReadNotifications(data);
+      await notificationStore.fetchUserReadNotifications(true, 1, 5);
     };
-
-    if (!(unreadNotifications.length)) updateReadNotifications();
-  }, [setReadNotifications]);
+    if (!hasUnreadNotify) updateReadNotifications();
+  }, [hasUnreadNotify]);
 
   useEffect(() => {
-    console.log(notificationStore.userUnreadNotifications);
-    setUnreadNotifications(notificationStore.userUnreadNotifications);
-  }, [notificationStore.userUnreadNotifications]);
+    setHasUnreadNotify(unreadNotifications && unreadNotifications.length > 0);
+  }, [unreadNotifications]);
 
   return (
     <div style={{ display: "inline-block" }}>
@@ -40,7 +37,7 @@ const Notifications = () => {
           op.current.toggle(e);
         }}
       >
-        {unreadNotifications.length && (
+        {hasUnreadNotify && (
           <Badge value={unreadNotifications.length} style={{ position: "relative", top: "1.2rem", left: "1.2rem" }} />
         )}
       </button>
@@ -52,18 +49,16 @@ const Notifications = () => {
         style={{ width: "350px", direction: "rtl", borderRadius: "40px" }}
         className="overlaypanel-demo"
         onHide={async () => {
-          unreadNotifications.length &&
-            (await notificationStore.markNotificationsAsRead(
-              notificationStore.userUnreadNotifications.map(({ id }) => id)
-            ));
+          hasUnreadNotify && (await notificationStore.markNotificationsAsRead(unreadNotifications.map(({ id }) => id)));
         }}
       >
-        <h2 style={{ textAlign: "center" }}>{unreadNotifications.length ? "התראות חדשות" : "התראות שנקראו"}</h2>
+        <h2 style={{ textAlign: "center" }}>{hasUnreadNotify ? "התראות חדשות" : "התראות שנקראו"}</h2>
         <HorizontalLine />
-        {unreadNotifications.length && (
-          <NotificationsScroll notifications={notificationStore.userUnreadNotifications} height="400px" />
-        )}
-        {!(unreadNotifications.length) && <NotificationsScroll notifications={readNotifications} height="400px" />}
+        <NotificationsScroll
+          notifications={hasUnreadNotify ? unreadNotifications : notificationStore.userReadNotifications}
+          height="400px"
+        />
+
         <h2
           style={{
             textAlign: "center",
@@ -78,6 +73,6 @@ const Notifications = () => {
       <AllNotifications isVisible={isVisible} setIsVisible={setIsVisible} />
     </div>
   );
-};
+});
 
 export default Notifications;

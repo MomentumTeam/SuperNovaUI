@@ -1,21 +1,18 @@
-import { useState, useEffect } from "react";
+import NotificationsScroll from "./NotificationsScroll";
+import { observer } from 'mobx-react';
+import { useEffect } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
-import { getMyNotifications } from "../../service/NotificationService";
-import NotificationsScroll from "./NotificationsScroll";
+import { useStores } from "../../context/use-stores";
+
 import "../../assets/css/local/components/notifications.css";
 
-const AllNotifications = ({ isVisible, setIsVisible }) => {
-  const [notifications, setNotifications] = useState([]);
+const AllNotifications = observer(({ isVisible, setIsVisible }) => {
+  const {notificationStore} = useStores();
 
-  useEffect(() => {
-    const updateReadNotifications = async () => {
-      const data = (await getMyNotifications()).notifications;
-      setNotifications(data);
-    };
-
-    updateReadNotifications();
-  }, [setNotifications]);
+  useEffect(async() => {
+    isVisible && await notificationStore.fetchUserAllNotification();
+  }, [isVisible]);
 
   return (
     <Dialog
@@ -34,9 +31,9 @@ const AllNotifications = ({ isVisible, setIsVisible }) => {
         </div>
       }
     >
-      <NotificationsScroll notifications={notifications} height="600px" />
+      <NotificationsScroll notifications={notificationStore.userNotifications} height="600px" />
     </Dialog>
   );
-};
+});
 
 export default AllNotifications;

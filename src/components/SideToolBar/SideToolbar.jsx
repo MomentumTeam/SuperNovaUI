@@ -13,7 +13,7 @@ const SideToolbar = ({ recentApplies }) => {
   const { userStore, notificationStore } = useStores();
 
   useEffect(() => {
-    notificationStore.fetchUserNotifications();
+    notificationStore.fetchUserUnreadNotifications();
   }, [userStore]);
 
   return (
@@ -21,7 +21,7 @@ const SideToolbar = ({ recentApplies }) => {
       <div className="main-inner-item3-content">
         <div className="display-flex display-flex-end btns-wrap">
           <HelpHamburgerMenu />
-          <Notifications />
+          <Notifications/>
         </div>
         <StatCount />
         <div className="actions-inner-wrap">
@@ -37,7 +37,7 @@ const SideToolbar = ({ recentApplies }) => {
           </div>
           <div className="table-item-wrap">
             <div className="table-item-inner">
-              <List list={recentApplies? recentApplies.slice(0, 5): []} />
+              <List list={recentApplies ? recentApplies.slice(0, 5) : []} />
             </div>
           </div>
         </div>

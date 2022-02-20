@@ -3,13 +3,14 @@ import configStore from './Config';
 import RolesStore from "./Roles";
 import EntitiesStore from "./Entities";
 import GroupsStore from "./Groups";
-import AppliesStore from "./Applies";
 import TreeStore from "./Tree";
 import UserStore from "./User";
-import MyRequestsStore from "./MyRequests";
+import AppliesApproveStore from "./AppliesApprove";
+import AppliesMyStore from "./AppliesMy";
+import AppliesStore from "./Applies";
 import healthStore from './Health';
 import NotificationsStore from './Notifications';
-
+import SocketStore from './Socket';
 const stores = {
   configStore,
   healthStore,
@@ -19,11 +20,13 @@ const stores = {
   userStore: new UserStore(),
   notificationStore: new NotificationsStore(),
   appliesStore: new AppliesStore(),
+  appliesApproveStore: new AppliesApproveStore(),
+  appliesMyStore: new AppliesMyStore(),
   treeStore: new TreeStore(),
-  myRequestsStore: new MyRequestsStore(),
 };
 
-export const StoresContext = createContext(stores);
+const socketStore = new SocketStore(stores.notificationStore, stores.appliesApproveStore, stores.configStore);
+export const StoresContext = createContext({...stores, socketStore});
 
 export const StoreProvider = ({ children }) => (
   <StoresContext.Provider value={stores}>{children}</StoresContext.Provider>

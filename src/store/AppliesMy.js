@@ -8,9 +8,10 @@ import {
   getMyRequestsBySearch,
 } from "../service/AppliesService";
 
-export default class MyRequestsStore {
+export default class AppliesMyStore {
   myRequests = [];
   totalCount = 0;
+
   constructor() {
     makeAutoObservable(this, {
       myRequests: observable,
@@ -26,7 +27,7 @@ export default class MyRequestsStore {
   async loadMyRequests(from, to, append = false) {
     const myRequests = await getMyRequests(from, to, "CREATED_AT");
     this.myRequests = append ? [...this.myRequests, ...myRequests.requests] : myRequests.requests;
-    this.totalCount  = myRequests.totalCount;
+    this.totalCount = myRequests.totalCount;
   }
 
   async loadMyRequestsBySerialNumber(_from, _to, append = false, value) {

@@ -1,8 +1,9 @@
 import { ScrollPanel } from "primereact/scrollpanel";
+import { observer } from 'mobx-react';
 import Notification from "./Notification";
 import HorizontalLine from "../HorizontalLine";
 
-const NotificationsScroll = ({ notifications, height }) => {
+const NotificationsScroll = observer(({ notifications, height }) => {
   return (
     <div>
       <ScrollPanel style={{ width: "100%", height }}>
@@ -13,6 +14,6 @@ const NotificationsScroll = ({ notifications, height }) => {
       <HorizontalLine />
     </div>
   );
-};
+});
 
 export default NotificationsScroll;

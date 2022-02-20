@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useStores } from '../../../context/use-stores';
 
 const ReturnRequest = ({ request, actionPopup }) => {  //return apply back to applies basket
-  const { userStore, appliesStore } = useStores();
+  const { userStore, appliesApproveStore } = useStores();
   const user = toJS(userStore.user);
 
   const onSubmit = async () => {
@@ -15,7 +15,7 @@ const ReturnRequest = ({ request, actionPopup }) => {  //return apply back to ap
     };
 
     try {
-      await appliesStore.removeApproverFromApprovers(req);
+      await appliesApproveStore.removeApproverFromApprovers(req);
       actionPopup("החזרה לסל");
     } catch (e) {
       actionPopup("החזרה לסל", e);

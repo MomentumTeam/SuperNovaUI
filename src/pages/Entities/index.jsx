@@ -6,7 +6,7 @@ const TableEntity = () => {
   const { userStore, notificationStore } = useStores();
 
   useEffect(() => {
-    notificationStore.fetchUserNotifications(userStore.user?.id);
+    notificationStore.fetchUserUnreadNotifications(userStore.user?.id);
   }, [userStore.user]);
 
 

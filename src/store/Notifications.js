@@ -3,30 +3,48 @@ import { getMyNotifications, markAsRead } from "../service/NotificationService";
 
 export default class NotificationsStore {
   userNotifications = [];
+  userReadNotifications = [];
   userUnreadNotifications = [];
 
   constructor() {
     makeAutoObservable(this, {
       userNotifications: observable,
+      userReadNotifications: observable,
       userUnreadNotifications: observable,
-      fetchUserNotifications: action,
-      addNotification: action
+      fetchUserUnreadNotifications: action,
+      addNotification: action,
     });
 
-    this.fetchUserNotifications();
+    this.fetchUserUnreadNotifications();
   }
 
-  async fetchUserNotifications() {
+  async fetchUserAllNotification() {
+    const userNotification = await getMyNotifications();
+    this.userNotifications = userNotification.notifications;
+  }
+
+  async fetchUserReadNotifications(read, rangeStart, rangeEnd) {
+    const userNotification = await getMyNotifications(read, rangeStart, rangeEnd);
+    this.userReadNotifications = userNotification.notifications;
+  }
+
+  async fetchUserUnreadNotifications() {
     const userUnreadNotifications = await getMyNotifications(false);
     this.userUnreadNotifications = userUnreadNotifications.notifications;
   }
 
   addNotification(notification) {
-   this.userUnreadNotifications = [notification, ...this.userUnreadNotifications];
+    if (!notification.read) {
+      const notifications = new Set([notification, ...this.userUnreadNotifications])
+      this.userUnreadNotifications = [...notifications];
+    }
   }
 
+  readNotifications() {
+    this.userUnreadNotifications = [];
+  }
   async markNotificationsAsRead(ids) {
     await markAsRead(ids);
-    this.userUnreadNotifications = [];
+    this.readNotifications();
   }
 }

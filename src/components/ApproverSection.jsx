@@ -12,7 +12,7 @@ import {
 } from '../utils/applies';
 
 const ApproverSection = ({ request, setDialogVisiblity }) => {
-  const { appliesStore, userStore } = useStores();
+  const { appliesApproveStore, userStore } = useStores();
   const user = toJS(userStore.user);
 
   let requestId = request.id;
@@ -44,7 +44,7 @@ const ApproverSection = ({ request, setDialogVisiblity }) => {
       if (approverMode.denyMode && approverMode.denyReason.length > 0)
         decisionObject.decision.reason = approverMode.denyReason;
 
-      await appliesStore.updateApplyDecision(decisionObject);
+      await appliesApproveStore.updateApplyDecision(decisionObject);
     } catch (err) {
       console.log(err);
     }
@@ -68,7 +68,7 @@ const ApproverSection = ({ request, setDialogVisiblity }) => {
             comment: comment.comment,
           };
 
-          await appliesStore.updateApproversComments(newCommentObject);
+          await appliesApproveStore.updateApproversComments(newCommentObject);
           // setApproveMode({ ...approverMode, commentMode: false });
         }
       }

@@ -39,6 +39,7 @@ const Table = ({
   sortOrder = null,
   scrollHeight = null,
   canCheckBoxAll = false,
+  rowClasses = null,
 }) => {
   const contextMenu = useRef(null);
   const { userStore } = useStores();
@@ -137,6 +138,7 @@ const Table = ({
                 sortField={sortField}
                 sortOrder={sortOrder}
                 onSort={onSort}
+                rowClassName={rowClasses}
               >
                 {selectionMode === "multiple" && (
                   <Column

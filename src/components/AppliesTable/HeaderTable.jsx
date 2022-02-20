@@ -13,7 +13,7 @@ const HeaderTable = ({
   setSearchFields,
   getData,
 }) => {
-  const { appliesStore } = useStores();
+  const { appliesApproveStore } = useStores();
 
   const HeaderTemplate = ({ tab, name, badgeValue }) => {
     return (
@@ -36,27 +36,26 @@ const HeaderTable = ({
           <HeaderTemplate
             tab={TableNames.allreqs.tab}
             name={TableNames.allreqs.tableName}
-            badgeValue={appliesStore.approveAllApplies.waitingForApproveCount}
+            badgeValue={appliesApproveStore.approveAllApplies.waitingForApproveCount}
           />
           <HeaderTemplate
             tab={TableNames.myreqs.tab}
             name={TableNames.myreqs.tableName}
-            badgeValue={appliesStore.approveMyApplies.waitingForApproveCount}
+            badgeValue={appliesApproveStore.approveMyApplies.waitingForApproveCount}
           />
         </div>
       ) : (
         <div>
           <h2 style={{ display: "inline" }}>{TableNames.myreqs.tableName}</h2>
           <h3 style={{ display: "inline", marginRight: "10px" }}>
-            <b style={{ color: "black" }}>{appliesStore.approveMyApplies.waitingForApproveCount}</b>/
-            {appliesStore.approveMyApplies.totalCount} סה"כ
+            <b style={{ color: "black" }}>{appliesApproveStore.approveMyApplies.waitingForApproveCount}</b>/
+            {appliesApproveStore.approveMyApplies.totalCount} סה"כ
           </h3>
         </div>
       )}
 
       <div className="display-flex inner-flex">
         <SearchAppliesField selectedTab={selectedTab} setSearchFields={setSearchFields} getData={getData} />
-
 
         <FilterAppliesField
           selectedTab={selectedTab}
@@ -66,7 +65,7 @@ const HeaderTable = ({
           searchFieldDisplayName="סוג בקשה"
           searchOptions={TYPES}
         />
-  
+
         <FilterAppliesField
           selectedTab={selectedTab}
           setSearchFields={setSearchFields}

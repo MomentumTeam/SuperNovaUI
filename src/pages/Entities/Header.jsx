@@ -10,7 +10,7 @@ const Header = ({ setTab, selectedTab, tabs }) => {
   const notifications = toJS(notificationStore.userUnreadNotifications);
 
   useEffect(() => {
-    notificationStore.fetchUserNotifications();
+    notificationStore.fetchUserUnreadNotifications();
   }, [userStore.user]);
 
   return (

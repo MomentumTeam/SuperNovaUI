@@ -20,7 +20,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const PassRequestForm = forwardRef(({ request, setActionIsDone }, ref) => {
-  const { userStore, appliesStore } = useStores();
+  const { userStore, appliesApproveStore } = useStores();
   const user = toJS(userStore.user);
   const passOptions = getUserPassOptions(request, user);
 
@@ -50,7 +50,7 @@ const PassRequestForm = forwardRef(({ request, setActionIsDone }, ref) => {
     };
 
     if (comment.length > 0) req.comment = comment;
-    await appliesStore.transferApprovers(req);
+    await appliesApproveStore.transferApprovers(req);
     setActionIsDone(true);
   };
 

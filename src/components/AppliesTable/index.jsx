@@ -21,7 +21,7 @@ import { toJS } from 'mobx';
 import { exportToExcel } from '../../utils/general';
 
 const AppliesTable = () => {
-  const { appliesStore, userStore } = useStores();
+  const { appliesApproveStore, userStore } = useStores();
 
   const user = toJS(userStore.user);
   const [selectedTab, setTab] = useState(
@@ -85,10 +85,10 @@ const AppliesTable = () => {
 
     switch (selectedTab) {
       case TableNames.allreqs.tab:
-        data = await appliesStore.getAllApproveRequests(searchquery);
+        data = await appliesApproveStore.getAllApproveRequests(searchquery);
         break;
       case TableNames.myreqs.tab:
-        data = await appliesStore.getMyApproveRequests(searchquery);
+        data = await appliesApproveStore.getMyApproveRequests(searchquery);
       default:
         break;
     }
@@ -141,22 +141,18 @@ const AppliesTable = () => {
   useEffect(() => {
     setTableData(
       selectedTab === TableNames.myreqs.tab
-        ? appliesStore.approveMyApplies
-        : appliesStore.approveAllApplies
+        ? appliesApproveStore.approveMyApplies
+        : appliesApproveStore.approveAllApplies
     );
-  }, [
-    selectedTab,
-    appliesStore.approveMyApplies,
-    appliesStore.approveAllApplies,
-  ]);
+  }, [selectedTab, appliesApproveStore.approveMyApplies, appliesApproveStore.approveAllApplies]);
 
   const getUserAppliesCallback = useCallback(async () => {
     if (user) {
       if (isUserCanSeeMyApproveApplies(user)) {
-        await appliesStore.getMyApproveRequests({ from: 1, to: pageSize });
+        await appliesApproveStore.getMyApproveRequests({ from: 1, to: pageSize });
       }
       if (isUserCanSeeAllApproveApplies(user)) {
-        await appliesStore.getAllApproveRequests({ from: 1, to: pageSize });
+        await appliesApproveStore.getAllApproveRequests({ from: 1, to: pageSize });
       }
     }
   }, [userStore.user.id]);
@@ -165,12 +161,18 @@ const AppliesTable = () => {
     getUserAppliesCallback();
   }, [getUserAppliesCallback]);
 
+  const rowClass = (data) =>  {
+    return {
+        'row-new-data': data.newApply
+    }
+  }
+
   return (
     <>
       <HeaderTable
         user={user}
-        myApplies={appliesStore.approveMyApplies}
-        allApplies={appliesStore.approveAllApplies}
+        myApplies={appliesApproveStore.approveMyApplies}
+        allApplies={appliesApproveStore.approveAllApplies}
         selectedTab={selectedTab}
         setTab={setTab}
         setSearchFields={handleFieldChange}
@@ -195,6 +197,7 @@ const AppliesTable = () => {
         sortField={sortEvent?.sortField}
         sortOrder={sortEvent?.sortOrder}
         scrollHeight="300px"
+        rowClasses={rowClass}
       />
     </>
   );
