@@ -189,14 +189,15 @@ const CreateSpecialEntityForm = forwardRef(
 
     useEffect(() => {
       const setFormDataFromReqObj = (requestObject) => {
-        console.log(requestObject)
         methods.setValue('soldierEntityType', configStore.KARTOFFEL_SOLDIER);
         methods.setValue('workerEntityType', configStore.KARTOFFEL_WORKER);
 
         if (requestObject) {
-          console.log(requestObject);
-          methods.setValue('userType', requestObject.kartoffelParams.entityType);
-          
+          methods.setValue(
+            'userType',
+            requestObject.kartoffelParams.entityType
+          );
+
           // SOLDIER and CIVILIAN
           methods.setValue(
             'identityNumber',
@@ -205,7 +206,10 @@ const CreateSpecialEntityForm = forwardRef(
 
           // general fields
           methods.setValue('comments', requestObject.comments);
-          methods.setValue('firstName', requestObject.kartoffelParams.firstName);
+          methods.setValue(
+            'firstName',
+            requestObject.kartoffelParams.firstName
+          );
           methods.setValue('lastName', requestObject.kartoffelParams.lastName);
           methods.setValue(
             'mobilePhone',
@@ -237,26 +241,31 @@ const CreateSpecialEntityForm = forwardRef(
           // WORKER
           methods.setValue(
             'organization',
-            requestObject.kartoffelParams.organization
+            configStore.organizationNumberToGroupId.find((org) => {
+              return (
+                org.orgNumber === requestObject.kartoffelParams.organization
+              );
+            })
           );
           methods.setValue(
             'employeeNumber',
             requestObject.kartoffelParams.employeeNumber
           );
-          methods.setValue(
-            'approvers',
-            requestObject.commanders
-          );
+          methods.setValue('approvers', requestObject.commanders);
         }
-      }
+      };
 
-      const setDefaultApprovers = async (requestObject, onlyForView, userStore) => {
-        let approvers = []
-        switch (methods.watch('userType')){
-          case configStore.KARTOFFEL_SOLDIER: 
-            approvers = configStore.soldierRequestsApprovers
+      const setDefaultApprovers = async (
+        requestObject,
+        onlyForView,
+        userStore
+      ) => {
+        let approvers = [];
+        switch (methods.watch('userType')) {
+          case configStore.KARTOFFEL_SOLDIER:
+            approvers = configStore.soldierRequestsApprovers;
             break;
-          case configStore.KARTOFFEL_CIVILIAN: 
+          case configStore.KARTOFFEL_CIVILIAN:
             approvers = await GetDefaultApprovers({
               request: requestObject,
               onlyForView,
@@ -267,23 +276,22 @@ const CreateSpecialEntityForm = forwardRef(
             approvers = await checkValidExternalApprover({
               request: requestObject,
               user: userStore.user,
-              isExternalUser: userStore.isUserExternal
+              isExternalUser: userStore.isUserExternal,
             });
             break;
-          default: 
+          default:
             approvers = await GetDefaultApprovers({
               request: requestObject,
               onlyForView,
               user: userStore.user,
-            });;
+            });
         }
-        methods.setValue('approvers', approvers)  
-      }
+        methods.setValue('approvers', approvers);
+      };
 
       setFormDataFromReqObj(requestObject);
       setDefaultApprovers(requestObject, onlyForView, userStore);
     }, [selectedUserType]);
-
 
     const onSubmit = async (data) => {
       try {
@@ -308,13 +316,13 @@ const CreateSpecialEntityForm = forwardRef(
         organization,
         employeeNumber,
       } = data;
-      console.log(data)
       const req = {
         commanders: approvers,
         kartoffelParams: {
           firstName,
           lastName,
-          ...(identityNumber && identityNumber !== '' && { identityNumber }),
+          ...(identityNumber &&
+            identityNumber !== '' && { identityCard: identityNumber }),
           mobilePhone: [mobilePhone],
           phone: [mobilePhone],
           clearance: classification,
@@ -325,45 +333,41 @@ const CreateSpecialEntityForm = forwardRef(
           ...(rank && rank !== '' && { rank }),
           ...(serviceType && serviceType !== '' && { serviceType }),
           ...(personalNumber && personalNumber !== '' && { personalNumber }),
-          ...(organization && organization !== '' && { organization }),
+          ...(organization &&
+            organization !== '' && { organization: organization.orgNumber }),
           ...(employeeNumber && employeeNumber !== '' && { employeeNumber }),
         },
         comments,
         adParams: {},
       };
-console.log(req)
       await appliesStore.createEntityApply(req);
       await setIsActionDone(true);
     };
 
-    useImperativeHandle(
-      ref,
-      () => ({
-        handleSubmit: methods.handleSubmit(onSubmit),
-      }),
-    );
-
+    useImperativeHandle(ref, () => ({
+      handleSubmit: methods.handleSubmit(onSubmit),
+    }));
 
     const shouldApproversBeDisabled = (onlyForView) => {
-      if(onlyForView) return true;
+      if (onlyForView) return true;
 
       let disabled = false;
-      switch (methods.watch('userType')) { 
+      switch (methods.watch('userType')) {
         case configStore.KARTOFFEL_SOLDIER:
           disabled = true;
           break;
         case configStore.KARTOFFEL_WORKER:
-          if(isUserExternalApprover) disabled = true;
+          if (isUserExternalApprover) disabled = true;
           break;
         case configStore.KARTOFFEL_CIVILIAN:
-          if(isUserApprover) disabled = true;
+          if (isUserApprover) disabled = true;
           break;
         default:
           disabled = false;
       }
 
       return disabled;
-    }
+    };
 
     let fields = getUniqueFieldsByUserType(
       configStore,
