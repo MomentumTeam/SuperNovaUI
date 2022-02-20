@@ -83,18 +83,12 @@ const validationSchema = Yup.object().shape({
     .test('', 'יש להעלות קובץ תקין! ראה פורמט', async (value, { createError, path }) => {
       const formData = new FormData();
       formData.append('bulkFiles', value[0]);
-      const uploadFilesRes = await uploadBulkFile(formData, BulkTypes[0]);
-
-      if (!uploadFilesRes[0]?.valid) {
-        if (uploadFilesRes[0]?.errorRows.length === 0) {
-          return createError({ path, message: `הקובץ ריק/לא תקין.` });
-        }
-        else if (uploadFilesRes[0]?.errorRows.length > 0) {
-          const errorLines = await Promise.all(uploadFilesRes[0]?.errorRows.map((row) => row + 2));
-          return createError({ path, message: `הקובץ לא תקין. אנא תקן/י את שורות ${errorLines.toString()}.` });
-        }
-      } else {  //when the uploaded file is valid
-        return true;
+      const uploadFilesRes = await uploadBulkFile(formData, BulkTypes[1]);
+      if (!uploadFilesRes) {
+        //Table uploaded is illegl !
+        return false;
+      } else {
+        return uploadFilesRes?.uploadFiles[0];
       }
     }),
 });
@@ -145,7 +139,7 @@ const RenameBulkOGForm = forwardRef(
 
       const formData = new FormData();
       formData.append('bulkFiles', bulkFile[0]);
-      const uploadFilesRes = await uploadBulkFile(formData, BulkTypes[1]);
+      const { uploadFiles } = await uploadBulkFile(formData, BulkTypes[1]);
 
       const req = {
         commanders: approvers,
@@ -157,7 +151,7 @@ const RenameBulkOGForm = forwardRef(
         adParams: {
           ouDisplayName: getOuDisplayName(hierarchy.hierarchy, hierarchy.name),
         },
-        excelFilePath: uploadFilesRes[0].name,
+        excelFilePath: uploadFiles[0],
         comments,
       };
 
