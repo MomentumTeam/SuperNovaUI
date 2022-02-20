@@ -152,9 +152,9 @@ const validationSchema = Yup.object().shape({
     then: Yup.string().required("יש לבחור דרגה"),
     otherwise: Yup.string().optional(),
   }),
-  employeeNumber: Yup.number().when(["userType", "workerEntityType"], {
+  employeeNumber: Yup.string().when(["userType", "workerEntityType"], {
     is: (userType, workerEntityType) => userType === workerEntityType,
-    then: Yup.number().required("יש להכניס מספר עובד"),
+    then: Yup.string().required("יש להכניס מספר עובד"),
   }),
   organization: Yup.object().when(["userType", "workerEntityType"], {
     is: (userType, workerEntityType) => userType === workerEntityType,
@@ -171,7 +171,7 @@ const CreateSpecialEntityForm = forwardRef(
     const userTypes = [
       { name: 'אזרח', key: configStore.KARTOFFEL_CIVILIAN },
       { name: 'חייל ', key: configStore.KARTOFFEL_SOLDIER },
-      { name: 'עובד', key: configStore.KARTOFFEL_WORKER },
+      { name: 'עובד', key: configStore.KARTOFFEL_EXTERNAL },
     ];
     const [selectedUserType, setSelectedUserType] = useState(userTypes[0]);
 
@@ -190,9 +190,10 @@ const CreateSpecialEntityForm = forwardRef(
     useEffect(() => {
       const setFormDataFromReqObj = (requestObject) => {
         methods.setValue('soldierEntityType', configStore.KARTOFFEL_SOLDIER);
-        methods.setValue('workerEntityType', configStore.KARTOFFEL_WORKER);
+        methods.setValue('workerEntityType', configStore.KARTOFFEL_EXTERNAL);
 
         if (requestObject) {
+          console.log(requestObject);
           methods.setValue(
             'userType',
             requestObject.kartoffelParams.entityType
@@ -260,33 +261,35 @@ const CreateSpecialEntityForm = forwardRef(
         onlyForView,
         userStore
       ) => {
-        let approvers = [];
-        switch (methods.watch('userType')) {
-          case configStore.KARTOFFEL_SOLDIER:
-            approvers = configStore.soldierRequestsApprovers;
-            break;
-          case configStore.KARTOFFEL_CIVILIAN:
-            approvers = await GetDefaultApprovers({
-              request: requestObject,
-              onlyForView,
-              user: userStore.user,
-            });
-            break;
-          case configStore.KARTOFFEL_WORKER:
-            approvers = await checkValidExternalApprover({
-              request: requestObject,
-              user: userStore.user,
-              isExternalUser: userStore.isUserExternal,
-            });
-            break;
-          default:
-            approvers = await GetDefaultApprovers({
-              request: requestObject,
-              onlyForView,
-              user: userStore.user,
-            });
+        if (!onlyForView) {
+          let approvers = [];
+          switch (methods.watch('userType')) {
+            case configStore.KARTOFFEL_SOLDIER:
+              approvers = configStore.soldierRequestsApprovers;
+              break;
+            case configStore.KARTOFFEL_CIVILIAN:
+              approvers = await GetDefaultApprovers({
+                request: requestObject,
+                onlyForView,
+                user: userStore.user,
+              });
+              break;
+            case configStore.KARTOFFEL_EXTERNAL:
+              approvers = await checkValidExternalApprover({
+                request: requestObject,
+                user: userStore.user,
+                isExternalUser: userStore.isUserExternal,
+              });
+              break;
+            default:
+              approvers = await GetDefaultApprovers({
+                request: requestObject,
+                onlyForView,
+                user: userStore.user,
+              });
+          }
+          methods.setValue('approvers', approvers);
         }
-        methods.setValue('approvers', approvers);
       };
 
       setFormDataFromReqObj(requestObject);
@@ -340,6 +343,7 @@ const CreateSpecialEntityForm = forwardRef(
         comments,
         adParams: {},
       };
+      console.log(req);
       await appliesStore.createEntityApply(req);
       await setIsActionDone(true);
     };
@@ -356,7 +360,7 @@ const CreateSpecialEntityForm = forwardRef(
         case configStore.KARTOFFEL_SOLDIER:
           disabled = true;
           break;
-        case configStore.KARTOFFEL_WORKER:
+        case configStore.KARTOFFEL_EXTERNAL:
           if (isUserExternalApprover) disabled = true;
           break;
         case configStore.KARTOFFEL_CIVILIAN:
@@ -450,8 +454,8 @@ const CreateSpecialEntityForm = forwardRef(
         <div className='userTypePick'>
           {userTypes.map((userType) => {
             if (
-              userType.key !== configStore.KARTOFFEL_WORKER ||
-              (userType.key === configStore.KARTOFFEL_WORKER &&
+              userType.key !== configStore.KARTOFFEL_EXTERNAL ||
+              (userType.key === configStore.KARTOFFEL_EXTERNAL &&
                 userStore.isUserExternal === true)
             ) {
               return (
@@ -462,7 +466,7 @@ const CreateSpecialEntityForm = forwardRef(
                     value={userType}
                     onChange={(e) => {
                       setSelectedUserType(e.value);
-                      methods.setValue('userType', e.value.key)
+                      methods.setValue('userType', e.value.key);
                     }}
                     checked={methods.watch('userType') === userType.key}
                     disabled={onlyForView}

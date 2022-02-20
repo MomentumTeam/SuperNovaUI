@@ -77,7 +77,7 @@ export const getUniqueFieldsByUserType = (configStore, userType) => {
         case configStore.KARTOFFEL_CIVILIAN:
             fields = civilianUserFormFields;
             break;
-        case configStore.KARTOFFEL_WORKER:
+        case configStore.KARTOFFEL_EXTERNAL:
             fields = externalUserFormFields;
             break;
         case configStore.KARTOFFEL_SOLDIER:
