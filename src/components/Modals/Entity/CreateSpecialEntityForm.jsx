@@ -114,8 +114,7 @@ const validationSchema = Yup.object().shape({
                     const { isValid } = await isApproverValid(
                       approver?.entityId || approver?.id,
                       context.parent.organization?.orgId,
-                      context.parent.userType ===
-                        context.parent.soldierEntityType
+                      true
                     );
 
                     if (!isValid) isTotalValid = false;
