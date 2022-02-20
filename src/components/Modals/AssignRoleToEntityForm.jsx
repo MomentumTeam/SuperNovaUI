@@ -614,7 +614,7 @@ const AssignRoleToEntityForm = forwardRef(
             paddingBottom: '10px',
           }}
         >
-          <h2 style={{ padding: 0 }}>מעבר לתפקיד</h2>
+          <h2 style={{ padding: 0 }}>{showJob ? "מעבר לתפקיד" : "חיבור לתפקיד"}</h2>
           <InfoPopup
             infoText='שימו לב❣️ במידה והתפקיד אינו פנוי יש לבחור תאריך ושעה לביצוע ההחלפה בתיאום מראש עם מבצע התפקיד.עבור רס"ן ומעלה הגורם המאשר יהיה מבצע התפקיד.'
             name='מעבר לתפקיד'
@@ -720,7 +720,7 @@ const AssignRoleToEntityForm = forwardRef(
             </div>
           </div>
           <div className='p-fluid-item-flex p-fluid-item'>
-            {showJob && watch('role') && (
+            { watch('role') && (
               <div className='p-field' style={{ marginLeft: '10px' }}>
                 <label htmlFor='2030'>סיווג התפקיד</label>
                 <InputText
