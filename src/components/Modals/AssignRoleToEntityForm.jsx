@@ -565,7 +565,7 @@ const AssignRoleToEntityForm = forwardRef(
                 {...register('personalNumber', { required: true })}
                 id='assignRoleToEntityForm-personalNumber'
                 type='text'
-                keyfilter='pnum'
+                keyfilter={userStore.isUserExternal ? '' : 'pnum'}
                 required
                 onInput={() => {
                   setValue('user', null);
