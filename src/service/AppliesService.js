@@ -5,7 +5,7 @@ import '../assets/css/local/components/status.css';
 
 //GET
 
-export const getMyRequests = async (from, to, sortField = "UPDATED_AT") => {
+export const getMyRequests = async (from, to, sortField = 'UPDATED_AT') => {
   const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/my`, {
     params: {
       from,
@@ -17,7 +17,10 @@ export const getMyRequests = async (from, to, sortField = "UPDATED_AT") => {
   return response.data;
 };
 
-export const getMyRequestsWithParams = async (params, sortField = "UPDATED_AT") => {
+export const getMyRequestsWithParams = async (
+  params,
+  sortField = 'UPDATED_AT'
+) => {
   const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/my`, {
     params: { ...params, sortField },
   });
@@ -246,18 +249,26 @@ export const disconectRoleFromEntityRequest = async (applyProperties) => {
 };
 
 export const deleteRequest = async (requestId) => {
-  const response = await axiosApiInstance.delete(`${apiBaseUrl}/api/requests/${requestId}`);
+  const response = await axiosApiInstance.delete(
+    `${apiBaseUrl}/api/requests/${requestId}`
+  );
 
   return response.data;
 };
 
 export const uploadBulkFile = async (file, type) => {
-  const response = await axiosApiInstance.post(
-    `${apiBaseUrl}/api/bulk/upload?type=${type}`,
-    file,
-    { headers: { 'Content-Type': 'multipart/form-data' } }
-  );
-  return response.data.uploadFilesInfo;
+  try {
+    const response = await axiosApiInstance.post(
+      `${apiBaseUrl}/api/bulk/upload?type=${type}`,
+      file,
+      { headers: { 'Content-Type': 'multipart/form-data' } }
+    );
+    return response.data;
+  } catch (error) {
+    if (error.response.status === 500) {
+      return false;
+    }
+  }
 };
 
 export const createRoleBulkRequest = async (data) => {
@@ -330,23 +341,33 @@ export const transferApproverRequest = async ({
   approvers,
   type,
   comment,
-  overrideApprovers
+  overrideApprovers,
 }) => {
-  const response = await axiosApiInstance.put(`${apiBaseUrl}/api/requests/approver/transfer/${reqId}`, {
-    approvers,
-    type,
-    commentForApprovers: comment,
-    overrideApprovers,
-  });
+  const response = await axiosApiInstance.put(
+    `${apiBaseUrl}/api/requests/approver/transfer/${reqId}`,
+    {
+      approvers,
+      type,
+      commentForApprovers: comment,
+      overrideApprovers,
+    }
+  );
 
   return response.data;
 };
 
-export const removeApproverFromApproversRequest = async ({ reqId, approverId, type }) => {
-  const response = await axiosApiInstance.put(`${apiBaseUrl}/api/requests/approver/delete/${reqId}`, {
-    approverId,
-    type,
-  });
+export const removeApproverFromApproversRequest = async ({
+  reqId,
+  approverId,
+  type,
+}) => {
+  const response = await axiosApiInstance.put(
+    `${apiBaseUrl}/api/requests/approver/delete/${reqId}`,
+    {
+      approverId,
+      type,
+    }
+  );
 
   return response.data;
 };
@@ -356,7 +377,6 @@ export const updateApproversCommentsRequest = async ({
   approversType,
   comment,
 }) => {
-
   const response = await axiosApiInstance.put(
     `${apiBaseUrl}/api/requests/approver/comments/${requestId}`,
     {
