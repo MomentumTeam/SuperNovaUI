@@ -347,7 +347,9 @@ const ApproverForm = forwardRef(
                 setValue('user', e.value, { shouldValidate: true });
                 setValue(
                   'personalNumber',
-                  e.value.personalNumber || e.value.identityCard
+                  e.value.employeeId ||
+                    e.value.personalNumber ||
+                    e.value.identityCard
                 );
                 setValue('hierarchy', {
                   hierarchy: e.value.hierarchy,

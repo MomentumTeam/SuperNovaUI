@@ -11,6 +11,7 @@ export default class UserStore {
   users = null;
   userNotifications = [];
   userUnreadNotifications = [];
+  isUserExternal = false;  
 
   constructor() {
     makeAutoObservable(this, {
@@ -20,6 +21,7 @@ export default class UserStore {
       fetchUserInfo: action,
       fetchUserNotifications: action,
       getMyPicture: action,
+      isUserExternal: observable
     });
 
     this.getUserToken();
@@ -44,6 +46,7 @@ export default class UserStore {
     }
     
     this.isUserLoading = false;
+    this.checkIfUserExternal();
   }
 
   parseToken() {
@@ -59,6 +62,14 @@ export default class UserStore {
     } catch (err) {
       console.log(err);
     }
+  }
+  
+  checkIfUserExternal() {
+     configStore.WORKER_ORGANIZATIONS_ID_LIST.forEach((ogId) => {
+       if (this?.user && ogId === this.user?.directGroup) {
+         this.isUserExternal = true;
+       }
+     })
   }
 
   async fetchUserNotifications() {

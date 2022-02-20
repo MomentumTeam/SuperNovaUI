@@ -73,14 +73,19 @@ export const TableActionsTypes = {
 };
 
 export const TableSearch = (tableType) => {
-  const { entitiesStore, rolesStore, groupsStore } = useStores();
+  const {
+    entitiesStore,
+    rolesStore,
+    groupsStore,
+    userStore
+  } = useStores();
 
   const searchFields = {
     entities: [
       {
         searchFieldFunc: userConverse,
         searchField: "id",
-        searchDisplayName: 'שם/מ"א/ת"ז',
+        searchDisplayName: userStore.isUserExternal ? 'שם/מ"א/ת"ז/מזהה עובד' : 'שם/מ"א/ת"ז',
         searchFunc: entitiesStore.getEntitiesByEntity,
         searchTemplate: userTemplate,
       },

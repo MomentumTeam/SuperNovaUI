@@ -63,7 +63,7 @@ export const updateDecisionReq = async (requestId, decision) => {
   return response.data;
 };
 
-export const isApproverValid = async (approverId, groupId) => {
-  const response = await axiosApiInstance.post(`${apiBaseUrl}/api/approvers/isValid`, { approverId, groupId });
+export const isApproverValid = async (approverId, groupId, isOrganization = false) => {
+  const response = await axiosApiInstance.post(`${apiBaseUrl}/api/approvers/isValid`, { approverId, groupId, isOrganization });
   return response.data;
 }
