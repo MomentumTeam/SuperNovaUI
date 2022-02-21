@@ -33,9 +33,7 @@ class ConfigStore {
   HI_CHAT_SUPPORT_GROUP_NAME = 'לגו תמיכה';
   CREATE_ADMIN_REQS_APPROVERS = ['619e3a6fe4de0300121d78c7,61c039d8e4de0300121de45a'];
   CREATE_SOLDIER_APPROVERS = ['619e3a6fe4de0300121d78c7', '619e406ee4de0300121dc4c8'];
-  CREATE_WORKER_APPROVERS = ['619e3a6fe4de0300121d78c7,61c039d8e4de0300121de45a'];
-  WORKER_ORGANIZATION_PREFIXES = ['8747', '8200', '8100'];
-  WORKER_ORGANIZATIONS_ID_LIST = ['619e3210f235dc001846faff'];
+  ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL = ['619e3a6fe4de0300121d78c7', '619e406ee4de0300121dc4c8', '5ebbd53f64fe6f2b1c5777ae']
 
   constructor() {
     makeAutoObservable(this, {
@@ -113,6 +111,9 @@ class ConfigStore {
         this.organizationIds = config.organizationIds;
       if (config?.organizationNumberToGroupId)
         this.organizationNumberToGroupId = config.organizationNumberToGroupId;
+      if (config?.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL)
+        this.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL = config.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL;
+
 
     } catch (error) {
       console.log('problem with config');

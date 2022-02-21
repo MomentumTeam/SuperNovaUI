@@ -1,6 +1,10 @@
 import { action, makeAutoObservable, observable } from 'mobx';
 import { getPictureByConnectedEntity, getUser } from "../service/UserService";
 import { getMyNotifications, markAsRead } from '../service/NotificationService';
+import {
+  getOGById,
+} from '../service/KartoffelService';
+
 import { Base64 } from 'js-base64';
 import cookies from 'js-cookie';
 import configStore from './Config';
@@ -46,7 +50,7 @@ export default class UserStore {
     }
     
     this.isUserLoading = false;
-    this.checkIfUserExternal();
+    await this.checkIfUserExternal();
   }
 
   parseToken() {
@@ -63,13 +67,21 @@ export default class UserStore {
       console.log(err);
     }
   }
-  
-  checkIfUserExternal() {
-     configStore.WORKER_ORGANIZATIONS_ID_LIST.forEach((ogId) => {
-       if (this?.user && ogId === this.user?.directGroup) {
-         this.isUserExternal = true;
-       }
-     })
+async checkIfUserExternal() {
+    if (this.user && (this.user.entityType === configStore.KARTOFFEL_EXTERNAL ||
+        configStore.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL.includes(this.user.id) ||
+        configStore.organizationIds.includes(this.user.directGroup))) {
+      this.isUserExternal = true
+    }
+
+    if (!this.isUserExternal) {
+      let userOG = await getOGById(this.user.directGroup);
+      userOG.ancestors.forEach((ancestor) => {
+        if (configStore.organizationIds.includes(ancestor)) {
+          this.isUserExternal = true;
+        }
+      })
+    }
   }
 
   async fetchUserNotifications() {
