@@ -328,4 +328,10 @@
 
 .tableStyle .row-new-data {
     background-color: rgba(26, 119, 240, 0.116) !important;
+		box-shadow: inset -15px 0 10px -10px rgb(115 209 229) !important;
+}
+
+.new-apply-badge {
+  background: #ffae00b7;
+  color: #ffff;
 }

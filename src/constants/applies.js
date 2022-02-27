@@ -5,7 +5,6 @@ import { getFormattedDate } from "../utils/applies";
 import { ResponsibleFactorWithWaitingFieldTemplate } from '../components/AppliesTable/ResponsibleFactorWithWaitingFieldTemplate';
 import { StatusApproverFieldTemplate } from '../components/AppliesTable/StatusApproverFieldTemplate';
 
-
 export const TYPES = {
   CREATE_OG: 'יצירת היררכיה חדשה',
   CREATE_ROLE: 'יצירת תפקיד חדש',
@@ -51,43 +50,46 @@ export const TableNames = {
 
 export const TableTypes = (selectedTab, user, approverTableType) => {
   return [
-    { field: 'serialNumber', displayName: 'מספר בקשה' },
     {
-      field: 'type',
-      displayName: 'סוג בקשה',
+      field: "serialNumber",
+      displayName: "מספר בקשה",
+    },
+    {
+      field: "type",
+      displayName: "סוג בקשה",
       enum: TYPES,
-      default: 'לא ידוע',
+      default: "לא ידוע",
       sortable: true,
       sortFields: sortFields.REQUEST_TYPE,
     },
     {
-      field: 'submittedBy',
-      displayName: 'שם מבקש',
+      field: "submittedBy",
+      displayName: "שם מבקש",
       sortable: true,
       sortFields: sortFields.SUBMITTED_BY,
       template: RequestorFieldTemplate,
     },
     {
       field: null,
-      displayName: 'גורם מטפל',
+      displayName: "גורם מטפל",
       hide: selectedTab !== TableNames.allreqs.tab,
       templateParam: user,
       template: ResponsibleFactorWithWaitingFieldTemplate,
     },
     {
-      field: 'createdAt',
-      displayName: 'ת׳ בקשה',
+      field: "createdAt",
+      displayName: "ת׳ בקשה",
       formatter: getFormattedDate,
       sortable: true,
       sortFields: sortFields.CREATED_AT,
       templateParam: [
         user,
-        'status',
-        'needSecurityDecision',
-        'needSuperSecurityDecision',
-        'superSecurityDecision',
-        'securityDecision',
-        'commanderDecision',
+        "status",
+        "needSecurityDecision",
+        "needSuperSecurityDecision",
+        "superSecurityDecision",
+        "securityDecision",
+        "commanderDecision",
       ],
       template: DateFieldTemplate,
     },
@@ -96,10 +98,10 @@ export const TableTypes = (selectedTab, user, approverTableType) => {
     //   displayName: 'היררכיה',
     //   template: TextFieldTemplate,
     // },
-    { field: 'comments', displayName: 'הערה', template: TextFieldTemplate },
+    { field: "comments", displayName: "הערה", template: TextFieldTemplate },
     {
       field: null,
-      displayName: 'סטטוס',
+      displayName: "סטטוס",
       templateParam: user,
       // sortable: true,
       // sortFields: sortFields.STATUS,

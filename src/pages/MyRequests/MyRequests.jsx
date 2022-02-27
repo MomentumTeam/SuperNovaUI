@@ -13,7 +13,7 @@ import configStore from '../../store/Config';
 let defaultSearchFuncName = "loadMyRequests";
 let defaultSearchValue = "";
 
-const Requests = observer(() => {
+const Requests = observer(({myRequests}) => {
   const { appliesMyStore, userStore } = useStores();
   const [tabId, setTabId] = useState(TableNames.myRequests.tab);
   const [first, setFirst] = useState(0);
@@ -77,8 +77,8 @@ const Requests = observer(() => {
   };
 
   useEffect(() => {
-    setTableData(appliesMyStore.myRequests);
-  }, [appliesMyStore.myRequests, appliesMyStore.totalCount]);
+    setTableData(myRequests);
+  }, [myRequests]);
 
   useEffect(() => {
     searchActivate();

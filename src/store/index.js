@@ -25,7 +25,14 @@ const stores = {
   treeStore: new TreeStore(),
 };
 
-const socketStore = new SocketStore(stores.notificationStore, stores.appliesApproveStore, stores.configStore);
+const socketStore = new SocketStore({
+  notificationStore: stores.notificationStore,
+  appliesApproveStore: stores.appliesApproveStore,
+  appliesStore: stores.appliesStore,
+  appliesMyStore: stores.appliesMyStore,
+  configStore: stores.configStore,
+  userStore: stores.userStore,
+});
 export const StoresContext = createContext({...stores, socketStore});
 
 export const StoreProvider = ({ children }) => (

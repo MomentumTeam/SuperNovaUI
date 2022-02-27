@@ -171,8 +171,6 @@ const AppliesTable = () => {
     <>
       <HeaderTable
         user={user}
-        myApplies={appliesApproveStore.approveMyApplies}
-        allApplies={appliesApproveStore.approveAllApplies}
         selectedTab={selectedTab}
         setTab={setTab}
         setSearchFields={handleFieldChange}

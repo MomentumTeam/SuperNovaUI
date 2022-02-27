@@ -23,7 +23,6 @@ export default class AppliesMyStore {
     });
   }
 
-
   async loadMyRequests(from, to, append = false) {
     const myRequests = await getMyRequests(from, to, "CREATED_AT");
     this.myRequests = append ? [...this.myRequests, ...myRequests.requests] : myRequests.requests;
@@ -75,4 +74,21 @@ export default class AppliesMyStore {
       this.myRequests = append ? [...this.myRequests, ...filteredResults] : filteredResults;
     }
   }
+
+  // UTILS
+  checkIfApplyExist = (id) => {
+    if (Array.isArray(this.myRequests)) {
+      const reqIndex = this.myRequests.findIndex((apply) => apply.id === id);
+      return reqIndex;
+    }
+
+    return -1;
+  };
+
+  updateApply = (apply) => {
+    // Requests that the user created
+    console.log('update apply');
+    const isApplyExists = this.checkIfApplyExist(apply.id);
+    if (isApplyExists != -1) this.myRequests[isApplyExists] = apply;
+  };
 }

@@ -5,12 +5,19 @@ export default class SocketStore {
   notificationStore;
   appliesApproveStore;
   configStore;
+  userStore;
+  appliesStore;
+  appliesMyStore;
+
   socket;
 
-  constructor(notificationStore, appliesApproveStore, configStore) {
+  constructor({ notificationStore, appliesApproveStore, configStore, userStore, appliesStore, appliesMyStore }) {
     this.notificationStore = notificationStore;
     this.appliesApproveStore = appliesApproveStore;
     this.configStore = configStore;
+    this.userStore = userStore;
+    this.appliesStore = appliesStore;
+    this.appliesMyStore = appliesMyStore;
 
     const token = cookies.get(this.configStore.TOKEN_NAME);
     this.socket = io("localhost:2001", {
@@ -32,21 +39,40 @@ export default class SocketStore {
     this.initNotificationEvents();
     this.initRequestEvents();
   }
-  
+
   initNotificationEvents() {
+    // user gets new unread notification
     this.socket.on("newNotification", (notification) => {
-      // user gets new unread notification
       this.notificationStore.addNotification(notification);
     });
-    
+
+    // user read notification
     this.socket.on("readNotifications", () => {
       this.notificationStore.readNotifications();
     });
   }
-  
+
   initRequestEvents() {
-    this.socket.on("newRequest", (apply) => {
-      this.appliesApproveStore.addApply(apply);
+    // user get new request for my
+    this.socket.on("newRequestMy", (apply) => {
+      this.appliesApproveStore.addOrUpdateApplyMy({ user: this.userStore.user, apply });
+    });
+
+    // user get new request for all
+    this.socket.on("newRequestAll", (apply) => {
+      this.appliesApproveStore.addOrUpdateApplyAll({ user: this.userStore.user, apply });
+    });
+
+    // user get update on request
+    this.socket.on("updateRequest", (apply) => {
+      if (apply.submittedBy.id === this.userStore.user.id) this.appliesStore.updateApply(apply);
+      this.appliesMyStore.updateApply(apply);
+      this.appliesApproveStore.updateApplyAndCount({
+        user: this.userStore.user,
+        reqId: apply.id,
+        apply,
+        removeApply: true,
+      });
     });
   }
 }

@@ -5,8 +5,9 @@ import { isUserCanSeeAllApproveApplies } from '../../utils/user';
 import { SearchAppliesField } from './SearchAppliesField';
 import { FilterAppliesField } from './FilterAppliesField';
 import { AUTOCOMPLETE_STATUSES_APPROVER, TYPES } from "../../constants";
+import { observer } from 'mobx-react';
 
-const HeaderTable = ({
+const HeaderTable = observer(({
   user,
   selectedTab,
   setTab,
@@ -36,19 +37,19 @@ const HeaderTable = ({
           <HeaderTemplate
             tab={TableNames.allreqs.tab}
             name={TableNames.allreqs.tableName}
-            badgeValue={appliesApproveStore.approveAllApplies.waitingForApproveCount}
+            badgeValue={appliesApproveStore.approveAllAppliesCount}
           />
           <HeaderTemplate
             tab={TableNames.myreqs.tab}
             name={TableNames.myreqs.tableName}
-            badgeValue={appliesApproveStore.approveMyApplies.waitingForApproveCount}
+            badgeValue={appliesApproveStore.approveMyAppliesCount}
           />
         </div>
       ) : (
         <div>
           <h2 style={{ display: "inline" }}>{TableNames.myreqs.tableName}</h2>
           <h3 style={{ display: "inline", marginRight: "10px" }}>
-            <b style={{ color: "black" }}>{appliesApproveStore.approveMyApplies.waitingForApproveCount}</b>/
+            <b style={{ color: "black" }}>{appliesApproveStore.approveMyAppliesCount}</b>/
             {appliesApproveStore.approveMyApplies.totalCount} סה"כ
           </h3>
         </div>
@@ -77,6 +78,6 @@ const HeaderTable = ({
       </div>
     </div>
   );
-};
+});
 
 export { HeaderTable };

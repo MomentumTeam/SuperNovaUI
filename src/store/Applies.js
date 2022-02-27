@@ -126,4 +126,21 @@ export default class AppliesStore {
     const changeRoleHierarchyBulkApply = await changeRoleHierarchyBulkRequest(applyProperties);
     this.myApplies.unshift(changeRoleHierarchyBulkApply);
   }
+
+  // UTILS
+  checkIfApplyExist = (id) => {
+    if (Array.isArray(this.myApplies)) {
+      const reqIndex = this.myApplies.findIndex((apply) => apply.id === id);
+      return reqIndex;
+    }
+
+    return -1;
+  }
+
+  updateApply = (apply) => {
+    // Requests that the user created
+    const isApplyExists = this.checkIfApplyExist(apply.id);
+    if (isApplyExists != -1) this.myApplies.splice(isApplyExists, 1);
+    this.myApplies.unshift(apply);
+  }
 }
