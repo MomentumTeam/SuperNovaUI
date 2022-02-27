@@ -48,6 +48,7 @@ class ConfigStore {
     '619e406ee4de0300121dc4c8',
     '5ebbd53f64fe6f2b1c5777ae',
   ];
+  SOCKET_URL = "localhost:2001"
 
   constructor() {
     makeAutoObservable(this, {
@@ -139,6 +140,8 @@ class ConfigStore {
       if (config?.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL)
         this.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL =
           config.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL;
+
+      if (config?.SOCKET_URL) this.SOCKET_URL = config.SOCKET_URL;
     } catch (error) {
       console.log('problem with config');
     }

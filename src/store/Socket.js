@@ -20,7 +20,7 @@ export default class SocketStore {
     this.appliesMyStore = appliesMyStore;
 
     const token = cookies.get(this.configStore.TOKEN_NAME);
-    this.socket = io("localhost:2001", {
+    this.socket = io(this.configStore.SOCKET_URL, {
       query: { token },
     });
 

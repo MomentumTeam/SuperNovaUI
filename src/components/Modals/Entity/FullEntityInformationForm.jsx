@@ -284,14 +284,14 @@ const FullEntityInformationForm = forwardRef(
         force: true,
       },
       {
-            fieldName: 'employeeNumber',
-            displayName: 'מספר עובד',
-            inputType: InputTypes.TEXT,
-            type: 'string',
-            keyFilter: 'string',
-            secured: () => user.entityType === configStore.KARTOFFEL_EXTERNAL,
-            canEdit: false,
-            force: true,
+        fieldName: 'employeeNumber',
+        displayName: 'מספר עובד',
+        inputType: InputTypes.TEXT,
+        type: 'string',
+        keyFilter: 'string',
+        secured: () => user.entityType === configStore.KARTOFFEL_EXTERNAL,
+        canEdit: false,
+        force: true,
       }
     ];
 
