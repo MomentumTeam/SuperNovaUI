@@ -1179,3 +1179,10 @@ main .main-wrap .main-inner-wrap {
   border: 1px solid #b4bccb;
   box-shadow: none;
 }
+
+.userTypePick {
+    display: flex;
+    width: 75%;
+    justify-content: space-evenly;
+    margin: 15px auto 40px;
+}

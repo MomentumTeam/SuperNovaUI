@@ -19,6 +19,7 @@ import HorizontalLine from '../HorizontalLine';
 import '../../assets/css/local/components/calendar.css';
 import InfoPopup from '../InfoPopup';
 import '../../assets/css/local/components/approverForm.css';
+import { Tooltip } from 'primereact/tooltip';
 
 import {
   searchEntitiesByFullName,
@@ -34,7 +35,10 @@ import { getUserTypeReq, isApproverValid } from '../../service/ApproverService';
 import { USER_TYPE } from '../../constants';
 import { isUserApproverType } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
-import { getSamAccountNameFromUniqueId, getUserRelevantIdentity } from '../../utils/fields';
+import {
+  getSamAccountNameFromUniqueId,
+  getUserRelevantIdentity,
+} from '../../utils/fields';
 import { InputCalanderField } from '../Fields/InputCalander';
 import { hierarchyConverse } from '../../utils/hierarchy';
 
@@ -162,9 +166,9 @@ const AssignRoleToEntityForm = forwardRef(
     const [userSuggestions, setUserSuggestions] = useState([]);
     const [roleSuggestions, setRoleSuggestions] = useState([]);
     const [defaultApprovers, setDefaultApprovers] = useState([]);
-    
+
     const isUserApprover = isUserApproverType(userStore.user);
-    
+
     const {
       register,
       handleSubmit,
@@ -177,9 +181,9 @@ const AssignRoleToEntityForm = forwardRef(
       resolver: yupResolver(validationSchema),
       defaultValues: { isUserApprover, role: null, user: null },
     });
-    
+
     const { errors } = formState;
-    
+
     useEffect(() => {
       setValue('isSwitchRole', showJob);
       const getNewEntity = async () => {
@@ -502,7 +506,9 @@ const AssignRoleToEntityForm = forwardRef(
                   setValue('user', e.value, { shouldValidate: true });
                   setValue(
                     'personalNumber',
-                    e.value.personalNumber || e.value.identityCard
+                    e.value.employeeId ||
+                      e.value.personalNumber ||
+                      e.value.identityCard
                   );
                   setValue('userRole', e.value.jobTitle);
                 }}
@@ -538,12 +544,28 @@ const AssignRoleToEntityForm = forwardRef(
               <label htmlFor='2021'>
                 {' '}
                 <span className='required-field'>*</span>מ"א/ת"ז
+                {userStore.isUserExternal ? '/מזהה עובד' : ''}
+                {userStore.isUserExternal && (
+                  <>
+                    <Tooltip target='.pi-caret-down' />
+                    <i
+                      data-pr-tooltip={`מזהה עובד יכתב בפורמט הבא -
+                      x-y
+                      כאשר x הוא מספר יחידה מלא
+                      y הוא מספר עובד
+                      ומקף מפריד בינהם `}
+                      data-pr-position='left'
+                      className='pi pi-caret-down'
+                      style={{ fontSize: '10px', paddingRight: '5px' }}
+                    ></i>
+                  </>
+                )}
               </label>
               <InputText
                 {...register('personalNumber', { required: true })}
                 id='assignRoleToEntityForm-personalNumber'
                 type='text'
-                keyfilter='pnum'
+                keyfilter={userStore.isUserExternal ? '' : 'pnum'}
                 required
                 onInput={() => {
                   setValue('user', null);

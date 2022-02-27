@@ -60,7 +60,7 @@ const FullEntityInformationForm = forwardRef(
     { setIsActionDone, onlyForView, requestObject, reqView = true, setIsEdit },
     ref
   ) => {
-    const { appliesStore } = useStores();
+    const { appliesStore, configStore } = useStores();
     const [user, setUser] = useState(requestObject);
     const methods = useForm({
       resolver: yupResolver(validationSchema),
@@ -79,22 +79,32 @@ const FullEntityInformationForm = forwardRef(
             Array.isArray(requestObject.kartoffelParams?.mobilePhone) &&
             requestObject.kartoffelParams?.mobilePhone.length === 0
           ) {
-            if (Array.isArray(requestObject.kartoffelParams.phone) && requestObject.kartoffelParams.phone.length > 0 ) {
-              requestObject.kartoffelParams.mobilePhone = requestObject.kartoffelParams.phone[0];
+            if (
+              Array.isArray(requestObject.kartoffelParams.phone) &&
+              requestObject.kartoffelParams.phone.length > 0
+            ) {
+              requestObject.kartoffelParams.mobilePhone =
+                requestObject.kartoffelParams.phone[0];
             }
           }
 
-          requestObject.kartoffelParams.samAccountName = requestObject.adParams.samAccountName;
+          requestObject.kartoffelParams.samAccountName =
+            requestObject.adParams.samAccountName;
           setUser(requestObject.kartoffelParams);
         } else {
-          if(!requestObject?.mobilePhone) {
-            if (requestObject.phone && Array.isArray(requestObject.phone) && requestObject.phone.length > 0) {
+          if (!requestObject?.mobilePhone) {
+            if (
+              requestObject.phone &&
+              Array.isArray(requestObject.phone) &&
+              requestObject.phone.length > 0
+            ) {
               requestObject.mobilePhone = requestObject.phone[0];
             } else {
-              requestObject.mobilePhone = "";
+              requestObject.mobilePhone = '';
             }
           }
-          if (Array.isArray(requestObject.mobilePhone)) requestObject.mobilePhone = requestObject.mobilePhone[0];
+          if (Array.isArray(requestObject.mobilePhone))
+            requestObject.mobilePhone = requestObject.mobilePhone[0];
           setUser(requestObject);
         }
       }
@@ -156,113 +166,133 @@ const FullEntityInformationForm = forwardRef(
 
     const formFields = [
       {
-        fieldName: "id",
-        displayName: "מזהה",
+        fieldName: 'id',
+        displayName: 'מזהה',
         inputType: InputTypes.TEXT,
         force: true,
         secured: () => reqView,
       },
       {
-        fieldName: "samAccountName",
-        displayName: "מזהה משתמש",
+        fieldName: 'samAccountName',
+        displayName: 'מזהה משתמש',
         inputType: InputTypes.TEXT,
         force: true,
         secured: () => reqView,
       },
       {
-        fieldName: "firstName",
-        displayName: "שם פרטי",
+        fieldName: 'firstName',
+        displayName: 'שם פרטי',
         inputType: InputTypes.TEXT,
-        canEdit: methods.watch("canEditEntityFields"),
+        canEdit: methods.watch('canEditEntityFields'),
         force: true,
       },
       {
-        fieldName: "lastName",
-        displayName: "שם משפחה",
+        fieldName: 'lastName',
+        displayName: 'שם משפחה',
         inputType: InputTypes.TEXT,
-        canEdit: methods.watch("canEditEntityFields"),
+        canEdit: methods.watch('canEditEntityFields'),
         force: true,
       },
       {
-        fieldName: "personalNumber",
+        fieldName: 'personalNumber',
         displayName: 'מ"א',
         inputType: InputTypes.TEXT,
         secured: () => !reqView,
       },
       {
-        fieldName: "identityCard",
+        fieldName: 'identityCard',
         displayName: 'ת"ז',
         inputType: InputTypes.TEXT,
-        type: "num",
-        keyFilter: "num",
-        canEdit: methods.watch("canEditEntityFields"),
+        type: 'num',
+        keyFilter: 'num',
+        canEdit: methods.watch('canEditEntityFields'),
       },
       {
-        fieldName: "rank",
-        displayName: "דרגה",
+        fieldName: 'rank',
+        displayName: 'דרגה',
         inputType: InputTypes.TEXT,
         secured: () => !reqView,
       },
       {
-        fieldName: "hierarchy",
-        displayName: "היררכיה",
+        fieldName: 'hierarchy',
+        displayName: 'היררכיה',
         inputType: InputTypes.TEXT,
         force: true,
         secured: () => !reqView,
         withTooltip: true,
       },
       {
-        fieldName: "mail",
-        displayName: "מייל",
+        fieldName: 'mail',
+        displayName: 'מייל',
         inputType: InputTypes.TEXT,
         force: true,
         secured: () => !reqView,
       },
       {
-        fieldName: "jobTitle",
-        displayName: "תפקיד",
+        fieldName: 'jobTitle',
+        displayName: 'תפקיד',
         inputType: InputTypes.TEXT,
         force: true,
         secured: () => !reqView,
       },
       {
-        fieldName: "address",
-        displayName: "כתובת",
+        fieldName: 'address',
+        displayName: 'כתובת',
         inputType: InputTypes.TEXT,
         secured: () => !reqView,
       },
       {
-        fieldName: "mobilePhone",
-        displayName: "פלאפון נייד",
+        fieldName: 'mobilePhone',
+        displayName: 'פלאפון נייד',
         inputType: InputTypes.TEXT,
-        type: "num",
-        keyFilter: "num",
-        canEdit: methods.watch("canEditEntityFields"),
+        type: 'num',
+        keyFilter: 'num',
+        canEdit: methods.watch('canEditEntityFields'),
         force: true,
       },
       {
-        fieldName: "birthDate",
-        displayName: "תאריך לידה",
+        fieldName: 'birthDate',
+        displayName: 'תאריך לידה',
         inputType: InputTypes.CALANDER,
         secured: () => !reqView,
         untilNow: true,
       },
       {
-        fieldName: "dischargeDay",
+        fieldName: 'dischargeDay',
         displayName: 'תק"ש',
         inputType: InputTypes.CALANDER,
         secured: () => !reqView,
       },
       {
-        fieldName: "clearance",
-        displayName: "סיווג",
+        fieldName: 'clearance',
+        displayName: 'סיווג',
         canEdit: true,
-        secured: () => methods.watch("canSeeUserClearance"),
+        secured: () => methods.watch('canSeeUserClearance'),
         force: true,
         inputType: InputTypes.TEXT,
-        type: "num",
-        keyFilter: "num",
+        type: 'num',
+        keyFilter: 'num',
       },
+      {
+        fieldName: 'organization',
+        displayName: 'ארגון',
+        inputType: InputTypes.TEXT,
+        type: 'string',
+        keyFilter: 'string',
+        secured: () => user.entityType === configStore.KARTOFFEL_EXTERNAL,
+        canEdit: false,
+        force: true,
+      },
+      {
+            fieldName: 'employeeNumber',
+            displayName: 'מספר עובד',
+            inputType: InputTypes.TEXT,
+            type: 'string',
+            keyFilter: 'string',
+            secured: () => user.entityType === configStore.KARTOFFEL_EXTERNAL,
+            canEdit: false,
+            force: true,
+      }
     ];
 
     return (

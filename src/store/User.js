@@ -1,5 +1,9 @@
 import { action, makeAutoObservable, observable } from 'mobx';
 import { getPictureByConnectedEntity, getUser } from "../service/UserService";
+import {
+  getOGById,
+} from '../service/KartoffelService';
+
 import { Base64 } from 'js-base64';
 import cookies from 'js-cookie';
 import configStore from './Config';
@@ -8,6 +12,7 @@ export default class UserStore {
   isUserLoading = true;
   user = null;
   users = null;
+  isUserExternal = false;  
 
   constructor() {
     makeAutoObservable(this, {
@@ -15,6 +20,7 @@ export default class UserStore {
       isUserLoading: observable,
       fetchUserInfo: action,
       getMyPicture: action,
+      isUserExternal: observable
     });
 
     this.getUserToken();
@@ -39,6 +45,7 @@ export default class UserStore {
     }
     
     this.isUserLoading = false;
+    await this.checkIfUserExternal();
   }
 
   parseToken() {
@@ -53,6 +60,22 @@ export default class UserStore {
       return user;
     } catch (err) {
       console.log(err);
+    }
+  }
+async checkIfUserExternal() {
+    if (this.user && (this.user.entityType === configStore.KARTOFFEL_EXTERNAL ||
+        configStore.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL.includes(this.user.id) ||
+        configStore.organizationIds.includes(this.user.directGroup))) {
+      this.isUserExternal = true
+    }
+
+    if (!this.isUserExternal) {
+      let userOG = await getOGById(this.user.directGroup);
+      userOG.ancestors.forEach((ancestor) => {
+        if (configStore.organizationIds.includes(ancestor)) {
+          this.isUserExternal = true;
+        }
+      })
     }
   }
 

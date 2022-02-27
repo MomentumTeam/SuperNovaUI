@@ -182,27 +182,38 @@ const ApproverForm = forwardRef(
       }),
       []
     );
-
     const handleApprover = async (e) => {
       setApproverType(e.value);
       setValue('approverType', e.value);
       setValue('groupInChargeId', '');
       setValue('hierarchyApproverOf', undefined);
 
-      if (e.value !== USER_TYPE.ADMIN) {
-        const result = await GetDefaultApprovers({
-          request: requestObject,
-          user: userStore.user,
-          highCommander: true,
-        });
-        setDefaultApprovers(result || []);
-        setValue('isUserApprover', result.length > 0);
-        setValue('approvers', []);
-      } else {
-        setDefaultApprovers(
-          toJS(configStore.createAdminRequestsApprovers) || []
-        );
-        setValue('approvers', toJS(configStore.createAdminRequestsApprovers));
+      switch (e.value) {
+        case USER_TYPE.ADMIN: {
+          setDefaultApprovers(
+            toJS(configStore.CREATE_ADMIN_REQS_APPROVERS) || []
+          );
+          setValue('approvers', toJS(configStore.CREATE_ADMIN_REQS_APPROVERS));
+          break;
+        }
+        case USER_TYPE.BULK: {
+          setDefaultApprovers(
+            toJS(configStore.CREATE_BULK_REQS_APPROVERS) || []
+          );
+          setValue('approvers', toJS(configStore.CREATE_BULK_REQS_APPROVERS));
+          break;
+        }
+        default: {
+          const result = await GetDefaultApprovers({
+            request: requestObject,
+            user: userStore.user,
+            highCommander: true,
+          });
+          setDefaultApprovers(result || []);
+          setValue('isUserApprover', result.length > 0);
+          setValue('approvers', []);
+          break;
+        }
       }
     };
 
@@ -347,7 +358,9 @@ const ApproverForm = forwardRef(
                 setValue('user', e.value, { shouldValidate: true });
                 setValue(
                   'personalNumber',
-                  e.value.personalNumber || e.value.identityCard
+                  e.value.employeeId ||
+                    e.value.personalNumber ||
+                    e.value.identityCard
                 );
                 setValue('hierarchy', {
                   hierarchy: e.value.hierarchy,
@@ -384,7 +397,7 @@ const ApproverForm = forwardRef(
               {...register('personalNumber', { required: true })}
               id="approverForm-personalNumber"
               type="text"
-              keyfilter="pnum"
+              keyfilter={userStore.isUserExternal ? '' : 'pnum'}
               required
               onBlur={onSearchUserByPersonalNumber}
               onKeyDown={(e) => {
@@ -439,7 +452,8 @@ const ApproverForm = forwardRef(
             disabled={
               onlyForView ||
               watch('isUserApprover') ||
-              watch('approverType') === USER_TYPE.ADMIN
+              watch('approverType') === USER_TYPE.ADMIN ||
+              watch('approverType') === USER_TYPE.BULK
             }
             defaultApprovers={defaultApprovers}
           />
