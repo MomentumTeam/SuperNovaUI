@@ -28,7 +28,7 @@ class ConfigStore {
   SECURITY_MAIL = 'T82130201@gmail.com';
   SUPER_SECURITY_MAIL = 'T02250B49@gmail.com';
   INSTRUCTION_VIDEOS =
-    'https://www.youtube.com/watch?v=OcUDK4kAUIw&ab_channel=KaliUchis-Topic';
+    'https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley';
   HI_CHAT_SUPPORT_GROUP_NAME = 'לגו תמיכה';
   CREATE_ADMIN_REQS_APPROVERS = [
     '61c039d8e4de0300121de45a',
