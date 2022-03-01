@@ -25,7 +25,7 @@ import {
   isUserApproverType,
   userConverse,
   userTemplate,
-  isUserHoldType,
+  getRelevantApproverTypes,
 } from '../../utils/user';
 import { GetDefaultApprovers } from '../../utils/approver';
 import '../../assets/css/local/components/approverForm.css';
@@ -65,7 +65,9 @@ const validationSchema = Yup.object().shape({
   personalNumber: Yup.string().required('יש למלא ערך'),
   hierarchyOf: Yup.object().when('approverType', {
     is: (value) =>
-      value === USER_TYPE.ADMIN || value === USER_TYPE.SPECIAL_GROUP,
+      value === USER_TYPE.ADMIN ||
+      value === USER_TYPE.SPECIAL_GROUP ||
+      value === USER_TYPE.SECURITY_ADMIN,
     then: Yup.object().required('יש לבחור היררכיה'),
     otherwise: Yup.object(),
   }),
@@ -76,11 +78,8 @@ const ApproverForm = forwardRef(
     const { appliesStore, userStore, configStore } = useStores();
     const [approverType, setApproverType] = useState();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
-    const showOption = isUserHoldType(userStore.user, USER_TYPE.ADMIN);
 
-    const ApproverOptions = showOption
-      ? APPROVER_TYPES
-      : APPROVER_TYPES.slice(0, -1);
+    const ApproverOptions = getRelevantApproverTypes(userStore.user);
 
     const {
       register,
@@ -122,7 +121,8 @@ const ApproverForm = forwardRef(
 
           let hierarchyOfId;
           switch (requestObject.additionalParams.type) {
-            case USER_TYPE.ADMIN:
+            case USER_TYPE.ADMIN :
+            case USER_TYPE.SECURITY_ADMIN:
               hierarchyOfId = requestObject.additionalParams.groupInChargeId;
               break;
 
@@ -298,7 +298,10 @@ const ApproverForm = forwardRef(
 
     const handleOrgSelected = async () => {
       if (getValues('hierarchyOf')?.id) {
-        if (getValues('approverType') === USER_TYPE.ADMIN)
+        if (
+          getValues('approverType') === USER_TYPE.ADMIN ||
+          getValues('approverType') === USER_TYPE.SECURITY_ADMIN
+        )
           setValue('groupInChargeId', getValues('hierarchyOf').id);
         else if (getValues('approverType') === USER_TYPE.SPECIAL_GROUP)
           setValue('specialGroupId', getValues('hierarchyOf').id);
@@ -310,7 +313,8 @@ const ApproverForm = forwardRef(
         <div
           className={
             watch('approverType') == USER_TYPE.ADMIN ||
-            watch('approverType') === USER_TYPE.SPECIAL_GROUP
+            watch('approverType') === USER_TYPE.SPECIAL_GROUP ||
+            watch('approverType') === USER_TYPE.SECURITY_ADMIN
               ? 'p-fluid-item'
               : 'p-fluid-item p-fluid-item-flex1'
           }
@@ -347,7 +351,8 @@ const ApproverForm = forwardRef(
           </div>
         </div>
         {(watch('approverType') === USER_TYPE.ADMIN ||
-          watch('approverType') === USER_TYPE.SPECIAL_GROUP) && (
+          watch('approverType') === USER_TYPE.SPECIAL_GROUP ||
+          watch('approverType') === USER_TYPE.SECURITY_ADMIN) && (
           <div className="p-fluid-item">
             <div className="p-field">
               <Hierarchy
@@ -359,7 +364,9 @@ const ApproverForm = forwardRef(
                 labelText={
                   watch('approverType') === USER_TYPE.ADMIN
                     ? 'ההיררכיה שבה תהיו מחשוב יחידתי'
-                    : 'ההירכיה שבה יתווסף שלב האישור'
+                    : watch('approverType') === USER_TYPE.SPECIAL_GROUP
+                    ? 'ההירכיה שבה יתווסף שלב האישור'
+                    : 'ההירכיה שבה תהיו קב"ם היחידתי'
                 }
                 onOrgSelected={handleOrgSelected}
               />
@@ -504,7 +511,8 @@ const ApproverForm = forwardRef(
               onlyForView ||
               watch('isUserApprover') ||
               watch('approverType') === USER_TYPE.ADMIN ||
-              watch('approverType') === USER_TYPE.BULK
+              watch('approverType') === USER_TYPE.BULK ||
+              watch('approverType') === USER_TYPE.SPECIAL_GROUP 
             }
             defaultApprovers={defaultApprovers}
           />
