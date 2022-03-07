@@ -30,7 +30,6 @@ const socketStore = new SocketStore({
   appliesApproveStore: stores.appliesApproveStore,
   appliesStore: stores.appliesStore,
   appliesMyStore: stores.appliesMyStore,
-  configStore: stores.configStore,
   userStore: stores.userStore,
 });
 export const StoresContext = createContext({...stores, socketStore});

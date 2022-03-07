@@ -1,4 +1,5 @@
 import cookies from "js-cookie";
+import configStore from "./Config";
 import { io } from "socket.io-client";
 
 export default class SocketStore {
@@ -11,16 +12,15 @@ export default class SocketStore {
 
   socket;
 
-  constructor({ notificationStore, appliesApproveStore, configStore, userStore, appliesStore, appliesMyStore }) {
+  constructor({ notificationStore, appliesApproveStore, userStore, appliesStore, appliesMyStore }) {
     this.notificationStore = notificationStore;
     this.appliesApproveStore = appliesApproveStore;
-    this.configStore = configStore;
     this.userStore = userStore;
     this.appliesStore = appliesStore;
     this.appliesMyStore = appliesMyStore;
 
-    const token = cookies.get(this.configStore.TOKEN_NAME);
-    this.socket = io(this.configStore.SOCKET_URL, {
+    const token = cookies.get(configStore.TOKEN_NAME);
+    this.socket = io(configStore.SOCKET_URL, {
       query: { token },
     });
 
