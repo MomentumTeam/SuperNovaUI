@@ -97,7 +97,8 @@ const FullRoleInformationForm = forwardRef(
 
     const isUserSecurity =
       isUserHoldType(userStore.user, USER_TYPE.SECURITY) ||
-      isUserHoldType(userStore.user, USER_TYPE.SUPER_SECURITY);
+      isUserHoldType(userStore.user, USER_TYPE.SUPER_SECURITY) ||
+      isUserHoldType(userStore.user, USER_TYPE.SECURITY_ADMIN);
 
     const debouncedRoleName = useRef(
       debounce(async (roleNameToSearch, roleCheck) => {
@@ -163,23 +164,23 @@ const FullRoleInformationForm = forwardRef(
 
           setRole(oldRole);
 
-          if(requestObject?.kartoffelParams?.entityId) {
+          if (requestObject?.kartoffelParams?.entityId) {
             try {
-              const entityRes = await getEntityByMongoId(requestObject?.kartoffelParams?.entityId);
+              const entityRes = await getEntityByMongoId(
+                requestObject?.kartoffelParams?.entityId
+              );
               setEntity(entityRes);
-            } catch (error) {
-              
-            }
+            } catch (error) {}
           }
         } else {
           setRole(requestObject);
-          
+
           try {
             const entityRes = await getEntityByRoleId(
               requestObject?.roleId || requestObject?.kartoffelParams?.roleId
             );
             setEntity(entityRes);
-            setValue("entityId", entityRes.id);
+            setValue('entityId', entityRes.id);
           } catch (error) {}
 
           try {
@@ -189,10 +190,8 @@ const FullRoleInformationForm = forwardRef(
               );
               setDigitalIdentity(di);
             }
-          } catch (error) {
-          }
+          } catch (error) {}
         }
-
       }
 
       await initDefaultApprovers();
@@ -205,7 +204,8 @@ const FullRoleInformationForm = forwardRef(
         console.log(err);
         throw new Error(err.errors);
       }
-      const { approvers, comments, roleName, clearance, oldRole, entityId } = data;
+      const { approvers, comments, roleName, clearance, oldRole, entityId } =
+        data;
       const req = {
         commanders: approvers,
         kartoffelParams: {
@@ -213,8 +213,8 @@ const FullRoleInformationForm = forwardRef(
           jobTitle: roleName,
           oldJobTitle: requestObject.jobTitle,
           role: oldRole,
-          ...(entityId && {entityId}),
-          ...(clearance && { clearance })
+          ...(entityId && { entityId }),
+          ...(clearance && { clearance }),
         },
         adParams: {
           samAccountName: getSamAccountNameFromUniqueId(requestObject.roleId),
@@ -264,43 +264,50 @@ const FullRoleInformationForm = forwardRef(
           <div className="p-field">
             <label>
               <span className="required-field">*</span>
-              {reqView && requestObject?.kartoffelParams?.oldJobTitle !== requestObject?.kartoffelParams?.jobTitle
-                ? "שם תפקיד חדש"
-                : "שם תפקיד"}
+              {reqView &&
+              requestObject?.kartoffelParams?.oldJobTitle !==
+                requestObject?.kartoffelParams?.jobTitle
+                ? 'שם תפקיד חדש'
+                : 'שם תפקיד'}
             </label>
             <span className="p-input-icon-left">
-              {watch("roleName") && !errors.roleName && !onlyForView && (
-                <i>{watch("isJobTitleAlreadyTaken") ? "תפוס" : "פנוי"}</i>
+              {watch('roleName') && !errors.roleName && !onlyForView && (
+                <i>{watch('isJobTitleAlreadyTaken') ? 'תפוס' : 'פנוי'}</i>
               )}
               <InputText
                 id="editSingleRoleForm-roleName"
-                {...register("roleName")}
+                {...register('roleName')}
                 onChange={onRoleNameChange}
                 disabled={onlyForView || !canEditRoleFields}
               />
               <label>
                 {(errors.roleName || errors.isJobTitleAlreadyTaken) && (
-                  <small style={{ color: "red" }}>
+                  <small style={{ color: 'red' }}>
                     {errors?.roleName?.message
                       ? errors.roleName?.message
                       : errors.isJobTitleAlreadyTaken?.message
                       ? errors.isJobTitleAlreadyTaken.message
-                      : "יש למלא ערך"}
+                      : 'יש למלא ערך'}
                   </small>
                 )}
               </label>
             </span>
           </div>
         </div>
-        {watch("isJobTitleAlreadyTaken") && !errors.roleName && (
-          <div className="p-fluid-item p-fluid-item-flex1" style={{ alignItems: "baseline", whiteSpace: "pre-wrap" }}>
-            <div className="p-field" style={{ display: "flex" }}>
-              <div style={{ marginTop: "35px" }}>שמות פנויים:</div>
-              <div style={{ margin: "20px", display: "flex", flexWrap: "wrap" }}>
+        {watch('isJobTitleAlreadyTaken') && !errors.roleName && (
+          <div
+            className="p-fluid-item p-fluid-item-flex1"
+            style={{ alignItems: 'baseline', whiteSpace: 'pre-wrap' }}
+          >
+            <div className="p-field" style={{ display: 'flex' }}>
+              <div style={{ marginTop: '35px' }}>שמות פנויים:</div>
+              <div
+                style={{ margin: '20px', display: 'flex', flexWrap: 'wrap' }}
+              >
                 {jobTitleSuggestions.map((suggestion) => (
                   <Button
                     className="p-button-secondary p-button-outlined"
-                    style={{ width: "auto" }}
+                    style={{ width: 'auto' }}
                     onClick={onAvailableRoleName}
                   >
                     {suggestion}
@@ -311,18 +318,24 @@ const FullRoleInformationForm = forwardRef(
           </div>
         )}
 
-        {reqView && requestObject?.kartoffelParams?.oldJobTitle !== requestObject?.kartoffelParams?.jobTitle && (
-          <div className="p-fluid-item p-fluid-item">
-            <div className="p-field">
-              <label> שם תפקיד ישן </label>
-              <InputText
-                id="fullRoleInfoForm-oldJobTitle"
-                value={requestObject?.kartoffelParams?.oldJobTitle || role?.jobTitle || "---"}
-                disabled={onlyForView}
-              />
+        {reqView &&
+          requestObject?.kartoffelParams?.oldJobTitle !==
+            requestObject?.kartoffelParams?.jobTitle && (
+            <div className="p-fluid-item p-fluid-item">
+              <div className="p-field">
+                <label> שם תפקיד ישן </label>
+                <InputText
+                  id="fullRoleInfoForm-oldJobTitle"
+                  value={
+                    requestObject?.kartoffelParams?.oldJobTitle ||
+                    role?.jobTitle ||
+                    '---'
+                  }
+                  disabled={onlyForView}
+                />
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         {!reqView && (
           <div className="p-fluid-item-flex p-fluid-item">
@@ -333,7 +346,11 @@ const FullRoleInformationForm = forwardRef(
                 labelText="היררכיה"
                 errors={errors}
                 ogValue={role?.hierarchy}
-                userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
+                userHierarchy={
+                  userStore.user && userStore.user.hierarchy
+                    ? userStore.user.hierarchy
+                    : null
+                }
               />
             </div>
           </div>
@@ -342,7 +359,11 @@ const FullRoleInformationForm = forwardRef(
         <div className="p-fluid-item p-fluid-item">
           <div className="p-field">
             <label> מזהה תפקיד </label>
-            <InputText id="fullRoleInfoForm-roleId" value={role?.roleId || "---"} disabled={true} />
+            <InputText
+              id="fullRoleInfoForm-roleId"
+              value={role?.roleId || '---'}
+              disabled={true}
+            />
           </div>
         </div>
 
@@ -351,7 +372,11 @@ const FullRoleInformationForm = forwardRef(
             <div className="p-field">
               <label> תאריך עדכון </label>
               <InputText
-                value={role?.updatedAt ? datesUtil.formattedDateTime(role.updatedAt) : "---"}
+                value={
+                  role?.updatedAt
+                    ? datesUtil.formattedDateTime(role.updatedAt)
+                    : '---'
+                }
                 id="fullRoleInfoForm-updatedAt"
                 disabled={true}
               />
@@ -365,16 +390,18 @@ const FullRoleInformationForm = forwardRef(
             <Dropdown
               id="fullRoleInfoForm-clearance"
               options={ROLE_CLEARANCE}
-              placeholder={watch("clearance") || "---"}
-              {...register("clearance")}
-              value={watch("clearance")}
-              className={onlyForView || !isUserSecurity ? "disabled" : ""}
+              placeholder={watch('clearance') || '---'}
+              {...register('clearance')}
+              value={watch('clearance')}
+              className={onlyForView || !isUserSecurity ? 'disabled' : ''}
               disabled={onlyForView || !isUserSecurity}
             />
             <label>
               {errors.clearance && (
-                <small style={{ color: "red" }}>
-                  {errors.clearance?.message ? errors.clearance?.message : "יש למלא ערך"}
+                <small style={{ color: 'red' }}>
+                  {errors.clearance?.message
+                    ? errors.clearance?.message
+                    : 'יש למלא ערך'}
                 </small>
               )}
             </label>
@@ -385,7 +412,11 @@ const FullRoleInformationForm = forwardRef(
         <div className="p-fluid-item p-fluid-item">
           <div className="p-field">
             <label> משתמש בתפקיד </label>
-            <InputText id="fullRoleInfoForm-entity" value={entity?.fullName || "---"} disabled={true} />
+            <InputText
+              id="fullRoleInfoForm-entity"
+              value={entity?.fullName || '---'}
+              disabled={true}
+            />
           </div>
         </div>
 
@@ -395,7 +426,7 @@ const FullRoleInformationForm = forwardRef(
               <label> מזהה כרטיס </label>
               <InputText
                 id="fullRoleInfoForm-upn"
-                value={digitalIdentity?.upn ? digitalIdentity.upn : "---"}
+                value={digitalIdentity?.upn ? digitalIdentity.upn : '---'}
                 disabled={true}
               />
             </div>
@@ -410,7 +441,7 @@ const FullRoleInformationForm = forwardRef(
               tooltip='רס"ן ומעלה ביחידתך'
               multiple={true}
               errors={errors}
-              disabled={onlyForView || watch("isUserApprover")}
+              disabled={onlyForView || watch('isUserApprover')}
               defaultApprovers={defaultApprovers}
             />
           </div>
@@ -423,10 +454,10 @@ const FullRoleInformationForm = forwardRef(
                 <span></span>הערות
               </label>
               <InputTextarea
-                {...register("comments")}
+                {...register('comments')}
                 id="fullRoleInfoForm-comments"
                 type="text"
-                placeholder={!onlyForView && "הכנס הערות לבקשה..."}
+                placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
                 disabled={onlyForView}
               />
             </div>

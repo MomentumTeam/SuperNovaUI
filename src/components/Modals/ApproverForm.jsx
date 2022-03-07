@@ -227,9 +227,12 @@ const ApproverForm = forwardRef(
         case USER_TYPE.SPECIAL_GROUP: {
           setCurrentUser();
           setDefaultApprovers(
-            toJS(configStore.CREATE_BULK_REQS_APPROVERS) || []
+            toJS(configStore.CREATE_SPECIAL_GROUP_REQS_APPROVERS) || []
           );
-          setValue('approvers', toJS(configStore.CREATE_BULK_REQS_APPROVERS));
+          setValue(
+            'approvers',
+            toJS(configStore.CREATE_SPECIAL_GROUP_REQS_APPROVERS)
+          );
           break;
         }
         default: {
