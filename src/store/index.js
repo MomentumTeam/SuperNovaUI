@@ -31,6 +31,7 @@ const socketStore = new SocketStore({
   appliesStore: stores.appliesStore,
   appliesMyStore: stores.appliesMyStore,
   userStore: stores.userStore,
+  configStore: configStore,
 });
 export const StoresContext = createContext({...stores, socketStore});
 

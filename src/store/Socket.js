@@ -1,33 +1,37 @@
 import cookies from "js-cookie";
-import configStore from "./Config";
 import { io } from "socket.io-client";
 
 export default class SocketStore {
   notificationStore;
   appliesApproveStore;
-  configStore;
   userStore;
   appliesStore;
   appliesMyStore;
+  configStore;
 
   socket;
 
-  constructor({ notificationStore, appliesApproveStore, userStore, appliesStore, appliesMyStore }) {
+  constructor({ notificationStore, appliesApproveStore, userStore, appliesStore, appliesMyStore, configStore }) {
     this.notificationStore = notificationStore;
     this.appliesApproveStore = appliesApproveStore;
     this.userStore = userStore;
     this.appliesStore = appliesStore;
     this.appliesMyStore = appliesMyStore;
-
-    const token = cookies.get(configStore.TOKEN_NAME);
-    this.socket = io(configStore.SOCKET_URL, {
+    this.configStore = configStore;
+    configStore.configPromise.then((result) => {
+      this.initSocket({
+        socketUrl: result?.SOCKET_URL ? result.SOCKET_URL : configStore?.SOCKET_URL,
+        tokenName: result?.TOKEN_NAME ? result.TOKEN_NAME : configStore?.TOKEN_NAME,
+      });
+    })
+  }
+  
+  initSocket({socketUrl, tokenName}) {
+    const token = cookies.get(tokenName);
+    this.socket = io(socketUrl, {
       query: { token },
     });
 
-    this.initSocket();
-  }
-
-  initSocket() {
     this.socket.on("unauthorized", (error) => {
       if (error.data.type == "UnauthorizedError" || error.data.code == "invalid_token") {
         // TODO : redirect user to login page perhaps?

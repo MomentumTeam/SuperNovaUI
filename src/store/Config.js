@@ -3,6 +3,8 @@ import { getConfig } from '../service/ConfigService';
 import { getEntityByMongoId } from '../service/KartoffelService';
 
 class ConfigStore {
+  configPromise = null; 
+
   soldierRequestsApprovers = [];
 
   // USER
@@ -69,6 +71,7 @@ class ConfigStore {
       HI_CHAT_SUPPORT_GROUP_NAME: observable,
       CREATE_ADMIN_REQS_APPROVERS: observable,
       CREATE_BULK_REQS_APPROVERS: observable,
+      SOCKET_URL:observable,
       soldierRequestsApprovers: observable,
       loadConfig: action,
       loadAdminApprovers: action,
@@ -76,75 +79,76 @@ class ConfigStore {
   }
 
   async loadConfig() {
-    try {
-      const config = await getConfig();
-      if (config?.USER_CITIZEN_ENTITY_TYPE)
-        this.USER_CITIZEN_ENTITY_TYPE = config.USER_CITIZEN_ENTITY_TYPE;
-      if (config?.USER_EXTERNAL_ENTITY_TYPE)
-        this.USER_EXTERNAL_ENTITY_TYPE = config.USER_EXTERNAL_ENTITY_TYPE;
-      if (config?.KARTOFFEL_CIVILIAN)
-        this.KARTOFFEL_CIVILIAN = config.KARTOFFEL_CIVILIAN;
-      if (config?.KARTOFFEL_SOLDIER)
-        this.KARTOFFEL_SOLDIER = config.KARTOFFEL_SOLDIER;
-      if (config?.KARTOFFEL_EXTERNAL)
-        this.KARTOFFEL_EXTERNAL = config.KARTOFFEL_EXTERNAL;
-      if (config?.KARTOFFEL_RANKS)
-        this.KARTOFFEL_RANKS = config.KARTOFFEL_RANKS;
-      if (config?.KARTOFFEL_SERVICE_TYPES)
-        this.KARTOFFEL_SERVICE_TYPES = config.KARTOFFEL_SERVICE_TYPES;
-      if (config?.USER_CLEARANCE) this.USER_CLEARANCE = config.USER_CLEARANCE;
-      if (config?.USER_SOURCE_DI) this.USER_SOURCE_DI = config.USER_SOURCE_DI;
-      if (config?.USER_NO_PICTURE)
-        this.USER_NO_PICTURE = config.USER_NO_PICTURE;
-      if (config?.USER_HIGH_COMMANDER_RANKS)
-        this.USER_HIGH_COMMANDER_RANKS = config.USER_HIGH_COMMANDER_RANKS;
-      if (config?.USER_DI_TYPE) this.USER_DI_TYPE = config.USER_DI_TYPE;
-      if (config?.USER_ROLE_ENTITY_TYPE)
-        this.USER_ROLE_ENTITY_TYPE = config.USER_ROLE_ENTITY_TYPE;
-      if (config?.TOKEN_NAME) this.TOKEN_NAME = config.TOKEN_NAME;
-      if (config?.PAGE_SIZE) this.PAGE_SIZE = config.PAGE_SIZE;
-      if (config?.ITEMS_IN_PAGE) this.ITEMS_IN_PAGE = config.ITEMS_IN_PAGE;
-      if (config?.FIRST_PAGE) this.FIRST_PAGE = config.FIRST_PAGE;
-      if (config?.SECURITY_MAIL) this.SECURITY_MAIL = config.SECURITY_MAIL;
-      if (config?.SUPER_SECURITY_MAIL)
-        this.SUPER_SECURITY_MAIL = config.SUPER_SECURITY_MAIL;
-      if (config?.INSTRUCTION_VIDEOS)
-        this.INSTRUCTION_VIDEOS = config.INSTRUCTION_VIDEOS;
-      if (config?.CREATE_ADMIN_APPROVERS) {
-        // this.CREATE_ADMIN_REQS_APPROVERS = config.CREATE_ADMIN_APPROVERS;
-        const approvers = await this.loadApprovers(
-          config.CREATE_ADMIN_APPROVERS
-        );
-        this.CREATE_ADMIN_REQS_APPROVERS = approvers;
-      }
-      if (config?.CREATE_BULK_APPROVERS) {
-        // this.CREATE_BULK_REQS_APPROVERS = config.CREATE_BULK_APPROVERS;
-        const approvers = await this.loadApprovers(
-          config.CREATE_BULK_APPROVERS
-        );
-        this.CREATE_BULK_REQS_APPROVERS = approvers;
-      }
-      if (config.CREATE_SOLDIER_APPROVERS) {
-        this.CREATE_SOLDIER_APPROVERS = config.CREATE_SOLDIER_APPROVERS;
-        const approvers = await this.loadApprovers(
-          this.CREATE_SOLDIER_APPROVERS
-        );
-        this.soldierRequestsApprovers = approvers;
-      }
-      if (config?.organizationNumbers)
-        this.organizationNumbers = config.organizationNumbers;
-      if (config?.organizationIds)
-        this.organizationIds = config.organizationIds;
-      if (config?.organizationNumberToGroupId)
-        this.organizationNumberToGroupId = config.organizationNumberToGroupId;
-      if (config?.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL)
-        this.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL =
-          config.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL;
-
-      if (config?.SOCKET_URL) this.SOCKET_URL = config.SOCKET_URL;
-    } catch (error) {
-      console.log('problem with config');
-    }
+    this.configPromise = getConfig(async(config) => {
+        try {
+          if (config?.USER_CITIZEN_ENTITY_TYPE)
+            this.USER_CITIZEN_ENTITY_TYPE = config.USER_CITIZEN_ENTITY_TYPE;
+          if (config?.USER_EXTERNAL_ENTITY_TYPE)
+            this.USER_EXTERNAL_ENTITY_TYPE = config.USER_EXTERNAL_ENTITY_TYPE;
+          if (config?.KARTOFFEL_CIVILIAN)
+            this.KARTOFFEL_CIVILIAN = config.KARTOFFEL_CIVILIAN;
+          if (config?.KARTOFFEL_SOLDIER)
+            this.KARTOFFEL_SOLDIER = config.KARTOFFEL_SOLDIER;
+          if (config?.KARTOFFEL_EXTERNAL)
+            this.KARTOFFEL_EXTERNAL = config.KARTOFFEL_EXTERNAL;
+          if (config?.KARTOFFEL_RANKS)
+            this.KARTOFFEL_RANKS = config.KARTOFFEL_RANKS;
+          if (config?.KARTOFFEL_SERVICE_TYPES)
+            this.KARTOFFEL_SERVICE_TYPES = config.KARTOFFEL_SERVICE_TYPES;
+          if (config?.USER_CLEARANCE) this.USER_CLEARANCE = config.USER_CLEARANCE;
+          if (config?.USER_SOURCE_DI) this.USER_SOURCE_DI = config.USER_SOURCE_DI;
+          if (config?.USER_NO_PICTURE)
+            this.USER_NO_PICTURE = config.USER_NO_PICTURE;
+          if (config?.USER_HIGH_COMMANDER_RANKS)
+            this.USER_HIGH_COMMANDER_RANKS = config.USER_HIGH_COMMANDER_RANKS;
+          if (config?.USER_DI_TYPE) this.USER_DI_TYPE = config.USER_DI_TYPE;
+          if (config?.USER_ROLE_ENTITY_TYPE)
+            this.USER_ROLE_ENTITY_TYPE = config.USER_ROLE_ENTITY_TYPE;
+          if (config?.TOKEN_NAME) this.TOKEN_NAME = config.TOKEN_NAME;
+          if (config?.PAGE_SIZE) this.PAGE_SIZE = config.PAGE_SIZE;
+          if (config?.ITEMS_IN_PAGE) this.ITEMS_IN_PAGE = config.ITEMS_IN_PAGE;
+          if (config?.FIRST_PAGE) this.FIRST_PAGE = config.FIRST_PAGE;
+          if (config?.SECURITY_MAIL) this.SECURITY_MAIL = config.SECURITY_MAIL;
+          if (config?.SUPER_SECURITY_MAIL)
+            this.SUPER_SECURITY_MAIL = config.SUPER_SECURITY_MAIL;
+          if (config?.INSTRUCTION_VIDEOS)
+            this.INSTRUCTION_VIDEOS = config.INSTRUCTION_VIDEOS;
+          if (config?.CREATE_ADMIN_APPROVERS) {
+            // this.CREATE_ADMIN_REQS_APPROVERS = config.CREATE_ADMIN_APPROVERS;
+            const approvers = await this.loadApprovers(
+              config.CREATE_ADMIN_APPROVERS
+            );
+            this.CREATE_ADMIN_REQS_APPROVERS = approvers;
+          }
+          if (config?.CREATE_BULK_APPROVERS) {
+            // this.CREATE_BULK_REQS_APPROVERS = config.CREATE_BULK_APPROVERS;
+            const approvers = await this.loadApprovers(
+              config.CREATE_BULK_APPROVERS
+            );
+            this.CREATE_BULK_REQS_APPROVERS = approvers;
+          }
+          if (config.CREATE_SOLDIER_APPROVERS) {
+            this.CREATE_SOLDIER_APPROVERS = config.CREATE_SOLDIER_APPROVERS;
+            const approvers = await this.loadApprovers(
+              this.CREATE_SOLDIER_APPROVERS
+            );
+            this.soldierRequestsApprovers = approvers;
+          }
+          if (config?.organizationNumbers)
+            this.organizationNumbers = config.organizationNumbers;
+          if (config?.organizationIds)
+            this.organizationIds = config.organizationIds;
+          if (config?.organizationNumberToGroupId)
+            this.organizationNumberToGroupId = config.organizationNumberToGroupId;
+          if (config?.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL)
+            this.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL =
+              config.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL;
+    
+          if (config?.SOCKET_URL) this.SOCKET_URL = config.SOCKET_URL;
+        } catch (error) {
+          console.log('problem with config');
+        }
+      });
   }
 
   async loadApprovers(approversIdsArray) {
