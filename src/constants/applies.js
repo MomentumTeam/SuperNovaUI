@@ -83,9 +83,11 @@ export const TableTypes = (selectedTab, user, approverTableType) => {
       templateParam: [
         user,
         'status',
+        'needAdminDecision',
         'needSecurityDecision',
         'needSuperSecurityDecision',
         'superSecurityDecision',
+        'adminDecision',
         'securityDecision',
         'commanderDecision',
       ],

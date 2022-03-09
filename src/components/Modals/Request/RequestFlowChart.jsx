@@ -128,6 +128,19 @@ class RequestFlowChart extends React.Component {
                     sectionName: 'גורם מאשר',
                   })}
                 </li>
+                { this.request?.needAdminDecision ? (
+                  <li
+                    className={`${
+                      DECISIONS[this.request?.adminDecision?.decision]
+                    }`}
+                  >
+                    גורם מאשר מחשוב יחידתי 
+                    {this.tooltipContent({
+                      decisionObj: this.request?.adminDecision,
+                      sectionName: 'גורם מאשר מחשוב יחידתי',
+                    })}
+                  </li>
+                ) : null}
                 {this.request?.needSecurityDecision ? (
                   <li
                     className={`${
