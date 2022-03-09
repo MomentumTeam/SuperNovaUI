@@ -58,73 +58,73 @@ export default class AppliesStore {
   // POST
   async createRoleApply(applyProperties) {
     const newRoleApply = await createRoleRequest(applyProperties);
-    this.myApplies.unshift(newRoleApply);
+    this.updateApply(newRoleApply);
   }
 
   async createOGApply(applyProperties) {
     const newOGApply = await createOGRequest(applyProperties);
-    this.myApplies.unshift(newOGApply);
+    this.updateApply(newOGApply);
   }
 
   async assignRoleToEntityApply(applyProperties) {
     const newAssignRoleToEntityApply = await assignRoleToEntityRequest(applyProperties);
-    this.myApplies.unshift(newAssignRoleToEntityApply);
+    this.updateApply(newAssignRoleToEntityApply);
   }
 
   async createNewApproverApply(applyProperties) {
     const newApproverApply = await createNewApproverRequest(applyProperties);
-    this.myApplies.unshift(newApproverApply);
+    this.updateApply(newApproverApply);
   }
 
   async createEntityApply(applyProperties) {
     const newEntityApply = await createEntityRequest(applyProperties);
-    this.myApplies.unshift(newEntityApply);
+    this.updateApply(newEntityApply);
   }
 
   async renameOGApply(applyProperties) {
     const newRenameOGApply = await renameOGRequest(applyProperties);
-    this.myApplies.unshift(newRenameOGApply);
+    this.updateApply(newRenameOGApply);
   }
 
   async renameRoleApply(applyProperties) {
     const newRenameRoleApply = await renameRoleRequest(applyProperties);
-    this.myApplies.unshift(newRenameRoleApply);
+    this.updateApply(newRenameRoleApply);
   }
 
   async editEntityApply(applyProperties) {
     const newEditEntityApply = await editEntityRequest(applyProperties);
-    this.myApplies.unshift(newEditEntityApply);
+    this.updateApply(newEditEntityApply);
   }
 
   async deleteRoleApply(applyProperties) {
     const newDeleteRoleApply = await deleteRoleRequest(applyProperties);
-    this.myApplies.unshift(newDeleteRoleApply);
+    this.updateApply(newDeleteRoleApply);
   }
 
   async deleteOGApply(applyProperties) {
     const newDeleteOGApplyApply = await deleteOGRequest(applyProperties);
-    this.myApplies.unshift(newDeleteOGApplyApply);
+    this.updateApply(newDeleteOGApplyApply);
   }
 
   async disconectRoleFromEntityApply(applyProperties) {
     const newDisconectRoleFromEntityApply = await disconectRoleFromEntityRequest(applyProperties);
-    this.myApplies.unshift(newDisconectRoleFromEntityApply);
+    this.updateApply(newDisconectRoleFromEntityApply);
   }
 
   async createRoleBulk(applyProperties) {
     const createRoleBulkApply = await createRoleBulkRequest(applyProperties);
-    this.myApplies.unshift(createRoleBulkApply);
+    this.updateApply(createRoleBulkApply);
   }
 
   // PUT
   async changeRoleHierarchy(applyProperties) {
     const changeRoleHierarchyApply = await changeRoleHierarchyRequest(applyProperties);
-    this.myApplies.unshift(changeRoleHierarchyApply);
+    this.updateApply(changeRoleHierarchyApply);
   }
 
   async changeRoleHierarchyBulk(applyProperties) {
     const changeRoleHierarchyBulkApply = await changeRoleHierarchyBulkRequest(applyProperties);
-    this.myApplies.unshift(changeRoleHierarchyBulkApply);
+    this.updateApply(changeRoleHierarchyBulkApply);
   }
 
   // UTILS
