@@ -11,6 +11,7 @@ export const canEditEntity = (selectedEntity, user) => {
     selectedEntity.entityType === configStore.USER_CITIZEN_ENTITY_TYPE &&
     (isUserHoldType(user, USER_TYPE.SUPER_SECURITY) ||
       isUserHoldType(user, USER_TYPE.SECURITY) ||
+      isUserHoldType(user, USER_TYPE.SECURITY_ADMIN) ||
       selectedEntity.id === user.id)
   );
 };

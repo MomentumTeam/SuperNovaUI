@@ -7,8 +7,17 @@ const StatusApproverFieldTemplate = (apply, user) => {
   let status = STATUSES[apply.status];
 
   user.types.map((approverType) => {
-    if ([USER_TYPE.ADMIN, USER_TYPE.COMMANDER, USER_TYPE.SUPER_SECURITY, USER_TYPE.SECURITY].indexOf(approverType) >= 0) {
-      if (!IsRequestCompleteForApprover(apply, approverType)) isReqDoneForApprover = false;
+    if (
+      [
+        USER_TYPE.ADMIN,
+        USER_TYPE.COMMANDER,
+        USER_TYPE.SUPER_SECURITY,
+        USER_TYPE.SECURITY,
+        USER_TYPE.SECURITY_ADMIN,
+      ].indexOf(approverType) >= 0
+    ) {
+      if (!IsRequestCompleteForApprover(apply, approverType))
+        isReqDoneForApprover = false;
     }
   });
 

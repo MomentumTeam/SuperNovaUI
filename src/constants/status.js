@@ -51,9 +51,9 @@ export const REQ_STATUSES = {
 
 export const checkIfRequestIsDone = (req) => {
   return (
-    req.status === REQ_STATUSES.DECLINED ||
-    req.status === REQ_STATUSES.DONE ||
-    req.status === REQ_STATUSES.FAILED ||
-    req.status === REQ_STATUSES.IN_PROGRESS
+    req?.status === REQ_STATUSES.DECLINED ||
+    req?.status === REQ_STATUSES.DONE ||
+    req?.status === REQ_STATUSES.FAILED ||
+    req?.status === REQ_STATUSES.IN_PROGRESS
   );
 };

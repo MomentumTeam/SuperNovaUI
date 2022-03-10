@@ -39,6 +39,7 @@ export const checkValidExternalApprover = async ({
   if (isUserApproverType(user) && isExternalUser) {
     if (
       isUserHoldType(user, USER_TYPE.SECURITY) ||
+      isUserHoldType(user, USER_TYPE.SECURITY_ADMIN) ||
       isUserHoldType(user, USER_TYPE.SUPER_SECURITY)
     )
       return [user];

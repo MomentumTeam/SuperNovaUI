@@ -106,7 +106,10 @@ export default class AppliesStore {
 
     if (saveToStore) {
       if (append) {
-        this.approveMyApplies.requests = [...this.approveMyApplies.requests, ...myApplies.requests];
+        this.approveMyApplies.requests = [
+          ...this.approveMyApplies.requests,
+          ...myApplies.requests,
+        ];
       } else {
         this.approveMyApplies = myApplies;
       }
@@ -142,7 +145,10 @@ export default class AppliesStore {
 
     if (saveToStore) {
       if (append) {
-        this.approveAllApplies.requests = [...this.approveAllApplies.requests, ...allApplies.requests];
+        this.approveAllApplies.requests = [
+          ...this.approveAllApplies.requests,
+          ...allApplies.requests,
+        ];
       } else {
         this.approveAllApplies = allApplies;
       }
@@ -156,7 +162,13 @@ export default class AppliesStore {
   }
 
   async getAppliesByPerosn(id, personType, personInfoType, from, to) {
-    const myApplies = await getRequestsByPerson(id, personType, personInfoType, from, to);
+    const myApplies = await getRequestsByPerson(
+      id,
+      personType,
+      personInfoType,
+      from,
+      to
+    );
 
     // this.applies = myApplies.requests;
   }
@@ -167,7 +179,11 @@ export default class AppliesStore {
   }
 
   async searchAppliesBySubmitterDisplayName(displayName, from, to) {
-    const myApplies = await searchRequestsBySubmitterDisplayName(displayName, from, to);
+    const myApplies = await searchRequestsBySubmitterDisplayName(
+      displayName,
+      from,
+      to
+    );
     // this.applies = myApplies.requests;
   }
 
@@ -184,7 +200,9 @@ export default class AppliesStore {
   }
 
   async assignRoleToEntityApply(applyProperties) {
-    const newAssignRoleToEntityApply = await assignRoleToEntityRequest(applyProperties);
+    const newAssignRoleToEntityApply = await assignRoleToEntityRequest(
+      applyProperties
+    );
     this.myApplies.unshift(newAssignRoleToEntityApply);
   }
 
@@ -224,7 +242,8 @@ export default class AppliesStore {
   }
 
   async disconectRoleFromEntityApply(applyProperties) {
-    const newDisconectRoleFromEntityApply = await disconectRoleFromEntityRequest(applyProperties);
+    const newDisconectRoleFromEntityApply =
+      await disconectRoleFromEntityRequest(applyProperties);
     this.myApplies.unshift(newDisconectRoleFromEntityApply);
   }
 
@@ -235,16 +254,27 @@ export default class AppliesStore {
 
   // PUT
   async changeRoleHierarchy(applyProperties) {
-    const changeRoleHierarchyApply = await changeRoleHierarchyRequest(applyProperties);
+    const changeRoleHierarchyApply = await changeRoleHierarchyRequest(
+      applyProperties
+    );
     this.myApplies.unshift(changeRoleHierarchyApply);
   }
 
   async changeRoleHierarchyBulk(applyProperties) {
-    const changeRoleHierarchyBulkApply = await changeRoleHierarchyBulkRequest(applyProperties);
+    const changeRoleHierarchyBulkApply = await changeRoleHierarchyBulkRequest(
+      applyProperties
+    );
     this.myApplies.unshift(changeRoleHierarchyBulkApply);
   }
 
-  async transferApprovers({ user, reqId, approvers, approversType, comment, overrideApprovers = false }) {
+  async transferApprovers({
+    user,
+    reqId,
+    approvers,
+    approversType,
+    comment,
+    overrideApprovers = false,
+  }) {
     if (Array.isArray(approversType)) {
       await Promise.all(
         approversType.map(async (approverType) => {
@@ -271,12 +301,17 @@ export default class AppliesStore {
         });
         this.updateApplyAndCount({ user, reqId, apply, removeApply: true });
       } else {
-        throw new Error("לא ניתן להעביר לסוג משתמש זה");
+        throw new Error('לא ניתן להעביר לסוג משתמש זה');
       }
     }
   }
 
-  async removeApproverFromApprovers({ user, reqId, approverId, approversType}) {
+  async removeApproverFromApprovers({
+    user,
+    reqId,
+    approverId,
+    approversType,
+  }) {
     if (Array.isArray(approversType)) {
       await Promise.all(
         approversType.map(async (approverType) => {
@@ -299,7 +334,7 @@ export default class AppliesStore {
         });
         this.updateApplyAndCount({ user, reqId, apply, removeApply: true });
       } else {
-        throw new Error("בעיה בהחזרה לסל");
+        throw new Error('בעיה בהחזרה לסל');
       }
     }
   }
@@ -311,11 +346,16 @@ export default class AppliesStore {
       comment,
     });
 
-    const myApplyIndex = this.getApplyIndexById("approveMyApplies", requestId);
-    const allApplyIndex = this.getApplyIndexById("approveAllApplies", requestId);
+    const myApplyIndex = this.getApplyIndexById('approveMyApplies', requestId);
+    const allApplyIndex = this.getApplyIndexById(
+      'approveAllApplies',
+      requestId
+    );
 
-    if (myApplyIndex != -1) this.updateApply("approveMyApplies", myApplyIndex, updateReq);
-    if (allApplyIndex != -1) this.updateApply("approveAllApplies", allApplyIndex, updateReq);
+    if (myApplyIndex != -1)
+      this.updateApply('approveMyApplies', myApplyIndex, updateReq);
+    if (allApplyIndex != -1)
+      this.updateApply('approveAllApplies', allApplyIndex, updateReq);
   }
 
   async updateApplyDecision({ user, requestId, decision }) {
@@ -330,41 +370,60 @@ export default class AppliesStore {
 
   // UTILS
   updateApplyAndCount = ({ user, reqId, apply, removeApply = false }) => {
-    const myApplyIndex = this.getApplyIndexById("approveMyApplies", reqId);
-    const allApplyIndex = this.getApplyIndexById("approveAllApplies", reqId);
+    const myApplyIndex = this.getApplyIndexById('approveMyApplies', reqId);
+    const allApplyIndex = this.getApplyIndexById('approveAllApplies', reqId);
 
     const myApplyResponsibleBefore =
-      myApplyIndex != -1 ? isApproverAndCanEdit(this.approveMyApplies.requests[myApplyIndex], user) : false;
+      myApplyIndex != -1
+        ? isApproverAndCanEdit(
+            this.approveMyApplies.requests[myApplyIndex],
+            user
+          )
+        : false;
 
     const allApplyResponsibleBefore =
-      allApplyIndex != -1 ? isApproverAndCanEdit(this.approveAllApplies.requests[allApplyIndex], user) : false;
+      allApplyIndex != -1
+        ? isApproverAndCanEdit(
+            this.approveAllApplies.requests[allApplyIndex],
+            user
+          )
+        : false;
 
-    if (myApplyIndex != -1) this.updateApply("approveMyApplies", myApplyIndex, apply);
-    if (allApplyIndex != -1) this.updateApply("approveAllApplies", allApplyIndex, apply);
+    if (myApplyIndex != -1)
+      this.updateApply('approveMyApplies', myApplyIndex, apply);
+    if (allApplyIndex != -1)
+      this.updateApply('approveAllApplies', allApplyIndex, apply);
 
-    const responsibleAfter = !checkIfRequestIsDone(apply) && isApproverAndCanEdit(apply, user);
+    const responsibleAfter =
+      !checkIfRequestIsDone(apply) && isApproverAndCanEdit(apply, user);
+
     if (!responsibleAfter && myApplyResponsibleBefore && removeApply) {
       this.approveMyApplies.requests.splice(myApplyIndex, 1);
-      this.approveMyApplies.waitingForApproveCount = this.approveMyApplies.waitingForApproveCount - 1;
+      this.approveMyApplies.waitingForApproveCount =
+        this.approveMyApplies.waitingForApproveCount - 1;
       this.approveMyAppliesCount = this.approveMyAppliesCount - 1;
     }
     if (!responsibleAfter && allApplyResponsibleBefore && removeApply) {
-      this.approveAllApplies.waitingForApproveCount = this.approveAllApplies.waitingForApproveCount - 1;
+      this.approveAllApplies.waitingForApproveCount =
+        this.approveAllApplies.waitingForApproveCount - 1;
       this.approveAllAppliesCount = this.approveAllAppliesCount - 1;
     }
     if (responsibleAfter && !myApplyResponsibleBefore) {
       this.approveMyApplies.requests.unshift(apply);
       this.approveMyAppliesCount = this.approveMyAppliesCount + 1;
-      this.approveMyApplies.waitingForApproveCount = this.approveMyApplies.waitingForApproveCount + 1;
+      this.approveMyApplies.waitingForApproveCount =
+        this.approveMyApplies.waitingForApproveCount + 1;
     }
   };
 
   getApplyIndexById = (appliesArr, id) => {
     if (Array.isArray(this[appliesArr].requests)) {
-      const reqIndex = this[appliesArr].requests.findIndex((apply) => apply.id === id);
+      const reqIndex = this[appliesArr].requests.findIndex(
+        (apply) => apply.id === id
+      );
+
       return reqIndex;
     }
-
     return -1;
   };
 

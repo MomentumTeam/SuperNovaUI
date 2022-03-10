@@ -11,6 +11,7 @@ export const isUserCanSeeAllApproveApplies = (user) => {
     USER_TYPE.SUPER_SECURITY,
     USER_TYPE.SECURITY,
     USER_TYPE.ADMIN,
+    USER_TYPE.SECURITY_ADMIN,
   ];
   return (
     user?.types &&
@@ -24,6 +25,7 @@ export const isUserCanSeeMyApproveApplies = (user) => {
     USER_TYPE.SUPER_SECURITY,
     USER_TYPE.SECURITY,
     USER_TYPE.ADMIN,
+    USER_TYPE.SECURITY_ADMIN,
   ];
   return (
     user?.types &&
@@ -67,6 +69,10 @@ export const getUserTags = (types) => {
       case USER_TYPE.COMMANDER:
       case 3:
         tags.push(USER_TYPE_TAG.APPROVER);
+        break;
+      case USER_TYPE.SECURITY_ADMIN:
+      case 8:
+        tags.push(USER_TYPE_TAG.SECURITY_ADMIN);
         break;
       default:
         isValidType = false;

@@ -120,7 +120,11 @@ export const getResponsibleFactorFields = (user) => {
     fields.push('superSecurityApprovers');
   if (user === undefined || isUserHoldType(user, USER_TYPE.ADMIN))
     fields.push('adminApprovers');
-  if (user === undefined || isUserHoldType(user, USER_TYPE.SECURITY))
+  if (
+    user === undefined ||
+    isUserHoldType(user, USER_TYPE.SECURITY) ||
+    isUserHoldType(user, USER_TYPE.SECURITY_ADMIN)
+  )
     fields.push('securityApprovers');
   if (user === undefined || isUserApproverType(user)) fields.push('commanders');
   return fields;
@@ -145,7 +149,10 @@ export const getApproverComments = (apply, user) => {
       });
     }
   }
-  if (isUserHoldType(user, USER_TYPE.SECURITY))
+  if (
+    isUserHoldType(user, USER_TYPE.SECURITY) ||
+    isUserHoldType(user, USER_TYPE.SECURITY_ADMIN)
+  )
     comments.push({
       comment: applyComments['securityComment'],
       label: 'הערות יחב"ם',
@@ -182,7 +189,9 @@ export const canEditApply = (apply, user) => {
     (apply.needAdminDecision && isUserHoldType(user, USER_TYPE.ADMIN) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.ADMIN)) ||
     (isUserApproverType(user) &&
-      !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER))
+      !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER)) ||
+    (isUserHoldType(user, USER_TYPE.SECURITY_ADMIN) &&
+      !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY_ADMIN))
   );
 };
 
@@ -196,7 +205,9 @@ export const canPassApply = (apply, user) => {
     (apply.needAdminDecision && isUserHoldType(user, USER_TYPE.ADMIN) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.ADMIN)) ||
     (isUserHoldType(user, USER_TYPE.COMMANDER) &&
-      !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER))
+      !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER)) ||
+    (isUserHoldType(user, USER_TYPE.SECURITY_ADMIN) &&
+      !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY_ADMIN))
   );
 };
 
@@ -209,16 +220,18 @@ export const getUserPassOptions = (apply, user) => {
   )
     passOptions.push({ label: 'גורם מאשר ראשוני', value: USER_TYPE.COMMANDER });
   if (
-    isUserHoldType(user, USER_TYPE.SECURITY) &&
-    !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)
+    (isUserHoldType(user, USER_TYPE.SECURITY) &&
+      !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) ||
+    (isUserHoldType(user, USER_TYPE.SECURITY_ADMIN) &&
+      !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY_ADMIN))
   )
-    passOptions.push({ label: 'יחב"ם', value: USER_TYPE.SECURITY });
+    passOptions.push({ label: 'יחב"ם/קב"ם יחידתי', value: USER_TYPE.SECURITY });
   if (apply.needAdminDecision &&
     isUserHoldType(user, USER_TYPE.ADMIN) &&
     !IsRequestCompleteForApprover(apply, USER_TYPE.ADMIN)
   )
     passOptions.push({ label: 'מחשוב יחידתי', value: USER_TYPE.ADMIN });
-  if (
+    if (
     isUserHoldType(user, USER_TYPE.SUPER_SECURITY) &&
     !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)
   )
@@ -243,12 +256,13 @@ export const IsRequestCompleteForApprover = (apply, approverType) => {
   switch (approverType) {
     case USER_TYPE.SUPER_SECURITY:
       return (
-        !apply.needSuperSecurityDecision ||
+        !apply?.needSuperSecurityDecision ||
         isStatusComplete(apply['superSecurityDecision']['decision'])
       );
     case USER_TYPE.SECURITY:
+    case USER_TYPE.SECURITY_ADMIN:
       return (
-        !apply.needSecurityDecision ||
+        !apply?.needSecurityDecision ||
         isStatusComplete(apply['securityDecision']['decision']) ||
         apply['status'] === STATUSES.APPROVED_BY_SECURITY
       );
@@ -276,7 +290,9 @@ export const processApprovalTableData = (tableData) => {
 
     newAction['מספר בקשה'] = action.serialNumber;
     newAction['שם מבקש'] = action.submittedBy.displayName;
-    newAction['מספר אישי/ת"ז'] = action.submittedBy?.personalNumber ? action.submittedBy.personalNumber : action.submittedBy.identityCard;
+    newAction['מספר אישי/ת"ז'] = action.submittedBy?.personalNumber
+      ? action.submittedBy.personalNumber
+      : action.submittedBy.identityCard;
     newAction['סוג בקשה'] = TYPES[action.type];
     newAction['תאריך יצירה'] = getFormattedDate(action.createdAt);
     newAction['סיבה'] = action.comments;
@@ -328,14 +344,14 @@ export const isAutomaticallyApproved = (request, user) => {
     request.commanders.some((commander) => commander.id === user.id) &&
     (request?.type === REQ_TYPES.CREATE_OG ||
       request?.type === REQ_TYPES.CREATE_ENTITY ||
-      (request?.type === REQ_TYPES.ADD_APPROVER) &&
-      request?.submittedBy?.id === user.id)
-  )
+      (request?.type === REQ_TYPES.ADD_APPROVER &&
+        request?.submittedBy?.id === user.id))
+  );
 };
 
-
-
 export const isCreateSoldierApply = (apply, kartoffelSoldierEnum) => {
-  return apply?.type === REQ_TYPES.CREATE_ENTITY &&
+  return (
+    apply?.type === REQ_TYPES.CREATE_ENTITY &&
     apply?.kartoffelParams?.entityType === kartoffelSoldierEnum
+  );
 };
