@@ -3,8 +3,11 @@ import { Tooltip } from 'primereact/tooltip';
 import configStore from '../../store/Config';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import '../../assets/css/local/pages/dashboard.css';
+import { premissionsPopup } from '../../components/premissionsPopUp'
+import { useState } from 'react';
 
 const UserProfileCard = ({ isUserLoading, user, userTags, openFullDetailsModal }) => {
+  let [visible, setVisible] = useState(false);
   return (
     <div className="personal-information-wrap">
       <div className="display-flex personal-information-inner">
@@ -15,17 +18,8 @@ const UserProfileCard = ({ isUserLoading, user, userTags, openFullDetailsModal }
             {userTags && userTags.length > 0 && (
               <div className="noticeRibbon">
                 {userTags.length > 1 && (
-                  <Tooltip target=".tags-approver" position="bottom" className="tags-tooltip">
-                    {userTags.map((tag, index) => (
-                      <p>
-                        <b>
-                          {index + 1}. {tag}
-                        </b>
-                      </p>
-                    ))}
-                  </Tooltip>
+                 <premissionsPopup userTags={userTags} visible={visible} onClick={(e) => { visible = setVisible(!visible) }}/>
                 )}
-
                 <div className="noticeText">
                   {userTags.length > 1 ? "הרשאות" : userTags.length > 0 && userTags[0]}
 
