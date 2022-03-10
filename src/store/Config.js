@@ -38,6 +38,12 @@ class ConfigStore {
     '61dd539ce4de030012202d5e',
     '619e3a6fe4de0300121d78c7',
   ];
+  CREATE_SPECIAL_GROUP_REQS_APPROVERS = [
+    '619e31f5f235dc001846e872',
+    '61ee8c7af302e80019bba6e4',
+    '619e31fef235dc001846f10b',
+    '61bb4647e4de0300121de442',
+  ];
   CREATE_SOLDIER_APPROVERS = [
     '619e3a6fe4de0300121d78c7',
     '619e406ee4de0300121dc4c8',
@@ -68,6 +74,7 @@ class ConfigStore {
       HI_CHAT_SUPPORT_GROUP_NAME: observable,
       CREATE_ADMIN_REQS_APPROVERS: observable,
       CREATE_BULK_REQS_APPROVERS: observable,
+      CREATE_SPECIAL_GROUP_REQS_APPROVERS: observable,
       soldierRequestsApprovers: observable,
       loadConfig: action,
       loadAdminApprovers: action,
@@ -110,18 +117,22 @@ class ConfigStore {
       if (config?.INSTRUCTION_VIDEOS)
         this.INSTRUCTION_VIDEOS = config.INSTRUCTION_VIDEOS;
       if (config?.CREATE_ADMIN_APPROVERS) {
-        // this.CREATE_ADMIN_REQS_APPROVERS = config.CREATE_ADMIN_APPROVERS;
         const approvers = await this.loadApprovers(
           config.CREATE_ADMIN_APPROVERS
         );
         this.CREATE_ADMIN_REQS_APPROVERS = approvers;
       }
       if (config?.CREATE_BULK_APPROVERS) {
-        // this.CREATE_BULK_REQS_APPROVERS = config.CREATE_BULK_APPROVERS;
         const approvers = await this.loadApprovers(
           config.CREATE_BULK_APPROVERS
         );
         this.CREATE_BULK_REQS_APPROVERS = approvers;
+      }
+      if (config?.CREATE_SPECIAL_GROUP_APPROVERS) {
+        const approvers = await this.loadApprovers(
+          config.CREATE_SPECIAL_GROUP_APPROVERS
+        );
+        this.CREATE_SPECIAL_GROUP_REQS_APPROVERS = approvers;
       }
       if (config.CREATE_SOLDIER_APPROVERS) {
         this.CREATE_SOLDIER_APPROVERS = config.CREATE_SOLDIER_APPROVERS;
