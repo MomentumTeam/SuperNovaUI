@@ -7,6 +7,7 @@ export const canEditRole = (selectedEntity, user) => {
     isRoleBelongToEntity(user, selectedEntity) ||
     isUserHoldType(user, USER_TYPE.SUPER_SECURITY) ||
     isUserHoldType(user, USER_TYPE.SECURITY) ||
+    isUserHoldType(user, USER_TYPE.SECURITY_ADMIN) ||
     isUserHoldType(user, USER_TYPE.ADMIN)
   );
 };

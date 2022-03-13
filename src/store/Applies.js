@@ -133,7 +133,6 @@ export default class AppliesStore {
       const reqIndex = this.myApplies.findIndex((apply) => apply.id === id);
       return reqIndex;
     }
-
     return -1;
   }
 

@@ -30,7 +30,7 @@ class ConfigStore {
   SECURITY_MAIL = 'T82130201@gmail.com';
   SUPER_SECURITY_MAIL = 'T02250B49@gmail.com';
   INSTRUCTION_VIDEOS =
-    'https://www.youtube.com/watch?v=OcUDK4kAUIw&ab_channel=KaliUchis-Topic';
+    'https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley';
   HI_CHAT_SUPPORT_GROUP_NAME = 'לגו תמיכה';
   CREATE_ADMIN_REQS_APPROVERS = [
     '61c039d8e4de0300121de45a',
@@ -39,6 +39,12 @@ class ConfigStore {
   CREATE_BULK_REQS_APPROVERS = [
     '61dd539ce4de030012202d5e',
     '619e3a6fe4de0300121d78c7',
+  ];
+  CREATE_SPECIAL_GROUP_REQS_APPROVERS = [
+    '619e31f5f235dc001846e872',
+    '61ee8c7af302e80019bba6e4',
+    '619e31fef235dc001846f10b',
+    '61bb4647e4de0300121de442',
   ];
   CREATE_SOLDIER_APPROVERS = [
     '619e3a6fe4de0300121d78c7',
@@ -72,6 +78,7 @@ class ConfigStore {
       CREATE_ADMIN_REQS_APPROVERS: observable,
       CREATE_BULK_REQS_APPROVERS: observable,
       SOCKET_URL:observable,
+      CREATE_SPECIAL_GROUP_REQS_APPROVERS: observable,
       soldierRequestsApprovers: observable,
       loadConfig: action,
       loadAdminApprovers: action,
@@ -145,6 +152,10 @@ class ConfigStore {
               config.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL;
     
           if (config?.SOCKET_URL) this.SOCKET_URL = config.SOCKET_URL;
+          if (config?.CREATE_SPECIAL_GROUP_APPROVERS) {
+            const approvers = await this.loadApprovers(config.CREATE_SPECIAL_GROUP_APPROVERS);
+            this.CREATE_SPECIAL_GROUP_REQS_APPROVERS = approvers;
+          }
         } catch (error) {
           console.log('problem with config');
         }
