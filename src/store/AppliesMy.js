@@ -87,7 +87,6 @@ export default class AppliesMyStore {
 
   updateApply = (apply) => {
     // Requests that the user created
-    console.log('update apply');
     const isApplyExists = this.checkIfApplyExist(apply.id);
     if (isApplyExists != -1) this.myRequests[isApplyExists] = apply;
   };

@@ -30,6 +30,7 @@ export default class SocketStore {
     const token = cookies.get(tokenName);
     this.socket = io(socketUrl, {
       query: { token },
+      transports: ["websocket"]
     });
 
     this.socket.on("unauthorized", (error) => {

@@ -65,14 +65,14 @@ export default class UserStore {
 async checkIfUserExternal() {
     if (this.user && (this.user.entityType === configStore.KARTOFFEL_EXTERNAL ||
         configStore.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL.includes(this.user.id) ||
-        configStore.organizationIds.includes(this.user.directGroup))) {
+        configStore.organizationIds && configStore.organizationIds.includes(this.user.directGroup))) {
       this.isUserExternal = true
     }
 
     if (!this.isUserExternal) {
       let userOG = await getOGById(this.user.directGroup);
       userOG.ancestors.forEach((ancestor) => {
-        if (configStore.organizationIds.includes(ancestor)) {
+        if (configStore.organizationIds && configStore.organizationIds.includes(ancestor)) {
           this.isUserExternal = true;
         }
       })
