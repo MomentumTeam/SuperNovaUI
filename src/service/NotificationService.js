@@ -21,3 +21,8 @@ export const markAsRead = async (notificationIds) => {
   );
   return response.data;
 };
+
+export const markAllAsRead = async () => {
+  const response = await axiosApiInstance.put(`${apiBaseUrl}/api/notifications/markAsRead/all`);
+  return response.data;
+};

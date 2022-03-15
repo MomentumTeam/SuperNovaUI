@@ -90,4 +90,10 @@ export default class AppliesMyStore {
     const isApplyExists = this.checkIfApplyExist(apply.id);
     if (isApplyExists != -1) this.myRequests[isApplyExists] = apply;
   };
+
+  removeApply = (apply) => {
+    const isApplyExists = this.checkIfApplyExist(apply.id);
+    if (isApplyExists != -1) this.myRequests.splice(isApplyExists, 1);
+
+  }
 }

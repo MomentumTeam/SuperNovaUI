@@ -70,14 +70,23 @@ export default class SocketStore {
 
     // user get update on request
     this.socket.on("updateRequest", (apply) => {
-      if (apply.submittedBy.id === this.userStore.user.id) this.appliesStore.updateApply(apply);
-      this.appliesMyStore.updateApply(apply);
+      if (apply.submittedBy.id === this.userStore.user.id) {
+        this.appliesStore.updateApply(apply);
+        this.appliesMyStore.updateApply(apply);
+      }
       this.appliesApproveStore.updateApplyAndCount({
         user: this.userStore.user,
         reqId: apply.id,
         apply,
         removeApply: true,
       });
+    });
+
+    // user get delete request
+    this.socket.on("deleteRequest", (apply) => {
+      this.appliesApproveStore.removeApply(apply);
+
+      if (apply.submittedBy.id === this.userStore.user.id) this.appliesMyStore.removeApply(apply);
     });
   }
 }

@@ -149,6 +149,10 @@ export const isApprover = (apply, user) => {
   return isApprover;
 };
 
+export const isSubmitter = (apply, user) => {
+  return apply?.submittedBy?.id === user.id;
+}
+
 export const canEditApply = (apply, user) => {
   if (apply === undefined) return false;
   return (

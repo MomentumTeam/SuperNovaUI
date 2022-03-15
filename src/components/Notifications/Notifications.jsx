@@ -49,7 +49,7 @@ const Notifications = observer(() => {
         style={{ width: "350px", direction: "rtl", borderRadius: "40px" }}
         className="overlaypanel-demo"
         onHide={async () => {
-          hasUnreadNotify && (await notificationStore.markNotificationsAsRead(unreadNotifications.map(({ id }) => id)));
+          hasUnreadNotify && (await notificationStore.markAllNotificationsAsRead());
         }}
       >
         <h2 style={{ textAlign: "center" }}>{hasUnreadNotify ? "התראות חדשות" : "התראות שנקראו"}</h2>

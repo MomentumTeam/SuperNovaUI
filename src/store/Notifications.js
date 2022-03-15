@@ -1,5 +1,5 @@
 import { action, makeAutoObservable, observable } from "mobx";
-import { getMyNotifications, markAsRead } from "../service/NotificationService";
+import { getMyNotifications, markAsRead, markAllAsRead } from "../service/NotificationService";
 
 export default class NotificationsStore {
   userNotifications = [];
@@ -35,7 +35,7 @@ export default class NotificationsStore {
 
   addNotification(notification) {
     if (!notification.read) {
-      const notifications = new Set([notification, ...this.userUnreadNotifications])
+      const notifications = new Set([notification, ...this.userUnreadNotifications]);
       this.userUnreadNotifications = [...notifications];
     }
   }
@@ -45,6 +45,11 @@ export default class NotificationsStore {
   }
   async markNotificationsAsRead(ids) {
     await markAsRead(ids);
+    this.readNotifications();
+  }
+
+  async markAllNotificationsAsRead() {
+    await markAllAsRead();
     this.readNotifications();
   }
 }

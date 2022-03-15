@@ -8,7 +8,7 @@ import {
   removeApproverFromApproversRequest,
 } from '../service/AppliesService';
 import { updateDecisionReq } from '../service/ApproverService';
-import { isApproverAndCanEdit, isApprover, canEditApply } from "../utils/applies";
+import { isApproverAndCanEdit, isApprover, canEditApply, isSubmitter } from "../utils/applies";
 import { isUserCanSeeAllApproveApplies, isUserCanSeeMyApproveApplies } from '../utils/user';
 
 export default class AppliesApproveStore {
@@ -214,6 +214,7 @@ export default class AppliesApproveStore {
       if (!responsibleAfter && myApplyResponsibleBefore && removeApply) {
         this.approveMyApplies.requests.splice(myApplyIndex, 1);
         this.approveMyAppliesCount = this.approveMyAppliesCount - 1;
+        this.approveMyApplies.totalCount = this.approveMyApplies.totalCount - 1;
       }
       if (responsibleAfter && !myApplyResponsibleBefore) {
         this.approveMyApplies.requests.unshift(apply);
@@ -257,7 +258,7 @@ export default class AppliesApproveStore {
 
       // Add request to approveMyApplies
       if (myApplyIndex === -1) {
-        apply.newApply = true;
+        if(!(isSubmitter(apply, user))) apply.newApply = true;
 
         // add to my applies
         this.approveMyApplies.requests.unshift(apply);
@@ -279,7 +280,7 @@ export default class AppliesApproveStore {
 
       // Add request to approveAllApplies
       if (allApplyIndex === -1) {
-        apply.newApply = true;
+        if (!(isSubmitter(apply, user))) apply.newApply = true;
 
         // add to all applies
         this.approveAllApplies.requests.unshift(apply);
@@ -291,4 +292,20 @@ export default class AppliesApproveStore {
       }
     }
   };
+
+  removeApply = (apply) => {
+    const allApplyIndex = this.getApplyIndexById("approveAllApplies", apply.id);
+    const myApplyIndex = this.getApplyIndexById("approveMyApplies", apply.id);
+
+    if (myApplyIndex != -1) {
+       this.approveMyApplies.requests.splice(myApplyIndex, 1);
+       this.approveMyAppliesCount = this.approveMyAppliesCount - 1;
+       this.approveMyApplies.totalCount = this.approveMyApplies.totalCount - 1;
+    }
+
+    if (allApplyIndex != -1) {
+      this.approveAllAppliesCount = this.approveAllAppliesCount - 1;
+      this.approveAllApplies.requests.splice(allApplyIndex, 1);
+    }
+  }
 }
