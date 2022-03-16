@@ -24,9 +24,11 @@ export const TableTypes = (user) => {
         templateParam: [
           user,
           "status",
+          "adminDecision",
           "needSecurityDecision",
           "needSuperSecurityDecision",
           "superSecurityDecision",
+          "adminDecision",
           "securityDecision",
           "commanderDecision",
         ],

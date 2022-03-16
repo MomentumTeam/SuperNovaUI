@@ -43,10 +43,29 @@ export const getResponsibleFactors = (apply, user) => {
   const isReqDone = checkIfRequestIsDone(apply);
   const isSecurityNeeded = apply.needSecurityDecision;
   const isSuperSecurityNeeded = apply.needSuperSecurityDecision;
+  const isAdminNeeded = apply.needAdminDecision;
 
   if (!isReqDone) {
     if (!IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER)) {
       fields = apply['commanders'];
+      return fields;
+    }
+
+    if (
+      isAdminNeeded && isUserHoldType(user, USER_TYPE.ADMIN) &&
+      !IsRequestCompleteForApprover(apply, USER_TYPE.ADMIN)
+    ) {
+      if (apply['adminApprovers'].length > 0) {
+        fields = apply['adminApprovers'];
+      } else {
+        fields = [
+          ...fields,
+          isUserHoldType(user, USER_TYPE.ADMIN)
+            ? '---'
+            : 'ממתין לאישור מחשוב יחידתי',
+        ];
+      }
+
       return fields;
     }
 
@@ -87,6 +106,7 @@ export const getResponsibleFactors = (apply, user) => {
     }
   } else {
     fields = [...fields, ...apply['commanders']];
+    fields = [...fields, ...apply['adminApprovers']];
     fields = [...fields, ...apply['securityApprovers']];
     fields = [...fields, ...apply['superSecurityApprovers']];
   }
@@ -98,6 +118,8 @@ export const getResponsibleFactorFields = (user) => {
   const fields = [];
   if (user === undefined || isUserHoldType(user, USER_TYPE.SUPER_SECURITY))
     fields.push('superSecurityApprovers');
+  if (user === undefined || isUserHoldType(user, USER_TYPE.ADMIN))
+    fields.push('adminApprovers');
   if (
     user === undefined ||
     isUserHoldType(user, USER_TYPE.SECURITY) ||
@@ -105,7 +127,6 @@ export const getResponsibleFactorFields = (user) => {
   )
     fields.push('securityApprovers');
   if (user === undefined || isUserApproverType(user)) fields.push('commanders');
-
   return fields;
 };
 
@@ -113,12 +134,21 @@ export const getApproverComments = (apply, user) => {
   const comments = [];
   const applyComments = apply['approversComments'];
 
-  if (isUserApproverType(user))
-    comments.push({
-      comment: applyComments['commanderComment'],
-      label: 'הערות גורם מאשר',
-      userType: USER_TYPE.COMMANDER,
-    });
+  if (isUserApproverType(user)) {
+    if (apply.needAdminDecision && isUserHoldType(user, USER_TYPE.ADMIN)) {
+      comments.push({
+        comment: applyComments['adminComment'],
+        label: 'הערות מחשוב יחידתי',
+        userType: USER_TYPE.ADMIN,
+      });
+    } else {
+      comments.push({
+        comment: applyComments['commanderComment'],
+        label: 'הערות גורם מאשר',
+        userType: USER_TYPE.COMMANDER,
+      });
+    }
+  }
   if (
     isUserHoldType(user, USER_TYPE.SECURITY) ||
     isUserHoldType(user, USER_TYPE.SECURITY_ADMIN)
@@ -160,6 +190,8 @@ export const canEditApply = (apply, user) => {
       !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)) ||
     (isUserHoldType(user, USER_TYPE.SECURITY) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) ||
+    (apply.needAdminDecision && isUserHoldType(user, USER_TYPE.ADMIN) &&
+      !IsRequestCompleteForApprover(apply, USER_TYPE.ADMIN)) ||
     (isUserApproverType(user) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER)) ||
     (isUserHoldType(user, USER_TYPE.SECURITY_ADMIN) &&
@@ -174,7 +206,9 @@ export const canPassApply = (apply, user) => {
       !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)) ||
     (isUserHoldType(user, USER_TYPE.SECURITY) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) ||
-    (isUserHoldType(user, USER_TYPE.ADMIN) &&
+    (apply.needAdminDecision && isUserHoldType(user, USER_TYPE.ADMIN) &&
+      !IsRequestCompleteForApprover(apply, USER_TYPE.ADMIN)) ||
+    (isUserHoldType(user, USER_TYPE.COMMANDER) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER)) ||
     (isUserHoldType(user, USER_TYPE.SECURITY_ADMIN) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY_ADMIN))
@@ -196,8 +230,12 @@ export const getUserPassOptions = (apply, user) => {
       !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY_ADMIN))
   )
     passOptions.push({ label: 'יחב"ם/קב"ם יחידתי', value: USER_TYPE.SECURITY });
-  
-  if (
+  if (apply.needAdminDecision &&
+    isUserHoldType(user, USER_TYPE.ADMIN) &&
+    !IsRequestCompleteForApprover(apply, USER_TYPE.ADMIN)
+  )
+    passOptions.push({ label: 'מחשוב יחידתי', value: USER_TYPE.ADMIN });
+    if (
     isUserHoldType(user, USER_TYPE.SUPER_SECURITY) &&
     !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)
   )
@@ -234,6 +272,12 @@ export const IsRequestCompleteForApprover = (apply, approverType) => {
       );
     case USER_TYPE.COMMANDER:
     case USER_TYPE.ADMIN:
+      if (apply.needAdminDecision && approverType === USER_TYPE.ADMIN) {
+        return (
+           apply['status'] === STATUSES.APPROVED_BY_ADMIN ||
+           isStatusComplete(apply['adminDecision']['decision'])
+        );
+      }
       return (
         apply['status'] === STATUSES.APPROVED_BY_COMMANDER ||
         isStatusComplete(apply['commanderDecision']['decision'])
@@ -242,6 +286,7 @@ export const IsRequestCompleteForApprover = (apply, approverType) => {
       return true;
   }
 };
+
 
 export const processApprovalTableData = (tableData) => {
   return tableData.map((action) => {
@@ -274,10 +319,13 @@ export const isDateGreater = (d1, days) => {
 
 export const getDenyReason = (apply) => {
   const commanderReason = apply['commanderDecision']['reason'];
+  const adminReason = apply['adminDecision']['reason'];
   const securityReason = apply['securityDecision']['reason'];
   const superSecurityReason = apply['superSecurityDecision']['reason'];
 
   if (commanderReason && commanderReason !== '') return commanderReason;
+
+  if (adminReason && adminReason !== '') return adminReason;
 
   if (securityReason && securityReason !== '') return securityReason;
 
