@@ -39,10 +39,13 @@ class ConfigStore {
     '619e3a6fe4de0300121d78c7',
   ];
   CREATE_SPECIAL_GROUP_REQS_APPROVERS = [
-    '619e31f5f235dc001846e872',
-    '61ee8c7af302e80019bba6e4',
-    '619e31fef235dc001846f10b',
-    '61bb4647e4de0300121de442',
+    '61dd539ce4de030012202d5e',
+    '619f8aa0e4de0300121dd3f4',
+    '619e3a6fe4de0300121d78c7',
+  ];
+  CREATE_SECURITY_ADMIN_REQS_APPROVERS = [
+    '61dd539ce4de030012202d5e',
+    '619e3a6fe4de0300121d78c7',
   ];
   CREATE_SOLDIER_APPROVERS = [
     '619e3a6fe4de0300121d78c7',
@@ -75,6 +78,7 @@ class ConfigStore {
       CREATE_ADMIN_REQS_APPROVERS: observable,
       CREATE_BULK_REQS_APPROVERS: observable,
       CREATE_SPECIAL_GROUP_REQS_APPROVERS: observable,
+      CREATE_SECURITY_ADMIN_REQS_APPROVERS: observable,
       soldierRequestsApprovers: observable,
       loadConfig: action,
       loadAdminApprovers: action,
@@ -133,6 +137,12 @@ class ConfigStore {
           config.CREATE_SPECIAL_GROUP_APPROVERS
         );
         this.CREATE_SPECIAL_GROUP_REQS_APPROVERS = approvers;
+      }
+      if (config?.CREATE_SECURITY_ADMIN_APPROVERS) {
+        const approvers = await this.loadApprovers(
+          config.CREATE_SECURITY_ADMIN_APPROVERS
+        );
+        this.CREATE_SECURITY_ADMIN_REQS_APPROVERS = approvers;
       }
       if (config.CREATE_SOLDIER_APPROVERS) {
         this.CREATE_SOLDIER_APPROVERS = config.CREATE_SOLDIER_APPROVERS;

@@ -235,6 +235,16 @@ const ApproverForm = forwardRef(
           );
           break;
         }
+        case USER_TYPE.SECURITY_ADMIN: {
+          setDefaultApprovers(
+            toJS(configStore.CREATE_SECURITY_ADMIN_REQS_APPROVERS) || []
+          );
+          setValue(
+            'approvers',
+            toJS(configStore.CREATE_SECURITY_ADMIN_REQS_APPROVERS)
+          );
+          break;
+        }
         default: {
           const result = await GetDefaultApprovers({
             request: requestObject,
@@ -515,7 +525,8 @@ const ApproverForm = forwardRef(
               watch('isUserApprover') ||
               watch('approverType') === USER_TYPE.ADMIN ||
               watch('approverType') === USER_TYPE.BULK ||
-              watch('approverType') === USER_TYPE.SPECIAL_GROUP 
+              watch('approverType') === USER_TYPE.SPECIAL_GROUP ||
+              watch('approverType') === USER_TYPE.SECURITY_ADMIN
             }
             defaultApprovers={defaultApprovers}
           />
