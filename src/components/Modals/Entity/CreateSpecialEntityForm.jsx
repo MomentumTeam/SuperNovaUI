@@ -193,7 +193,6 @@ const CreateSpecialEntityForm = forwardRef(
         methods.setValue('workerEntityType', configStore.KARTOFFEL_EXTERNAL);
 
         if (requestObject) {
-          console.log(requestObject);
           methods.setValue(
             'userType',
             requestObject.kartoffelParams.entityType

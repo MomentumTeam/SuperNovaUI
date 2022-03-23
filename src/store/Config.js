@@ -3,7 +3,6 @@ import { getConfig } from '../service/ConfigService';
 import { getEntityByMongoId } from '../service/KartoffelService';
 
 class ConfigStore {
-  createAdminRequestsApprovers = [];
   soldierRequestsApprovers = [];
 
   // USER
@@ -13,8 +12,8 @@ class ConfigStore {
   KARTOFFEL_SOLDIER = 'Soldier';
   KARTOFFEL_EXTERNAL = 'External';
   USER_CLEARANCE = ['1', '2', '3', '4', '5', '6'];
-  KARTOFFEL_RANKS = ['טוראי', 'רב"ט', 'סמל', 'סמ"ר']
-  KARTOFFEL_SERVICE_TYPES= ['חובה', 'חובה בתנאי קבע', 'קבע', 'מילואים']
+  KARTOFFEL_RANKS = ['טוראי', 'רב"ט', 'סמל', 'סמ"ר'];
+  KARTOFFEL_SERVICE_TYPES = ['חובה', 'חובה בתנאי קבע', 'קבע', 'מילואים'];
   USER_SOURCE_DI = 'sf_name';
   USER_NO_PICTURE = 'pictureUrl';
   USER_HIGH_COMMANDER_RANKS = ['rookie', 'champion'];
@@ -29,11 +28,32 @@ class ConfigStore {
   SECURITY_MAIL = 'T82130201@gmail.com';
   SUPER_SECURITY_MAIL = 'T02250B49@gmail.com';
   INSTRUCTION_VIDEOS =
-    'https://www.youtube.com/watch?v=OcUDK4kAUIw&ab_channel=KaliUchis-Topic';
+    'https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley';
   HI_CHAT_SUPPORT_GROUP_NAME = 'לגו תמיכה';
-  CREATE_ADMIN_REQS_APPROVERS = ['619e3a6fe4de0300121d78c7,61c039d8e4de0300121de45a'];
-  CREATE_SOLDIER_APPROVERS = ['619e3a6fe4de0300121d78c7', '619e406ee4de0300121dc4c8'];
-  ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL = ['619e3a6fe4de0300121d78c7', '619e406ee4de0300121dc4c8', '5ebbd53f64fe6f2b1c5777ae']
+  CREATE_ADMIN_REQS_APPROVERS = [
+    '61c039d8e4de0300121de45a',
+    '61dd539ce4de030012202d5e',
+  ];
+  CREATE_BULK_REQS_APPROVERS = [
+    '61dd539ce4de030012202d5e',
+    '619e3a6fe4de0300121d78c7',
+  ];
+  CREATE_SPECIAL_GROUP_REQS_APPROVERS = [
+    '619e31f5f235dc001846e872',
+    '61ee8c7af302e80019bba6e4',
+    '619e31fef235dc001846f10b',
+    '61bb4647e4de0300121de442',
+  ];
+  CREATE_SOLDIER_APPROVERS = [
+    '619e3a6fe4de0300121d78c7',
+    '619e406ee4de0300121dc4c8',
+  ];
+
+  ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL = [
+    '619e3a6fe4de0300121d78c7',
+    '619e406ee4de0300121dc4c8',
+    '5ebbd53f64fe6f2b1c5777ae',
+  ];
 
   constructor() {
     makeAutoObservable(this, {
@@ -52,8 +72,9 @@ class ConfigStore {
       SUPER_SECURITY_MAIL: observable,
       INSTRUCTION_VIDEOS: observable,
       HI_CHAT_SUPPORT_GROUP_NAME: observable,
-      ADMIN_REQS_APPROVERS: observable,
-      createAdminRequestsApprovers: observable,
+      CREATE_ADMIN_REQS_APPROVERS: observable,
+      CREATE_BULK_REQS_APPROVERS: observable,
+      CREATE_SPECIAL_GROUP_REQS_APPROVERS: observable,
       soldierRequestsApprovers: observable,
       loadConfig: action,
       loadAdminApprovers: action,
@@ -68,13 +89,13 @@ class ConfigStore {
       if (config?.USER_EXTERNAL_ENTITY_TYPE)
         this.USER_EXTERNAL_ENTITY_TYPE = config.USER_EXTERNAL_ENTITY_TYPE;
       if (config?.KARTOFFEL_CIVILIAN)
-              this.KARTOFFEL_CIVILIAN = config.KARTOFFEL_CIVILIAN;
+        this.KARTOFFEL_CIVILIAN = config.KARTOFFEL_CIVILIAN;
       if (config?.KARTOFFEL_SOLDIER)
         this.KARTOFFEL_SOLDIER = config.KARTOFFEL_SOLDIER;
       if (config?.KARTOFFEL_EXTERNAL)
         this.KARTOFFEL_EXTERNAL = config.KARTOFFEL_EXTERNAL;
       if (config?.KARTOFFEL_RANKS)
-          this.KARTOFFEL_RANKS = config.KARTOFFEL_RANKS;
+        this.KARTOFFEL_RANKS = config.KARTOFFEL_RANKS;
       if (config?.KARTOFFEL_SERVICE_TYPES)
         this.KARTOFFEL_SERVICE_TYPES = config.KARTOFFEL_SERVICE_TYPES;
       if (config?.USER_CLEARANCE) this.USER_CLEARANCE = config.USER_CLEARANCE;
@@ -96,14 +117,29 @@ class ConfigStore {
       if (config?.INSTRUCTION_VIDEOS)
         this.INSTRUCTION_VIDEOS = config.INSTRUCTION_VIDEOS;
       if (config?.CREATE_ADMIN_APPROVERS) {
-        this.CREATE_ADMIN_APPROVERS = config.CREATE_ADMIN_APPROVERS;
-        const approvers = await this.loadApprovers(this.CREATE_ADMIN_APPROVERS);
-        this.createAdminRequestsApprovers = approvers
-        }
+        const approvers = await this.loadApprovers(
+          config.CREATE_ADMIN_APPROVERS
+        );
+        this.CREATE_ADMIN_REQS_APPROVERS = approvers;
+      }
+      if (config?.CREATE_BULK_APPROVERS) {
+        const approvers = await this.loadApprovers(
+          config.CREATE_BULK_APPROVERS
+        );
+        this.CREATE_BULK_REQS_APPROVERS = approvers;
+      }
+      if (config?.CREATE_SPECIAL_GROUP_APPROVERS) {
+        const approvers = await this.loadApprovers(
+          config.CREATE_SPECIAL_GROUP_APPROVERS
+        );
+        this.CREATE_SPECIAL_GROUP_REQS_APPROVERS = approvers;
+      }
       if (config.CREATE_SOLDIER_APPROVERS) {
         this.CREATE_SOLDIER_APPROVERS = config.CREATE_SOLDIER_APPROVERS;
-        const approvers = await this.loadApprovers(this.CREATE_SOLDIER_APPROVERS);
-        this.soldierRequestsApprovers = approvers
+        const approvers = await this.loadApprovers(
+          this.CREATE_SOLDIER_APPROVERS
+        );
+        this.soldierRequestsApprovers = approvers;
       }
       if (config?.organizationNumbers)
         this.organizationNumbers = config.organizationNumbers;
@@ -112,16 +148,14 @@ class ConfigStore {
       if (config?.organizationNumberToGroupId)
         this.organizationNumberToGroupId = config.organizationNumberToGroupId;
       if (config?.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL)
-        this.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL = config.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL;
-
-
+        this.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL =
+          config.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL;
     } catch (error) {
       console.log('problem with config');
     }
   }
 
   async loadApprovers(approversIdsArray) {
-
     const approverForAdmin = await Promise.all(
       approversIdsArray.map(async (id) => {
         try {
@@ -133,9 +167,7 @@ class ConfigStore {
       })
     );
 
-    return approverForAdmin.filter(
-      (approver) => approver !== null
-    );
+    return approverForAdmin.filter((approver) => approver !== null);
   }
 }
 
