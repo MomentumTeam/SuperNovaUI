@@ -18,7 +18,6 @@ import { HierarchyDelete } from "../Modals/Hierarchy/HierarchyDelete";
 
 // Role
 import { FullRoleInformation } from "../Modals/Role/FullRoleInformation";
-import { FullRoleInformationForm } from "../Modals/Role/FullRoleInformationForm";
 
 // Request
 import { PassRequestDialog } from "../Modals/Request/PassRequestDialog";
@@ -29,14 +28,12 @@ import { useToast } from '../../context/use-toast';
 
 const TableActionsModal = forwardRef((_, ref) => {
   const { actionPopup, toastRef } = useToast();
-  const { contextMenuRef } = ref;
   const { selectedItem } = useContext(TableContext);
   const {
     actionType,
     isActionModalOpen,
     closeActionModal,
     setIsActionModalOpen,
-    currEvent,
   } = useContext(TableActionsContext);
 
   const sendActionPopup = (actionName = actionType, error = null) => {
@@ -95,7 +92,6 @@ const TableActionsModal = forwardRef((_, ref) => {
               hierarchy={selectedItem[0]}
               isOpen={isActionModalOpen}
               closeModal={closeActionModal}
-              actionPopup={sendActionPopup}
             />
           );
 
@@ -126,9 +122,6 @@ const TableActionsModal = forwardRef((_, ref) => {
               isDialogVisible={isActionModalOpen}
               setDialogVisiblity={setIsActionModalOpen}
               request={selectedItem[0]}
-              isApprover={
-                actionType === myRequestsTableActionsEnum.VIEW_MY_REQUESTS
-              }
             />
           );
         case TableAppliesActionsEnum.VIEW_APPLY:
