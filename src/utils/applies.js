@@ -202,8 +202,7 @@ export const canPassApply = (apply, user) => {
       !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)) ||
     (isUserHoldType(user, USER_TYPE.SECURITY) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) ||
-    (apply.needAdminDecision &&
-      isUserHoldType(user, USER_TYPE.ADMIN) &&
+    (isUserHoldType(user, USER_TYPE.ADMIN) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.ADMIN)) ||
     (isUserHoldType(user, USER_TYPE.SECURITY_ADMIN) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY_ADMIN))
