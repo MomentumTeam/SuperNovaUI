@@ -114,7 +114,8 @@ const FullRoleInformationForm = forwardRef(
 
     const isUserSecurity =
       isUserHoldType(userStore.user, USER_TYPE.SECURITY) ||
-      isUserHoldType(userStore.user, USER_TYPE.SUPER_SECURITY);
+      isUserHoldType(userStore.user, USER_TYPE.SUPER_SECURITY) ||
+      isUserHoldType(userStore.user, USER_TYPE.SECURITY_ADMIN);
 
     const debouncedRoleName = useRef(
       debounce(async (roleNameToSearch, roleCheck) => {
@@ -224,7 +225,6 @@ const FullRoleInformationForm = forwardRef(
       }
       const { approvers, comments, roleName, clearance, oldRole, entityId } =
         data;
-
       const req = {
         commanders: approvers,
         kartoffelParams: {
@@ -234,6 +234,10 @@ const FullRoleInformationForm = forwardRef(
           role: oldRole,
           ...(entityId && { entityId }),
           ...(clearance && { clearance }),
+        },
+        adParams: {
+          samAccountName: getSamAccountNameFromUniqueId(requestObject.roleId),
+          jobTitle: roleName,
         },
 
         comments,
@@ -318,7 +322,6 @@ const FullRoleInformationForm = forwardRef(
             </span>
           </div>
         </div>
-
         {watch('isJobTitleAlreadyTaken') && !errors.roleName && (
           <div
             className="p-fluid-item p-fluid-item-flex1"

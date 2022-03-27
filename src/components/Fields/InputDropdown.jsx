@@ -14,6 +14,7 @@ const InputDropdown = ({
   additionalClass = "",
   errors,
   required = true,
+  optionLabel
 }) => {
   const disabled = !canEdit || !isEdit;
 
@@ -32,6 +33,7 @@ const InputDropdown = ({
           options={options}
           disabled={disabled}
           style={disabled ? disabledInputStyle : {}}
+          optionLabel={optionLabel}
           onChange={(e) => {
             methods.setValue(fieldName, e.target.value, { shouldValidate: true });
           }}
