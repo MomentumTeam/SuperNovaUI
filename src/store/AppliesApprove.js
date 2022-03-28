@@ -281,7 +281,7 @@ export default class AppliesApproveStore {
         const responsibleAfter =
           !checkIfRequestIsDone(apply) && isApproverCanEdit;
         if (responsibleAfter) this.approveMyAppliesCount = this.approveMyAppliesCount + 1;
-      } else {
+      } else { // Update request
         this.updateApplyAndCount({ user, reqId: apply.id, apply, updateAllApply: false, removeApply: true });
       }
 
