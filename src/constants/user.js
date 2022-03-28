@@ -1,11 +1,12 @@
 
 // CONST
 export const USER_TYPE_TAG = {
-  APPROVER: "גורם מאשר",
-  SECURITY_APPROVER: "גורם מאשר במ",
-  ADMIN: "מחשוב יחידתי",
-  SUPER_SECURITY_APPROVER:'גורם מאשר בטח"ם',
-  BULK:"הגשת בקשה מרובה"
+  APPROVER: 'גורם מאשר',
+  SECURITY_APPROVER: 'גורם מאשר יחב"ם',
+  ADMIN: 'מחשוב יחידתי',
+  SUPER_SECURITY_APPROVER: 'גורם מאשר בטח"ם',
+  BULK: 'הגשת בקשה מרובה',
+  SECURITY_ADMIN: 'קב"ם יחידתי',
 };
 
 export const USER_SEX = [
@@ -32,7 +33,13 @@ export const USER_TYPE = {
   SECURITY_ADMIN: 'SECURITY_ADMIN',
 };
 
-export const APPROVER_TRANSFER_TYPE = [USER_TYPE.ADMIN, USER_TYPE.COMMANDER, USER_TYPE.SUPER_SECURITY, USER_TYPE.SECURITY];
+export const APPROVER_TRANSFER_TYPE = [
+  USER_TYPE.ADMIN,
+  USER_TYPE.COMMANDER,
+  USER_TYPE.SUPER_SECURITY,
+  USER_TYPE.SECURITY,
+  USER_TYPE.SECURITY_ADMIN,
+];
 
 
 export const APPROVER_TYPES = [

@@ -11,6 +11,7 @@ export const isUserCanSeeAllApproveApplies = (user) => {
     USER_TYPE.SUPER_SECURITY,
     USER_TYPE.SECURITY,
     USER_TYPE.ADMIN,
+    USER_TYPE.SECURITY_ADMIN,
   ];
   return (
     user?.types &&
@@ -24,6 +25,7 @@ export const isUserCanSeeMyApproveApplies = (user) => {
     USER_TYPE.SUPER_SECURITY,
     USER_TYPE.SECURITY,
     USER_TYPE.ADMIN,
+    USER_TYPE.SECURITY_ADMIN,
   ];
   return (
     user?.types &&
@@ -67,6 +69,10 @@ export const getUserTags = (types) => {
       case USER_TYPE.COMMANDER:
       case 3:
         tags.push(USER_TYPE_TAG.APPROVER);
+        break;
+      case USER_TYPE.SECURITY_ADMIN:
+      case 8:
+        tags.push(USER_TYPE_TAG.SECURITY_ADMIN);
         break;
       default:
         isValidType = false;
@@ -122,22 +128,18 @@ export const kartoffelIdentityCardValidation = (identityCard) => {
   return accumulator % 10 === 0;
 };
 
-export const getRelevantApproverTypes = (user) => {
+export const getRelevantApproverTypes = (user, readOnly = false) => {
   const isAdmin = isUserHoldType(user, USER_TYPE.ADMIN);
   const isSecurity = isUserHoldType(user, USER_TYPE.SECURITY);
 
   let ApproverOptions = APPROVER_TYPES;
-
-  if (!isAdmin) {
-    ApproverOptions = APPROVER_TYPES.filter((type) => type.id !== 6); //dont show SPECIAL_GROUP option
-  }
-  if (!isSecurity) {
-    ApproverOptions = APPROVER_TYPES.filter((type) => type.id !== 7); //dont show SECURITY_ADMIN option
-  }
-  if (!isAdmin && !isSecurity) {
-    ApproverOptions = APPROVER_TYPES.filter(
-      (type) => type.id !== 7 && type.id !== 6
-    ); //dont show SPECIAL_GROUP and SECURITY_ADMIN and options
+  if (!readOnly) {
+    if (!isAdmin) {
+      ApproverOptions = ApproverOptions.filter((type) => type.id !== 6); //dont show SPECIAL_GROUP option
+    }
+    if (!isSecurity) {
+      ApproverOptions = ApproverOptions.filter((type) => type.id !== 7); //dont show SECURITY_ADMIN option
+    }
   }
   
   return ApproverOptions;

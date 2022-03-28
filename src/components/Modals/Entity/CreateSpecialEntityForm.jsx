@@ -34,30 +34,30 @@ const validationSchema = Yup.object().shape({
   workerEntityType: Yup.string(),
   soldierEntityType: Yup.string(),
   firstName: Yup.string()
-    .required("יש למלא שם פרטי")
-    .matches(NAME_REG_EXP, "שם לא תקין"),
+    .required('יש למלא שם פרטי')
+    .matches(NAME_REG_EXP, 'שם לא תקין'),
   lastName: Yup.string()
-    .required("יש למלא שם משפחה")
-    .matches(NAME_REG_EXP, "שם לא תקין"),
-  identityNumber: Yup.string().when(["userType", "workerEntityType"], {
+    .required('יש למלא שם משפחה')
+    .matches(NAME_REG_EXP, 'שם לא תקין'),
+  identityCard: Yup.string().when(['userType', 'workerEntityType'], {
     is: (userType, workerEntityType) => userType === workerEntityType,
     then: Yup.string().optional(),
     otherwise: Yup.string()
       .required('יש להזין ת"ז')
       .matches(IDENTITY_CARD_EXP, 'ת"ז לא תקין')
       .test({
-        name: "check-if-valid",
+        name: 'check-if-valid',
         message: 'ת"ז לא תקין!',
-        test: async (identityNumber) => {
-          return kartoffelIdentityCardValidation(identityNumber);
+        test: async (identityCard) => {
+          return kartoffelIdentityCardValidation(identityCard);
         },
       })
       .test({
-        name: "check-if-identity-number-already-taken-in-kartoffel",
+        name: 'check-if-identity-number-already-taken-in-kartoffel',
         message: 'קיים משתמש עם הת"ז הזה!',
-        test: async (identityNumber) => {
+        test: async (identityCard) => {
           try {
-            const isAlreadyTaken = await getEntityByIdentifier(identityNumber);
+            const isAlreadyTaken = await getEntityByIdentifier(identityCard);
 
             if (isAlreadyTaken) {
               return false;
@@ -68,22 +68,22 @@ const validationSchema = Yup.object().shape({
         },
       }),
   }),
-  mobilePhone: Yup.string().when(["userType", "workerEntityType"], {
+  mobilePhone: Yup.string().when(['userType', 'workerEntityType'], {
     is: (userType, workerEntityType) => userType === workerEntityType,
     then: Yup.string().optional(),
     otherwise: Yup.string()
-      .required("יש למלא מספר פלאפון נייד")
-      .matches(PHONE_REG_EXP, "מספר לא תקין"),
+      .required('יש למלא מספר פלאפון נייד')
+      .matches(PHONE_REG_EXP, 'מספר לא תקין'),
   }),
-  classification: Yup.string().required("יש לבחור סיווג"),
+  classification: Yup.string().required('יש לבחור סיווג'),
   isUserApprover: Yup.boolean(),
   isUserExternalApprover: Yup.boolean(),
   approvers: Yup.array().when(
     [
-      "isUserApprover",
-      "isUserExternalApprover",
-      "userType",
-      "workerEntityType",
+      'isUserApprover',
+      'isUserExternalApprover',
+      'userType',
+      'workerEntityType',
     ],
     {
       is: (
@@ -97,67 +97,67 @@ const validationSchema = Yup.object().shape({
         );
       },
       then: Yup.array()
-        .min(1, "יש לבחור לפחות גורם מאשר אחד")
-        .required("יש לבחור לפחות גורם מאשר אחד")
+        .min(1, 'יש לבחור לפחות גורם מאשר אחד')
+        .required('יש לבחור לפחות גורם מאשר אחד')
         .test({
-          name: "check-if-valid-approver",
-          message: "מאשר לא תקין, נא לבחור מאשר שנמצא תחת ההיררכיות המורשות",
+          name: 'check-if-valid-approver',
+          message: 'מאשר לא תקין, נא לבחור מאשר שנמצא תחת ההיררכיות המורשות',
           test: async function (approvers, context) {
             let isTotalValid = true;
-              await Promise.all(
-                approvers.map(async (approver) => {
-                  if (context.parent.organization &&
-                   ( !approver?.types ||
+            await Promise.all(
+              approvers.map(async (approver) => {
+                if (
+                  context.parent.organization &&
+                  (!approver?.types ||
                     !approver?.types.includes(USER_TYPE.SECURITY) ||
                     !approver?.types.includes(USER_TYPE.SUPER_SECURITY))
-                  ) {
-                    const { isValid } = await isApproverValid(
-                      approver?.entityId || approver?.id,
-                      context.parent.organization?.orgId,
-                      true
-                    );
+                ) {
+                  const { isValid } = await isApproverValid(
+                    approver?.entityId || approver?.id,
+                    context.parent.organization?.orgId,
+                    true
+                  );
 
-                    if (!isValid) isTotalValid = false;
-                  }
-                })
-              );
-              return isTotalValid;
-            } 
+                  if (!isValid) isTotalValid = false;
+                }
+              })
+            );
+            return isTotalValid;
           },
-        ),
-      otherwise: Yup.array().when("isUserApprover", {
+        }),
+      otherwise: Yup.array().when('isUserApprover', {
         is: false,
         then: Yup.array()
-          .min(1, "יש לבחור לפחות גורם מאשר אחד")
-          .required("יש לבחור לפחות גורם מאשר אחד"),
+          .min(1, 'יש לבחור לפחות גורם מאשר אחד')
+          .required('יש לבחור לפחות גורם מאשר אחד'),
       }),
     }
   ),
   comments: Yup.string().optional(),
   sex: Yup.string().optional().nullable(),
   userType: Yup.string(),
-  personalNumber: Yup.string().when(["userType", "soldierEntityType"], {
+  personalNumber: Yup.string().when(['userType', 'soldierEntityType'], {
     is: (userType, soldierEntityType) => userType === soldierEntityType,
-    then: Yup.string().required("יש להכניס מספר אישי"),
+    then: Yup.string().required('יש להכניס מספר אישי'),
     otherwise: Yup.string().optional(),
   }),
-  serviceType: Yup.string().when(["userType", "soldierEntityType"], {
+  serviceType: Yup.string().when(['userType', 'soldierEntityType'], {
     is: (userType, soldierEntityType) => userType === soldierEntityType,
-    then: Yup.string().required("יש לבחור סוג שירות"),
+    then: Yup.string().required('יש לבחור סוג שירות'),
     otherwise: Yup.string().optional(),
   }),
-  rank: Yup.string().when(["userType", "soldierEntityType"], {
+  rank: Yup.string().when(['userType', 'soldierEntityType'], {
     is: (userType, soldierEntityType) => userType === soldierEntityType,
-    then: Yup.string().required("יש לבחור דרגה"),
+    then: Yup.string().required('יש לבחור דרגה'),
     otherwise: Yup.string().optional(),
   }),
-  employeeNumber: Yup.string().when(["userType", "workerEntityType"], {
+  employeeNumber: Yup.string().when(['userType', 'workerEntityType'], {
     is: (userType, workerEntityType) => userType === workerEntityType,
-    then: Yup.string().required("יש להכניס מספר עובד"),
+    then: Yup.string().required('יש להכניס מספר עובד'),
   }),
-  organization: Yup.object().when(["userType", "workerEntityType"], {
+  organization: Yup.object().when(['userType', 'workerEntityType'], {
     is: (userType, workerEntityType) => userType === workerEntityType,
-    then: Yup.object().required("יש לבחור ארגון"),
+    then: Yup.object().required('יש לבחור ארגון'),
   }),
 });
 
@@ -165,7 +165,8 @@ const CreateSpecialEntityForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject }, ref) => {
     const { appliesStore, userStore, configStore } = useStores();
     const isUserApprover = isUserApproverType(userStore.user);
-    const isUserExternalApprover = isUserApproverType(userStore.user) && userStore.isUserExternal;
+    const isUserExternalApprover =
+      isUserApproverType(userStore.user) && userStore.isUserExternal;
 
     const userTypes = [
       { name: 'אזרח', key: configStore.KARTOFFEL_CIVILIAN },
@@ -199,7 +200,7 @@ const CreateSpecialEntityForm = forwardRef(
 
           // SOLDIER and CIVILIAN
           methods.setValue(
-            'identityNumber',
+            'identityCard',
             requestObject.kartoffelParams.identityCard
           );
 
@@ -300,48 +301,56 @@ const CreateSpecialEntityForm = forwardRef(
       } catch (err) {
         throw new Error(err.errors);
       }
-
       const {
         firstName,
         lastName,
-        identityNumber,
         mobilePhone,
         classification,
         comments,
         sex,
         approvers,
         birthdate,
+        identityCard,
         rank,
         serviceType,
         personalNumber,
         organization,
         employeeNumber,
       } = data;
+
       const req = {
         commanders: approvers,
         kartoffelParams: {
           firstName,
           lastName,
-          ...(identityNumber &&
-            identityNumber !== '' && { identityCard: identityNumber }),
           mobilePhone: [mobilePhone],
-          phone: [mobilePhone],
           clearance: classification,
           entityType: methods.watch('userType'),
           ...(sex && sex !== '' && { sex }),
-          ...(sex && sex !== '' && { sex }),
           ...(birthdate && { birthdate: datesUtil.getTime(birthdate) }),
-          ...(rank && rank !== '' && { rank }),
-          ...(serviceType && serviceType !== '' && { serviceType }),
-          ...(personalNumber && personalNumber !== '' && { personalNumber }),
-          ...(organization &&
-            organization !== '' && { organization: organization.orgNumber }),
-          ...(employeeNumber && employeeNumber !== '' && { employeeNumber }),
         },
         comments,
         adParams: {},
       };
-      console.log(req);
+      
+      switch(methods.watch('userType')) {
+        case configStore.KARTOFFEL_CIVILIAN:
+          req.kartoffelParams.identityCard = identityCard
+          break;
+        case configStore.KARTOFFEL_SOLDIER:
+          req.kartoffelParams.identityCard = identityCard
+          req.kartoffelParams.rank = rank
+          req.kartoffelParams.serviceType = serviceType
+          req.kartoffelParams.personalNumber = personalNumber
+          break;
+        case configStore.KARTOFFEL_EXTERNAL:
+          req.kartoffelParams.organization = organization.orgNumber
+          req.kartoffelParams.employeeNumber = employeeNumber
+          break
+        default:
+          break;
+      }
+      
       await appliesStore.createEntityApply(req);
       await setIsActionDone(true);
     };

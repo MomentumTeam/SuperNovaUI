@@ -25,7 +25,7 @@ export const getUniqueFieldsByUserType = (configStore, userType) => {
     ];
 
     const civilianUserFormFields = [{
-        fieldName: 'identityNumber',
+        fieldName: 'identityCard',
         displayName: 'ת"ז',
         inputType: InputTypes.TEXT,
         type: 'num',
@@ -35,7 +35,7 @@ export const getUniqueFieldsByUserType = (configStore, userType) => {
     }, ];
 
     const soldierUserFormFields = [{
-            fieldName: 'identityNumber',
+            fieldName: 'identityCard',
             displayName: 'ת"ז',
             inputType: InputTypes.TEXT,
             type: 'num',

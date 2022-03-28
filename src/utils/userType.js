@@ -23,6 +23,13 @@ export const sortUserType = (userTypesArray) => {
     };
   }
 
+  if (userTypesArray.includes('SECURITY_ADMIN') || userTypesArray.includes(8)) {
+    userType = {
+      type: USER_TYPE.SECURITY_ADMIN,
+      tag: USER_TYPE_TAG.SECURITY_ADMIN,
+    };
+  }
+
   if (userTypesArray.includes('SUPER_SECURITY') || userTypesArray.includes(2)) {
     userType = {
       type: USER_TYPE.SUPER_SECURITY,
@@ -36,10 +43,8 @@ export const sortUserType = (userTypesArray) => {
       tag: USER_TYPE_TAG.ADMIN,
     };
   }
-  
-  if (
-    !userType 
-  ) {
+
+  if (!userType) {
     userType = {
       type: USER_TYPE.SOLDIER,
     };

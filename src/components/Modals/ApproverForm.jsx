@@ -76,10 +76,12 @@ const validationSchema = Yup.object().shape({
 const ApproverForm = forwardRef(
   ({ onlyForView, requestObject, setIsActionDone }, ref) => {
     const { appliesStore, userStore, configStore } = useStores();
-    const [approverType, setApproverType] = useState();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
-    const ApproverOptions = getRelevantApproverTypes(userStore.user);
+    const ApproverOptions = getRelevantApproverTypes(
+      userStore.user,
+      onlyForView
+    );
 
     const {
       register,
@@ -98,19 +100,17 @@ const ApproverForm = forwardRef(
 
     useEffect(async () => {
       setValue('approverType', USER_TYPE.COMMANDER);
-      setApproverType(USER_TYPE.COMMANDER);
 
       if (requestObject) {
         setValue('comments', requestObject.comments);
         setValue('userName', requestObject.additionalParams.displayName);
         setValue('approverType', requestObject.additionalParams.type);
-
         setValue(
           'personalNumber',
           requestObject.additionalParams.personalNumber ||
             requestObject.additionalParams.identityCard
         );
-        setApproverType(requestObject.additionalParams.type);
+
         try {
           const hierarchy = await getOGById(
             requestObject.additionalParams.directGroup
@@ -202,7 +202,6 @@ const ApproverForm = forwardRef(
       []
     );
     const handleApprover = async (e) => {
-      setApproverType(e.value);
       setValue('approverType', e.value);
       setValue('groupInChargeId', '');
       setValue('specialGroupId', '');
@@ -227,9 +226,22 @@ const ApproverForm = forwardRef(
         case USER_TYPE.SPECIAL_GROUP: {
           setCurrentUser();
           setDefaultApprovers(
-            toJS(configStore.CREATE_BULK_REQS_APPROVERS) || []
+            toJS(configStore.CREATE_SPECIAL_GROUP_REQS_APPROVERS) || []
           );
-          setValue('approvers', toJS(configStore.CREATE_BULK_REQS_APPROVERS));
+          setValue(
+            'approvers',
+            toJS(configStore.CREATE_SPECIAL_GROUP_REQS_APPROVERS)
+          );
+          break;
+        }
+        case USER_TYPE.SECURITY_ADMIN: {
+          setDefaultApprovers(
+            toJS(configStore.CREATE_SECURITY_ADMIN_REQS_APPROVERS) || []
+          );
+          setValue(
+            'approvers',
+            toJS(configStore.CREATE_SECURITY_ADMIN_REQS_APPROVERS)
+          );
           break;
         }
         default: {
@@ -340,7 +352,7 @@ const ApproverForm = forwardRef(
                 {...register('approverType')}
                 disabled={onlyForView}
                 className={`dropDownInput ${onlyForView ? `disabled` : ''} `}
-                value={approverType}
+                value={watch('approverType')}
                 id="approverForm-approverType"
                 inputId="2011"
                 required
@@ -512,7 +524,8 @@ const ApproverForm = forwardRef(
               watch('isUserApprover') ||
               watch('approverType') === USER_TYPE.ADMIN ||
               watch('approverType') === USER_TYPE.BULK ||
-              watch('approverType') === USER_TYPE.SPECIAL_GROUP 
+              watch('approverType') === USER_TYPE.SPECIAL_GROUP ||
+              watch('approverType') === USER_TYPE.SECURITY_ADMIN
             }
             defaultApprovers={defaultApprovers}
           />
