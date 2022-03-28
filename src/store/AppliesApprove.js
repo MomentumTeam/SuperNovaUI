@@ -196,33 +196,46 @@ export default class AppliesApproveStore {
 
   // UTILS
   updateApplyAndCount = ({ user, reqId, apply, removeApply = false, updateMyApply = true, updateAllApply = true }) => {
+    console.log('updateandcount')
     const isReqDone = checkIfRequestIsDone(apply);
     const isApproverNewReq = isApprover(apply, user);
     const isCanEditNewReq = canEditApply(apply, user);
 
-    if (updateMyApply) {
+    if (isUserCanSeeMyApproveApplies(user) && updateMyApply) {
       const myApplyIndex = this.getApplyIndexById("approveMyApplies", reqId);
 
       // check if the user responsible
       const myApplyResponsibleBefore =
         myApplyIndex != -1 ? isApproverAndCanEdit(this.approveMyApplies.requests[myApplyIndex], user) : false;
       const responsibleAfter = !isReqDone && isApproverNewReq && isCanEditNewReq;
-
+      
       // update request
       if (myApplyIndex != -1) this.updateApply("approveMyApplies", myApplyIndex, apply);
-
-      if (!responsibleAfter && myApplyResponsibleBefore && removeApply) {
-        this.approveMyApplies.requests.splice(myApplyIndex, 1);
-        this.approveMyAppliesCount = this.approveMyAppliesCount - 1;
-        this.approveMyApplies.totalCount = this.approveMyApplies.totalCount - 1;
+      if (
+        myApplyIndex === -1 &&
+        isApproverNewReq &&
+        !responsibleAfter &&
+        !myApplyResponsibleBefore
+      ) {
+          this.approveMyApplies.requests.unshift(apply);
+          this.approveMyApplies.totalCount =
+            this.approveMyApplies.totalCount + 1;
       }
+        if (!responsibleAfter && myApplyResponsibleBefore && removeApply) {
+          if (!isApproverNewReq) {
+            this.approveMyApplies.requests.splice(myApplyIndex, 1);
+            this.approveMyApplies.totalCount =
+              this.approveMyApplies.totalCount - 1;
+          }
+          this.approveMyAppliesCount = this.approveMyAppliesCount - 1;
+        }
       if (responsibleAfter && !myApplyResponsibleBefore) {
         this.approveMyApplies.requests.unshift(apply);
         this.approveMyAppliesCount = this.approveMyAppliesCount + 1;
       }
     }
 
-    if (updateAllApply) {
+    if (isUserCanSeeAllApproveApplies(user) && updateAllApply) {
       const allApplyIndex = this.getApplyIndexById("approveAllApplies", reqId);
 
       // check if the user responsible
@@ -255,19 +268,21 @@ export default class AppliesApproveStore {
   addOrUpdateApplyMy = ({ user, apply }) => {
     if (isUserCanSeeMyApproveApplies(user) && this.approveMyApplies.requests) {
       const myApplyIndex = this.getApplyIndexById("approveMyApplies", apply.id);
+      const isApproverCanEdit = isApproverAndCanEdit(apply, user);
+      const isNotifyUpdate = !isSubmitter(apply, user) && isApproverCanEdit;
 
       // Add request to approveMyApplies
       if (myApplyIndex === -1) {
-        if(!(isSubmitter(apply, user))) apply.newApply = true;
+        if (isNotifyUpdate) apply.newApply = true;
 
-        // add to my applies
-        this.approveMyApplies.requests.unshift(apply);
+        this.approveMyApplies.requests.unshift(apply)
         this.approveMyApplies.totalCount = this.approveMyApplies.totalCount + 1;
-
-        const responsibleAfter = !checkIfRequestIsDone(apply) && isApproverAndCanEdit(apply, user);
+        
+        const responsibleAfter =
+          !checkIfRequestIsDone(apply) && isApproverCanEdit;
         if (responsibleAfter) this.approveMyAppliesCount = this.approveMyAppliesCount + 1;
       } else {
-        this.updateApplyAndCount({ user, reqId: apply.id, apply, updateAllApply: false });
+        this.updateApplyAndCount({ user, reqId: apply.id, apply, updateAllApply: false, removeApply: true });
       }
 
       this.addOrUpdateApplyAll({ user, apply });
@@ -277,15 +292,17 @@ export default class AppliesApproveStore {
   addOrUpdateApplyAll = ({ user, apply }) => {
     if (isUserCanSeeAllApproveApplies(user) && this.approveAllApplies.requests) {
       const allApplyIndex = this.getApplyIndexById("approveAllApplies", apply.id);
+      const isCanEdit = canEditApply(apply, user);
+      const isNotifyUpdate = !isSubmitter(apply, user) && isCanEdit;
 
       // Add request to approveAllApplies
       if (allApplyIndex === -1) {
-        if (!(isSubmitter(apply, user))) apply.newApply = true;
+        if (isNotifyUpdate) apply.newApply = true;
 
         // add to all applies
         this.approveAllApplies.requests.unshift(apply);
-
-        const responsibleAfter = !checkIfRequestIsDone(apply) && canEditApply(apply, user);
+          
+        const responsibleAfter = !checkIfRequestIsDone(apply) && isCanEdit;
         if (responsibleAfter) this.approveAllAppliesCount = this.approveAllAppliesCount + 1;
       } else {
         this.updateApplyAndCount({ user, reqId: apply.id, apply, updateMyApply: false });
@@ -293,13 +310,14 @@ export default class AppliesApproveStore {
     }
   };
 
-  removeApply = (apply) => {
+  removeApply = (apply, user) => {
     const allApplyIndex = this.getApplyIndexById("approveAllApplies", apply.id);
     const myApplyIndex = this.getApplyIndexById("approveMyApplies", apply.id);
-
+    const isApproverAndEdit = isApproverAndCanEdit(apply, user);
+    
     if (myApplyIndex != -1) {
        this.approveMyApplies.requests.splice(myApplyIndex, 1);
-       this.approveMyAppliesCount = this.approveMyAppliesCount - 1;
+       if (isApproverAndEdit) this.approveMyAppliesCount = this.approveMyAppliesCount - 1;
        this.approveMyApplies.totalCount = this.approveMyApplies.totalCount - 1;
     }
 

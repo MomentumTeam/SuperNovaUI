@@ -10,7 +10,7 @@ import AppliesMyStore from "./AppliesMy";
 import AppliesStore from "./Applies";
 import healthStore from './Health';
 import NotificationsStore from './Notifications';
-import SocketStore from './Socket';
+
 const stores = {
   configStore,
   healthStore,
@@ -25,15 +25,7 @@ const stores = {
   treeStore: new TreeStore(),
 };
 
-const socketStore = new SocketStore({
-  notificationStore: stores.notificationStore,
-  appliesApproveStore: stores.appliesApproveStore,
-  appliesStore: stores.appliesStore,
-  appliesMyStore: stores.appliesMyStore,
-  userStore: stores.userStore,
-  configStore: configStore,
-});
-export const StoresContext = createContext({...stores, socketStore});
+export const StoresContext = createContext({...stores});
 
 export const StoreProvider = ({ children }) => (
   <StoresContext.Provider value={stores}>{children}</StoresContext.Provider>
