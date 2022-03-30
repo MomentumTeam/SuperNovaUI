@@ -185,20 +185,25 @@ export const isSubmitter = (apply, user) => {
 
 export const canEditApply = (apply, user) => {
   if (apply === undefined || user === undefined) return false;
-
+  
   const isAdminComplete = IsRequestCompleteForApprover(apply, USER_TYPE.ADMIN)
   const isCommanderComplete = IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER);
   const isFirstCommanderComplete = isAdminComplete || isCommanderComplete;
-
+  
   const isApproverCanEdit = (approverType) => {
     switch (approverType) {
       case USER_TYPE.ADMIN:
         return !isAdminComplete;
       case USER_TYPE.COMMANDER:
-        return !isCommanderComplete;
+        return !isCommanderComplete &&  apply.commanders.some((commander) => user.id === commander.id);
       case USER_TYPE.SECURITY:
+        if (apply.hasSecurityAdmin) {
+          if (!apply.securityApprovers.some(securityApprover => user.id === securityApprover.id)) {
+            return false;
+          }
+        }
       case USER_TYPE.SECURITY_ADMIN:
-        return  !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY) &&isFirstCommanderComplete
+        return  !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY) && isFirstCommanderComplete
       case USER_TYPE.SUPER_SECURITY:
          return (
            !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY) &&

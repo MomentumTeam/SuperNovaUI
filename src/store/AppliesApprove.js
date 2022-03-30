@@ -196,7 +196,6 @@ export default class AppliesApproveStore {
 
   // UTILS
   updateApplyAndCount = ({ user, reqId, apply, removeApply = false, updateMyApply = true, updateAllApply = true }) => {
-    console.log('updateandcount')
     const isReqDone = checkIfRequestIsDone(apply);
     const isApproverNewReq = isApprover(apply, user);
     const isCanEditNewReq = canEditApply(apply, user);
@@ -246,8 +245,10 @@ export default class AppliesApproveStore {
       // update request
       if (allApplyIndex != -1) this.updateApply("approveAllApplies", allApplyIndex, apply);
 
-      if (!responsibleAfter && allApplyResponsibleBefore)
+      if (!responsibleAfter && allApplyResponsibleBefore ) {
         this.approveAllAppliesCount = this.approveAllAppliesCount - 1;
+        this.approveAllApplies.requests.splice(allApplyIndex, 1);
+      }
       if (responsibleAfter && !allApplyResponsibleBefore) this.approveAllAppliesCount = this.approveAllAppliesCount + 1;
     }
   };
