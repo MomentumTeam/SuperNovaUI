@@ -10,7 +10,11 @@ const FullEntityPremissionsModal = ({
   isOpen,
   closePremissionsModal,
 }) => {
-  useEffect(() => {});
+  useEffect(() => {
+    if(!isOpen) {
+       closePremissionsModal();
+    }
+  });
 
   return (
     <div style={{ width: "19px", height: "19px", backgroundColor: "white" }}>
@@ -25,11 +29,11 @@ const FullEntityPremissionsModal = ({
       >
         <div style={{padding: "10px"}}>
         {userTags.map((tag, index) => (
-          <p>
-            <b>
-              {index + 1}. {tag}
-            </b>
-          </p>
+          <ul>
+            <li>
+              {tag}
+            </li>
+          </ul>
         ))}
         </div>
       </Dialog>

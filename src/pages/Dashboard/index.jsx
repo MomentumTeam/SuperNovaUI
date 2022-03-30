@@ -78,7 +78,7 @@ const Dashboard = observer(() => {
             user={user}
             userTags={userTags}
             isOpen={isUserPremissionsModalOpen}
-            closeShowPremissionsModal={closePremissionsModal}
+            closePremissionsModal={closePremissionsModal}
           />
           <div className="content-unit-wrap">
             {isUserCanSeeMyApproveApplies(user) ? (
