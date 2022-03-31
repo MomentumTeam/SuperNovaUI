@@ -8,6 +8,20 @@ export const getUserTypeReq = async (entityId) => {
   return userType.data;
 };
 
+
+export const getAllMyApproverTypes = async (entityId) => {
+  console.log(entityId)
+  const approverTypes = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/approvers/my/types/`,
+    {
+      params: {
+        entityId
+      },
+    }
+  );
+  return approverTypes;
+}
+
 export const searchApproverByDisplayNameReq = async (
   displayName,
   type,
