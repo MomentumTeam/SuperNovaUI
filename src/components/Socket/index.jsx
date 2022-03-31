@@ -67,9 +67,7 @@ const SocketProvider = observer(() => {
   const initRequestEvents = () => {
     // user get new request for my
     socket.on("newRequestMy", (apply) => {
-            console.log("newRequestMy");
-
-      appliesApproveStore.addOrUpdateApplyMy({
+      appliesApproveStore.addOrUpdateApply({
         user: userStore.user,
         apply,
       });
@@ -93,7 +91,7 @@ const SocketProvider = observer(() => {
       }
 
   
-      appliesApproveStore.addOrUpdateApplyMy({
+      appliesApproveStore.addOrUpdateApply({
         user: userStore.user,
         apply,
       });

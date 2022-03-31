@@ -5,6 +5,7 @@ import {
   checkIfRequestIsDone,
   REQ_TYPES,
   REQ_STATUSES,
+  DECISIONS,
 } from '../constants';
 import datesUtil from '../utils/dates';
 import { isUserApproverType, isUserHoldType } from './user';
@@ -26,16 +27,6 @@ export const organizeRows = (rows) => {
 export const getFormattedDate = (timestamp) => {
   const newDate = new Date(parseInt(timestamp));
   return datesUtil.formattedDate(newDate);
-};
-
-export const getResponsibleFactor = (apply, user) => {
-  const fields = getResponsibleFactorFields(user);
-  let responsibles = [];
-  fields.map((field) => {
-    responsibles = [...responsibles, ...apply[field]];
-  });
-
-  return responsibles;
 };
 
 export const getResponsibleFactors = (apply, user) => {
@@ -114,22 +105,6 @@ export const getResponsibleFactors = (apply, user) => {
   return fields;
 };
 
-export const getResponsibleFactorFields = (user) => {
-  const fields = [];
-  if (user === undefined || isUserHoldType(user, USER_TYPE.SUPER_SECURITY))
-    fields.push('superSecurityApprovers');
-  if (user === undefined || isUserHoldType(user, USER_TYPE.ADMIN))
-    fields.push('adminApprovers');
-  if (
-    user === undefined ||
-    isUserHoldType(user, USER_TYPE.SECURITY) ||
-    isUserHoldType(user, USER_TYPE.SECURITY_ADMIN)
-  )
-    fields.push('securityApprovers');
-  if (user === undefined || isUserApproverType(user)) fields.push('commanders');
-  return fields;
-};
-
 export const getApproverComments = (apply, user) => {
   const comments = [];
   const applyComments = apply['approversComments'];
@@ -168,16 +143,64 @@ export const getApproverComments = (apply, user) => {
   return comments;
 };
 
-export const isApproverAndCanEdit = (apply, user) => {
-  return isApprover(apply, user) && canEditApply(apply, user);
+export const isDirectApproverAndCanEdit = (apply, user) => {
+  return isDirectApprover(apply, user) && canEditApply(apply, user);
 };
 
-export const isApprover = (apply, user) => {
-  if (apply === undefined) return false;
-  const approvers = getResponsibleFactor(apply, user);
-  const isApprover = approvers.some((approver) => approver.id === user.id);
-  return isApprover;
+export const isApprovedByFirstCommander = (apply) => {
+  return (
+    apply.status === STATUSES.APPROVED_BY_COMMANDER ||
+    apply.status === STATUSES.APPROVED_BY_ADMIN ||
+    (apply?.commanderDecision?.decision && apply.commanderDecision.decision === DECISIONS.APPROVED) ||
+    (apply?.adminDecision?.decision && apply.adminDecision.decision === DECISIONS.APPROVED)
+  );
+}
+
+export const isApprovedByAnySecurity = (apply) => {
+  return (
+    (apply?.securityDecision?.decision && apply.securityDecision.decision === DECISIONS.APPROVED) ||
+    apply.status === STATUSES.APPROVED_BY_SECURITY
+  );
 };
+
+export const getDirectApprovers = (apply) => {
+  const isApprovedByCommander = isApprovedByFirstCommander(apply);
+  const isApprovedBySecurity = isApprovedByAnySecurity(apply);
+
+  const commanders = apply?.commanders;
+  const admins = apply?.adminApprovers;
+  const securityApprovers =  apply.needSecurityDecision && isApprovedByCommander?  apply?.securityApprovers: [];
+  const superSecurityApprovers = apply.needSuperSecurityDecision && isApprovedBySecurity ? apply.superSecurityApprovers : [];
+
+  const directApprovers = [...commanders, ...admins, ...securityApprovers, ...superSecurityApprovers]
+  return directApprovers;
+}
+
+export const isDirectApprover = (apply, user) => {
+  if (apply === undefined || user === undefined) return false;
+
+  const directApprovers = getDirectApprovers(apply);
+  return directApprovers.some(directApprover => directApprover.id === user.id)
+}
+
+export const isUndirectApprover = (apply, user) => {
+   const isUndirectApproverByType = (approverType) => {
+     switch (approverType) {
+       case USER_TYPE.ADMIN:
+         return true;
+       case USER_TYPE.SECURITY_ADMIN:
+         return apply.needSecurityDecision;
+       case USER_TYPE.SECURITY:
+         return apply.needSecurityDecision && !apply.hasSecurityAdmin;
+       case USER_TYPE.SUPER_SECURITY:
+         return apply.needSuperSecurityDecision;
+       default:
+         return false;
+     }
+   };
+
+  return user?.types && user.types.some((userType) => isUndirectApproverByType(userType));
+}
 
 export const isSubmitter = (apply, user) => {
   return apply?.submittedBy?.id === user.id;

@@ -16,7 +16,7 @@ import { canEditHierarchy } from "../../utils/hierarchy";
 import { useContext } from "react";
 import { TableContext } from ".";
 import { isUserApproverType } from "../../utils/user";
-import { canPassApply, isApproverAndCanEdit, isCreateSoldierApply } from "../../utils/applies";
+import { canPassApply, isDirectApproverAndCanEdit, isCreateSoldierApply } from "../../utils/applies";
 
 const TableActions = ({ setActionType, openActionModal, setEvent }) => {
   const { selectedItem, tableType } = useContext(TableContext);
@@ -70,12 +70,18 @@ const TableActions = ({ setActionType, openActionModal, setEvent }) => {
     if (!isCreateSoldierApply(selectedItem[0], configStore.KARTOFFEL_SOLDIER) && tableActions.pass && canPassApply(selectedItem[0], user))
       actions.push(getAction("העבר לטיפול גורם אחר", tableActions.pass));
     if (
-      !isCreateSoldierApply(selectedItem[0], configStore.KARTOFFEL_SOLDIER) && tableActions.return &&
+      !isCreateSoldierApply(selectedItem[0], configStore.KARTOFFEL_SOLDIER) &&
+      tableActions.return &&
       canPassApply(selectedItem[0], user) &&
-      isApproverAndCanEdit(selectedItem[0], user)
+      isDirectApproverAndCanEdit(selectedItem[0], user)
     )
-      actions.push(getAction('החזר לסל הבקשות', tableActions.return));
-    if (!isCreateSoldierApply(selectedItem[0], configStore.KARTOFFEL_SOLDIER) && tableActions.take && canPassApply(selectedItem[0], user) && !isApproverAndCanEdit(selectedItem[0], user))
+      actions.push(getAction("החזר לסל הבקשות", tableActions.return));
+    if (
+      !isCreateSoldierApply(selectedItem[0], configStore.KARTOFFEL_SOLDIER) &&
+      tableActions.take &&
+      canPassApply(selectedItem[0], user) &&
+      !isDirectApproverAndCanEdit(selectedItem[0], user)
+    )
       actions.push(getAction("העברה לטיפולי", tableActions.take));
 
     return actions;

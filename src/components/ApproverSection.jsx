@@ -5,18 +5,14 @@ import '../assets/css/local/components/modal-item.min.css';
 import { useStores } from '../context/use-stores';
 import { toJS } from 'mobx';
 import { DECISIONS, REQ_STATUSES } from '../constants';
-import {
-  getApproverComments,
-  isApproverAndCanEdit,
-  getDenyReason,
-} from '../utils/applies';
+import { getApproverComments, isDirectApproverAndCanEdit, getDenyReason } from "../utils/applies";
 
 const ApproverSection = ({ request, setDialogVisiblity }) => {
   const { appliesApproveStore, userStore } = useStores();
   const user = toJS(userStore.user);
 
   let requestId = request.id;
-  const enabledChange = isApproverAndCanEdit(request, user);
+  const enabledChange = isDirectApproverAndCanEdit(request, user);
 
   const [approverMode, setApproveMode] = useState({
     commentMode: false,
