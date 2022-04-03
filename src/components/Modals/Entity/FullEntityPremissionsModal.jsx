@@ -1,12 +1,9 @@
-import React, { createContext, useEffect, useRef, useState } from "react";
-import styled from "styled-components";
-import ReactTooltip from "react-tooltip";
+import React, { useEffect, useState } from "react";
 import { Dialog } from "primereact/dialog";
 import { classNames } from "primereact/utils";
-import { getAllMyApproverTypes } from '../../../service/ApproverService';
+import { getAllMyApproverTypes } from "../../../service/ApproverService";
 import { getUserTags } from "../../../utils/user";
 import { USER_TYPE } from "../../../constants";
-import { getOGByHierarchy } from "../../../service/KartoffelService";
 
 const FullEntityPremissionsModal = ({
   user,
@@ -14,50 +11,68 @@ const FullEntityPremissionsModal = ({
   isOpen,
   closePremissionsModal,
 }) => {
-
-  const [userApproverData, setUserApproverData] = useState([])
-  const [premissions, setPremissions] = useState({})
+  const [premissions, setPremissions] = useState({});
+  
+  const removeHierarchyFromPremissions = (hierarchyToRemove) => {
+  }
+  
   useEffect(() => {
     const myApproverTypes = async (user) => {
-       const response =  await getAllMyApproverTypes(user?.id)
-       return response.data
-    }
+      console.log(user)
+      const response = await getAllMyApproverTypes(user?.id);
+      return response.data;
+    };
 
-    myApproverTypes(user).then((approverData) => {
-      if(approverData.types.includes(USER_TYPE.ADMIN) && approverData.adminGroupsInCharge.length > 0) {
-        setPremissions(() => {
-          const admin = getUserTags([USER_TYPE.ADMIN])
-          let groupArray = [];
-          approverData.adminGroupsInCharge.forEach(group => {
-            groupArray.push(group.hierarchy + '/' + group.name)
-          });
-          premissions[admin] = groupArray;
-          return premissions
-        })
-      }
+    const setApproverTypeGroups = (groups, type) => {
+      setPremissions(() => {
+        premissions[type] = groups;
+        console.log(premissions)
+        return premissions;
+      });
+    };
 
-      approverData.securityAdminGroupsInCharge = [{"hierarchy": "sf_name/nemo",
-      "id": "619e31f5f235dc001846e872",
-      "name": "quo"}]
-      if(approverData.types.includes(USER_TYPE.SECURITY_ADMIN) && approverData.securityAdminGroupsInCharge.length > 0) {
-        setPremissions(() => {
-          const securityAdmin = getUserTags([USER_TYPE.SECURITY_ADMIN])
-          let groupArray = [];
-          approverData.adminGroupsInCharge.forEach(group => {
-            groupArray.push(group.hierarchy + '/' + group.name)
-          });
-          premissions[securityAdmin] = groupArray;
-          return premissions
-        })
-      }
-      
-      setUserApproverData(approverData)
-    }).catch(err => {
-      console.log(err)
-    })
 
-    if(!isOpen) {
-       closePremissionsModal();
+    // Handle Approver Data
+    myApproverTypes(user)
+      .then((approverData) => {
+        if (
+          approverData.types.includes(USER_TYPE.ADMIN) &&
+          approverData.adminGroupsInCharge.length > 0
+        ) {
+          setApproverTypeGroups(
+            approverData.adminGroupsInCharge,
+            USER_TYPE.ADMIN
+          );
+        }
+
+        // TODO: remove
+        approverData.securityAdminGroupsInCharge = [
+          {
+            hierarchy: "sf_name/nemo",
+            id: "619e31f5f235dc001846e872",
+            name: "quo",
+          },
+        ];
+
+        if (
+          approverData.types.includes(USER_TYPE.SECURITY_ADMIN) &&
+          approverData.securityAdminGroupsInCharge.length > 0
+        ) {
+          setApproverTypeGroups(
+            approverData.securityAdminGroupsInCharge,
+            USER_TYPE.SECURITY_ADMIN
+          );
+        }
+
+
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+
+    if (!isOpen) {
+      closePremissionsModal();
     }
   }, [closePremissionsModal, isOpen, premissions, user, userTags]);
 
@@ -72,14 +87,21 @@ const FullEntityPremissionsModal = ({
         footer={""}
         dismissableMask={true}
       >
-        <div style={{padding: "10px"}}>
-          <ul>
-        {Object.keys(premissions).forEach((key) => {
-            <li>
-              {key} 
-            </li>
-        })}
-        </ul>
+        <div style={{ padding: "10px" }}>
+          {Object.keys(premissions).map((key) => (
+            <ul>
+              <li>
+                {getUserTags(key)}
+                <ul style={{ paddingTop: "5px" }}>
+                  {premissions[key].map((hierarchy) => (
+                    <li>
+                      {hierarchy.hierarchy + '/' + hierarchy.name} <button onClick={(e) => {removeHierarchyFromPremissions(hierarchy.id)}}>הסרה</button>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            </ul>
+          ))}
         </div>
       </Dialog>
     </div>
