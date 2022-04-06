@@ -23,7 +23,6 @@ export const removeAsApproverFromHierarchy = async (approverId, approverType, hi
 }
 
 export const getAllMyApproverTypes = async (entityId) => {
-  console.log(entityId)
   const approverTypes = await axiosApiInstance.get(
     `${apiBaseUrl}/api/approvers/my/types/`,
     {

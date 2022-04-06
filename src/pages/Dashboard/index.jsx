@@ -74,12 +74,14 @@ const Dashboard = observer(() => {
             actionPopup={actionPopup}
             edit={false}
           />
-          <FullEntityPremissionsModal
-            user={user}
-            userTags={userTags}
-            isOpen={isUserPremissionsModalOpen}
-            closePremissionsModal={closePremissionsModal}
-          />
+          {userTags.length > 0 && (
+            <FullEntityPremissionsModal
+              user={user}
+              userTags={userTags}
+              isOpen={isUserPremissionsModalOpen}
+              closePremissionsModal={closePremissionsModal}
+            />
+          )}
           <div className="content-unit-wrap">
             {isUserCanSeeMyApproveApplies(user) ? (
               <>
