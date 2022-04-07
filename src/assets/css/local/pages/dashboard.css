@@ -552,6 +552,74 @@
   bottom: 38px;
   left: 20px;
   text-align: center;
+  text-decoration: none;
+  color: white;
+  font-weight: normal;
+
+}
+
+.noticeRibbon:hover{
+  box-shadow:  -0.5px 0.5px 20px #888888 ; 
+  font-weight: 900;
+
+}
+
+.noticeRibbon:hover .noticeText{
+  font-weight: 900;
+
+}
+.noticeClicked {
+  background: transparent linear-gradient(180deg, #FEB557 0%, #F68340 100%) 0% 0% no-repeat padding-box;
+  position: absolute;
+  border-radius: 100%;
+  width: 180px;
+  height: 180px;
+  color: white;
+  font-weight: bold;
+  top: -90px;
+  right: -90px;
+  box-shadow: 0px 3px 6px rgb(0 0 0 / 20%);
+  box-shadow:  -0.5px 0.5px 20px #888888 ; 
+  font-weight: 900;
+
+}
+.clickedNoticeRibbon {
+  background: transparent linear-gradient(180deg, #FEB557 0%, #F68340 100%) 0% 0% no-repeat padding-box;
+  position: absolute;
+  border-radius: 100%;
+  width: 180px;
+  height: 180px;
+  color: white;
+  font-weight: bold;
+  top: -90px;
+  right: -90px;
+  box-shadow: 0px 3px 6px rgb(0 0 0 / 20%);
+  box-shadow:  -0.5px 0.5px 20px #888888 ; 
+  font-weight: 900;
+}
+.clickedNoticeRibbon .noticeText{
+  font-weight: 900;
+  width: 35%;
+  position: absolute;
+  bottom: 38px;
+  left: 20px;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  font-weight: 900;
+
+}
+
+.noticeClicked .noticeText {
+  width: 35%;
+  position: absolute;
+  bottom: 38px;
+  left: 20px;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  font-weight: normal;
+
 }
 
 .tabletab {

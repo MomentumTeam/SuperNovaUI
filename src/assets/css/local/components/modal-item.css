@@ -811,6 +811,16 @@
   padding-right: 8%;
 }
 
+#confirmDialog {
+  width: 35vw; height: 270px;
+}
+
+#confirmDialogButtons {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 30px;
+}
+
 .p-dialog.dialogClass7 {
   min-height: 865px;
   padding-bottom: 0;
@@ -3118,6 +3128,20 @@
   padding: 40px !important;
 }
 
+
+#premissionsDialog {
+  padding-top: 0px;
+  border-radius: 30px;
+  min-height: 370px;
+}
+
 #premissionsDialog_content.p-dialog-content {
   padding-top: 0px;
+}
+
+
+.premissionsPopUpWrapper {
+  width: 19px;
+  height: 19px;
+  background-color: white;
 }

@@ -18,13 +18,11 @@ const FullEntityPremissionsModal = ({
 }) => {
   const [premissions, setPremissions] = useState({});
   const [showModal, setShowModal] = useState({});
-  const [currentHierarchyForRemoval, setCurrentHierarchyForRemoval] = useState({})
-  const onHide = () => {
-    setShowModal(false);
-  };
+  const [currentHierarchyForRemoval, setCurrentHierarchyForRemoval] = useState(
+    {}
+  );
 
   const dismissApproverFromHierarchy = async () => {
-    console.log(currentHierarchyForRemoval)
     let { hierarchyToRemove, approverType } = currentHierarchyForRemoval;
     try {
       const response = await removeAsApproverFromHierarchy(
@@ -38,13 +36,12 @@ const FullEntityPremissionsModal = ({
         );
         if (premissions[approverType].length === 0)
           delete premissions[approverType];
-          return { ...premissions };
-        });
-        
-      } catch (err) {
-        console.log(err);
-      }
-      closeModal();
+        return { ...premissions };
+      });
+    } catch (err) {
+      console.log(err);
+    }
+    closeModal();
   };
 
   const openModal = (hierarchyToRemove, approverType) => {
@@ -57,7 +54,6 @@ const FullEntityPremissionsModal = ({
     });
   };
   const closeModal = () => {
-    console.log("here")
     setShowModal(false);
     setCurrentHierarchyForRemoval(() => {
       return {};
@@ -108,19 +104,17 @@ const FullEntityPremissionsModal = ({
 
     if (!isOpen) {
       closePremissionsModal();
-      setShowModal(false);
+      closeModal();
     }
   }, [closePremissionsModal, isOpen, premissions, user, userTags]);
 
   return (
-    <div style={{ width: "19px", height: "19px", backgroundColor: "white" }}>
+    <div className="premissionsPopUpWrapper">
       <Dialog
         className={classNames("dialogClass6")}
         header={"הרשאות משתמש"}
         visible={isOpen}
-        style={{ paddingTop: "0px", borderRadius: "30px", minHeight: "370px" }}
         onHide={closePremissionsModal}
-        footer={""}
         dismissableMask={true}
         id="premissionsDialog"
       >
@@ -131,12 +125,18 @@ const FullEntityPremissionsModal = ({
                 if (
                   getUserTags(Object.keys(premissions)).includes(tag) === false
                 ) {
-                  return <li><p style={{fontSize: "18px"}}>{tag}</p></li>;
+                  return (
+                    <li>
+                      <p style={{ fontSize: "18px" }}>{tag}</p>
+                    </li>
+                  );
                 }
               })}
               {Object.keys(premissions).map((key) => (
                 <li>
-                  <p style={{fontSize: "18px", paddingTop: "3px"}}>{getUserTags([key])}</p>
+                  <p style={{ fontSize: "18px", paddingTop: "3px" }}>
+                    {getUserTags([key])}
+                  </p>
                   <ul value={premissions}>
                     {premissions[key].map((hierarchy) => (
                       <li>
@@ -162,24 +162,25 @@ const FullEntityPremissionsModal = ({
                 id="confirmDialog"
                 className={classNames("dialogClassConfirm")}
                 visible={showModal}
-                style={{ width: "35vw", height: "270px" }}
-                onHide={() => onHide()}
-                header="האם אתה בטוח?"
+                onHide={closeModal}
                 showHeader={false}
               >
                 <h3>האם אתה בטוח?</h3>
                 <p>הסרת השראות מסוג זה יורידו לך יכולות במערכת לגו</p>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    paddingTop: "30px",
-                  }}
-                >
-                  <Button className="p-button-raised p-button-danger" onClick={dismissApproverFromHierarchy}>
+                <div id="confirmDialogButtons">
+                  <Button
+                    className="p-button-raised p-button-danger"
+                    onClick={dismissApproverFromHierarchy}
+                  >
                     כן, הסר לי את ההרשאה
                   </Button>
-                  <Button onClick={() => {closeModal()}}>לא, תשאיר לי את ההרשאה</Button>
+                  <Button
+                    onClick={() => {
+                      closeModal();
+                    }}
+                  >
+                    לא, תשאיר לי את ההרשאה
+                  </Button>
                 </div>
               </Dialog>
             </div>

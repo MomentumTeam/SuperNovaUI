@@ -3,10 +3,8 @@ import { Tooltip } from 'primereact/tooltip';
 import configStore from '../../store/Config';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import '../../assets/css/local/pages/dashboard.css';
-import { useState } from 'react';
 
-const UserProfileCard = ({ isUserLoading, user, userTags, openFullDetailsModal, openPremissionsModal }) => {
-
+const UserProfileCard = ({ isUserLoading, user, userTags, openFullDetailsModal, openPremissionsModal, isUserPremissionsModalOpen }) => {
   return (
     <div className="personal-information-wrap">
       <div className="display-flex personal-information-inner">
@@ -15,7 +13,7 @@ const UserProfileCard = ({ isUserLoading, user, userTags, openFullDetailsModal, 
         ) : (
           <>
             {userTags && userTags.length > 0 && (
-              <div className="noticeRibbon" onClick={ openPremissionsModal }>
+              <div className={isUserPremissionsModalOpen ? "clickedNoticeRibbon":"noticeRibbon"} onClick={ openPremissionsModal } >
                 <div className='noticeText'>הרשאות <i className="tags-approver pi pi-angle-down p-mr-2"></i></div>
               </div>
             )}

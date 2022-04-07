@@ -48,9 +48,11 @@ const Dashboard = observer(() => {
 
   const openPremissionsModal = () => {
     setIsUserPremissionsModalOpen(true);
+
   };
   const closePremissionsModal = () => {
     setIsUserPremissionsModalOpen(false);
+
   };
 
   return (
@@ -66,6 +68,7 @@ const Dashboard = observer(() => {
             userTags={userTags}
             openFullDetailsModal={openFullDetailsModal}
             openPremissionsModal={openPremissionsModal}
+            isUserPremissionsModalOpen={isUserPremissionsModalOpen}
           />
           <FullEntityInformationModal
             user={user}
