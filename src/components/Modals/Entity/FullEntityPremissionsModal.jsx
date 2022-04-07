@@ -136,8 +136,8 @@ const FullEntityPremissionsModal = ({
               })}
               {Object.keys(premissions).map((key) => (
                 <li>
-                  <p style={{fontSize: "18px"}}>{getUserTags([key])}</p>
-                  <ul style={{ paddingTop: "5px" }} value={premissions}>
+                  <p style={{fontSize: "18px", paddingTop: "3px"}}>{getUserTags([key])}</p>
+                  <ul value={premissions}>
                     {premissions[key].map((hierarchy) => (
                       <li>
                         {hierarchy.hierarchy + "/" + hierarchy.name}{" "}
