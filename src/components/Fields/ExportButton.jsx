@@ -1,6 +1,6 @@
 import { Button } from "primereact/button";
 
-const ExportButton = ({ isExportLoading, exportFunction }) => (
+const ExportButton = ({ isExportLoading, exportFunction,toolTip='' }) => (
   <Button
     id="export-button"
     icon="pi pi-file-excel"
@@ -8,6 +8,7 @@ const ExportButton = ({ isExportLoading, exportFunction }) => (
     label="ייצוא"
     className="btn-border blue"
     onClick={exportFunction}
+    tooltip={toolTip!==''?toolTip:false}
   />
 );
 

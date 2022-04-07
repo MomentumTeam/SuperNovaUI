@@ -2,6 +2,11 @@ import React from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import ChartForTree from '../../ChartForTree';
+import { ExportButton } from '../../Fields/ExportButton';
+import { exportToExcel } from '../../../utils/general';
+import { renameObjKeys } from '../../../utils/hierarchy';
+import { excelLabels } from '../../../constants/applies';
+import { exportHierarchyData } from '../../../service/KartoffelService';
 
 class ModalHierarchy extends React.Component {
   constructor(props) {
@@ -17,6 +22,8 @@ class ModalHierarchy extends React.Component {
 
       selectedHierarchy: null,
       visible: false,
+      
+      excelLoading: false,
     };
   }
 
@@ -62,6 +69,28 @@ class ModalHierarchy extends React.Component {
     });
   };
 
+  excelExport = async () => {
+    try {
+      this.setState({
+        excelLoading: true,
+      });
+
+      const hierarchyData = await exportHierarchyData(
+        this.props.userHierarchy,
+        true,
+        false
+      );
+
+      const data = renameObjKeys(hierarchyData.hierarchyData, excelLabels);
+
+      exportToExcel(data, hierarchyData.fatherHierarchyName || undefined);
+    } catch (error) {}
+
+    this.setState({
+      excelLoading: false,
+    });
+  };
+
   render() {
     return (
       <div>
@@ -76,6 +105,14 @@ class ModalHierarchy extends React.Component {
           onClick={() => this.toggleModalVisibility(true)}
           style={this.props.disabled && { display: 'none' }}
         />
+
+        <div>
+          <ExportButton
+            isExportLoading={this.state.excelLoading}
+            exportFunction={this.excelExport}
+            toolTip="רשימת תפקידים מלאה תחת היררכית אב"
+          />
+        </div>
 
         <Dialog
           className="dialogClass9"
