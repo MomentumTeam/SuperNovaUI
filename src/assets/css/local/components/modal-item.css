@@ -773,6 +773,44 @@
   background: transparent linear-gradient(180deg, #f590cd 0%, #ff74ba 100%) 0%
     0% no-repeat padding-box;
 }
+
+.p-dialog.dialogClassConfirm .p-dialog-header .p-dialog-title::before {
+  background-image: none;
+  background-size: 26px;
+}
+.p-dialog.dialogClassConfirm .p-dialog-header .p-dialog-title::after {
+  background: transparent;
+  box-shadow: none;
+  height: 0px;
+  width: 0px;
+}
+
+#confirmDialog_header {
+  padding-right: 40%;
+  padding-top: 25px;
+}
+
+#confirmDialog_content {
+  padding: 0px;
+  height: 100px;
+  padding-right: 100px;
+  padding-left: 110px;
+  padding-top: 45px;
+  border-radius: 14px;
+}
+#confirmDialog_content h3 {
+  padding: 0px;
+  padding-right: 36%;
+  padding-bottom: 20px;
+  color: #000000;
+}
+
+#confirmDialog_content p {
+  padding: 0px;
+  font-size: 20px;
+  padding-right: 14%;
+}
+
 .p-dialog.dialogClass7 {
   min-height: 865px;
   padding-bottom: 0;
@@ -3070,7 +3108,6 @@
     left: 10px;
   }
 }
-
 
 .hierarchyBtn {
   background-image: url(../../../images/buttons/change-view-chart-blue.svg) !important;
