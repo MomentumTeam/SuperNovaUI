@@ -15,7 +15,7 @@ export const removeAsApproverFromHierarchy = async (approverId, approverType, hi
       params: {
         approverId: approverId,
         type: approverType,
-        groupInChargeId: hierarchyId
+        groupInChargeId: hierarchyId === "" ? undefined : hierarchyId
       },
     }
   );

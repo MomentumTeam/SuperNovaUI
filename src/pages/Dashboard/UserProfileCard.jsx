@@ -1,10 +1,20 @@
-import blankProfilePic from '../../assets/images/blankProfile.png';
-import { Tooltip } from 'primereact/tooltip';
-import configStore from '../../store/Config';
-import { ProgressSpinner } from 'primereact/progressspinner';
-import '../../assets/css/local/pages/dashboard.css';
+import blankProfilePic from "../../assets/images/blankProfile.png";
+import { Tooltip } from "primereact/tooltip";
+import configStore from "../../store/Config";
+import { ProgressSpinner } from "primereact/progressspinner";
+import { Button } from "primereact/button";
 
-const UserProfileCard = ({ isUserLoading, user, userTags, openFullDetailsModal, openPremissionsModal, isUserPremissionsModalOpen }) => {
+import "../../assets/css/local/pages/dashboard.css";
+
+const UserProfileCard = ({
+  isUserLoading,
+  user,
+  userTags,
+  openFullDetailsModal,
+  openPremissionsModal,
+  isUserPremissionsModalOpen,
+}) => {
+  console.log(userTags);
   return (
     <div className="personal-information-wrap">
       <div className="display-flex personal-information-inner">
@@ -12,11 +22,6 @@ const UserProfileCard = ({ isUserLoading, user, userTags, openFullDetailsModal, 
           <ProgressSpinner className="tree-loading-spinner" />
         ) : (
           <>
-            {userTags && userTags.length > 0 && (
-              <div className={isUserPremissionsModalOpen ? "clickedNoticeRibbon":"noticeRibbon"} onClick={ openPremissionsModal } >
-                <div className='noticeText'>הרשאות <i className="tags-approver pi pi-angle-down p-mr-2"></i></div>
-              </div>
-            )}
             <div className="personal-information-item">
               <div className="userpic-wrap">
                 <img
@@ -60,9 +65,9 @@ const UserProfileCard = ({ isUserLoading, user, userTags, openFullDetailsModal, 
               <dl>
                 <dt>מייל</dt>
                 <dd>
-                  <a href={`mailto:${user?.mail}`} className="" title={user?.mail}>
-                    {user?.mail}
-                  </a>
+                <a href={`mailto:${user?.mail}`} className="" title={user?.mail}>
+                {user?.mail}
+                </a>
                 </dd>
               </dl>
             </div>
@@ -74,20 +79,34 @@ const UserProfileCard = ({ isUserLoading, user, userTags, openFullDetailsModal, 
             </div>
             <div className="personal-information-item">
               <dl>
-                <Tooltip target={`.hierarchy-name`} content={user?.hierarchy} position="top" />
+              <Tooltip target={`.hierarchy-name`} content={user?.hierarchy} position="top" />
                 <dt>היררכיה</dt>
                 <dd className="hierarchy-name cut-text"> {user?.hierarchy}</dd>
               </dl>
             </div>
-            <div className="personal-information-item">
-              <button
-                className="btn-green-gradient btn-full-details"
-                type="button"
-                title="פרטים מלאים"
-                onClick={openFullDetailsModal}
-              >
-                פרטים מלאים
-              </button>
+            <div id={userTags.length > 0 ? "userProfileCardButtons" : ""}>
+              <div className="personal-information-item">
+                <button
+                  id="fullInformationButton"
+                  className="btn-green-gradient btn-full-details"
+                  type="button"
+                  title="פרטים מלאים"
+                  onClick={openFullDetailsModal}
+                >
+                  פרטים מלאים
+                </button>
+              </div>
+              {userTags.length > 0 && (
+                <div className="personal-information-item">
+                  <Button
+                    type="button"
+                    label="ההרשאות שלי"
+                    id="showPremissionsButton"
+                    className="p-button-rounded p-button-warning"
+                    onClick={openPremissionsModal}
+                  />
+                </div>
+              )}
             </div>
           </>
         )}

@@ -9,14 +9,16 @@ import {
 import { getUserTags } from "../../../utils/user";
 import { USER_TYPE } from "../../../constants";
 import { Button } from "primereact/button";
+import ConfirmRemovalPopUp from "./ConfirmRemovalPopUp";
 
 const FullEntityPremissionsModal = ({
   user,
-  userTags,
   isOpen,
   closePremissionsModal,
+  userTags,
 }) => {
   const [premissions, setPremissions] = useState({});
+  const [approverTypes, setApproverTypes] = useState({});
   const [showModal, setShowModal] = useState({});
   const [currentHierarchyForRemoval, setCurrentHierarchyForRemoval] = useState(
     {}
@@ -37,6 +39,10 @@ const FullEntityPremissionsModal = ({
         if (premissions[approverType].length === 0)
           delete premissions[approverType];
         return { ...premissions };
+      });
+
+      setApproverTypes(() => {
+        return approverTypes.filter((type) => type !== approverType);
       });
     } catch (err) {
       console.log(err);
@@ -77,116 +83,122 @@ const FullEntityPremissionsModal = ({
       // Handle Approver Data
       myApproverTypes(user)
         .then((approverData) => {
-          if (
-            approverData.types.includes(USER_TYPE.ADMIN) &&
-            approverData.adminGroupsInCharge.length > 0
-          ) {
-            setApproverTypeGroups(
-              approverData.adminGroupsInCharge,
-              USER_TYPE.ADMIN
-            );
-          }
+          setApproverTypes(approverData.types);
+          const getApproverTypesHandler = (type) => {
+            const approverTypeHandler = {
+              [USER_TYPE.ADMIN]: () => {
+                return approverData.adminGroupsInCharge.length > 0
+                  ? setApproverTypeGroups(
+                      approverData.adminGroupsInCharge,
+                      USER_TYPE.ADMIN
+                    )
+                  : null;
+              },
+              [USER_TYPE.SECURITY_ADMIN]: () => {
+                return approverData.securityAdminGroupsInCharge.length > 0
+                  ? setApproverTypeGroups(
+                      approverData.securityAdminGroupsInCharge,
+                      USER_TYPE.SECURITY_ADMIN
+                    )
+                  : null;
+              },
+              [USER_TYPE.BULK]: () => {
+                return setApproverTypeGroups([], USER_TYPE.BULK);
+              },
+              [USER_TYPE.SUPER_SECURITY]: () => {
+                return setApproverTypeGroups([], USER_TYPE.SUPER_SECURITY);
+              },
+              default: () => {},
+            };
 
-          if (
-            approverData.types.includes(USER_TYPE.SECURITY_ADMIN) &&
-            approverData.securityAdminGroupsInCharge.length > 0
-          ) {
-            setApproverTypeGroups(
-              approverData.securityAdminGroupsInCharge,
-              USER_TYPE.SECURITY_ADMIN
-            );
-          }
+            return approverTypeHandler[type] || approverTypeHandler["default"];
+          };
+
+          Object.values(approverTypes).forEach((type) => {
+            getApproverTypesHandler(type)();
+          });
         })
         .catch((err) => {
           console.log(err);
         });
     }
-
     if (!isOpen) {
       closePremissionsModal();
       closeModal();
     }
-  }, [closePremissionsModal, isOpen, premissions, user, userTags]);
+  }, [approverTypes, closePremissionsModal, isOpen, premissions, user]);
 
+  const getImuteableApproverTypes = () => {
+    if (
+      Object.values(approverTypes).includes(USER_TYPE.COMMANDER) ||
+      Object.values(userTags).includes(getUserTags([USER_TYPE.COMMANDER])[0])
+    ) {
+      return (
+        <li>
+          <p style={{ fontSize: "16px" }}>
+            {getUserTags([USER_TYPE.COMMANDER])}
+          </p>
+        </li>
+      );
+    }
+  };
+
+  const getRemovalButton = (hierarchy, type) => {
+    return (
+      <Button
+        label="הסרה"
+        className="p-button-danger p-button-text p-button-sm"
+        style={{ height: "15px" }}
+        onClick={() => {
+          openModal(hierarchy, type);
+        }}
+      ></Button>
+    );
+  };
   return (
     <div className="premissionsPopUpWrapper">
-      <Dialog
-        className={classNames("dialogClass6")}
-        header={"הרשאות משתמש"}
-        visible={isOpen}
-        onHide={closePremissionsModal}
-        dismissableMask={true}
-        id="premissionsDialog"
-      >
-        <div style={{ paddingRight: "65px" }}>
-          {premissions && (
+      {
+        <Dialog
+          className={classNames("dialogClass6")}
+          header={"הרשאות משתמש"}
+          visible={isOpen}
+          onHide={closePremissionsModal}
+          dismissableMask={true}
+          id="premissionsDialog"
+        >
+          <div style={{ paddingRight: "65px" }}>
             <ul>
-              {userTags.map((tag) => {
-                if (
-                  getUserTags(Object.keys(premissions)).includes(tag) === false
-                ) {
-                  return (
-                    <li>
-                      <p style={{ fontSize: "18px" }}>{tag}</p>
-                    </li>
-                  );
-                }
-              })}
+              {getImuteableApproverTypes()}
               {Object.keys(premissions).map((key) => (
                 <li>
-                  <p style={{ fontSize: "18px", paddingTop: "3px" }}>
+                  <p style={{ fosntSize: "18px", paddingTop: "3px" }}>
                     {getUserTags([key])}
+                    {premissions[key].length === 0 ? (
+                      getRemovalButton("", key)
+                    ) : (
+                      <></>
+                    )}
                   </p>
                   <ul value={premissions}>
                     {premissions[key].map((hierarchy) => (
                       <li>
-                        {hierarchy.hierarchy + "/" + hierarchy.name}{" "}
-                        <Button
-                          label="הסרה"
-                          className="p-button-danger p-button-text p-button-sm"
-                          style={{ height: "15px" }}
-                          onClick={() => {
-                            openModal(hierarchy, key);
-                          }}
-                        ></Button>
+                        {hierarchy.hierarchy + "/" + hierarchy.name}
+                        {getRemovalButton(hierarchy, key)}
                       </li>
                     ))}
                   </ul>
                 </li>
               ))}
             </ul>
-          )}
-          <div>
-            <div>
-              <Dialog
-                id="confirmDialog"
-                className={classNames("dialogClassConfirm")}
-                visible={showModal}
-                onHide={closeModal}
-                showHeader={false}
-              >
-                <h3>האם אתה בטוח?</h3>
-                <p>הסרת השראות מסוג זה יורידו לך יכולות במערכת לגו</p>
-                <div id="confirmDialogButtons">
-                  <Button
-                    className="p-button-raised p-button-danger"
-                    onClick={dismissApproverFromHierarchy}
-                  >
-                    כן, הסר לי את ההרשאה
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      closeModal();
-                    }}
-                  >
-                    לא, תשאיר לי את ההרשאה
-                  </Button>
-                </div>
-              </Dialog>
-            </div>
+
+            <ConfirmRemovalPopUp
+              showModal={showModal}
+              closeModal={closeModal}
+              dismissApproverFromHierarchy={dismissApproverFromHierarchy}
+            />
           </div>
-        </div>
-      </Dialog>
+        </Dialog>
+      }
     </div>
   );
 };
