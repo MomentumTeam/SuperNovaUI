@@ -23,7 +23,6 @@ class ModalHierarchy extends React.Component {
       selectedHierarchy: null,
       visible: false,
       
-      excelLoading: false,
     };
   }
 
@@ -68,28 +67,7 @@ class ModalHierarchy extends React.Component {
       selectedHierarchy: hierarchy,
     });
   };
-
-  excelExport = async () => {
-    try {
-      this.setState({
-        excelLoading: true,
-      });
-
-      const hierarchyData = await exportHierarchyData(
-        this.props.userHierarchy,
-        true,
-        false
-      );
-
-      const data = renameObjKeys(hierarchyData.hierarchyData, excelLabels);
-
-      exportToExcel(data, hierarchyData.fatherHierarchyName || undefined);
-    } catch (error) {}
-
-    this.setState({
-      excelLoading: false,
-    });
-  };
+  
 
   render() {
     return (
@@ -105,14 +83,6 @@ class ModalHierarchy extends React.Component {
           onClick={() => this.toggleModalVisibility(true)}
           style={this.props.disabled && { display: 'none' }}
         />
-
-        <div>
-          <ExportButton
-            isExportLoading={this.state.excelLoading}
-            exportFunction={this.excelExport}
-            toolTip="רשימת תפקידים מלאה תחת היררכית אב"
-          />
-        </div>
 
         <Dialog
           className="dialogClass9"

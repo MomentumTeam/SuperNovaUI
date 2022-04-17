@@ -180,7 +180,7 @@ export const assignRoleToEntityHeader = [
 export const excelLabels = {
   hierarchyName: 'היררכיה',
   jobTitle: 'שם תפקיד',
-  roleId: 'מזהה תפקיד',
-  upn: 'מזהה כרטיס',
+  roleId: 'מזהה תפקיד T',
+  upn: 'מזהה כרטיס (UPN)',
   entity: 'משתמש בתפקיד',
 };

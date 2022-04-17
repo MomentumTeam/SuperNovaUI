@@ -40,8 +40,14 @@ const TableFooter = ({
   };
   return (
     <>
-      <div style={{ display: "flex" }}>
-        {exportFunction && <ExportButton isExportLoading={isExportLoading} exportFunction={exportFunc} />}
+      <div style={{ display: 'flex' }}>
+        {exportFunction && (
+          <ExportButton
+            isExportLoading={isExportLoading}
+            exportFunction={exportFunc}
+            toolTip="סמן בקשות שאותן תרצה לייצא"
+          />
+        )}
 
         {isSelectedCol && (
           <MultiSelect
@@ -51,7 +57,7 @@ const TableFooter = ({
             options={rowData}
             optionLabel="displayName"
             onChange={onColumnToggle}
-            style={{ width: "20em" }}
+            style={{ width: '20em' }}
           />
         )}
       </div>
