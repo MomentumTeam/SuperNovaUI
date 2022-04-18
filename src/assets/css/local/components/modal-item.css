@@ -2357,6 +2357,19 @@
   border: 1px solid #66CD00;
 }
 
+.p-button.btn-border.red {
+  border: 1px solid #FF0000;
+  color: #FF0000;
+  font-weight: 600;
+}
+
+.p-button.btn-border.red:hover,
+.p-button.btn-border.red:focus {
+  color: #FF0000;
+  border: 1px solid #FF0000;
+}
+
+
 .p-button.btn-border:hover,
 .p-button.btn-border:focus {
   background-color: transparent;

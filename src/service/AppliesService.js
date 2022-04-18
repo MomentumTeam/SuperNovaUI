@@ -336,6 +336,18 @@ export const changeRoleHierarchyBulkRequest = async (data) => {
   return response.data;
 };
 
+
+export const convertEntityTypeRequest = async ({
+  applyProperties
+}) => {
+  const response = await axiosApiInstance.put(
+    `${apiBaseUrl}/api/requests/request/convertEntityType`,
+    applyProperties
+  );
+
+  return response.data;
+};
+
 export const transferApproverRequest = async ({
   reqId,
   approvers,
