@@ -2,13 +2,74 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { useToast } from '../../context/use-toast';
-import React, { useState } from 'react';
+import { useStores } from '../../context/use-stores';
+import { toJS } from 'mobx';
 
-const ConvertEntityType = ({  entity = {} }) => {
+import { USER_ENTITY_TYPE, USER_TYPE } from '../../constants/user';
+import {
+  getUserRelevantIdentity,
+  getSamAccountNameFromEntity,
+} from '../../utils/fields';
+import { useForm } from 'react-hook-form';
+import * as Yup from 'yup';
+import { IDENTITY_CARD_EXP } from '../../constants';
+import { kartoffelIdentityCardValidation } from '../../utils/user';
+import { getEntityByIdentifier } from '../../service/KartoffelService';
+import { yupResolver } from '@hookform/resolvers/yup';
+import React, { useState, useImperativeHandle, forwardRef } from 'react';
+
+const validationSchema = Yup.object().shape({
+  identifier: Yup.string().when(['missingInfo', 'entity'], {
+    is: (missingInfo, entity) => !missingInfo || !entity.personalNumber,
+    then: Yup.string().optional(),
+    otherwise: Yup.string()
+      .required('יש להזין מ"א/ת"ז')
+      .matches(IDENTITY_CARD_EXP, 'ת"ז לא תקין')
+      .test({
+        name: 'check-if-valid',
+        message: 'ת"ז לא תקין!',
+        test: async (identifier, context) => {
+          if (!context.isSoldier) {
+            return kartoffelIdentityCardValidation(identifier);
+          }
+          return true;
+        },
+      })
+      .test({
+        name: 'check-if-identity-number-already-taken-in-kartoffel',
+        message: 'קיים משתמש עם הת"ז הזה!',
+        test: async (identifier, context) => {
+          if (!context.isSoldier) {
+            try {
+              const isAlreadyTaken = await getEntityByIdentifier(identifier);
+
+              if (isAlreadyTaken) {
+                return false;
+              }
+            } catch (err) {}
+          }
+          return true;
+        },
+      }),
+  }),
+});
+
+const ConvertEntityType = ({ entity = {} }) => {
+  const { userStore, appliesStore } = useStores();
   const [isMainOpen, setIsMainOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const isSoldier = entity.entityType === 'agumon'; //true=soldier , false=civilian
-  const { actionPopup } = useToast();
+  const entityDi = getUserRelevantIdentity(entity);
+  const missingInfo =
+    (isSoldier && !entity.identityCard) ||
+    (!isSoldier && !entity.personalNumber);
+
+  const { register, handleSubmit, watch, formState, setValue } = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: { identifier: '', entity, missingInfo },
+  });
+
+  const { errors } = formState;
 
   const openDialog = async () => {
     setIsMainOpen(true);
@@ -17,7 +78,51 @@ const ConvertEntityType = ({  entity = {} }) => {
   const closeDialog = async () => {
     setIsMainOpen(false);
     setIsOpen(false);
+  };
 
+  const onSubmit = async (data = {}) => {
+    try {
+      await validationSchema.validate(data);
+    } catch (err) {
+      console.log('err', err);
+      throw new Error(err.errors);
+    }
+
+    const req = {
+      commanders: [userStore.user],
+      kartoffelParams: {
+        id: entity.id,
+        uniqueId: entityDi.role.digitalIdentityUniqueId,
+        newEntityType: isSoldier
+          ? USER_ENTITY_TYPE.Civilian
+          : USER_ENTITY_TYPE.Soldier,
+      },
+      adParams: {
+        samAccountName: getSamAccountNameFromEntity(entity),
+        firstName: entity.firstName,
+        lastName: entity.lastName,
+        fullName: entity.fullName,
+
+        //TODO- לשאול את ראובן מה זה
+        roleSerialCode: 'abc',
+      },
+      due: Date.now(),
+    };
+
+    if (entity.rank) {
+      req.adParams.rank = entity.rank;
+    }
+    if (entityDi.upn) {
+      req.adParams.upn = entityDi.upn;
+      req.kartoffelParams.upn = entityDi.upn;
+    }
+
+    if (data?.identifier !== '' && missingInfo) {
+      req.kartoffelParams.identifier = data?.identifier;
+    }
+
+    await appliesStore.convertEntityTypeApply(req);
+    closeDialog();
   };
 
   return (
@@ -29,32 +134,7 @@ const ConvertEntityType = ({  entity = {} }) => {
         onHide={() => setIsOpen(false)}
         dismissableMask={true}
         style={{ width: '25vw', minHeight: '250px' }}
-        footer={
-          <>
-            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-              <InputText
-                // id=""
-                type="text"
-                required
-                onInput={() => {
-              
-                }}
-                // onBlur=
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                  }
-                }}
-                // disabled=
-              />
-              <Button
-                label="אישור"
-                id="fullEntityInfo-closeOrSave"
-                className="btn-orange-gradient"
-                onClick={async () => {}}
-              />
-            </div>
-          </>
-        }
+        // footer={}
       >
         <div className="container">
           <div style={{ margin: '2vw' }}>
@@ -62,6 +142,36 @@ const ConvertEntityType = ({  entity = {} }) => {
               {isSoldier ? 'הכנס תעודת זהות:' : 'הכנס מספר אישי:'}
             </p>
           </div>
+
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <InputText
+              {...register('identifier')}
+              value={watch('identifier')}
+              keyfilter="num"
+              // id=""
+              type="num"
+              required
+              onChange={(e) => {
+                setValue('identifier', e.target.value, {
+                  shouldValidate: true,
+                });
+              }}
+            />
+            {errors.identifier && (
+              <small style={{ color: 'red' }}>
+                {' '}
+                {errors.identifier?.message
+                  ? errors.identifier.message
+                  : 'יש למלא ערך'}
+              </small>
+            )}
+            <Button
+              type="submit"
+              label="אישור"
+              className="btn-orange-gradient"
+              id="fullEntityInfo-closeOrSave"
+            />
+          </form>
         </div>
       </Dialog>
       <Dialog
@@ -83,11 +193,10 @@ const ConvertEntityType = ({  entity = {} }) => {
                     : 'כן, הפוך את האזרח לחייל'
                 }
                 onClick={async () => {
-                  if (
-                    (isSoldier && !entity.identityCard) ||
-                    (!isSoldier && !entity.personalNumber)
-                  ) {
+                  if (missingInfo) {
                     setIsOpen(true);
+                  } else {
+                    onSubmit();
                   }
                 }}
               />
@@ -98,7 +207,7 @@ const ConvertEntityType = ({  entity = {} }) => {
                     : 'לא, השאר את האזרח כאזרח'
                 }
                 className="btn-border red"
-                onClick={async () => {}}
+                onClick={closeDialog}
               />
             </div>
           </>

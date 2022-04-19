@@ -13,7 +13,12 @@ import {
   CanSeeUserClearance,
   CanEditEntityFields,
 } from '../../../utils/entites';
-import { IDENTITY_CARD_EXP, NAME_REG_EXP, PHONE_REG_EXP } from '../../../constants';
+import {
+  IDENTITY_CARD_EXP,
+  NAME_REG_EXP,
+  PHONE_REG_EXP,
+  REQ_TYPES,
+} from '../../../constants';
 import { InputForm, InputTypes } from '../../Fields/InputForm';
 import { useStores } from '../../../context/use-stores';
 
@@ -21,45 +26,56 @@ import '../../../assets/css/local/general/buttons.css';
 import '../../../assets/css/local/components/modal-item.css';
 import { getSamAccountNameFromEntity } from '../../../utils/fields';
 import { kartoffelIdentityCardValidation } from '../../../utils/user';
+import { getEntityByMongoId } from '../../../service/KartoffelService';
 
 const validationSchema = Yup.object().shape({
   canEditEntityFields: Yup.boolean(),
-  firstName: Yup.string().when("canEditEntityFields", {
+  firstName: Yup.string().when('canEditEntityFields', {
     is: true,
-    then: Yup.string().required("יש לבחור שם פרטי").matches(NAME_REG_EXP, "שם לא תקין"),
+    then: Yup.string()
+      .required('יש לבחור שם פרטי')
+      .matches(NAME_REG_EXP, 'שם לא תקין'),
   }),
-  lastName: Yup.string().when("canEditEntityFields", {
+  lastName: Yup.string().when('canEditEntityFields', {
     is: true,
-    then: Yup.string().required("יש לבחור שם משפחה").matches(NAME_REG_EXP, "שם לא תקין"),
+    then: Yup.string()
+      .required('יש לבחור שם משפחה')
+      .matches(NAME_REG_EXP, 'שם לא תקין'),
   }),
-  identityCard: Yup.string().when("canEditEntityFields", {
+  identityCard: Yup.string().when('canEditEntityFields', {
     is: true,
-    then: Yup.string().required('יש להזין ת"ז')
-    .matches(IDENTITY_CARD_EXP, 'ת"ז לא תקין')
-    .test({
-      name: 'check-if-valid',
-      message: 'ת"ז לא תקין!',
-      test: async (identityNumber) => {
-        return kartoffelIdentityCardValidation(identityNumber);
-      },
-    }),
+    then: Yup.string()
+      .required('יש להזין ת"ז')
+      .matches(IDENTITY_CARD_EXP, 'ת"ז לא תקין')
+      .test({
+        name: 'check-if-valid',
+        message: 'ת"ז לא תקין!',
+        test: async (identityNumber) => {
+          return kartoffelIdentityCardValidation(identityNumber);
+        },
+      }),
   }),
-  mobilePhone: Yup.mixed().when("canEditEntityFields", {
+  mobilePhone: Yup.mixed().when('canEditEntityFields', {
     is: true,
-    then: Yup.string('נא להזין מספר').required("נא להזין מספר").matches(PHONE_REG_EXP, "מספר לא תקין"),
+    then: Yup.string('נא להזין מספר')
+      .required('נא להזין מספר')
+      .matches(PHONE_REG_EXP, 'מספר לא תקין'),
   }),
   canSeeUserClearance: Yup.boolean(),
-  clearance: Yup.string().when("canSeeUserClearance", {
+  clearance: Yup.string().when('canSeeUserClearance', {
     is: true,
-    then: Yup.string().required("יש להכניס סיווג"),
+    then: Yup.string().required('יש להכניס סיווג'),
   }),
 });
 
 const FullEntityInformationForm = forwardRef(
   (
     { setIsActionDone, onlyForView, requestObject, reqView = true, setIsEdit },
+    
+
     ref
-  ) => {
+  ) => {console.log('reqView', reqView)
+  console.log('requestObject.type', requestObject.type);
     const { appliesStore, configStore } = useStores();
     const [user, setUser] = useState(requestObject);
     const methods = useForm({
@@ -72,25 +88,33 @@ const FullEntityInformationForm = forwardRef(
     });
     const { errors } = methods.formState;
 
-    useEffect(() => {
+    useEffect(async () => {
       if (requestObject) {
         if (reqView) {
-          if (
-            Array.isArray(requestObject.kartoffelParams?.mobilePhone) &&
-            requestObject.kartoffelParams?.mobilePhone.length === 0
-          ) {
+          if (requestObject.type === REQ_TYPES.CONVERT_ENTITY_TYPE) {
+            const entity = await getEntityByMongoId(
+              requestObject.kartoffelParams.id
+            );
+            entity.identifier = requestObject.kartoffelParams.identifier;
+            setUser(entity);
+          } else {
             if (
-              Array.isArray(requestObject.kartoffelParams.phone) &&
-              requestObject.kartoffelParams.phone.length > 0
+              Array.isArray(requestObject.kartoffelParams?.mobilePhone) &&
+              requestObject.kartoffelParams?.mobilePhone.length === 0
             ) {
-              requestObject.kartoffelParams.mobilePhone =
-                requestObject.kartoffelParams.phone[0];
+              if (
+                Array.isArray(requestObject.kartoffelParams.phone) &&
+                requestObject.kartoffelParams.phone.length > 0
+              ) {
+                requestObject.kartoffelParams.mobilePhone =
+                  requestObject.kartoffelParams.phone[0];
+              }
             }
-          }
 
-          requestObject.kartoffelParams.samAccountName =
-            requestObject.adParams.samAccountName;
-          setUser(requestObject.kartoffelParams);
+            requestObject.kartoffelParams.samAccountName =
+              requestObject.adParams.samAccountName;
+            setUser(requestObject.kartoffelParams);
+          }
         } else {
           if (!requestObject?.mobilePhone) {
             if (
@@ -297,15 +321,53 @@ const FullEntityInformationForm = forwardRef(
         : {},
     ];
 
+    const convertFormFields = [
+      {
+        fieldName: 'id',
+        displayName: 'מזהה',
+        inputType: InputTypes.TEXT,
+        force: true,
+      },
+      {
+        fieldName: 'firstName',
+        displayName: 'שם פרטי',
+        inputType: InputTypes.TEXT,
+      },
+      {
+        fieldName: 'lastName',
+        displayName: 'שם משפחה',
+        inputType: InputTypes.TEXT,
+      },
+      {
+        fieldName: 'identifier',
+        displayName: 'מ"א/ת"ז',
+        inputType: InputTypes.TEXT,
+      },
+      {
+        fieldName: 'rank',
+        displayName: 'דרגה',
+        inputType: InputTypes.TEXT,
+      },
+      {
+        fieldName: 'jobTitle',
+        displayName: 'תפקיד',
+        inputType: InputTypes.TEXT,
+      },
+    ];
+
     return (
       <div className="p-fluid" id="fullEntityInfoForm">
-        <InputForm
-          fields={formFields}
-          item={user}
-          isEdit={!onlyForView}
-          errors={errors}
-          methods={methods}
-        />
+        {reqView && requestObject.type === REQ_TYPES.CONVERT_ENTITY_TYPE ? (
+          <InputForm fields={convertFormFields} item={user} errors={errors} methods={methods}/>
+        ) : (
+          <InputForm
+            fields={formFields}
+            item={user}
+            isEdit={!onlyForView}
+            errors={errors}
+            methods={methods}
+          />
+        )}
       </div>
     );
   }

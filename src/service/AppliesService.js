@@ -337,9 +337,9 @@ export const changeRoleHierarchyBulkRequest = async (data) => {
 };
 
 
-export const convertEntityTypeRequest = async ({
+export const convertEntityTypeRequest = async (
   applyProperties
-}) => {
+) => {
   const response = await axiosApiInstance.put(
     `${apiBaseUrl}/api/requests/request/convertEntityType`,
     applyProperties

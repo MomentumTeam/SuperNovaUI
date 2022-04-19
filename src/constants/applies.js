@@ -22,6 +22,7 @@ export const TYPES = {
   CHANGE_ROLE_HIERARCHY: 'מעבר היררכיה לתפקיד',
   CREATE_ROLE_BULK: 'יצירת תפקידים חדשים',
   CHANGE_ROLE_HIERARCHY_BULK: 'מעבר היררכיה לתפקידים',
+  CONVERT_ENTITY_TYPE:'המרת סוג ישות'
 };
 
 export const REQ_TYPES = {
@@ -40,6 +41,7 @@ export const REQ_TYPES = {
   CHANGE_ROLE_HIERARCHY: 'CHANGE_ROLE_HIERARCHY',
   CREATE_ROLE_BULK: 'CREATE_ROLE_BULK',
   CHANGE_ROLE_HIERARCHY_BULK: 'CHANGE_ROLE_HIERARCHY_BULK',
+  CONVERT_ENTITY_TYPE: 'CONVERT_ENTITY_TYPE',
 };
 
 export const TableNames = {
