@@ -124,7 +124,7 @@ export default class AppliesApproveStore {
               comment,
               overrideApprovers,
             });
-            this.addOrUpdateApply({ user, apply });
+            this.updateApplyMy({ user, apply });
           }
         })
       );
@@ -137,7 +137,7 @@ export default class AppliesApproveStore {
           comment,
           overrideApprovers,
         });
-        this.addOrUpdateApply({ user, apply });
+        this.updateApplyMy({ user, apply });
       } else {
         throw new Error("לא ניתן להעביר לסוג משתמש זה");
       }
@@ -154,7 +154,7 @@ export default class AppliesApproveStore {
               approverId,
               type: approverType,
             });
-            this.addOrUpdateApply({ user, apply });
+            this.updateApplyMy({ user, apply });
           }
         })
       );
@@ -165,7 +165,7 @@ export default class AppliesApproveStore {
           approverId,
           type: approversType,
         });
-        this.addOrUpdateApply({ user, apply });
+        this.updateApplyMy({ user, apply });
       } else {
         throw new Error("בעיה בהחזרה לסל");
       }
@@ -188,7 +188,7 @@ export default class AppliesApproveStore {
 
   async updateApplyDecision({ user, requestId, decision }) {
     const updatedRequest = await updateDecisionReq(requestId, decision);
-    this.addOrUpdateApply({
+    this.updateApplyMy({
       user,
       apply: updatedRequest,
       removeApply: false,
@@ -209,7 +209,7 @@ export default class AppliesApproveStore {
     if (reqIndex != -1) this[appliesArr].requests[reqIndex] = updateReq;
   };
 
-  addOrUpdateApply = ({ user, apply, removeApply = true }) => {
+  addApply = ({ user, apply }) => {
     if (isUserCanSeeMyApproveApplies(user) && this.approveMyApplies.requests) {
       const myApplyIndex = this.getApplyIndexById("approveMyApplies", apply.id);
       const isApproverNewReq = isDirectApprover(apply, user);
@@ -229,7 +229,22 @@ export default class AppliesApproveStore {
           this.approveMyApplies.requests.unshift(apply);
           this.approveMyAppliesCount = this.approveMyAppliesCount + 1;
         }
-      } else {
+      }
+    }
+
+    this.addApplyAll({ user, apply });
+  };
+
+  updateApplyMy = ({ user, apply, removeApply = true }) => {
+    if (isUserCanSeeMyApproveApplies(user) && this.approveMyApplies.requests) {
+      const myApplyIndex = this.getApplyIndexById("approveMyApplies", apply.id);
+      const isApproverNewReq = isDirectApprover(apply, user);
+      const isCanEditNewReq = canEditApply(apply, user);
+      const isRequestDone = checkIfRequestIsDone(apply);
+      const responsibleAfter = !isRequestDone && isApproverNewReq && isCanEditNewReq;
+
+      // Add request to approveMyApplies
+      if (myApplyIndex != -1) {
         // Update request
         const myApplyResponsibleBefore =
           myApplyIndex != -1 ? isDirectApproverAndCanEdit(this.approveMyApplies.requests[myApplyIndex], user) : false;
@@ -248,11 +263,11 @@ export default class AppliesApproveStore {
         }
       }
 
-      this.addOrUpdateApplyAll({ user, apply });
+      this.updateApplyAll({ user, apply });
     }
   };
 
-  addOrUpdateApplyAll = ({ user, apply }) => {
+  addApplyAll = ({ user, apply }) => {
     if (isUserCanSeeAllApproveApplies(user) && this.approveAllApplies.requests) {
       const allApplyIndex = this.getApplyIndexById("approveAllApplies", apply.id);
       const isCanEdit = canEditApply(apply, user);
@@ -269,9 +284,22 @@ export default class AppliesApproveStore {
         if (isApproverNewReq && !responsibleAfter) this.approveAllAppliesCount = this.approveAllAppliesCount - 1;
         if (responsibleAfter) {
           this.approveAllApplies.requests.unshift(apply);
-          this.approveAllAppliesCount = this.approveAllAppliesCount + 1
+          this.approveAllAppliesCount = this.approveAllAppliesCount + 1;
         }
-      } else {
+      }
+    }
+  };
+
+  updateApplyAll = ({ user, apply }) => {
+    if (isUserCanSeeAllApproveApplies(user) && this.approveAllApplies.requests) {
+      const allApplyIndex = this.getApplyIndexById("approveAllApplies", apply.id);
+      const isCanEdit = canEditApply(apply, user);
+      const isReqDone = checkIfRequestIsDone(apply);
+      const responsibleAfter = !isReqDone && isCanEdit;
+      const isApproverNewReq = isUndirectApprover(apply, user);
+      
+      // Add request to approveAllApplies
+      if (allApplyIndex != -1) {
         // update request
         const allApplyResponsibleBefore =
           allApplyIndex != -1 ? canEditApply(this.approveAllApplies.requests[allApplyIndex], user) : false;
@@ -280,28 +308,29 @@ export default class AppliesApproveStore {
 
         if (!responsibleAfter && allApplyResponsibleBefore) {
           this.approveAllAppliesCount = this.approveAllAppliesCount - 1;
-          if (!isApproverNewReq) this.approveAllApplies.requests.splice(allApplyIndex, 1); 
+          if (!isApproverNewReq) this.approveAllApplies.requests.splice(allApplyIndex, 1);
         } else if (responsibleAfter && !allApplyResponsibleBefore) {
           this.approveAllAppliesCount = this.approveAllAppliesCount + 1;
         }
-      }
+      } 
     }
   };
 
   removeApply = (apply, user) => {
-    const allApplyIndex = this.getApplyIndexById("approveAllApplies", apply.id);
-    const myApplyIndex = this.getApplyIndexById("approveMyApplies", apply.id);
-    
-    if (myApplyIndex != -1) {
+    if (isUserCanSeeMyApproveApplies(user) && this.approveMyApplies.requests) {
+      const myApplyIndex = this.getApplyIndexById("approveMyApplies", apply.id);
+      if (myApplyIndex != -1) this.approveMyApplies.requests.splice(myApplyIndex, 1);
+
       const isApproverAndEdit = isDirectApproverAndCanEdit(apply, user);
-      this.approveMyApplies.requests.splice(myApplyIndex, 1);
       if (isApproverAndEdit) this.approveMyAppliesCount = this.approveMyAppliesCount - 1;
       this.approveMyApplies.totalCount = this.approveMyApplies.totalCount - 1;
     }
-
-    if (allApplyIndex != -1) {
+    
+    if (isUserCanSeeAllApproveApplies(user) && this.approveAllApplies.requests) {
+      const allApplyIndex = this.getApplyIndexById("approveAllApplies", apply.id);
+      if (allApplyIndex != -1) this.approveAllApplies.requests.splice(allApplyIndex, 1);
+      
       this.approveAllAppliesCount = this.approveAllAppliesCount - 1;
-      this.approveAllApplies.requests.splice(allApplyIndex, 1);
     }
   };
 }
