@@ -1,56 +1,57 @@
+import React, { useState } from 'react';
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import { useToast } from '../../context/use-toast';
 import { useStores } from '../../context/use-stores';
-import { toJS } from 'mobx';
-
-import { USER_ENTITY_TYPE, USER_TYPE } from '../../constants/user';
+import { useToast } from '../../context/use-toast';
+import { useForm } from 'react-hook-form';
+import { USER_ENTITY_TYPE, IDENTITY_CARD_EXP } from '../../constants';
+import { getEntityByIdentifier } from '../../service/KartoffelService';
 import {
   getUserRelevantIdentity,
   getSamAccountNameFromEntity,
-} from '../../utils/fields';
-import { useForm } from 'react-hook-form';
-import * as Yup from 'yup';
-import { IDENTITY_CARD_EXP } from '../../constants';
-import { kartoffelIdentityCardValidation } from '../../utils/user';
-import { getEntityByIdentifier } from '../../service/KartoffelService';
-import { yupResolver } from '@hookform/resolvers/yup';
-import React, { useState, useImperativeHandle, forwardRef } from 'react';
+  kartoffelIdentityCardValidation,
+} from '../../utils';
 
 const validationSchema = Yup.object().shape({
-  identifier: Yup.string().when(['missingInfo', 'entity'], {
-    is: (missingInfo, entity) => !missingInfo || !entity.personalNumber,
+  identifier: Yup.string().when('missingInfo', {
+    is: (missingInfo) => !missingInfo,
     then: Yup.string().optional(),
-    otherwise: Yup.string()
-      .required('יש להזין מ"א/ת"ז')
-      .matches(IDENTITY_CARD_EXP, 'ת"ז לא תקין')
-      .test({
-        name: 'check-if-valid',
-        message: 'ת"ז לא תקין!',
-        test: async (identifier, context) => {
-          if (!context.isSoldier) {
-            return kartoffelIdentityCardValidation(identifier);
-          }
-          return true;
-        },
-      })
-      .test({
-        name: 'check-if-identity-number-already-taken-in-kartoffel',
-        message: 'קיים משתמש עם הת"ז הזה!',
-        test: async (identifier, context) => {
-          if (!context.isSoldier) {
-            try {
-              const isAlreadyTaken = await getEntityByIdentifier(identifier);
+    otherwise: Yup.string().when('isSoldier', {
+      is: (isSoldier) => !isSoldier,
+      then: Yup.string().required('יש להזין מספר אישי!'),
+      otherwise: Yup.string()
+        .required('יש להזין ת"ז!')
+        .matches(IDENTITY_CARD_EXP, 'ת"ז לא תקין')
+        .test({
+          name: 'check-if-valid',
+          message: 'ת"ז לא תקין!',
+          test: async (identifier, context) => {
+            if (!context.isSoldier) {
+              return kartoffelIdentityCardValidation(identifier);
+            }
+            return true;
+          },
+        })
+        .test({
+          name: 'check-if-identity-number-already-taken-in-kartoffel',
+          message: 'קיים משתמש עם הת"ז הזה!',
+          test: async (identifier, context) => {
+            if (!context.isSoldier) {
+              try {
+                const isAlreadyTaken = await getEntityByIdentifier(identifier);
 
-              if (isAlreadyTaken) {
-                return false;
-              }
-            } catch (err) {}
-          }
-          return true;
-        },
-      }),
+                if (isAlreadyTaken) {
+                  return false;
+                }
+              } catch (err) {}
+            }
+            return true;
+          },
+        }),
+    }),
   }),
 });
 
@@ -70,6 +71,7 @@ const ConvertEntityType = ({ entity = {} }) => {
   });
 
   const { errors } = formState;
+  const { actionPopup } = useToast();
 
   const openDialog = async () => {
     setIsMainOpen(true);
@@ -125,6 +127,15 @@ const ConvertEntityType = ({ entity = {} }) => {
     closeDialog();
   };
 
+  const handleRequest = async () => {
+    try {
+      await onSubmit();
+    } catch (e) {
+      actionPopup('המרת סןג ישןת', e.message || 'Message Content');
+    }
+    actionPopup('המרת סןג ישןת');
+  };
+
   return (
     <>
       <Dialog
@@ -143,14 +154,14 @@ const ConvertEntityType = ({ entity = {} }) => {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(handleRequest)}>
             <InputText
               {...register('identifier')}
               value={watch('identifier')}
               keyfilter="num"
               // id=""
               type="num"
-              required
+              // required
               onChange={(e) => {
                 setValue('identifier', e.target.value, {
                   shouldValidate: true,

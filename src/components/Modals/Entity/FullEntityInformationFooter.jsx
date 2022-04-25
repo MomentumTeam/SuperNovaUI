@@ -18,7 +18,7 @@ const FullEntityInformationFooter = ({
   const { userStore } = useStores();
   const connectedUser = toJS(userStore.user);
   const canConvert =
-    (entity.entityType === 'agumon' || entity.entityType === 'digimon')&&isUserHoldType(connectedUser, USER_TYPE.COMMANDER) ;
+    (entity.entityType === 'agumon' || entity.entityType === 'digimon')&&isUserHoldType(connectedUser, USER_TYPE.ADMIN);
 
   const closeThisModal = () => {
     setIsEdit(false);
@@ -28,7 +28,9 @@ const FullEntityInformationFooter = ({
     <>
       <div className="display-flex">
         <div>
-          {(canConvert&& !isEdit) && <ConvertEntityType entity={entity} />}
+          {canConvert && !isEdit && entity.digitalIdentities.length>0 && (
+            <ConvertEntityType entity={entity} />
+          )}
         </div>
 
         <div className="display-flex display-flex-end">
