@@ -313,14 +313,11 @@ export const IsRequestCompleteForApprover = (apply, approverType) => {
       );
     case USER_TYPE.COMMANDER:
     case USER_TYPE.ADMIN:
-      if (apply.needAdminDecision) {
+      if (apply.needAdminDecision && apply["status"] !== "SUBMITTED") {
         if (approverType === USER_TYPE.ADMIN) {
-          return (
-            apply["status"] === STATUSES.APPROVED_BY_ADMIN ||
-            isStatusComplete(apply["adminDecision"]["decision"])
-          );
+          return apply["status"] === STATUSES.APPROVED_BY_ADMIN || isStatusComplete(apply["adminDecision"]["decision"]);
         } else {
-          return true
+          return true;
         }
       } 
       return (

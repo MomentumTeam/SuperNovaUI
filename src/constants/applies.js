@@ -97,11 +97,6 @@ export const TableTypes = (selectedTab, user, approverTableType) => {
       ],
       template: DateFieldTemplate,
     },
-    // {
-    //   field: 'additionalParams.directGroup',
-    //   displayName: 'היררכיה',
-    //   template: TextFieldTemplate,
-    // },
     { field: "comments", displayName: "הערה", template: TextFieldTemplate },
     {
       field: null,
