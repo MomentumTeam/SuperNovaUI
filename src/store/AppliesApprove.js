@@ -206,7 +206,7 @@ export default class AppliesApproveStore {
   };
 
   updateApply = (appliesArr, reqIndex, updateReq) => {
-    if (reqIndex != -1) this[appliesArr].requests[reqIndex] = updateReq;
+    if (reqIndex !== -1) this[appliesArr].requests[reqIndex] = updateReq;
   };
 
   addApply = ({ user, apply }) => {
@@ -244,10 +244,10 @@ export default class AppliesApproveStore {
       const responsibleAfter = !isRequestDone && isApproverNewReq && isCanEditNewReq;
 
       // Add request to approveMyApplies
-      if (myApplyIndex != -1) {
+      if (myApplyIndex !== -1) {
         // Update request
         const myApplyResponsibleBefore =
-          myApplyIndex != -1 ? isDirectApproverAndCanEdit(this.approveMyApplies.requests[myApplyIndex], user) : false;
+          myApplyIndex !== -1 ? isDirectApproverAndCanEdit(this.approveMyApplies.requests[myApplyIndex], user) : false;
 
         this.updateApply("approveMyApplies", myApplyIndex, apply);
 
@@ -299,10 +299,10 @@ export default class AppliesApproveStore {
       const isApproverNewReq = isUndirectApprover(apply, user);
       
       // Add request to approveAllApplies
-      if (allApplyIndex != -1) {
+      if (allApplyIndex !== -1) {
         // update request
         const allApplyResponsibleBefore =
-          allApplyIndex != -1 ? canEditApply(this.approveAllApplies.requests[allApplyIndex], user) : false;
+          allApplyIndex !== -1 ? canEditApply(this.approveAllApplies.requests[allApplyIndex], user) : false;
 
         this.updateApply("approveAllApplies", allApplyIndex, apply);
 
@@ -319,7 +319,7 @@ export default class AppliesApproveStore {
   removeApply = (apply, user) => {
     if (isUserCanSeeMyApproveApplies(user) && this.approveMyApplies.requests) {
       const myApplyIndex = this.getApplyIndexById("approveMyApplies", apply.id);
-      if (myApplyIndex != -1) this.approveMyApplies.requests.splice(myApplyIndex, 1);
+      if (myApplyIndex !== -1) this.approveMyApplies.requests.splice(myApplyIndex, 1);
 
       const isApproverAndEdit = isDirectApproverAndCanEdit(apply, user);
       if (isApproverAndEdit) this.approveMyAppliesCount = this.approveMyAppliesCount - 1;
@@ -328,7 +328,7 @@ export default class AppliesApproveStore {
     
     if (isUserCanSeeAllApproveApplies(user) && this.approveAllApplies.requests) {
       const allApplyIndex = this.getApplyIndexById("approveAllApplies", apply.id);
-      if (allApplyIndex != -1) this.approveAllApplies.requests.splice(allApplyIndex, 1);
+      if (allApplyIndex !== -1) this.approveAllApplies.requests.splice(allApplyIndex, 1);
       
       this.approveAllAppliesCount = this.approveAllAppliesCount - 1;
     }

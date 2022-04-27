@@ -29,8 +29,8 @@ const SocketProvider = observer(() => {
     if (socket) {
       socket.on("unauthorized", (error) => {
         if (
-          error.data.type == "UnauthorizedError" ||
-          error.data.code == "invalid_token"
+          error.data.type === "UnauthorizedError" ||
+          error.data.code === "invalid_token"
         ) {
           // TODO : redirect user to login page perhaps?
           console.log("User token has expired");
@@ -75,7 +75,6 @@ const SocketProvider = observer(() => {
 
     // user get new request for all
     socket.on("newRequestAll", (apply) => {
-      console.log("newRequestAll");
       appliesApproveStore.addApplyAll({
         user: userStore.user,
         apply,
@@ -84,7 +83,6 @@ const SocketProvider = observer(() => {
 
     // user get update on request
     socket.on("updateRequest", (apply) => {
-      console.log('updaterequest')
       if (apply.submittedBy.id === userStore.user.id) {
         appliesStore.updateApply(apply);
         appliesMyStore.updateApply(apply);
