@@ -33,7 +33,6 @@ const FullEntityPremissionsModal = ({
         approverType,
         hierarchyToRemove.id
       );
-      console.log(response)
       setPremissions(() => {
         premissions[approverType] = premissions[approverType].filter(
           (premission) => premission.id !== hierarchyToRemove.id
