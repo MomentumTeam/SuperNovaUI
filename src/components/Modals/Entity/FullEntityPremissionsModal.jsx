@@ -16,6 +16,7 @@ const FullEntityPremissionsModal = ({
   isOpen,
   closePremissionsModal,
   userTags,
+  updateUserPremissions
 }) => {
   const [premissions, setPremissions] = useState({});
   const [approverTypes, setApproverTypes] = useState({});
@@ -32,6 +33,7 @@ const FullEntityPremissionsModal = ({
         approverType,
         hierarchyToRemove.id
       );
+      console.log(response)
       setPremissions(() => {
         premissions[approverType] = premissions[approverType].filter(
           (premission) => premission.id !== hierarchyToRemove.id
@@ -44,6 +46,7 @@ const FullEntityPremissionsModal = ({
       setApproverTypes(() => {
         return approverTypes.filter((type) => type !== approverType);
       });
+      updateUserPremissions();
     } catch (err) {
       console.log(err);
     }
@@ -83,6 +86,7 @@ const FullEntityPremissionsModal = ({
       // Handle Approver Data
       myApproverTypes(user)
         .then((approverData) => {
+          approverData.types = approverData.types.filter((type) => user.types.includes((type)))
           setApproverTypes(approverData.types);
           const getApproverTypesHandler = (type) => {
             const approverTypeHandler = {
@@ -104,6 +108,9 @@ const FullEntityPremissionsModal = ({
               },
               [USER_TYPE.BULK]: () => {
                 return setApproverTypeGroups([], USER_TYPE.BULK);
+              },
+              [USER_TYPE.SECURITY]: () => {
+                return setApproverTypeGroups([], USER_TYPE.SECURITY);
               },
               [USER_TYPE.SUPER_SECURITY]: () => {
                 return setApproverTypeGroups([], USER_TYPE.SUPER_SECURITY);
@@ -134,11 +141,11 @@ const FullEntityPremissionsModal = ({
       Object.values(userTags).includes(getUserTags([USER_TYPE.COMMANDER])[0])
     ) {
       return (
-        <li>
-          <p style={{ fontSize: "16px" }}>
+        <dt>
+          <p style={{ fontSize: "18px", paddingBottom: "6px" }}>
             {getUserTags([USER_TYPE.COMMANDER])}
           </p>
-        </li>
+        </dt>
       );
     }
   };
@@ -167,11 +174,11 @@ const FullEntityPremissionsModal = ({
           id="premissionsDialog"
         >
           <div style={{ paddingRight: "65px" }}>
-            <ul>
+            <dl>
               {getImuteableApproverTypes()}
               {Object.keys(premissions).map((key) => (
-                <li>
-                  <p style={{ fosntSize: "18px", paddingTop: "3px" }}>
+                <dt>
+                  <p style={{ fontSize: "18px" }}>
                     {getUserTags([key])}
                     {premissions[key].length === 0 ? (
                       getRemovalButton("", key)
@@ -179,17 +186,18 @@ const FullEntityPremissionsModal = ({
                       <></>
                     )}
                   </p>
-                  <ul value={premissions}>
+                  <dl value={premissions} className="hierarchyList">
                     {premissions[key].map((hierarchy) => (
-                      <li>
-                        {hierarchy.hierarchy + "/" + hierarchy.name}
+                      <dd>
+                        <i class="pi pi-lock" style={{marginLeft: "10px"}}></i>
+                        {hierarchy.hierarchy + "/" + hierarchy.name }
                         {getRemovalButton(hierarchy, key)}
-                      </li>
+                      </dd>
                     ))}
-                  </ul>
-                </li>
+                  </dl>
+                </dt>
               ))}
-            </ul>
+            </dl>
 
             <ConfirmRemovalPopUp
               showModal={showModal}

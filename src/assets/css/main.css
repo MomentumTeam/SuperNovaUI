@@ -1194,3 +1194,7 @@ main .main-wrap .main-inner-wrap {
 #pr_id_15 {
   height: 30%;
 }
+.hierarchyList {
+  margin-block-start: 3px;
+  margin-block-end: 7px;
+}

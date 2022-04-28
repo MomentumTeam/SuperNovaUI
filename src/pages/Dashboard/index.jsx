@@ -82,6 +82,7 @@ const Dashboard = observer(() => {
             isOpen={isUserPremissionsModalOpen}
             closePremissionsModal={closePremissionsModal}
             userTags={userTags}
+            updateUserPremissions={userStore.updateUserPremissions}
           />
           
           <div className="content-unit-wrap">
