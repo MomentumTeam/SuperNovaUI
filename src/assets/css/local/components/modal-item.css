@@ -25,7 +25,7 @@
   }
 }
 .p-dialog .p-dialog-header {
-  padding: 12px 24px 25px 24px;
+  padding: 12px 24px 10px 24px;
   border-radius: 14px 14px 0px 0px;
 }
 @media (max-width: 730px) {
@@ -3132,13 +3132,19 @@
 #premissionsDialog {
   padding-top: 0px;
   border-radius: 30px;
-  min-height: 370px;
+  min-height: 300px;
+  display: flex;
+  justify-content: space-between;
 }
 
 #premissionsDialog_content.p-dialog-content {
   padding-top: 0px;
 }
 
+.removalFormat {
+  display: flex;
+  justify-content: space-between;
+}
 
 .premissionsPopUpWrapper {
   width: 19px;

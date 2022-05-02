@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Dialog } from "primereact/dialog";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+import { Dialog } from "primereact/dialog";
 import { classNames } from "primereact/utils";
-import {
-  getAllMyApproverTypes,
-  removeAsApproverFromHierarchy,
-} from "../../../service/ApproverService";
-import { getUserTags } from "../../../utils/user";
-import { USER_TYPE } from "../../../constants";
 import { Button } from "primereact/button";
-import ConfirmRemovalPopUp from "./ConfirmRemovalPopUp";
+import { USER_TYPE } from "../../../constants";
+import { getUserTags } from "../../../utils/user";
+import {
+  getAllMyApproverTypes, removeAsApproverFromHierarchy,
+} from "../../../service/ApproverService";
+import PremissionsRemovalPopUp from "./PremissionsRemovalPopUp";
 
 const FullEntityPremissionsModal = ({
   user,
-  isOpen,
+  isUsePremissionModal,
   closePremissionsModal,
   userTags,
   updateUserPremissions
@@ -24,33 +24,6 @@ const FullEntityPremissionsModal = ({
   const [currentHierarchyForRemoval, setCurrentHierarchyForRemoval] = useState(
     {}
   );
-
-  const dismissApproverFromHierarchy = async () => {
-    let { hierarchyToRemove, approverType } = currentHierarchyForRemoval;
-    try {
-      const response = await removeAsApproverFromHierarchy(
-        user.id,
-        approverType,
-        hierarchyToRemove.id
-      );
-      setPremissions(() => {
-        premissions[approverType] = premissions[approverType].filter(
-          (premission) => premission.id !== hierarchyToRemove.id
-        );
-        if (premissions[approverType].length === 0)
-          delete premissions[approverType];
-        return { ...premissions };
-      });
-
-      setApproverTypes(() => {
-        return approverTypes.filter((type) => type !== approverType);
-      });
-      updateUserPremissions();
-    } catch (err) {
-      console.log(err);
-    }
-    closeModal();
-  };
 
   const openModal = (hierarchyToRemove, approverType) => {
     setShowModal(true);
@@ -74,65 +47,65 @@ const FullEntityPremissionsModal = ({
       return response.data;
     };
 
-    const setApproverTypeGroups = (groups, type) => {
+    const setApproverPremissions = (groups, type) => {
       setPremissions(() => {
         premissions[type] = groups;
         return { ...premissions };
       });
     };
 
+    const getApproverTypesHandler = (approverData ,type) => {
+      const approverTypeHandler = {
+        [USER_TYPE.ADMIN]: () => {
+          return approverData.adminGroupsInCharge.length > 0
+            ? setApproverPremissions(
+                approverData.adminGroupsInCharge,
+                USER_TYPE.ADMIN
+              )
+            : removeAsApproverFromHierarchy(user.id, USER_TYPE.ADMIN);
+        },
+        [USER_TYPE.SECURITY_ADMIN]: () => {
+          return approverData.securityAdminGroupsInCharge.length > 0
+            ? setApproverPremissions(
+                approverData.securityAdminGroupsInCharge,
+                USER_TYPE.SECURITY_ADMIN
+              )
+            : removeAsApproverFromHierarchy(user.id, USER_TYPE.SECURITY_ADMIN);
+        },
+        [USER_TYPE.BULK]: () => {
+          return setApproverPremissions([], USER_TYPE.BULK);
+        },
+        [USER_TYPE.SECURITY]: () => {
+          return setApproverPremissions([], USER_TYPE.SECURITY);
+        },
+        [USER_TYPE.SUPER_SECURITY]: () => {
+          return setApproverPremissions([], USER_TYPE.SUPER_SECURITY);
+        },
+        default: () => {},
+      };
+
+      return approverTypeHandler[type] || approverTypeHandler["default"];
+    };
+
     if (Object.keys(premissions).length === 0) {
-      // Handle Approver Data
       myApproverTypes(user)
         .then((approverData) => {
           approverData.types = approverData.types.filter((type) => user.types.includes((type)))
           setApproverTypes(approverData.types);
-          const getApproverTypesHandler = (type) => {
-            const approverTypeHandler = {
-              [USER_TYPE.ADMIN]: () => {
-                return approverData.adminGroupsInCharge.length > 0
-                  ? setApproverTypeGroups(
-                      approverData.adminGroupsInCharge,
-                      USER_TYPE.ADMIN
-                    )
-                  : null;
-              },
-              [USER_TYPE.SECURITY_ADMIN]: () => {
-                return approverData.securityAdminGroupsInCharge.length > 0
-                  ? setApproverTypeGroups(
-                      approverData.securityAdminGroupsInCharge,
-                      USER_TYPE.SECURITY_ADMIN
-                    )
-                  : null;
-              },
-              [USER_TYPE.BULK]: () => {
-                return setApproverTypeGroups([], USER_TYPE.BULK);
-              },
-              [USER_TYPE.SECURITY]: () => {
-                return setApproverTypeGroups([], USER_TYPE.SECURITY);
-              },
-              [USER_TYPE.SUPER_SECURITY]: () => {
-                return setApproverTypeGroups([], USER_TYPE.SUPER_SECURITY);
-              },
-              default: () => {},
-            };
-
-            return approverTypeHandler[type] || approverTypeHandler["default"];
-          };
 
           Object.values(approverTypes).forEach((type) => {
-            getApproverTypesHandler(type)();
+            getApproverTypesHandler(approverData ,type)();
           });
         })
         .catch((err) => {
           console.log(err);
         });
     }
-    if (!isOpen) {
+    if (!isUsePremissionModal) {
       closePremissionsModal();
       closeModal();
     }
-  }, [approverTypes, closePremissionsModal, isOpen, premissions, user]);
+  }, [approverTypes, closePremissionsModal, isUsePremissionModal, premissions, user]);
 
   const getImuteableApproverTypes = () => {
     if (
@@ -140,11 +113,11 @@ const FullEntityPremissionsModal = ({
       Object.values(userTags).includes(getUserTags([USER_TYPE.COMMANDER])[0])
     ) {
       return (
-        <dt>
+        <li>
           <p style={{ fontSize: "18px", paddingBottom: "6px" }}>
             {getUserTags([USER_TYPE.COMMANDER])}
           </p>
-        </dt>
+        </li>
       );
     }
   };
@@ -167,17 +140,17 @@ const FullEntityPremissionsModal = ({
         <Dialog
           className={classNames("dialogClass6")}
           header={"הרשאות משתמש"}
-          visible={isOpen}
+          visible={isUsePremissionModal}
           onHide={closePremissionsModal}
           dismissableMask={true}
           id="premissionsDialog"
         >
-          <div style={{ paddingRight: "65px" }}>
-            <dl>
+          <div style={{ paddingRight: "61px", width: "80%" }}>
+            <ul>
               {getImuteableApproverTypes()}
               {Object.keys(premissions).map((key) => (
-                <dt>
-                  <p style={{ fontSize: "18px" }}>
+                <li >
+                  <p className="removalFormat" style={{ fontSize: "18px" }}>
                     {getUserTags([key])}
                     {premissions[key].length === 0 ? (
                       getRemovalButton("", key)
@@ -185,23 +158,28 @@ const FullEntityPremissionsModal = ({
                       <></>
                     )}
                   </p>
-                  <dl value={premissions} className="hierarchyList">
+                  <ul value={premissions} className="hierarchyList"  >
                     {premissions[key].map((hierarchy) => (
-                      <dd>
-                        <i class="pi pi-lock" style={{marginLeft: "10px"}}></i>
+                      <li className="removalFormat">
                         {hierarchy.hierarchy + "/" + hierarchy.name }
                         {getRemovalButton(hierarchy, key)}
-                      </dd>
+                      </li>
                     ))}
-                  </dl>
-                </dt>
+                  </ul>
+                </li>
               ))}
-            </dl>
+            </ul>
 
-            <ConfirmRemovalPopUp
+            <PremissionsRemovalPopUp
               showModal={showModal}
               closeModal={closeModal}
-              dismissApproverFromHierarchy={dismissApproverFromHierarchy}
+              currentHierarchyForRemoval={currentHierarchyForRemoval}
+              user={user}
+              premissions={premissions}
+              approverTypes={approverTypes}
+              setPremissions={setPremissions}
+              setApproverTypes={setApproverTypes}
+              updateUserPremissions={updateUserPremissions}
             />
           </div>
         </Dialog>

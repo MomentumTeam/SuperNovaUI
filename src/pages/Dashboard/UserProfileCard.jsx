@@ -14,7 +14,6 @@ const UserProfileCard = ({
   openPremissionsModal,
   isUserPremissionsModalOpen,
 }) => {
-  console.log(userTags);
   return (
     <div className="personal-information-wrap">
       <div className="display-flex personal-information-inner">

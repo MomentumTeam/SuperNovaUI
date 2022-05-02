@@ -62,7 +62,6 @@
 .p-dialog {
   border-radius: 14px;
   width: 688px;
-  /* min-height: 632px; */
   background-color: #fff;
 }
 @media (max-width: 730px) {

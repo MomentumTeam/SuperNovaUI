@@ -79,7 +79,7 @@ const Dashboard = observer(() => {
           />
           <FullEntityPremissionsModal
             user={user}
-            isOpen={isUserPremissionsModalOpen}
+            isUsePremissionModal={isUserPremissionsModalOpen}
             closePremissionsModal={closePremissionsModal}
             userTags={userTags}
             updateUserPremissions={userStore.updateUserPremissions}

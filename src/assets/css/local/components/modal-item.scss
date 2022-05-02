@@ -1449,9 +1449,15 @@ $linkColor0: #2979f4;
 }
 
 #premissionsDialog {
-  min-height: 300px;
+  min-height: 265px;
 }
 
-#premissionsDialog_content .p-dialog-content {
+#premissionsDialog_content .p-dialog-content .p-dialog-content {
   padding-top: 0px;
+  border-radius: 12px;
+}
+
+.removalFormat {
+  display: flex;
+  justify-content: "space-between";
 }
