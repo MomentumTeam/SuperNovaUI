@@ -1,7 +1,7 @@
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { useToast } from '../../context/use-toast';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { exportToExcel } from '../../utils/general';
 import { renameObjKeys } from '../../utils/hierarchy';
 import { excelLabels } from '../../constants/applies';
@@ -14,22 +14,35 @@ const ExportButton = ({ exportFunction, toolTip = '', hierarchy = '' }) => {
 
   const { actionPopup } = useToast();
 
-  const openDialog = async () => {
+  // useEffect(() => {
+  //   if (!excelLoading && !directExcelLoading) {
+  //     setIsOpen(false);
+  //   }
+  // }, [excelLoading, directExcelLoading]);
+
+
+  // const closeDialog = async (direct) => {
+  //   updateLoading(direct, false);
+  // };
+
+
+ const openDialog = async () => {
     setIsOpen(true);
   };
 
-  const closeDialog = async () => {
-    setIsOpen(false);
-    setExcelLoading(false);
-    setDirectExcelLoading(false);
+  const updateLoading = (direct, activate) => {
+    if (direct) {
+      setDirectExcelLoading(activate);
+    } else {
+      setExcelLoading(activate);
+    }
   };
 
   const excelExport = async (direct) => {
+    updateLoading(direct, true);
+
     try {
       let fileName = undefined;
-
-      if (direct) setDirectExcelLoading(true);
-      else setExcelLoading(true);
 
       const hierarchyData = await exportHierarchyData(hierarchy, true, direct);
 
@@ -46,8 +59,8 @@ const ExportButton = ({ exportFunction, toolTip = '', hierarchy = '' }) => {
         message: 'יש בעיה בייצוא הטבלה',
       });
     }
+    updateLoading(direct, false);
 
-    closeDialog();
   };
 
   return (
@@ -56,7 +69,11 @@ const ExportButton = ({ exportFunction, toolTip = '', hierarchy = '' }) => {
         className="dialogClass10"
         header="ייצוא תפקידים"
         visible={isOpen}
-        onHide={() => setIsOpen(false)}
+        onHide={() => {
+          if (!excelLoading && !directExcelLoading) {
+            setIsOpen(false);
+          }
+        }}
         dismissableMask={true}
         style={{ width: '25vw' }}
         footer={
@@ -85,7 +102,11 @@ const ExportButton = ({ exportFunction, toolTip = '', hierarchy = '' }) => {
       >
         <div className="container">
           <div>
-            <p style={{ fontWeight: 'bold' }}>נא בחר את הערכים לייצוא:</p>
+            <p>
+              <strong> נא בחר את הערכים לייצוא:</strong>
+              <br />
+              פעולה זו עשויה להימשך מספר דקות, יש להישאר בחלון זה.
+            </p>
           </div>
         </div>
       </Dialog>

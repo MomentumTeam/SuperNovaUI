@@ -5,10 +5,17 @@ import React, {
   useImperativeHandle,
   useState,
 } from 'react';
+import '../../../assets/css/local/general/buttons.css';
+import '../../../assets/css/local/components/modal-item.css';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-
 import datesUtil from '../../../utils/dates';
+import { InputForm, InputTypes } from '../../Fields/InputForm';
+import { useStores } from '../../../context/use-stores';
+import { getSamAccountNameFromEntity } from '../../../utils/fields';
+import { kartoffelIdentityCardValidation } from '../../../utils/user';
+import { getEntityByMongoId } from '../../../service/KartoffelService';
+import { USER_ENTITY_TYPE } from '../../../constants/user';
 import {
   CanSeeUserClearance,
   CanEditEntityFields,
@@ -19,14 +26,6 @@ import {
   PHONE_REG_EXP,
   REQ_TYPES,
 } from '../../../constants';
-import { InputForm, InputTypes } from '../../Fields/InputForm';
-import { useStores } from '../../../context/use-stores';
-
-import '../../../assets/css/local/general/buttons.css';
-import '../../../assets/css/local/components/modal-item.css';
-import { getSamAccountNameFromEntity } from '../../../utils/fields';
-import { kartoffelIdentityCardValidation } from '../../../utils/user';
-import { getEntityByMongoId } from '../../../service/KartoffelService';
 
 const validationSchema = Yup.object().shape({
   canEditEntityFields: Yup.boolean(),
@@ -71,11 +70,8 @@ const validationSchema = Yup.object().shape({
 const FullEntityInformationForm = forwardRef(
   (
     { setIsActionDone, onlyForView, requestObject, reqView = true, setIsEdit },
-    
-
     ref
-  ) => {console.log('reqView', reqView)
-  console.log('requestObject.type', requestObject.type);
+  ) => {
     const { appliesStore, configStore } = useStores();
     const [user, setUser] = useState(requestObject);
     const methods = useForm({
@@ -95,6 +91,12 @@ const FullEntityInformationForm = forwardRef(
             const entity = await getEntityByMongoId(
               requestObject.kartoffelParams.id
             );
+            entity.newEntityType =
+              USER_ENTITY_TYPE[
+                `${requestObject.kartoffelParams.newEntityType}`
+              ];
+
+            entity.upn = requestObject.kartoffelParams.upn;
             entity.identifier = requestObject.kartoffelParams.identifier;
             setUser(entity);
           } else {
@@ -133,6 +135,8 @@ const FullEntityInformationForm = forwardRef(
         }
       }
     }, [requestObject]);
+
+
 
     const onSubmit = async (data) => {
       try {
@@ -179,6 +183,7 @@ const FullEntityInformationForm = forwardRef(
         console.log(error);
       }
     };
+    
 
     useImperativeHandle(
       ref,
@@ -323,8 +328,13 @@ const FullEntityInformationForm = forwardRef(
 
     const convertFormFields = [
       {
-        fieldName: 'id',
-        displayName: 'מזהה',
+        fieldName: 'newEntityType',
+        displayName: 'סוג הישות החדש',
+        inputType: InputTypes.TEXT,
+      },
+      {
+        fieldName: 'upn',
+        displayName: 'מזהה כרטיס חדש',
         inputType: InputTypes.TEXT,
         force: true,
       },
@@ -340,12 +350,17 @@ const FullEntityInformationForm = forwardRef(
       },
       {
         fieldName: 'identifier',
-        displayName: 'מ"א/ת"ז',
+        displayName: 'מ"א/ת"ז להוספה',
         inputType: InputTypes.TEXT,
       },
       {
-        fieldName: 'rank',
-        displayName: 'דרגה',
+        fieldName: 'personalNumber',
+        displayName: 'מ"א',
+        inputType: InputTypes.TEXT,
+      },
+      {
+        fieldName: 'identityCard',
+        displayName: 'ת"ז',
         inputType: InputTypes.TEXT,
       },
       {
@@ -358,7 +373,12 @@ const FullEntityInformationForm = forwardRef(
     return (
       <div className="p-fluid" id="fullEntityInfoForm">
         {reqView && requestObject.type === REQ_TYPES.CONVERT_ENTITY_TYPE ? (
-          <InputForm fields={convertFormFields} item={user} errors={errors} methods={methods}/>
+          <InputForm
+            fields={convertFormFields}
+            item={user}
+            errors={errors}
+            methods={methods}
+          />
         ) : (
           <InputForm
             fields={formFields}

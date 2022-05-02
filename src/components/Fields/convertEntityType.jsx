@@ -1,66 +1,61 @@
-import React, { useState } from 'react';
-import * as Yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import { useStores } from '../../context/use-stores';
 import { useToast } from '../../context/use-toast';
+import { useStores } from '../../context/use-stores';
+import { getSamAccountNameFromEntity } from '../../utils/fields';
 import { useForm } from 'react-hook-form';
-import { USER_ENTITY_TYPE, IDENTITY_CARD_EXP } from '../../constants';
+import * as Yup from 'yup';
+import { IDENTITY_CARD_EXP } from '../../constants';
+import { kartoffelIdentityCardValidation } from '../../utils/user';
 import { getEntityByIdentifier } from '../../service/KartoffelService';
-import {
-  getUserRelevantIdentity,
-  getSamAccountNameFromEntity,
-  kartoffelIdentityCardValidation,
-} from '../../utils';
+import { yupResolver } from '@hookform/resolvers/yup';
+import React, { useState, useEffect, } from 'react';
 
 const validationSchema = Yup.object().shape({
-  identifier: Yup.string().when('missingInfo', {
-    is: (missingInfo) => !missingInfo,
+  identifier: Yup.string().when(['missingInfo', 'entity'], {
+    is: (missingInfo, entity) => !missingInfo || !entity.personalNumber,
     then: Yup.string().optional(),
-    otherwise: Yup.string().when('isSoldier', {
-      is: (isSoldier) => !isSoldier,
-      then: Yup.string().required('יש להזין מספר אישי!'),
-      otherwise: Yup.string()
-        .required('יש להזין ת"ז!')
-        .matches(IDENTITY_CARD_EXP, 'ת"ז לא תקין')
-        .test({
-          name: 'check-if-valid',
-          message: 'ת"ז לא תקין!',
-          test: async (identifier, context) => {
-            if (!context.isSoldier) {
-              return kartoffelIdentityCardValidation(identifier);
-            }
-            return true;
-          },
-        })
-        .test({
-          name: 'check-if-identity-number-already-taken-in-kartoffel',
-          message: 'קיים משתמש עם הת"ז הזה!',
-          test: async (identifier, context) => {
-            if (!context.isSoldier) {
-              try {
-                const isAlreadyTaken = await getEntityByIdentifier(identifier);
+    otherwise: Yup.string()
+      .required('יש להזין מ"א/ת"ז')
+      .matches(IDENTITY_CARD_EXP, 'ת"ז לא תקין')
+      .test({
+        name: 'check-if-valid',
+        message: 'ת"ז לא תקין!',
+        test: async (identifier, context) => {
+          if (!context.isSoldier) {
+            return kartoffelIdentityCardValidation(identifier);
+          }
+          return true;
+        },
+      })
+      .test({
+        name: 'check-if-identity-number-already-taken-in-kartoffel',
+        message: 'קיים משתמש עם הת"ז הזה!',
+        test: async (identifier, context) => {
+          if (!context.isSoldier) {
+            try {
+              const isAlreadyTaken = await getEntityByIdentifier(identifier);
 
-                if (isAlreadyTaken) {
-                  return false;
-                }
-              } catch (err) {}
-            }
-            return true;
-          },
-        }),
-    }),
+              if (isAlreadyTaken) {
+                return false;
+              }
+            } catch (err) {}
+          }
+          return true;
+        },
+      }),
   }),
 });
 
-const ConvertEntityType = ({ entity = {} }) => {
-  const { userStore, appliesStore } = useStores();
+const ConvertEntityType = ({ entity = {}, entityDi = {} }) => {
+  const { userStore, appliesStore, configStore } = useStores();
   const [isMainOpen, setIsMainOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const { actionPopup } = useToast();
+
   const isSoldier = entity.entityType === 'agumon'; //true=soldier , false=civilian
-  const entityDi = getUserRelevantIdentity(entity);
   const missingInfo =
     (isSoldier && !entity.identityCard) ||
     (!isSoldier && !entity.personalNumber);
@@ -71,7 +66,12 @@ const ConvertEntityType = ({ entity = {} }) => {
   });
 
   const { errors } = formState;
-  const { actionPopup } = useToast();
+
+  useEffect(() => {
+    if (submitted) {
+      closeDialog();
+    }
+  }, [submitted]);
 
   const openDialog = async () => {
     setIsMainOpen(true);
@@ -86,7 +86,6 @@ const ConvertEntityType = ({ entity = {} }) => {
     try {
       await validationSchema.validate(data);
     } catch (err) {
-      console.log('err', err);
       throw new Error(err.errors);
     }
 
@@ -96,8 +95,8 @@ const ConvertEntityType = ({ entity = {} }) => {
         id: entity.id,
         uniqueId: entityDi.role.digitalIdentityUniqueId,
         newEntityType: isSoldier
-          ? USER_ENTITY_TYPE.Civilian
-          : USER_ENTITY_TYPE.Soldier,
+          ? configStore.KARTOFFEL_CIVILIAN
+          : configStore.KARTOFFEL_SOLDIER,
       },
       adParams: {
         samAccountName: getSamAccountNameFromEntity(entity),
@@ -114,26 +113,21 @@ const ConvertEntityType = ({ entity = {} }) => {
     if (entity.rank) {
       req.adParams.rank = entity.rank;
     }
-    if (entityDi.upn) {
-      req.adParams.upn = entityDi.upn;
-      req.kartoffelParams.upn = entityDi.upn;
-    }
 
     if (data?.identifier !== '' && missingInfo) {
       req.kartoffelParams.identifier = data?.identifier;
     }
 
-    await appliesStore.convertEntityTypeApply(req);
-    closeDialog();
-  };
-
-  const handleRequest = async () => {
     try {
-      await onSubmit();
+      setSubmitted(true);
+      await appliesStore.convertEntityTypeApply(req);
+      setSubmitted(false);
+      closeDialog();
+      actionPopup('המרת סוג ישות');
     } catch (e) {
-      actionPopup('המרת סןג ישןת', e.message || 'Message Content');
+      setSubmitted(false);
+      actionPopup('המרת סוג ישות', e.message || 'Message Content');
     }
-    actionPopup('המרת סןג ישןת');
   };
 
   return (
@@ -154,14 +148,14 @@ const ConvertEntityType = ({ entity = {} }) => {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit(handleRequest)}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <InputText
               {...register('identifier')}
               value={watch('identifier')}
               keyfilter="num"
               // id=""
               type="num"
-              // required
+              required
               onChange={(e) => {
                 setValue('identifier', e.target.value, {
                   shouldValidate: true,
@@ -177,6 +171,7 @@ const ConvertEntityType = ({ entity = {} }) => {
               </small>
             )}
             <Button
+              disabled={submitted}
               type="submit"
               label="אישור"
               className="btn-orange-gradient"
@@ -196,8 +191,9 @@ const ConvertEntityType = ({ entity = {} }) => {
           <>
             <div style={{ display: 'flex', justifyContent: 'space-around' }}>
               <Button
+                disabled={submitted}
                 style={{ marginLeft: '20px' }}
-                className="btn-border blue"
+                // className="btn-border blue"
                 label={
                   isSoldier
                     ? 'כן, הפוך את החייל לאזרח'
@@ -217,7 +213,8 @@ const ConvertEntityType = ({ entity = {} }) => {
                     ? 'לא, השאר את החייל כחייל'
                     : 'לא, השאר את האזרח כאזרח'
                 }
-                className="btn-border red"
+                className="p-button-danger"
+                // className="btn-border red"
                 onClick={closeDialog}
               />
             </div>

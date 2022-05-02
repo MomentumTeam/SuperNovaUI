@@ -7,6 +7,7 @@ import { canEditEntity } from '../../../utils/entites';
 import { ConvertEntityType } from '../../Fields/convertEntityType';
 import { USER_ENTITY_TYPE, USER_TYPE } from '../../../constants/user';
 import { isUserHoldType } from '../../../utils/user';
+import { getUserRelevantIdentity } from '../../../utils/fields';
 
 const FullEntityInformationFooter = ({
   entity,
@@ -17,19 +18,24 @@ const FullEntityInformationFooter = ({
 }) => {
   const { userStore } = useStores();
   const connectedUser = toJS(userStore.user);
+  const entityDi = getUserRelevantIdentity(entity);
   const canConvert =
-    (entity.entityType === 'agumon' || entity.entityType === 'digimon')&&isUserHoldType(connectedUser, USER_TYPE.ADMIN);
+    (entity.entityType === 'agumon' || entity.entityType === 'digimon') &&
+    isUserHoldType(connectedUser, USER_TYPE.ADMIN) &&
+    entityDi;
+
 
   const closeThisModal = () => {
     setIsEdit(false);
     closeModal();
   };
+
   return (
     <>
       <div className="display-flex">
         <div>
-          {canConvert && !isEdit && entity.digitalIdentities.length>0 && (
-            <ConvertEntityType entity={entity} />
+          {canConvert && !isEdit && (
+            <ConvertEntityType entity={entity} entityDi={entityDi} />
           )}
         </div>
 

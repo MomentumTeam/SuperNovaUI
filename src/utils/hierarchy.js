@@ -74,7 +74,6 @@ export const processHierarchyData = async (hierarchy) => {
         const di = await getDIByUniqueId(role.digitalIdentityUniqueId);
         newRow['מזהה כרטיס'] = di?.upn ? di.upn : '---';
       } catch (error) {
-        console.log(error);
         newRow['מזהה כרטיס'] = 'לא ידוע';
       }
 

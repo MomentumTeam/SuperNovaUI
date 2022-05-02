@@ -2346,15 +2346,15 @@
 
 
 .p-button.btn-border.green {
-  border: 1px solid #66CD00;
-  color: #66CD00;
+  border: 1px solid #148857;
+  color: #148857;
   font-weight: 600;
 }
 
 .p-button.btn-border.green:hover,
 .p-button.btn-border.green:focus {
-  color: #66CD00;
-  border: 1px solid #66CD00;
+  color: #148857;
+  border: 1px solid #148857;
 }
 
 .p-button.btn-border.red {
@@ -3115,7 +3115,7 @@
   background-size: 25px;
 }
 .p-dialog.dialogClass10 .p-dialog-header .p-dialog-title::after {
-  background: transparent linear-gradient(180deg, #66CD00 0%, #66CD00 100%) 0%
+  background: transparent linear-gradient(180deg, #148857 0%, #148857 100%) 0%
     0% no-repeat padding-box;
 }
 .p-dialog.dialogClass10 .p-dialog-content {
