@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { Dialog } from "primereact/dialog";
 import { classNames } from "primereact/utils";
 import { Button } from "primereact/button";
-import { USER_TYPE } from "../../../constants";
-import { getUserTags } from "../../../utils/user";
+import { USER_TYPE, USER_TYPE_TAG } from "../../../constants";
+import { getUserTags, isUserHoldType } from "../../../utils/user";
+
 import {
   getAllMyApproverTypes, removeAsApproverFromHierarchy,
 } from "../../../service/ApproverService";
@@ -109,24 +109,25 @@ const FullEntityPremissionsModal = ({
 
   const getImuteableApproverTypes = () => {
     if (
-      Object.values(approverTypes).includes(USER_TYPE.COMMANDER) ||
-      Object.values(userTags).includes(getUserTags([USER_TYPE.COMMANDER])[0])
+      isUserHoldType(user) ||
+      Object.values(userTags).includes(USER_TYPE_TAG.COMMANDER)
     ) {
       return (
         <li>
           <p style={{ fontSize: "18px", paddingBottom: "6px" }}>
-            {getUserTags([USER_TYPE.COMMANDER])}
+            {USER_TYPE_TAG.COMMANDER}
           </p>
         </li>
       );
     }
   };
 
-  const getRemovalButton = (hierarchy, type) => {
+  const getRemovalButton = (hierarchy="", type) => {
     return (
       <Button
         label="הסרה"
         className="p-button-danger p-button-text p-button-sm"
+        id="removalButton"
         style={{ height: "15px" }}
         onClick={() => {
           openModal(hierarchy, type);
@@ -146,26 +147,27 @@ const FullEntityPremissionsModal = ({
           id="premissionsDialog"
         >
           <div style={{ paddingRight: "61px", width: "80%" }}>
+          <p style={{ fontSize: "18px", paddingTop: "15px" }}>ההרשאות שלך במערכת לגו: </p>
             <ul>
               {getImuteableApproverTypes()}
               {Object.keys(premissions).map((key) => (
-                <li >
+                <li style={{ fontSize: "18px", paddingBottom: "6px", paddingTop: "15px" }}>
                   <p className="removalFormat" style={{ fontSize: "18px" }}>
                     {getUserTags([key])}
-                    {premissions[key].length === 0 ? (
+                    {premissions[key].length === 0 && (
                       getRemovalButton("", key)
-                    ) : (
-                      <></>
                     )}
                   </p>
-                  <ul value={premissions} className="hierarchyList"  >
+                  <table style={{"tableLayout": "fixed"}}>
+                  <tr value={premissions} className="hierarchyList" style={{ paddingTop: "10px"}}>
                     {premissions[key].map((hierarchy) => (
-                      <li className="removalFormat">
-                        {hierarchy.hierarchy + "/" + hierarchy.name }
+                      <td className="removalFormat"  id="hierarchyTable">
+                        <p id="hierarchyInTable">{hierarchy.hierarchy + "/" + hierarchy.name }</p>
                         {getRemovalButton(hierarchy, key)}
-                      </li>
+                      </td>
                     ))}
-                  </ul>
+                  </tr>
+                  </table>
                 </li>
               ))}
             </ul>

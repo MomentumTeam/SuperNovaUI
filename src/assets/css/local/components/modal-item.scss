@@ -1449,7 +1449,7 @@ $linkColor0: #2979f4;
 }
 
 #premissionsDialog {
-  min-height: 265px;
+  
 }
 
 #premissionsDialog_content .p-dialog-content .p-dialog-content {
@@ -1459,5 +1459,19 @@ $linkColor0: #2979f4;
 
 .removalFormat {
   display: flex;
-  justify-content: "space-between";
+  justify-content: "space-between"
 }
+
+#hierarchyTable {
+  font-size: 18px;
+  padding-bottom: 6px;
+  padding-top: 13px;
+  border: 0.2px solid #d8dae5;
+  word-break: break-all;
+}
+
+#hierarchyInTable {
+  width: 70%;
+  padding-right: 5px;
+}
+

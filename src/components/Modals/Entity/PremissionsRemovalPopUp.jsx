@@ -3,9 +3,8 @@ import { classNames } from "primereact/utils";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 
-import {
-removeAsApproverFromHierarchy,
-} from "../../../service/ApproverService";
+import { removeAsApproverFromHierarchy } from "../../../service/ApproverService";
+import { getUserTags } from "../../../utils/user";
 
 const PremissionsRemovalPopUp = ({
   showModal,
@@ -16,7 +15,7 @@ const PremissionsRemovalPopUp = ({
   approverTypes,
   setPremissions,
   setApproverTypes,
-  updateUserPremissions
+  updateUserPremissions,
 }) => {
   const { hierarchyToRemove, approverType } = currentHierarchyForRemoval;
   const dismissApproverFromHierarchy = async () => {
@@ -26,7 +25,7 @@ const PremissionsRemovalPopUp = ({
         approverType,
         hierarchyToRemove.id
       );
-      
+
       setPremissions(() => {
         premissions[approverType] = premissions[approverType].filter(
           (premission) => premission.id !== hierarchyToRemove.id
@@ -46,7 +45,6 @@ const PremissionsRemovalPopUp = ({
     closeModal();
   };
 
-
   return (
     <Dialog
       id="confirmDialog"
@@ -56,9 +54,17 @@ const PremissionsRemovalPopUp = ({
       showHeader={false}
     >
       <h3>האם אתה בטוח?</h3>
-      
-      <p>הסרת השראות מסוג זה יורידו לך יכולות במערכת לגו</p>
-      <div>{hierarchyToRemove}</div>>
+      {approverType && (
+        <p style={{ fontSize: "18px"  }}>
+          האם להוריד לך את ההרשאות של <b>{getUserTags([approverType])[0]}</b>
+          {hierarchyToRemove ? <>  עבור ההיררכיה:{" "}
+          <b style={{wordBreak: "break-all"}}>{hierarchyToRemove?.hierarchy + "/" + hierarchyToRemove?.name}</b>?</> : <>?</> }
+        </p>
+      )}
+      <p style={{ fontSize: "18px" }}>
+        הסרת השראות מסוג זה יורידו לך יכולות במערכת לגו
+      </p>
+
       <div id="confirmDialogButtons">
         <Button
           className="p-button-raised p-button-danger"
@@ -77,7 +83,5 @@ const PremissionsRemovalPopUp = ({
     </Dialog>
   );
 };
-
-
 
 export default PremissionsRemovalPopUp;

@@ -3139,6 +3139,8 @@
 
 #premissionsDialog_content.p-dialog-content {
   padding-top: 0px;
+  margin-right: 5px;
+  margin-left: 5px;
 }
 
 .removalFormat {
@@ -3146,8 +3148,21 @@
   justify-content: space-between;
 }
 
+#hierarchyTable {
+  font-size: 18px;
+  padding-bottom: 6px;
+  padding-top: 13px;
+  border: 0.2px solid #d8dae5;
+  word-break: break-all;
+}
+
 .premissionsPopUpWrapper {
   width: 19px;
   height: 19px;
   background-color: white;
+}
+
+#hierarchyInTable {
+  width: 70%;
+  padding-right: 5px;
 }
