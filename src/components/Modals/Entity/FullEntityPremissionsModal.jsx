@@ -110,12 +110,12 @@ const FullEntityPremissionsModal = ({
   const getImuteableApproverTypes = () => {
     if (
       isUserHoldType(user) ||
-      Object.values(userTags).includes(USER_TYPE_TAG.COMMANDER)
+      Object.values(userTags).includes(USER_TYPE_TAG.APPROVER)
     ) {
       return (
         <li>
           <p style={{ fontSize: "18px", paddingBottom: "6px" }}>
-            {USER_TYPE_TAG.COMMANDER}
+            {USER_TYPE_TAG.APPROVER} ראשוני
           </p>
         </li>
       );
@@ -148,7 +148,7 @@ const FullEntityPremissionsModal = ({
         >
           <div style={{ paddingRight: "61px", width: "80%" }}>
           <p style={{ fontSize: "18px", paddingTop: "15px" }}>ההרשאות שלך במערכת לגו: </p>
-            <ul>
+            <ul style={{marginTop: "5px"}}>
               {getImuteableApproverTypes()}
               {Object.keys(premissions).map((key) => (
                 <li style={{ fontSize: "18px", paddingBottom: "6px", paddingTop: "15px" }}>
