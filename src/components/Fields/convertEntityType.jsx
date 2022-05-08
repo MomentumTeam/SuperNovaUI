@@ -10,41 +10,45 @@ import { IDENTITY_CARD_EXP } from '../../constants';
 import { kartoffelIdentityCardValidation } from '../../utils/user';
 import { getEntityByIdentifier } from '../../service/KartoffelService';
 import { yupResolver } from '@hookform/resolvers/yup';
-import React, { useState, useEffect, } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const validationSchema = Yup.object().shape({
-  identifier: Yup.string().when(['missingInfo', 'entity'], {
-    is: (missingInfo, entity) => !missingInfo || !entity.personalNumber,
+  identifier: Yup.string().when('missingInfo', {
+    is: (missingInfo) => !missingInfo,
     then: Yup.string().optional(),
-    otherwise: Yup.string()
-      .required('יש להזין מ"א/ת"ז')
-      .matches(IDENTITY_CARD_EXP, 'ת"ז לא תקין')
-      .test({
-        name: 'check-if-valid',
-        message: 'ת"ז לא תקין!',
-        test: async (identifier, context) => {
-          if (!context.isSoldier) {
-            return kartoffelIdentityCardValidation(identifier);
-          }
-          return true;
-        },
-      })
-      .test({
-        name: 'check-if-identity-number-already-taken-in-kartoffel',
-        message: 'קיים משתמש עם הת"ז הזה!',
-        test: async (identifier, context) => {
-          if (!context.isSoldier) {
-            try {
-              const isAlreadyTaken = await getEntityByIdentifier(identifier);
+    otherwise: Yup.string().when('isSoldier', {
+      is: (isSoldier) => !isSoldier,
+      then: Yup.string().required('יש להזין מספר אישי!'),
+      otherwise: Yup.string()
+        .required('יש להזין ת"ז!')
+        .matches(IDENTITY_CARD_EXP, 'ת"ז לא תקין')
+        .test({
+          name: 'check-if-valid',
+          message: 'ת"ז לא תקין!',
+          test: async (identifier, context) => {
+            if (!context.isSoldier) {
+              return kartoffelIdentityCardValidation(identifier);
+            }
+            return true;
+          },
+        })
+        .test({
+          name: 'check-if-identity-number-already-taken-in-kartoffel',
+          message: 'קיים משתמש עם הת"ז הזה!',
+          test: async (identifier, context) => {
+            if (!context.isSoldier) {
+              try {
+                const isAlreadyTaken = await getEntityByIdentifier(identifier);
 
-              if (isAlreadyTaken) {
-                return false;
-              }
-            } catch (err) {}
-          }
-          return true;
-        },
-      }),
+                if (isAlreadyTaken) {
+                  return false;
+                }
+              } catch (err) {}
+            }
+            return true;
+          },
+        }),
+    }),
   }),
 });
 
@@ -55,7 +59,7 @@ const ConvertEntityType = ({ entity = {}, entityDi = {} }) => {
   const [submitted, setSubmitted] = useState(false);
   const { actionPopup } = useToast();
 
-  const isSoldier = entity.entityType === 'agumon'; //true=soldier , false=civilian
+  const isSoldier = entity.entityType === configStore.KARTOFFEL_SOLDIER; //true=soldier , false=civilian
   const missingInfo =
     (isSoldier && !entity.identityCard) ||
     (!isSoldier && !entity.personalNumber);
@@ -80,6 +84,7 @@ const ConvertEntityType = ({ entity = {}, entityDi = {} }) => {
   const closeDialog = async () => {
     setIsMainOpen(false);
     setIsOpen(false);
+    setValue('identifier', '');
   };
 
   const onSubmit = async (data = {}) => {
@@ -93,7 +98,7 @@ const ConvertEntityType = ({ entity = {}, entityDi = {} }) => {
       commanders: [userStore.user],
       kartoffelParams: {
         id: entity.id,
-        uniqueId: entityDi.role.digitalIdentityUniqueId,
+        uniqueId: entityDi?.role?.digitalIdentityUniqueId,
         newEntityType: isSoldier
           ? configStore.KARTOFFEL_CIVILIAN
           : configStore.KARTOFFEL_SOLDIER,
@@ -139,44 +144,89 @@ const ConvertEntityType = ({ entity = {}, entityDi = {} }) => {
         onHide={() => setIsOpen(false)}
         dismissableMask={true}
         style={{ width: '25vw', minHeight: '250px' }}
-        // footer={}
-      >
-        <div className="container">
-          <div style={{ margin: '2vw' }}>
-            <p style={{ fontWeight: 'bold' }}>
-              {isSoldier ? 'הכנס תעודת זהות:' : 'הכנס מספר אישי:'}
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <InputText
-              {...register('identifier')}
-              value={watch('identifier')}
-              keyfilter="num"
-              // id=""
-              type="num"
-              required
-              onChange={(e) => {
-                setValue('identifier', e.target.value, {
-                  shouldValidate: true,
-                });
-              }}
-            />
-            {errors.identifier && (
-              <small style={{ color: 'red' }}>
-                {' '}
-                {errors.identifier?.message
-                  ? errors.identifier.message
-                  : 'יש למלא ערך'}
-              </small>
-            )}
+        footer={
+          <div style={{ direction: 'ltr' }}>
             <Button
               disabled={submitted}
               type="submit"
               label="אישור"
-              className="btn-orange-gradient"
+              className="btn-gradient orange"
               id="fullEntityInfo-closeOrSave"
+              onClick={handleSubmit(onSubmit)}
             />
+          </div>
+        }
+      >
+        <div
+          className="p-fluid"
+          style={{
+            marginTop: '2vw',
+          }}
+        >
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div
+              className="p-fluid-item p-fluid-item-flex1"
+              style={{ marginRight: '25px' }}
+            >
+              <div
+                className="p-field"
+                style={{
+                  display: 'flex',
+                }}
+              >
+                <label
+                  htmlFor="2021"
+                  style={{
+                    marginTop: '15px',
+                  }}
+                >
+                  <span className="required-field">*</span>
+                  {isSoldier ? 'הכנס תעודת זהות:' : 'הכנס מספר אישי:'}
+                </label>
+                <div
+                  style={{
+                    width: '200px',
+                    marginBottom: '5px',
+                    marginRight: '15px',
+                  }}
+                >
+                  {' '}
+                  <InputText
+                    {...register('identifier')}
+                    value={watch('identifier')}
+                    keyfilter="num"
+                    // id=""
+                    type="num"
+                    required
+                    onChange={(e) => {
+                      setValue('identifier', e.target.value, {
+                        shouldValidate: true,
+                      });
+                    }}
+                  />{' '}
+                  {errors.identifier && (
+                    <small style={{ color: 'red' }}>
+                      {' '}
+                      {errors.identifier?.message
+                        ? errors.identifier.message
+                        : 'יש למלא ערך'}
+                    </small>
+                  )}
+                </div>
+              </div>
+            </div>
+            {/* <div className="display-flex ">
+              <div className="display-flex"></div>
+              <div className="display-flex ">
+                <Button
+                  disabled={submitted}
+                  type="submit"
+                  label="אישור"
+                  className="btn-gradient orange"
+                  id="fullEntityInfo-closeOrSave"
+                />
+              </div>
+            </div> */}
           </form>
         </div>
       </Dialog>
