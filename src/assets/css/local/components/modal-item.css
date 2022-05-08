@@ -2386,13 +2386,39 @@
   font-weight: 600;
 }
 
- .p-button.btn-border.blue:hover,
- .p-button.btn-border.blue:focus {
+.p-button.btn-border.blue:hover,
+.p-button.btn-border.blue:focus {
   color: #1d88ec;
   border: 1px solid #1d88ec;
 }
 
- .p-button.btn-border:hover,
+
+.p-button.btn-border.green {
+  border: 1px solid #148857;
+  color: #148857;
+  font-weight: 600;
+}
+
+.p-button.btn-border.green:hover,
+.p-button.btn-border.green:focus {
+  color: #148857;
+  border: 1px solid #148857;
+}
+
+.p-button.btn-border.red {
+  border: 1px solid #FF0000;
+  color: #FF0000;
+  font-weight: 600;
+}
+
+.p-button.btn-border.red:hover,
+.p-button.btn-border.red:focus {
+  color: #FF0000;
+  border: 1px solid #FF0000;
+}
+
+
+.p-button.btn-border:hover,
 .p-button.btn-border:focus {
   background-color: transparent;
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
@@ -3165,4 +3191,36 @@
 #hierarchyInTable {
   width: 70%;
   padding-right: 5px;
+}
+
+
+
+
+
+
+.p-dialog.dialogClass10 {
+  min-height: 250px;
+  padding-bottom: 0;
+}
+.p-dialog.dialogClass10 .p-dialog-header .p-dialog-title::before {
+  background-image: url(../../../images/file-export-white.svg);
+  background-size: 25px;
+}
+.p-dialog.dialogClass10 .p-dialog-header .p-dialog-title::after {
+  background: transparent linear-gradient(180deg, #148857 0%, #148857 100%) 0%
+    0% no-repeat padding-box;
+}
+.p-dialog.dialogClass10 .p-dialog-content {
+  padding-top: 5px;
+}
+.p-dialog.dialogClass10 .p-dialog-content p {
+  opacity: 0.7;
+  text-align: center;
+  padding-bottom: 20px;
+}
+.p-dialog.dialogClass10 .p-dialog-content .p-fluid {
+  padding-bottom: 10px;
+}
+.p-dialog.dialogClass10 .p-dialog-content .p-fluid .p-fluid-item {
+  width: 100%;
 }
