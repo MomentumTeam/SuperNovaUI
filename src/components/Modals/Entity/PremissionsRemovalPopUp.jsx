@@ -67,16 +67,16 @@ const PremissionsRemovalPopUp = ({
 
       <div id="confirmDialogButtons">
         <Button
-          className="p-button-raised p-button-danger"
           onClick={dismissApproverFromHierarchy}
         >
           כן, הסר לי את ההרשאה
         </Button>
         <Button
+          className="p-button-raised p-button-danger"
           onClick={() => {
             closeModal();
           }}
-        >
+        >  
           לא, תשאיר לי את ההרשאה
         </Button>
       </div>
