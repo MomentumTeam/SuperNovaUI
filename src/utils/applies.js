@@ -203,12 +203,12 @@ export const canPassApply = (apply, user, kartoffelSoldierEnum) => {
   const isCreateSoldierApply =
     apply?.type === REQ_TYPES.CREATE_ENTITY &&
     apply?.kartoffelParams?.entityType === kartoffelSoldierEnum;
-  
+
   
   const isAddSecurityAdminApproverApply =
     apply?.type === REQ_TYPES.ADD_APPROVER &&
     apply?.additionalParams?.type === USER_TYPE.SECURITY_ADMIN;
-  
+
   return (
     ((isUserHoldType(user, USER_TYPE.SUPER_SECURITY) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)) ||
@@ -341,7 +341,7 @@ export const getDenyReason = (apply) => {
     return superSecurityReason;
 };
 
-export const cantBeDeletedByStatus = (request) => {
+export const canBeDeletedByStatus = (request) => {
   return (
     request?.status !== REQ_STATUSES.IN_PROGRESS &&
     request?.status !== REQ_STATUSES.DECLINED &&
@@ -357,7 +357,10 @@ export const isAutomaticallyApproved = (request, user) => {
     (request?.type === REQ_TYPES.CREATE_OG ||
       request?.type === REQ_TYPES.CREATE_ENTITY ||
       (request?.type === REQ_TYPES.ADD_APPROVER &&
-        request?.additionalParams?.type === USER_TYPE.COMMANDER))
+        (request?.additionalParams?.type === USER_TYPE.COMMANDER ||
+          request?.additionalParams?.type === USER_TYPE.ADMIN ||
+          request?.additionalParams?.type === USER_TYPE.BULK ||
+          request?.additionalParams?.type === USER_TYPE.SPECIAL_GROUP)))
   );
 };
 
