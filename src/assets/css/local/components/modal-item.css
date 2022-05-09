@@ -3180,6 +3180,7 @@
   padding-top: 13px;
   border: 0.2px solid #d8dae5;
   word-break: break-all;
+  min-width: 230px;
 }
 
 .premissionsPopUpWrapper {
