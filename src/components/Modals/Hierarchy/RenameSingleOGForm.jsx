@@ -122,6 +122,8 @@ const RenameSingleOGForm = forwardRef(
           : await getRoleByRoleId(requestObject.kartoffelParams.roleId);
 
         setValue('role', oldRole);
+        setValue('clearance', oldRole?.clearance || '- - -');
+
         setRoles([oldRole]);
 
         await updateCurrentRoleUser(requestObject.kartoffelParams.roleId);
@@ -190,6 +192,8 @@ const RenameSingleOGForm = forwardRef(
       setValue('roleId', '');
       setValue('role', null);
       setValue('currentRoleUser', null);
+      setValue('clearance', '- - -');
+
 
       const roles = await getRolesUnderOG({ id: org.id, direct: true });
 
@@ -200,6 +204,7 @@ const RenameSingleOGForm = forwardRef(
       setValue('currentHierarchy', '');
       setValue('role', '');
       setValue('currentRoleUser', '');
+      setValue('clearance', '- - -');
       setRoles([]);
     };
 
@@ -236,6 +241,8 @@ const RenameSingleOGForm = forwardRef(
 
           setValue('currentHierarchy', hierarchy);
           setValue('role', role);
+          setValue('clearance', role?.clearance || '- - -');
+
 
           setRoles([role]);
         } catch (e) {
@@ -258,6 +265,7 @@ const RenameSingleOGForm = forwardRef(
     const onChangeRoleFromList = async (e) => {
       setValue('roleId', e.target.value.roleId);
       setValue('role', e.target.value);
+      setValue('clearance', e.target.value?.clearance || '- - -');
 
       await updateCurrentRoleUser(e.target.value.roleId);
     };
@@ -334,6 +342,7 @@ const RenameSingleOGForm = forwardRef(
               onChange={(e) => {
                 setValue('role', null);
                 setValue('currentRoleUser', '');
+                setValue('clearance', '- - -');
                 setValue('roleId', e.value.roleId ? e.value.roleId : e.value);
               }}
               onSelect={() => onRoleIdSelected()}
@@ -360,12 +369,26 @@ const RenameSingleOGForm = forwardRef(
             <label htmlFor="2026">מבצע תפקיד נוכחי</label>
             <InputText
               {...register('currentRoleUser')}
-              id="assignRoleToEntityForm-currentRoleUser"
+              id="renameSingleOGForm-currentRoleUser"
               style={{
                 textAlign: watch('currentRoleUser') === '- - -' && 'center',
               }}
               type="text"
               disabled
+            />
+          </div>
+        </div>
+        <div className="p-fluid-item">
+          <div className="p-field">
+            <label htmlFor='2030'>סיווג התפקיד</label>
+            <InputText
+              {...register('clearance')}
+              id='renameSingleOGForm-clearance'
+              type='text'
+              disabled
+              style={{
+                textAlign: watch('clearance') === '- - -' && 'center',
+              }}
             />
           </div>
         </div>
