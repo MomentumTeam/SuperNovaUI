@@ -52,7 +52,8 @@ export const getResponsibleFactors = (apply, user) => {
     }
 
     if (
-      isAdminNeeded && isUserHoldType(user, USER_TYPE.ADMIN) &&
+      isAdminNeeded &&
+      isUserHoldType(user, USER_TYPE.ADMIN) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.ADMIN)
     ) {
       if (apply['adminApprovers'].length > 0) {
@@ -186,7 +187,8 @@ export const canEditApply = (apply, user) => {
       !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)) ||
     (isUserHoldType(user, USER_TYPE.SECURITY) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) ||
-    (apply.needAdminDecision && isUserHoldType(user, USER_TYPE.ADMIN) &&
+    (apply.needAdminDecision &&
+      isUserHoldType(user, USER_TYPE.ADMIN) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.ADMIN)) ||
     (isUserApproverType(user) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER)) ||
@@ -195,17 +197,29 @@ export const canEditApply = (apply, user) => {
   );
 };
 
-export const canPassApply = (apply, user) => {
+export const canPassApply = (apply, user, kartoffelSoldierEnum) => {
   if (apply === undefined) return false;
+
+  const isCreateSoldierApply =
+    apply?.type === REQ_TYPES.CREATE_ENTITY &&
+    apply?.kartoffelParams?.entityType === kartoffelSoldierEnum;
+  
+  
+  const isAddSecurityAdminApproverApply =
+    apply?.type === REQ_TYPES.ADD_APPROVER &&
+    apply?.additionalParams?.type === USER_TYPE.SECURITY_ADMIN;
+  
   return (
-    (isUserHoldType(user, USER_TYPE.SUPER_SECURITY) &&
+    ((isUserHoldType(user, USER_TYPE.SUPER_SECURITY) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)) ||
-    (isUserHoldType(user, USER_TYPE.SECURITY) &&
-      !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) ||
-    (isUserHoldType(user, USER_TYPE.ADMIN) &&
-      !IsRequestCompleteForApprover(apply, USER_TYPE.ADMIN)) ||
-    (isUserHoldType(user, USER_TYPE.SECURITY_ADMIN) &&
-      !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY_ADMIN))
+      (isUserHoldType(user, USER_TYPE.SECURITY) &&
+        !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) ||
+      (isUserHoldType(user, USER_TYPE.ADMIN) &&
+        !IsRequestCompleteForApprover(apply, USER_TYPE.ADMIN)) ||
+      (isUserHoldType(user, USER_TYPE.SECURITY_ADMIN) &&
+        !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY_ADMIN))) &&
+    !isCreateSoldierApply &&
+    !isAddSecurityAdminApproverApply
   );
 };
 
@@ -224,12 +238,13 @@ export const getUserPassOptions = (apply, user) => {
       !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY_ADMIN))
   )
     passOptions.push({ label: 'יחב"ם/קב"ם יחידתי', value: USER_TYPE.SECURITY });
-  if (apply.needAdminDecision &&
+  if (
+    apply.needAdminDecision &&
     isUserHoldType(user, USER_TYPE.ADMIN) &&
     !IsRequestCompleteForApprover(apply, USER_TYPE.ADMIN)
   )
     passOptions.push({ label: 'מחשוב יחידתי', value: USER_TYPE.ADMIN });
-    if (
+  if (
     isUserHoldType(user, USER_TYPE.SUPER_SECURITY) &&
     !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)
   )
@@ -268,8 +283,8 @@ export const IsRequestCompleteForApprover = (apply, approverType) => {
     case USER_TYPE.ADMIN:
       if (apply.needAdminDecision && approverType === USER_TYPE.ADMIN) {
         return (
-           apply['status'] === STATUSES.APPROVED_BY_ADMIN ||
-           isStatusComplete(apply['adminDecision']['decision'])
+          apply['status'] === STATUSES.APPROVED_BY_ADMIN ||
+          isStatusComplete(apply['adminDecision']['decision'])
         );
       }
       return (
@@ -280,7 +295,6 @@ export const IsRequestCompleteForApprover = (apply, approverType) => {
       return true;
   }
 };
-
 
 export const processApprovalTableData = (tableData) => {
   return tableData.map((action) => {
@@ -327,9 +341,8 @@ export const getDenyReason = (apply) => {
     return superSecurityReason;
 };
 
-export const isSubmitterReq = (request, user) => {
+export const cantBeDeletedByStatus = (request) => {
   return (
-    request?.submittedBy?.id === user.id &&
     request?.status !== REQ_STATUSES.IN_PROGRESS &&
     request?.status !== REQ_STATUSES.DECLINED &&
     request?.status !== REQ_STATUSES.DONE &&
@@ -340,16 +353,11 @@ export const isSubmitterReq = (request, user) => {
 export const isAutomaticallyApproved = (request, user) => {
   return (
     request.commanders.some((commander) => commander.id === user.id) &&
+    request?.submittedBy?.id === user.id &&
     (request?.type === REQ_TYPES.CREATE_OG ||
       request?.type === REQ_TYPES.CREATE_ENTITY ||
       (request?.type === REQ_TYPES.ADD_APPROVER &&
-        request?.submittedBy?.id === user.id))
+        request?.additionalParams?.type === USER_TYPE.COMMANDER))
   );
 };
 
-export const isCreateSoldierApply = (apply, kartoffelSoldierEnum) => {
-  return (
-    apply?.type === REQ_TYPES.CREATE_ENTITY &&
-    apply?.kartoffelParams?.entityType === kartoffelSoldierEnum
-  );
-};

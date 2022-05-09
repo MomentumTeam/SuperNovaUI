@@ -25,6 +25,7 @@ import {
   transferApproverRequest,
   updateApproversCommentsRequest,
   removeApproverFromApproversRequest,
+  convertEntityTypeRequest,
 } from '../service/AppliesService';
 import { updateDecisionReq } from '../service/ApproverService';
 import { isApproverAndCanEdit } from '../utils/applies';
@@ -57,6 +58,7 @@ export default class AppliesStore {
       renameOGApply: action,
       renameRoleApply: action,
       editEntityApply: action,
+      convertEntityTypeApply: action,
       deleteRoleApply: action,
       deleteOGApply: action,
       disconectRoleFromEntityApply: action,
@@ -229,6 +231,13 @@ export default class AppliesStore {
   async editEntityApply(applyProperties) {
     const newEditEntityApply = await editEntityRequest(applyProperties);
     this.myApplies.unshift(newEditEntityApply);
+  }
+
+  async convertEntityTypeApply(applyProperties) {
+    const newConvertEntityTypeApply = await convertEntityTypeRequest(
+      applyProperties
+    );
+    this.myApplies.unshift(newConvertEntityTypeApply);
   }
 
   async deleteRoleApply(applyProperties) {

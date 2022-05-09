@@ -25,7 +25,7 @@
   }
 }
 .p-dialog .p-dialog-header {
-  padding: 12px 24px 25px 24px;
+  padding: 12px 24px 10px 24px;
   border-radius: 14px 14px 0px 0px;
 }
 @media (max-width: 730px) {
@@ -773,6 +773,54 @@
   background: transparent linear-gradient(180deg, #f590cd 0%, #ff74ba 100%) 0%
     0% no-repeat padding-box;
 }
+
+.p-dialog.dialogClassConfirm .p-dialog-header .p-dialog-title::before {
+  background-image: none;
+  background-size: 26px;
+}
+.p-dialog.dialogClassConfirm .p-dialog-header .p-dialog-title::after {
+  background: transparent;
+  box-shadow: none;
+  height: 0px;
+  width: 0px;
+}
+
+#confirmDialog_header {
+  padding-right: 40%;
+  padding-top: 25px;
+}
+
+#confirmDialog_content {
+  padding: 0px;
+  height: 100px;
+  padding-right: 100px;
+  padding-left: 110px;
+  padding-top: 45px;
+  border-radius: 14px;
+}
+#confirmDialog_content h3 {
+  padding: 0px;
+  padding-right: 36%;
+  padding-bottom: 20px;
+  color: #000000;
+}
+
+#confirmDialog_content p {
+  padding: 0px;
+  font-size: 20px;
+  padding-right: 8%;
+}
+
+#confirmDialog {
+  width: 35vw; height: 270px;
+}
+
+#confirmDialogButtons {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 30px;
+}
+
 .p-dialog.dialogClass7 {
   min-height: 865px;
   padding-bottom: 0;
@@ -2338,13 +2386,39 @@
   font-weight: 600;
 }
 
- .p-button.btn-border.blue:hover,
- .p-button.btn-border.blue:focus {
+.p-button.btn-border.blue:hover,
+.p-button.btn-border.blue:focus {
   color: #1d88ec;
   border: 1px solid #1d88ec;
 }
 
- .p-button.btn-border:hover,
+
+.p-button.btn-border.green {
+  border: 1px solid #148857;
+  color: #148857;
+  font-weight: 600;
+}
+
+.p-button.btn-border.green:hover,
+.p-button.btn-border.green:focus {
+  color: #148857;
+  border: 1px solid #148857;
+}
+
+.p-button.btn-border.red {
+  border: 1px solid #FF0000;
+  color: #FF0000;
+  font-weight: 600;
+}
+
+.p-button.btn-border.red:hover,
+.p-button.btn-border.red:focus {
+  color: #FF0000;
+  border: 1px solid #FF0000;
+}
+
+
+.p-button.btn-border:hover,
 .p-button.btn-border:focus {
   background-color: transparent;
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
@@ -3071,7 +3145,6 @@
   }
 }
 
-
 .hierarchyBtn {
   background-image: url(../../../images/buttons/change-view-chart-blue.svg) !important;
   background-size: 60px !important;
@@ -3079,4 +3152,76 @@
   background-position: center !important;
   border: none !important;
   padding: 40px !important;
+}
+
+
+#premissionsDialog {
+  padding-top: 0px;
+  border-radius: 30px;
+  min-height: 300px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#premissionsDialog_content.p-dialog-content {
+  padding-top: 0px;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.removalFormat {
+  display: flex;
+  justify-content: space-between;
+}
+
+#hierarchyTable {
+  font-size: 18px;
+  padding-bottom: 6px;
+  padding-top: 13px;
+  border: 0.2px solid #d8dae5;
+  word-break: break-all;
+  min-width: 230px;
+}
+
+.premissionsPopUpWrapper {
+  width: 19px;
+  height: 19px;
+  background-color: white;
+}
+
+#hierarchyInTable {
+  width: 70%;
+  padding-right: 5px;
+}
+
+
+
+
+
+
+.p-dialog.dialogClass10 {
+  min-height: 250px;
+  padding-bottom: 0;
+}
+.p-dialog.dialogClass10 .p-dialog-header .p-dialog-title::before {
+  background-image: url(../../../images/file-export-white.svg);
+  background-size: 25px;
+}
+.p-dialog.dialogClass10 .p-dialog-header .p-dialog-title::after {
+  background: transparent linear-gradient(180deg, #148857 0%, #148857 100%) 0%
+    0% no-repeat padding-box;
+}
+.p-dialog.dialogClass10 .p-dialog-content {
+  padding-top: 5px;
+}
+.p-dialog.dialogClass10 .p-dialog-content p {
+  opacity: 0.7;
+  text-align: center;
+  padding-bottom: 20px;
+}
+.p-dialog.dialogClass10 .p-dialog-content .p-fluid {
+  padding-bottom: 10px;
+}
+.p-dialog.dialogClass10 .p-dialog-content .p-fluid .p-fluid-item {
+  width: 100%;
 }
