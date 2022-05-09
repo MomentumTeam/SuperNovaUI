@@ -1482,3 +1482,31 @@ $linkColor0: #2979f4;
   text-align: center;
   align-items: center;
 }
+
+#premissionsDialog {
+  
+}
+
+#premissionsDialog_content .p-dialog-content .p-dialog-content {
+  padding-top: 0px;
+  border-radius: 12px;
+}
+
+.removalFormat {
+  display: flex;
+  justify-content: "space-between"
+}
+
+#hierarchyTable {
+  font-size: 18px;
+  padding-bottom: 6px;
+  padding-top: 13px;
+  border: 0.2px solid #d8dae5;
+  word-break: break-all;
+}
+
+#hierarchyInTable {
+  width: 70%;
+  padding-right: 5px;
+}
+

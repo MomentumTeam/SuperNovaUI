@@ -25,7 +25,7 @@
   }
 }
 .p-dialog .p-dialog-header {
-  padding: 12px 24px 25px 24px;
+  padding: 12px 24px 10px 24px;
   border-radius: 14px 14px 0px 0px;
 }
 @media (max-width: 730px) {
@@ -773,6 +773,54 @@
   background: transparent linear-gradient(180deg, #f590cd 0%, #ff74ba 100%) 0%
     0% no-repeat padding-box;
 }
+
+.p-dialog.dialogClassConfirm .p-dialog-header .p-dialog-title::before {
+  background-image: none;
+  background-size: 26px;
+}
+.p-dialog.dialogClassConfirm .p-dialog-header .p-dialog-title::after {
+  background: transparent;
+  box-shadow: none;
+  height: 0px;
+  width: 0px;
+}
+
+#confirmDialog_header {
+  padding-right: 40%;
+  padding-top: 25px;
+}
+
+#confirmDialog_content {
+  padding: 0px;
+  height: 100px;
+  padding-right: 100px;
+  padding-left: 110px;
+  padding-top: 45px;
+  border-radius: 14px;
+}
+#confirmDialog_content h3 {
+  padding: 0px;
+  padding-right: 36%;
+  padding-bottom: 20px;
+  color: #000000;
+}
+
+#confirmDialog_content p {
+  padding: 0px;
+  font-size: 20px;
+  padding-right: 8%;
+}
+
+#confirmDialog {
+  width: 35vw; height: 270px;
+}
+
+#confirmDialogButtons {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 30px;
+}
+
 .p-dialog.dialogClass7 {
   min-height: 865px;
   padding-bottom: 0;
@@ -3105,6 +3153,51 @@
   border: none !important;
   padding: 40px !important;
 }
+
+
+#premissionsDialog {
+  padding-top: 0px;
+  border-radius: 30px;
+  min-height: 300px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#premissionsDialog_content.p-dialog-content {
+  padding-top: 0px;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.removalFormat {
+  display: flex;
+  justify-content: space-between;
+}
+
+#hierarchyTable {
+  font-size: 18px;
+  padding-bottom: 6px;
+  padding-top: 13px;
+  border: 0.2px solid #d8dae5;
+  word-break: break-all;
+  min-width: 230px;
+}
+
+.premissionsPopUpWrapper {
+  width: 19px;
+  height: 19px;
+  background-color: white;
+}
+
+#hierarchyInTable {
+  width: 70%;
+  padding-right: 5px;
+}
+
+
+
+
+
 
 .p-dialog.dialogClass10 {
   min-height: 250px;
