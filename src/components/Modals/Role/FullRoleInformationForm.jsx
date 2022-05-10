@@ -51,33 +51,50 @@ const validationSchema = Yup.object().shape({
         name: 'jobTitle-changed',
         message: 'נא לבחור שם חדש',
         test: (newJobTitle, context) => {
-          return newJobTitle !== context.parent.oldRole.jobTitle;
+          return (
+            newJobTitle !== context.parent.oldRole.jobTitle ||
+            context.parent.clearance !== context.parent.oldRole.clearance
+          );
         },
       }),
   }),
   isJobTitleAlreadyTaken: Yup.boolean().when('canEditRoleFields', {
     is: true,
     then: Yup.boolean()
-      .oneOf([false], 'תפקיד תפוס')
+      // .oneOf([false], 'תפקיד תפוס')
       .test({
         name: 'jobTitle-valid-check-after',
         message: 'תפקיד תפוס',
         test: async (_, context) => {
-          try {
-            const result = await isJobTitleAlreadyTakenRequest(
-              context.parent.roleName,
-              context.parent.oldRole.directGroup
-            );
-            return !result.isJobTitleAlreadyTaken;
-          } catch (error) {}
-
+          if (context.parent.roleName !== context.parent.oldRole.jobTitle) {
+            try {
+              const result = await isJobTitleAlreadyTakenRequest(
+                context.parent.roleName,
+                context.parent.oldRole.directGroup
+              );
+              return !result.isJobTitleAlreadyTaken;
+            } catch (error) {}
+          } else {
+            return true;
+          }
           return false;
         },
       }),
   }),
-  clearance: Yup.string().when('isUserSecurity', {
+  clearance: Yup.string().when('canEditRoleFields', {
     is: true,
-    then: Yup.string().required('יש לבחור סיווג'),
+    then: Yup.string()
+      // .required('יש לבחור סיווג')      //commented-in case some roles don't have clearance
+      .test({
+        name: 'clearance-is-the-same',
+        message: 'יש לבחור סיווג!',
+        test: async (clearance, context) => {
+          return (
+            clearance !== context.parent.oldRole.clearance ||
+            context.parent.roleName !== context.parent.oldRole.jobTitle
+          );
+        },
+      }),
   }),
   comments: Yup.string().optional(),
   entityId: Yup.string().optional(),
@@ -162,6 +179,8 @@ const FullRoleInformationForm = forwardRef(
             ? requestObject?.kartoffelParams?.role
             : await getRoleByRoleId(requestObject?.kartoffelParams?.roleId);
 
+          setValue('oldClearance', oldRole.clearance);
+
           setRole(oldRole);
 
           if (requestObject?.kartoffelParams?.entityId) {
@@ -220,9 +239,18 @@ const FullRoleInformationForm = forwardRef(
           samAccountName: getSamAccountNameFromUniqueId(requestObject.roleId),
           jobTitle: roleName,
         },
+
         comments,
         due: Date.now(),
       };
+
+      if (oldRole.jobTitle !== roleName) {
+        // if the submitter edited the roleName
+        req.adParams = {
+          samAccountName: getSamAccountNameFromUniqueId(requestObject.roleId),
+          jobTitle: roleName,
+        };
+      }
 
       await appliesStore.renameRoleApply(req);
       setIsActionDone(true);
@@ -329,7 +357,7 @@ const FullRoleInformationForm = forwardRef(
                   value={
                     requestObject?.kartoffelParams?.oldJobTitle ||
                     role?.jobTitle ||
-                    '---'
+                    '- - -'
                   }
                   disabled={onlyForView}
                 />
@@ -358,43 +386,29 @@ const FullRoleInformationForm = forwardRef(
 
         <div className="p-fluid-item p-fluid-item">
           <div className="p-field">
-            <label> מזהה תפקיד </label>
-            <InputText
-              id="fullRoleInfoForm-roleId"
-              value={role?.roleId || '---'}
-              disabled={true}
-            />
-          </div>
-        </div>
-
-        {!reqView && (
-          <div className="p-fluid-item p-fluid-item">
-            <div className="p-field">
-              <label> תאריך עדכון </label>
-              <InputText
-                value={
-                  role?.updatedAt
-                    ? datesUtil.formattedDateTime(role.updatedAt)
-                    : '---'
-                }
-                id="fullRoleInfoForm-updatedAt"
-                disabled={true}
-              />
-            </div>
-          </div>
-        )}
-
-        <div className="p-fluid-item p-fluid-item">
-          <div className="p-field">
-            <label> סיווג התפקיד </label>
+            <label>
+              {' '}
+              <span className="required-field">*</span>
+              {reqView &&
+              requestObject?.kartoffelParams?.clearance &&
+              requestObject?.kartoffelParams?.clearance !==
+                watch('oldClearance')
+                ? 'סיווג תפקיד חדש'
+                : 'סיווג התפקיד'}{' '}
+            </label>
             <Dropdown
               id="fullRoleInfoForm-clearance"
               options={ROLE_CLEARANCE}
-              placeholder={watch('clearance') || '---'}
+              placeholder={watch('clearance') || '- - -'}
               {...register('clearance')}
               value={watch('clearance')}
-              className={onlyForView || !isUserSecurity ? 'disabled' : ''}
-              disabled={onlyForView || !isUserSecurity}
+              className={`dropDownInput ${
+                onlyForView || !canEditRoleFields ? `disabled` : ''
+              } `}
+              disabled={onlyForView || !canEditRoleFields}
+              style={{
+                textAlignLast: !watch('clearance') && 'center',
+              }}
             />
             <label>
               {errors.clearance && (
@@ -409,13 +423,68 @@ const FullRoleInformationForm = forwardRef(
           </div>
         </div>
 
+        {reqView &&
+          requestObject?.kartoffelParams?.clearance &&
+          requestObject?.kartoffelParams?.clearance !==
+            watch('oldClearance') && (
+            <div className="p-fluid-item p-fluid-item">
+              <div className="p-field">
+                <label> סיווג תפקיד ישן</label>
+                <InputText
+                  id="fullRoleInfoForm-oldClearance"
+                  value={watch('oldClearance') || '- - -'}
+                  disabled={onlyForView}
+                  style={{
+                    textAlign: !watch('oldClearance') && 'center',
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
+        {!reqView && (
+          <div className="p-fluid-item p-fluid-item">
+            <div className="p-field">
+              <label> תאריך עדכון </label>
+              <InputText
+                value={
+                  role?.updatedAt
+                    ? datesUtil.formattedDateTime(role.updatedAt)
+                    : '- - -'
+                }
+                id="fullRoleInfoForm-updatedAt"
+                disabled={true}
+                style={{
+                  textAlign: !role?.updatedAt && 'center',
+                }}
+              />
+            </div>
+          </div>
+        )}
+        <div className="p-fluid-item p-fluid-item">
+          <div className="p-field">
+            <label> מזהה תפקיד </label>
+            <InputText
+              id="fullRoleInfoForm-roleId"
+              value={role?.roleId || '- - -'}
+              disabled={true}
+              style={{
+                textAlign: !role?.roleId && 'center',
+              }}
+            />
+          </div>
+        </div>
+
         <div className="p-fluid-item p-fluid-item">
           <div className="p-field">
             <label> משתמש בתפקיד </label>
             <InputText
               id="fullRoleInfoForm-entity"
-              value={entity?.fullName || '---'}
+              value={entity?.fullName || '- - -'}
               disabled={true}
+              style={{
+                textAlign: !entity?.fullName && 'center',
+              }}
             />
           </div>
         </div>
@@ -426,8 +495,11 @@ const FullRoleInformationForm = forwardRef(
               <label> מזהה כרטיס </label>
               <InputText
                 id="fullRoleInfoForm-upn"
-                value={digitalIdentity?.upn ? digitalIdentity.upn : '---'}
+                value={digitalIdentity?.upn ? digitalIdentity.upn : '- - -'}
                 disabled={true}
+                style={{
+                  textAlign: !digitalIdentity?.upn && 'center',
+                }}
               />
             </div>
           </div>

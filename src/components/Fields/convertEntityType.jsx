@@ -66,7 +66,7 @@ const ConvertEntityType = ({ entity = {}, entityDi = {} }) => {
 
   const { register, handleSubmit, watch, formState, setValue } = useForm({
     resolver: yupResolver(validationSchema),
-    defaultValues: { identifier: '', entity, missingInfo },
+    defaultValues: { identifier: '', entity, missingInfo, isSoldier },
   });
 
   const { errors } = formState;
@@ -216,7 +216,7 @@ const ConvertEntityType = ({ entity = {}, entityDi = {} }) => {
               </div>
             </div>
             {/* <div className="display-flex ">
-              <div className="display-flex"></div>
+            <div className="display-flex"></div>
               <div className="display-flex ">
                 <Button
                   disabled={submitted}
@@ -281,8 +281,8 @@ const ConvertEntityType = ({ entity = {}, entityDi = {} }) => {
 
             <p>
               {isSoldier
-                ? 'המשמעות- שינוי מזהה הכרטיס מתעודת זהות C למספר אישי S'
-                : 'המשמעות- שינוי מזהה הכרטיס ממספר אישי S לתעודת זהות C'}
+                ? 'המשמעות- שינוי מזהה הכרטיס ממספר אישי S לתעודת זהות C'
+                : 'המשמעות- שינוי מזהה הכרטיס מתעודת זהות C למספר אישי S'}
             </p>
           </div>
         </div>
