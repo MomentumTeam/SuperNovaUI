@@ -124,15 +124,13 @@ const FullEntityPremissionsModal = ({
 
   const getRemovalButton = (hierarchy="", type) => {
     return (
-      <Button
-        label="הסרה"
-        className="p-button-danger p-button-text p-button-sm"
-        id="removalButton"
-        style={{ height: "15px" }}
+      <button
+        className="removalButton"
         onClick={() => {
           openModal(hierarchy, type);
         }}
-      ></Button>
+      ><i class="pi pi-trash" ></i>
+      </button>
     );
   };
   return (
@@ -146,19 +144,19 @@ const FullEntityPremissionsModal = ({
           dismissableMask={true}
           id="premissionsDialog"
         >
-          <div style={{ paddingRight: "61px", width: "80%" }}>
-          <p style={{ fontSize: "18px", paddingTop: "15px" }}>ההרשאות שלך במערכת לגו: </p>
-            <ul style={{marginTop: "5px"}}>
+          <div id="premissionsDisplayWrapper" >
+          <p id="premissionsTitle">ההרשאות שלך במערכת לגו: </p>
+            <ul className="premissionsList">
               {getImuteableApproverTypes()}
               {Object.keys(premissions).map((key) => (
-                <li style={{ fontSize: "18px", paddingBottom: "6px", paddingTop: "15px" }}>
-                  <p className="removalFormat" style={{ fontSize: "18px" }}>
+                <li className="premissionListItem">
+                  <p className="removalFormat">
                     {getUserTags([key])}
                     {premissions[key].length === 0 && (
                       getRemovalButton("", key)
                     )}
                   </p>
-                  <table style={{"tableLayout": "fixed"}}>
+                  <table id="premissionSubHierarchyList">
                   <tr value={premissions} className="hierarchyList" style={{ paddingTop: "10px"}}>
                     {premissions[key].map((hierarchy) => (
                       <td className="removalFormat"  id="hierarchyTable">

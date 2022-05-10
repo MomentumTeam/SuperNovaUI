@@ -3172,32 +3172,33 @@
 .removalFormat {
   display: flex;
   justify-content: space-between;
+  font-size: 18px;
+
 }
 
 #hierarchyTable {
   font-size: 18px;
   padding-bottom: 6px;
-  padding-top: 13px;
+  padding-top: 9px;
   border: 0.2px solid #d8dae5;
   word-break: break-all;
   min-width: 230px;
+  width: 100.93%;
+
 }
 
 .premissionsPopUpWrapper {
   width: 19px;
-  height: 19px;
+  height: 19px; 
   background-color: white;
 }
 
 #hierarchyInTable {
   width: 70%;
   padding-right: 5px;
+  margin-top: auto;
+  margin-bottom: auto;
 }
-
-
-
-
-
 
 .p-dialog.dialogClass10 {
   min-height: 250px;
@@ -3224,4 +3225,41 @@
 }
 .p-dialog.dialogClass10 .p-dialog-content .p-fluid .p-fluid-item {
   width: 100%;
+}
+
+#premissionsDisplayWrapper {
+  padding-right: 56px;
+  width: 80%;
+}
+
+#premissionsTitle {
+  width: 80%;
+  padding-bottom: 15px;
+  font-size: 18px;
+  padding-top: 10px;
+}
+
+.premissionsList {
+  margin-top: 5px;
+}
+
+.premissionListItem {
+  font-size: 18px;
+  padding-top: 12px;
+  padding-bottom: 6px;
+}
+
+#premissionSubHierarchyList {
+  table-layout: fixed;
+}
+
+.removalButton {
+  outline: none;
+  border: none;
+  background: no-repeat;
+  color: red;
+  padding-left: 7px;
+}
+
+.removalButton:hover {
 }
