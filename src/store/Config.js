@@ -90,6 +90,7 @@ class ConfigStore {
   async loadConfig() {
     try {
       const config = await getConfig();
+      this.SHOW_CONVERT_BUTTON = config?.SHOW_CONVERT_BUTTON ? true : false;
       if (config?.USER_CITIZEN_ENTITY_TYPE)
         this.USER_CITIZEN_ENTITY_TYPE = config.USER_CITIZEN_ENTITY_TYPE;
       if (config?.USER_EXTERNAL_ENTITY_TYPE)
@@ -116,8 +117,6 @@ class ConfigStore {
       if (config?.TOKEN_NAME) this.TOKEN_NAME = config.TOKEN_NAME;
       if (config?.PAGE_SIZE) this.PAGE_SIZE = config.PAGE_SIZE;
       if (config?.ITEMS_IN_PAGE) this.ITEMS_IN_PAGE = config.ITEMS_IN_PAGE;
-      if (config?.SHOW_CONVERT_BUTTON)
-        this.SHOW_CONVERT_BUTTON = config.SHOW_CONVERT_BUTTON;
       if (config?.FIRST_PAGE) this.FIRST_PAGE = config.FIRST_PAGE;
       if (config?.SECURITY_MAIL) this.SECURITY_MAIL = config.SECURITY_MAIL;
       if (config?.SUPER_SECURITY_MAIL)
