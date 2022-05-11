@@ -20,12 +20,12 @@ const FullEntityInformationFooter = ({
   const connectedUser = toJS(userStore.user);
   const entityDi = getUserRelevantIdentity(entity);
   const canConvert =
+    configStore.SHOW_CONVERT_BUTTON &&
     (entity.entityType === configStore.KARTOFFEL_SOLDIER ||
       entity.entityType === configStore.KARTOFFEL_CIVILIAN) &&
     isUserHoldType(connectedUser, USER_TYPE.ADMIN) &&
     entityDi;
-  
-  
+
   const closeThisModal = () => {
     setIsEdit(false);
     closeModal();
