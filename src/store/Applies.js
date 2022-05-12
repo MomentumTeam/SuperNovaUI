@@ -15,7 +15,9 @@ import {
   changeRoleHierarchyRequest,
   changeRoleHierarchyBulkRequest,
   createRoleBulkRequest,
-} from "../service/AppliesService";
+  convertEntityTypeRequest,
+} from '../service/AppliesService';
+
 
 export default class AppliesStore {
   myApplies = [];
@@ -33,6 +35,7 @@ export default class AppliesStore {
       renameOGApply: action,
       renameRoleApply: action,
       editEntityApply: action,
+      convertEntityTypeApply: action,
       deleteRoleApply: action,
       deleteOGApply: action,
       disconectRoleFromEntityApply: action,
@@ -96,6 +99,13 @@ export default class AppliesStore {
     this.updateApply(newEditEntityApply);
   }
 
+  async convertEntityTypeApply(applyProperties) {
+    const newConvertEntityTypeApply = await convertEntityTypeRequest(
+      applyProperties
+    );
+    this.myApplies.unshift(newConvertEntityTypeApply);
+  }
+
   async deleteRoleApply(applyProperties) {
     const newDeleteRoleApply = await deleteRoleRequest(applyProperties);
     this.updateApply(newDeleteRoleApply);
@@ -139,7 +149,7 @@ export default class AppliesStore {
   updateApply = (apply) => {
     // Requests that the user created
     const isApplyExists = this.checkIfApplyExist(apply.id);
-    if (isApplyExists != -1) this.myApplies.splice(isApplyExists, 1);
+    if (isApplyExists !== -1) this.myApplies.splice(isApplyExists, 1);
     this.myApplies.unshift(apply);
   }
 }

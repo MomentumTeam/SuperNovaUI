@@ -18,6 +18,7 @@ import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
 import { debounce } from "lodash";
 import configStore from '../../../store/Config';
+import InfoPopup from '../../InfoPopup';
 
 const validationSchema = Yup.object().shape({
   hierarchy: Yup.object().required("יש לבחור היררכיה"),
@@ -182,18 +183,38 @@ const RenameSingleOGForm = forwardRef(
 
     return (
       <div className="p-fluid" id="createSingleRoleForm">
-        <div className="display-flex title-wrap" style={{ width: "inherit" }}>
-          <h2>היררכיה</h2>
+        <div
+          className="display-flex title-wrap"
+          style={{
+            width: 'inherit',
+            justifyContent: 'start',
+            paddingBottom: '10px',
+          }}
+        >
+          <h2 style={{ padding: 0 }}>היררכיה </h2>
+          <InfoPopup
+            infoText={`שימו לב❣️
+            תפקיד חדש משמעותו פתיחת T חדש ריק ללא היסטוריה קודמת!`}
+            name="מעבר לתפקיד"
+            visible={!onlyForView}
+            withTitle={true}
+            warning
+          ></InfoPopup>
         </div>
+
         <div className="p-fluid-item p-fluid-item-flex1">
           <div className="p-field">
             <Hierarchy
               setValue={setValue}
               name="hierarchy"
               errors={errors}
-              ogValue={watch("hierarchy")}
+              ogValue={watch('hierarchy')}
               disabled={onlyForView}
-              userHierarchy={userStore.user && userStore.user.hierarchy ? userStore.user.hierarchy : null}
+              userHierarchy={
+                userStore.user && userStore.user.hierarchy
+                  ? userStore.user.hierarchy
+                  : null
+              }
               onOrgSelected={handleOrgSelected}
             />
           </div>
@@ -204,43 +225,53 @@ const RenameSingleOGForm = forwardRef(
               <span className="required-field">*</span>שם תפקיד
             </label>
             <span className="p-input-icon-left">
-              {watch("hierarchy") && watch("roleName") && (
+              {watch('hierarchy') && watch('roleName') && (
                 <i>
-                  {watch("isJobTitleAlreadyTaken") ||
-                  errors.isJobTitleAlreadyTaken?.type === "valid-role-name-not-taken"
-                    ? "תפוס"
-                    : "פנוי"}
+                  {watch('isJobTitleAlreadyTaken') ||
+                  errors.isJobTitleAlreadyTaken?.type ===
+                    'valid-role-name-not-taken'
+                    ? 'תפוס'
+                    : 'פנוי'}
                 </i>
               )}
               <InputText
-                {...register("roleName")}
+                {...register('roleName')}
                 id="createSingleRoleForm-roleName"
                 onChange={onRoleNameChange}
                 disabled={onlyForView}
               />
               <label>
                 {(errors.roleName || errors.isJobTitleAlreadyTaken) && (
-                  <small style={{ color: "red" }}>
+                  <small style={{ color: 'red' }}>
                     {errors?.roleName?.message
                       ? errors.roleName?.message
                       : errors.isJobTitleAlreadyTaken?.message
                       ? errors.isJobTitleAlreadyTaken.message
-                      : "יש למלא ערך"}
+                      : 'יש למלא ערך'}
                   </small>
                 )}
               </label>
             </span>
           </div>
         </div>
-        {watch("isJobTitleAlreadyTaken") && (
-          <div className="p-fluid-item p-fluid-item-flex1" style={{ alignItems: "baseline", whiteSpace: "pre-wrap" }}>
-            <div className="p-field" style={{ display: "flex" }} id="createSingleRoleForm-freeNames">
-              <div style={{ marginTop: "35px" }}>שמות פנויים:</div>
-              <div style={{ margin: "20px", display: "flex", flexWrap: "wrap" }}>
-                {watch("JobTitleSuggestions").map((suggestion) => (
+        {watch('isJobTitleAlreadyTaken') && (
+          <div
+            className="p-fluid-item p-fluid-item-flex1"
+            style={{ alignItems: 'baseline', whiteSpace: 'pre-wrap' }}
+          >
+            <div
+              className="p-field"
+              style={{ display: 'flex' }}
+              id="createSingleRoleForm-freeNames"
+            >
+              <div style={{ marginTop: '35px' }}>שמות פנויים:</div>
+              <div
+                style={{ margin: '20px', display: 'flex', flexWrap: 'wrap' }}
+              >
+                {watch('JobTitleSuggestions').map((suggestion) => (
                   <Button
                     className="p-button-secondary p-button-outlined"
-                    style={{ width: "auto" }}
+                    style={{ width: 'auto' }}
                     onClick={onAvailableRoleName}
                   >
                     {suggestion}
@@ -259,14 +290,16 @@ const RenameSingleOGForm = forwardRef(
               id="createSingleRoleForm-clearance"
               options={ROLE_CLEARANCE}
               placeholder="סיווג תפקיד"
-              {...register("clearance")}
-              value={watch("clearance")}
+              {...register('clearance')}
+              value={watch('clearance')}
               disabled={onlyForView}
             />
             <label>
               {errors.clearance && (
-                <small style={{ color: "red" }}>
-                  {errors.clearance?.message ? errors.clearance.message : "יש למלא ערך"}
+                <small style={{ color: 'red' }}>
+                  {errors.clearance?.message
+                    ? errors.clearance.message
+                    : 'יש למלא ערך'}
                 </small>
               )}
             </label>
@@ -279,17 +312,17 @@ const RenameSingleOGForm = forwardRef(
             tooltip='רס"ן ומעלה ביחידתך'
             multiple={true}
             errors={errors}
-            disabled={onlyForView || watch("isUserApprover")}
+            disabled={onlyForView || watch('isUserApprover')}
             defaultApprovers={defaultApprovers}
           />
         </div>
-        <div className="p-field-checkbox" style={{ marginBottom: "10px" }}>
+        <div className="p-field-checkbox" style={{ marginBottom: '10px' }}>
           <Checkbox
             id="createSingleRoleForm-isTafkidan"
-            style={{ marginLeft: "10px" }}
-            {...register("isTafkidan")}
-            onChange={(e) => setValue("isTafkidan", e.checked)}
-            checked={watch("isTafkidan")}
+            style={{ marginLeft: '10px' }}
+            {...register('isTafkidan')}
+            onChange={(e) => setValue('isTafkidan', e.checked)}
+            checked={watch('isTafkidan')}
             disabled={onlyForView}
           />
           <label>התפקיד נפתח עבור משתמש תפקידן (מילואים / חמ"ל)</label>
@@ -300,14 +333,18 @@ const RenameSingleOGForm = forwardRef(
               <span></span>הערות
             </label>
             <InputTextarea
-              {...register("comments")}
+              {...register('comments')}
               type="text"
               id="createSingleRoleForm-comments"
               autoResize="false"
               disabled={onlyForView}
-              placeholder={!onlyForView && "הכנס הערות לבקשה..."}
+              placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
             />
-            <label>{errors.comments && <small style={{ color: "red" }}>יש למלא ערך</small>}</label>
+            <label>
+              {errors.comments && (
+                <small style={{ color: 'red' }}>יש למלא ערך</small>
+              )}
+            </label>
           </div>
         </div>
       </div>

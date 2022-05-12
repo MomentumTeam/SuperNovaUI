@@ -9,6 +9,8 @@ import HierarchyTree from "../../components/HierarchyTree";
 import SideToolbar from "../../components/SideToolBar/SideToolbar";
 import UserProfileCard from "./UserProfileCard";
 import FullEntityInformationModal from "../../components/Modals/Entity/FullEntityInformationModal";
+import FullEntityPremissionsModal from "../../components/Modals/Entity/FullEntityPremissionsModal";
+
 import DecorAnimation from "../../components/decor-animation";
 import { getUserTags, isUserCanSeeAllApproveApplies, isUserCanSeeMyApproveApplies } from "../../utils/user";
 import { AppliesTable } from "../../components/AppliesTable";
@@ -18,6 +20,8 @@ const Dashboard = observer(() => {
   const {actionPopup} = useToast();
   const { userStore, appliesStore, appliesApproveStore, treeStore } = useStores();
   const [isFullUserInfoModalOpen, setIsFullUserInfoModalOpen] = useState(false);
+  const [isUserPremissionsModalOpen, setIsUserPremissionsModalOpen] = useState(false);
+
   const user = toJS(userStore.user);
   const myApplies = toJS(appliesStore.myApplies);
   const approveMyApplies = toJS(appliesApproveStore.approveMyApplies);
@@ -42,6 +46,15 @@ const Dashboard = observer(() => {
     setIsFullUserInfoModalOpen(false);
   };
 
+  const openPremissionsModal = () => {
+    setIsUserPremissionsModalOpen(true);
+
+  };
+  const closePremissionsModal = () => {
+    setIsUserPremissionsModalOpen(false);
+
+  };
+
   return (
     <>
       <div className="main-inner-item main-inner-item2">
@@ -54,6 +67,8 @@ const Dashboard = observer(() => {
             user={user}
             userTags={userTags}
             openFullDetailsModal={openFullDetailsModal}
+            openPremissionsModal={openPremissionsModal}
+            isUserPremissionsModalOpen={isUserPremissionsModalOpen}
           />
           <FullEntityInformationModal
             user={user}
@@ -62,6 +77,14 @@ const Dashboard = observer(() => {
             actionPopup={actionPopup}
             edit={false}
           />
+          <FullEntityPremissionsModal
+            user={user}
+            isUsePremissionModal={isUserPremissionsModalOpen}
+            closePremissionsModal={closePremissionsModal}
+            userTags={userTags}
+            updateUserPremissions={userStore.updateUserPremissions}
+          />
+          
           <div className="content-unit-wrap">
             {isUserCanSeeMyApproveApplies(user) ? (
               <>

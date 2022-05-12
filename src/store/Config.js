@@ -29,6 +29,7 @@ class ConfigStore {
   FIRST_PAGE = 0;
   SECURITY_MAIL = 'T82130201@gmail.com';
   SUPER_SECURITY_MAIL = 'T02250B49@gmail.com';
+  SHOW_CONVERT_BUTTON = true;
   INSTRUCTION_VIDEOS =
     'https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley';
   HI_CHAT_SUPPORT_GROUP_NAME = 'לגו תמיכה';
@@ -41,10 +42,13 @@ class ConfigStore {
     '619e3a6fe4de0300121d78c7',
   ];
   CREATE_SPECIAL_GROUP_REQS_APPROVERS = [
-    '619e31f5f235dc001846e872',
-    '61ee8c7af302e80019bba6e4',
-    '619e31fef235dc001846f10b',
-    '61bb4647e4de0300121de442',
+    '61dd539ce4de030012202d5e',
+    '619f8aa0e4de0300121dd3f4',
+    '619e3a6fe4de0300121d78c7',
+  ];
+  CREATE_SECURITY_ADMIN_REQS_APPROVERS = [
+    '61dd539ce4de030012202d5e',
+    '619e3a6fe4de0300121d78c7',
   ];
   CREATE_SOLDIER_APPROVERS = [
     '619e3a6fe4de0300121d78c7',
@@ -73,12 +77,14 @@ class ConfigStore {
       FIRST_PAGE: observable,
       SECURITY_MAIL: observable,
       SUPER_SECURITY_MAIL: observable,
+      SHOW_CONVERT_BUTTON: observable,
       INSTRUCTION_VIDEOS: observable,
       HI_CHAT_SUPPORT_GROUP_NAME: observable,
       CREATE_ADMIN_REQS_APPROVERS: observable,
       CREATE_BULK_REQS_APPROVERS: observable,
       SOCKET_URL:observable,
       CREATE_SPECIAL_GROUP_REQS_APPROVERS: observable,
+      CREATE_SECURITY_ADMIN_REQS_APPROVERS: observable,
       soldierRequestsApprovers: observable,
       loadConfig: action,
       loadAdminApprovers: action,
@@ -88,6 +94,7 @@ class ConfigStore {
   async loadConfig() {
     try {
       const config = await getConfig();
+      this.SHOW_CONVERT_BUTTON = config?.SHOW_CONVERT_BUTTON ? true : false;
       if (config?.USER_CITIZEN_ENTITY_TYPE)
         this.USER_CITIZEN_ENTITY_TYPE = config.USER_CITIZEN_ENTITY_TYPE;
       if (config?.USER_EXTERNAL_ENTITY_TYPE)
@@ -143,6 +150,12 @@ class ConfigStore {
           config.CREATE_BULK_APPROVERS
         );
         this.CREATE_BULK_REQS_APPROVERS = approvers;
+      }
+      if (config?.CREATE_SECURITY_ADMIN_APPROVERS) {
+        const approvers = await this.loadApprovers(
+          config.CREATE_SECURITY_ADMIN_APPROVERS
+        );
+        this.CREATE_SECURITY_ADMIN_REQS_APPROVERS = approvers;
       }
       if (config.CREATE_SOLDIER_APPROVERS) {
         this.CREATE_SOLDIER_APPROVERS = config.CREATE_SOLDIER_APPROVERS;
