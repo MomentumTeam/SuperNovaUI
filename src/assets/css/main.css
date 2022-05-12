@@ -1198,3 +1198,9 @@ main .main-wrap .main-inner-wrap {
   margin-block-start: 3px;
   margin-block-end: 7px;
 }
+
+#disconnectRoleFromEntityDialog .p-dialog-header-icons {
+  background: none;
+  box-shadow: none;
+
+}
