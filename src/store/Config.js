@@ -27,6 +27,7 @@ class ConfigStore {
   FIRST_PAGE = 0;
   SECURITY_MAIL = 'T82130201@gmail.com';
   SUPER_SECURITY_MAIL = 'T02250B49@gmail.com';
+  SHOW_CONVERT_BUTTON = true;
   INSTRUCTION_VIDEOS =
     'https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley';
   HI_CHAT_SUPPORT_GROUP_NAME = 'לגו תמיכה';
@@ -73,6 +74,7 @@ class ConfigStore {
       FIRST_PAGE: observable,
       SECURITY_MAIL: observable,
       SUPER_SECURITY_MAIL: observable,
+      SHOW_CONVERT_BUTTON: observable,
       INSTRUCTION_VIDEOS: observable,
       HI_CHAT_SUPPORT_GROUP_NAME: observable,
       CREATE_ADMIN_REQS_APPROVERS: observable,
@@ -88,6 +90,7 @@ class ConfigStore {
   async loadConfig() {
     try {
       const config = await getConfig();
+      this.SHOW_CONVERT_BUTTON = config?.SHOW_CONVERT_BUTTON ? true : false;
       if (config?.USER_CITIZEN_ENTITY_TYPE)
         this.USER_CITIZEN_ENTITY_TYPE = config.USER_CITIZEN_ENTITY_TYPE;
       if (config?.USER_EXTERNAL_ENTITY_TYPE)
