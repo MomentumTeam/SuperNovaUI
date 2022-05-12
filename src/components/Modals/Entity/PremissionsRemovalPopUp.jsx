@@ -62,7 +62,7 @@ const PremissionsRemovalPopUp = ({
         </p>
       )}
       <p style={{ fontSize: "18px" }}>
-        הסרת השראות מסוג זה יורידו לך יכולות במערכת לגו
+        הסרת הרשאות מסוג זה יורידו לך יכולות במערכת לגו
       </p>
 
       <div id="confirmDialogButtons">
