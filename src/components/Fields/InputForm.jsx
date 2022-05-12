@@ -21,7 +21,7 @@ export const InputTypes = {
 
 export const InputFormContext = createContext(null);
 
-const InputForm = ({ fields, item = null, methods, isEdit, errors }) => {
+const InputForm = ({ fields, item = null, methods = null, isEdit = false, errors = null }) => {
   const getField = (field) => {
     switch (field.inputType) {
       case InputTypes.TEXT:
@@ -150,7 +150,7 @@ const InputForm = ({ fields, item = null, methods, isEdit, errors }) => {
         return (
           <div className='p-fluid-item'>
             <Approver
-              setValue={methods.setValue}
+              setValue={methods?.setValue}
               name={field.fieldName}
               tooltip={field?.tooltip}
               multiple={true}

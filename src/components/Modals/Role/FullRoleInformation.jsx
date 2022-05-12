@@ -31,7 +31,7 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
   }, [isActionDone])
   return (
     <Dialog
-      className={classNames("dialogClass1")}
+      className={classNames("dialogClass12")}
       header={isEdit ? "עריכת תפקיד" : "פרטי תפקיד"}
       visible={isOpen}
       style={{ borderRadius: "30px" }}

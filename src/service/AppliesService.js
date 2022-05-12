@@ -224,7 +224,7 @@ export const createEntityRequest = async (applyProperties) => {
 export const deleteRoleRequest = async (applyProperties) => {
   const response = await axiosApiInstance.delete(
     `${apiBaseUrl}/api/requests/request/role`,
-    applyProperties
+    {data: applyProperties}
   );
 
   return response.data;
@@ -233,7 +233,7 @@ export const deleteRoleRequest = async (applyProperties) => {
 export const deleteOGRequest = async (applyProperties) => {
   const response = await axiosApiInstance.delete(
     `${apiBaseUrl}/api/requests/request/og`,
-    applyProperties
+    {data: applyProperties}
   );
 
   return response.data;

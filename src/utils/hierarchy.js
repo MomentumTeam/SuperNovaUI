@@ -1,5 +1,6 @@
-import { isUserApproverType, userConverse } from "./user";
+import { isUserApproverType, isUserHoldType, userConverse } from "./user";
 import {getDIByUniqueId, getEntityByRoleId} from '../service/KartoffelService';
+import { USER_TYPE } from "../constants";
 
 export const transformNode = (node) => {
   return {
@@ -12,6 +13,10 @@ export const transformNode = (node) => {
 export const canEditHierarchy = (user) => {
   return isUserApproverType(user);
 };
+
+export const canDeleteHierarchy = (hierarchy, user) => {
+  return hierarchy?.isLeaf &&  hierarchy?.directRoles?.length === 0 && isUserHoldType(user, USER_TYPE.ADMIN);
+}
 
 export const getHierarchy = (hierarchy) => {
   const splitHierarchy = hierarchy.split("/");

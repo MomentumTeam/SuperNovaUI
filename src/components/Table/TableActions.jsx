@@ -1,25 +1,23 @@
 import { toJS } from 'mobx';
 import { useStores } from '../../context/use-stores';
 
-import { TableAppliesActionsTypes, REQ_TYPES } from '../../constants/applies';
+import { TableAppliesActionsTypes } from '../../constants/applies';
 import {
   TableActionsTypes as UsersTableActionsTypes,
   TableNames as UsersTableNames,
 } from '../../constants/usersTable';
 import {
   TableActionsTypes as MyRequestsTableActionsTypes,
-  TableNames as MyRequestsUsersTableNames,
 } from '../../constants/myRequestsTable';
 import { canEditEntity } from '../../utils/entites';
-import { canEditRole } from '../../utils/roles';
-import { canEditHierarchy } from '../../utils/hierarchy';
+import { canDeleteRole, canEditRole } from '../../utils/roles';
+import { canDeleteHierarchy, canEditHierarchy } from '../../utils/hierarchy';
 import { useContext } from 'react';
 import { TableContext } from '.';
 import { isUserApproverType } from '../../utils/user';
 import {
   canPassApply,
   isApproverAndCanEdit,
-  isCreateSoldierApply,
 } from '../../utils/applies';
 
 const TableActions = ({ setActionType, openActionModal, setEvent }) => {
@@ -65,8 +63,11 @@ const TableActions = ({ setActionType, openActionModal, setEvent }) => {
 
     // Add delete action
     if (tableActions.delete) {
-      if (isUserApproverType(userStore.user)) {
-        actions.push(getAction('מחיקה', tableActions.delete));
+      if (
+        (tableType === UsersTableNames.roles.tab && canDeleteRole(user)) ||
+        (tableType === UsersTableNames.hierarchy.tab && canDeleteHierarchy(selectedItem[0], user))
+      ) {
+        actions.push(getAction("מחיקה", tableActions.delete));
       }
     }
 
