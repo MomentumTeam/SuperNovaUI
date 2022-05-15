@@ -561,13 +561,14 @@ const FullRoleInformationForm = forwardRef(
           </div>
         )}
         <DisconnectRoleFromDIPopup
+          user={userStore.user}
+          role={role}
+          entity={entity}
           disconectRoleFromEntityApply={
             appliesStore.disconectRoleFromEntityApply
           }
           showModal={showDisconnectRoleModal}
           closeModal={closeDisconnectRoleFromEntityModal}
-          role={role}
-          entity={entity}
         />
       </div>
     );

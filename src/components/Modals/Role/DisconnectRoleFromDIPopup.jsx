@@ -5,6 +5,7 @@ import { disconectRoleFromEntityRequest } from "../../../service/AppliesService"
 import { getSamAccountNameFromEntity } from "../../../utils/fields";
 
 const DisconnectRoleFromDIPopup = ({
+  user,
   disconectRoleFromEntityApply,
   showModal,
   closeModal,
@@ -13,22 +14,28 @@ const DisconnectRoleFromDIPopup = ({
 }) => {
   const disconnectRoleFromDI = async () => {
     try {
-      const submittedBy = {
-        id: entity.id,
-        displayName: entity.displayName,
-      };
-      const kartoffelParams = {
-        id: entity.id,
-        uniqueId: role.roleId,
-      };
+      // const submittedBy = {
+      //   id: entity.id,
+      //   displayName: entity.displayName,
+      // };
+      // const kartoffelParams = {
+      //   id: entity.id,
+      //   uniqueId: role.roleId,
+      // };
 
       const samAccountName = getSamAccountNameFromEntity(entity);
 
-      const response = await disconectRoleFromEntityApply({
-        submittedBy,
-        kartoffelParams,
-        adParams: { samAccountName },
-      });
+      const req = {
+        submittedBy: { id: user.id, displayName: user.displayName },
+        kartoffelParams: {
+          id: entity.id,
+          uniqueId: role.roleId,
+        },
+        adParams: {
+          samAccountName
+        }
+      }
+      const response = await disconectRoleFromEntityApply(req);
     } catch (error) {
       console.log(error);
     }
