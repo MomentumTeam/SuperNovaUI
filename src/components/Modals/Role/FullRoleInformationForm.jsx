@@ -30,7 +30,7 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { getSamAccountNameFromUniqueId } from '../../../utils/fields';
 import { CanEditRoleFields } from '../../../utils/roles';
 import { Dropdown } from 'primereact/dropdown';
-import DisconnectRoleFromDIPopup from './DisconnectRoleFromDIPopup';
+import DisconnectRoleFromEntityPopup from './DisconnectRoleFromEntityPopup';
 
 const validationSchema = Yup.object().shape({
   oldRole: Yup.object(),
@@ -498,18 +498,20 @@ const FullRoleInformationForm = forwardRef(
                   position: "absolute",
                 }}
               />
-              <button
-                style={{
-                  position: "relative",
-                  marginTop: "10px",
-                  marginLeft: "10px",
-                }}
-                onClick={(e) => {
-                  openDisconnectRoleFromEntityModal();
-                }}
-              >
-                ניתוק
-              </button>
+              {userStore.user.types.includes(USER_TYPE.ADMIN) && (
+                <button
+                  style={{
+                    position: "relative",
+                    marginTop: "10px",
+                    marginLeft: "10px",
+                  }}
+                  onClick={(e) => {
+                    openDisconnectRoleFromEntityModal();
+                  }}
+                >
+                  ניתוק
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -560,13 +562,10 @@ const FullRoleInformationForm = forwardRef(
             </div>
           </div>
         )}
-        <DisconnectRoleFromDIPopup
+        <DisconnectRoleFromEntityPopup
           user={userStore.user}
           role={role}
           entity={entity}
-          disconectRoleFromEntityApply={
-            appliesStore.disconectRoleFromEntityApply
-          }
           showModal={showDisconnectRoleModal}
           closeModal={closeDisconnectRoleFromEntityModal}
         />
