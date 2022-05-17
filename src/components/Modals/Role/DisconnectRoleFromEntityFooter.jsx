@@ -2,9 +2,14 @@ import React from "react";
 import { Button } from "primereact/button";
 import { disconectRoleFromEntityRequest } from "../../../service/AppliesService";
 
-const DisconnectRoleFromEntityFooter = ({ user, role, samAccountName, entity, closeModal }) => {
-  const sendForm = async () => {
-
+const DisconnectRoleFromEntityFooter = ({
+  user,
+  role,
+  samAccountName,
+  entity,
+  closeModal,
+}) => {
+  const disconnectRole = async () => {
     const req = {
       submittedBy: { id: user.id, displayName: user.displayName },
       kartoffelParams: {
@@ -20,15 +25,16 @@ const DisconnectRoleFromEntityFooter = ({ user, role, samAccountName, entity, cl
   };
 
   return (
-    <div className="display-flex display-flex-end">
-      <Button label="ביטול" onClick={closeModal} className="btn-underline" />
+    <div className="display-flex ">
       <Button
-        label="מחיקה"
-        onClick={() => {
-          sendForm();
-          closeModal();
-        }}
-        className={"btn-gradient red"}
+        label={"כן, נתק את המשתמש"}
+        onClick={() => disconnectRole()}
+        className="btn-gradient cyon"
+      />
+      <Button
+        label="לא, אל תנתק!"
+        onClick={closeModal}
+        className="btn-gradient red"
       />
     </div>
   );
