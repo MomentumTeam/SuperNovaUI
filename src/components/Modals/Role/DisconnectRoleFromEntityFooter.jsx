@@ -1,11 +1,9 @@
 import React from "react";
 import { Button } from "primereact/button";
-import { getSamAccountNameFromEntity } from "../../../utils/fields";
 import { disconectRoleFromEntityRequest } from "../../../service/AppliesService";
 
-const DisconnectRoleFromEntityFooter = ({ user, role, entity, closeModal }) => {
+const DisconnectRoleFromEntityFooter = ({ user, role, samAccountName, entity, closeModal }) => {
   const sendForm = async () => {
-    const samAccountName = getSamAccountNameFromEntity(entity);
 
     const req = {
       submittedBy: { id: user.id, displayName: user.displayName },

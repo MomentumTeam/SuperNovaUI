@@ -1202,5 +1202,20 @@ main .main-wrap .main-inner-wrap {
 #disconnectRoleFromEntityDialog .p-dialog-header-icons {
   background: none;
   box-shadow: none;
+}
 
+.disconectButton {
+  position: relative;
+  margin-top: 10px;
+  margin-left: 10px;
+  border-color: #f44336;
+  color: red;
+  background-color: white;
+  font-family: 'Heebo', sans-serif;
+  border-radius: 4px;
+}
+
+.disconectButton:hover {
+  background-color: red;
+  color: white;
 }

@@ -6,6 +6,7 @@ const DisconnectRoleFromEntityPopup = ({
   user,
   role,
   entity,
+  samAccountName,
   showModal,
   closeModal,
 }) => {
@@ -19,6 +20,7 @@ const DisconnectRoleFromEntityPopup = ({
             user={user}
             role={role}
             entity={entity}
+            samAccountName={samAccountName}
             closeModal={closeModal}
           />
         }
