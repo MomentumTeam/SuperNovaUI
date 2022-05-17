@@ -1,4 +1,5 @@
 import React from "react";
+import { classNames } from "primereact/utils";
 import { Dialog } from "primereact/dialog";
 import { DisconnectRoleFromEntityFooter } from "./DisconnectRoleFromEntityFooter";
 
@@ -13,6 +14,7 @@ const DisconnectRoleFromEntityPopup = ({
   return (
     <div>
       <Dialog
+        className={`${classNames("dialogClass5")} dialogdelete`}
         id="disconnectRoleFromEntityDialog"
         header="ניתוק משתמש מתפקיד"
         footer={
