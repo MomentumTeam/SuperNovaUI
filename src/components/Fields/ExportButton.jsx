@@ -6,6 +6,7 @@ import { exportToExcel } from '../../utils/general';
 import { renameObjKeys } from '../../utils/hierarchy';
 import { excelLabels } from '../../constants/applies';
 import { exportHierarchyData } from '../../service/KartoffelService';
+import { sendHierarchyDataMail } from '../../service/MailService';
 
 const ExportButton = ({ exportFunction, toolTip = '', hierarchy = '' }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,34 +27,45 @@ const ExportButton = ({ exportFunction, toolTip = '', hierarchy = '' }) => {
   // };
 
 
- const openDialog = async () => {
+  const openDialog = async () => {
     setIsOpen(true);
   };
 
   const updateLoading = (direct, activate) => {
     if (direct) {
       setDirectExcelLoading(activate);
-    } else {
-      setExcelLoading(activate);
     }
+    // else {
+    //   setExcelLoading(activate);
+    // }
   };
 
-  const excelExport = async (direct) => {
+  const excelExport = async (direct, toMail = false) => {
     updateLoading(direct, true);
 
     try {
-      let fileName = undefined;
+      const req = {
+        hierarchy,
+        withRoles: true,
+        direct,
+      };
 
-      const hierarchyData = await exportHierarchyData(hierarchy, true, direct);
+      if (!toMail) {
+        let fileName = 'נתוני תפקידים';
+        const hierarchyData = await exportHierarchyData(req);
 
-      const data = renameObjKeys(hierarchyData.hierarchyData, excelLabels);
+        const data = renameObjKeys(hierarchyData.hierarchyData, excelLabels);
 
-      if (hierarchyData.fatherHierarchyName) {
-        fileName = direct
-          ? `${hierarchyData.fatherHierarchyName}-ישיר`
-          : hierarchyData.fatherHierarchyName;
+        if (hierarchyData.fatherHierarchyName) {
+          fileName = direct
+            ? `${hierarchyData.fatherHierarchyName}-ישיר`
+            : hierarchyData.fatherHierarchyName;
+        }
+        exportToExcel(data, fileName);
+      } else {
+        sendHierarchyDataMail(req).then().catch();
       }
-      exportToExcel(data, fileName);
+      
     } catch (error) {
       actionPopup('ייצוא טבלה', {
         message: 'יש בעיה בייצוא הטבלה',
@@ -75,7 +87,7 @@ const ExportButton = ({ exportFunction, toolTip = '', hierarchy = '' }) => {
           }
         }}
         dismissableMask={true}
-        style={{ width: '25vw' }}
+        style={{ width: '26vw' }}
         footer={
           <>
             <div style={{ display: 'flex', justifyContent: 'space-around' }}>
@@ -90,10 +102,10 @@ const ExportButton = ({ exportFunction, toolTip = '', hierarchy = '' }) => {
               />
               <Button
                 loading={excelLoading}
-                label="ייצא נתונים על כל התפקידים שנמצאים בהיררכיה זו ובהיררכיות תחתיה"
+                label="ייצא נתוני כל התפקידים שנמצאים בהיררכיה זו ובהיררכיות תחתיה"
                 className="btn-border green"
                 onClick={async () => {
-                  await excelExport(false);
+                  await excelExport(false, true);
                 }}
               />
             </div>
@@ -105,7 +117,7 @@ const ExportButton = ({ exportFunction, toolTip = '', hierarchy = '' }) => {
             <p>
               <strong> נא בחר את הערכים לייצוא:</strong>
               <br />
-              פעולה זו עשויה להימשך מספר דקות, יש להישאר בחלון זה.
+              שימו לב- ייצוא נתוני כל התפקידים ישלח כקובץ לאימייל.{' '}
             </p>
           </div>
         </div>

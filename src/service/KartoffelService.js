@@ -36,11 +36,11 @@ export const getOGByHierarchy = async (
   return response.data;
 };
 
-export const exportHierarchyData = async (
+export const exportHierarchyData = async ({
   hierarchy,
   withRoles = false,
-  direct = true
-) => {
+  direct = true,
+}) => {
   const response = await axiosApiInstance.get(
     `${apiBaseUrl}/api/kartoffel/groups/roles`,
     {
