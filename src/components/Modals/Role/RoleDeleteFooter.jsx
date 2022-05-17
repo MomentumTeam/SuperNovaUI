@@ -5,7 +5,7 @@ const RoleDeleteFooter = ({ closeModal, deleteHierarchy }) => {
   return (
     <div className="display-flex ">
       <Button
-        label={"כן, מחק את התפקיד ואת ההיסטוריה שלו."}
+        label={"כן, מחק את התפקיד ואת ההיסטוריה שלו"}
         onClick={() => deleteHierarchy()}
         className="btn-gradient cyon"
       />

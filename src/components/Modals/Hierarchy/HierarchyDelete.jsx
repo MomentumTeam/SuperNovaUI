@@ -4,12 +4,13 @@ import { classNames } from "primereact/utils";
 
 import { HierarchyDeleteFooter } from './HierarchyDeleteFooter';
 import { getOuDisplayName, hierarchyConverse } from "../../../utils/hierarchy";
-import { deleteOGRequest } from "../../../service/AppliesService";
 
 import "../../../assets/css/local/components/modal-item.css";
+import { useStores } from "../../../context/use-stores";
 
 const HierarchyDelete = ({ hierarchy, isDialogVisible, setDialogVisiblity, actionPopup }) => {
   const [actionIsDone, setActionIsDone] = useState(false);
+  const { appliesStore } = useStores();
 
   useEffect(() => {
     if (actionIsDone) {
@@ -33,7 +34,7 @@ const HierarchyDelete = ({ hierarchy, isDialogVisible, setDialogVisiblity, actio
         };
     
 
-        const res = await deleteOGRequest(req);
+        await appliesStore.deleteOGApply(req);
         setActionIsDone(true)
     } catch (e) {
       actionPopup("מחיקת היררכיה", e);

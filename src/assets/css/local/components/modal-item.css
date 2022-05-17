@@ -19,13 +19,18 @@
 }
 
 .p-dialog.dialogdelete {
-  min-height: 300px !important;
-    max-width: 650px !important;
-
+  min-height: 290px !important;
+  max-width: 650px !important;
 }
 
+.p-dialog.dialogdeleteentity {
+  min-height: 360px !important;
+  min-width: 800px !important;
+}
+
+
 .delete-container{
-  margin-top: -20px;
+  margin-top: -15px;
   text-align: center;
 }
 
