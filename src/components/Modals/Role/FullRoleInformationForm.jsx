@@ -501,7 +501,8 @@ const FullRoleInformationForm = forwardRef(
               />
               {userStore.user.types.includes(USER_TYPE.ADMIN) &&  (
                 <button
-                  className='disconectButton'
+                  id="disconectButton"
+                  className='p-button p-component btn-gradient red'
                   onClick={(e) => {
                     openDisconnectRoleFromEntityModal();
                   }}

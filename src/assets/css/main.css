@@ -1204,18 +1204,19 @@ main .main-wrap .main-inner-wrap {
   box-shadow: none;
 }
 
-.disconectButton {
+#disconectButton {
   position: relative;
-  margin-top: 10px;
-  margin-left: 10px;
-  border-color: #f44336;
-  color: red;
-  background-color: white;
+  top: 3px;
+  left: 5px;
   font-family: 'Heebo', sans-serif;
   border-radius: 4px;
+  font-size: 13px;
+  min-width: unset;
+  width: 75px !important;
+  height: 10px !important;
 }
 
-.disconectButton:hover {
+#disconectButton:hover {
   background-color: red;
   color: white;
 }
