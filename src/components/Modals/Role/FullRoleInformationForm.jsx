@@ -499,17 +499,18 @@ const FullRoleInformationForm = forwardRef(
                   position: "absolute",
                 }}
               />
-              {userStore.user.types.includes(USER_TYPE.ADMIN) &&  (
-                <button
-                  id="disconectButton"
-                  className='p-button p-component btn-gradient red'
-                  onClick={(e) => {
-                    openDisconnectRoleFromEntityModal();
-                  }}
-                >
-                  ניתוק
-                </button>
-              )}
+              {userStore.user.types.includes(USER_TYPE.ADMIN) &&
+                samAccountName !== "" && (
+                  <button
+                    id="disconectButton"
+                    className="p-button p-component btn-gradient red"
+                    onClick={(e) => {
+                      openDisconnectRoleFromEntityModal();
+                    }}
+                  >
+                    ניתוק
+                  </button>
+                )}
             </div>
           </div>
         </div>
@@ -560,7 +561,7 @@ const FullRoleInformationForm = forwardRef(
             </div>
           </div>
         )}
-       <DisconnectRoleFromEntityPopup
+        <DisconnectRoleFromEntityPopup
           user={userStore.user}
           role={role}
           entity={entity}

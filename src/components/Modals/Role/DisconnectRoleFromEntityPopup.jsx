@@ -32,12 +32,15 @@ const DisconnectRoleFromEntityPopup = ({
         closable={false}
         style={{ height: "310px", width: "30vw" }}
       >
-        <p className="container display-flex display-flex-center" style={{ textAlign: "center", fontSize: "18px", padding: "10px" }}>
+        <p
+          className="container display-flex display-flex-center"
+          style={{ textAlign: "center", fontSize: "18px", padding: "10px" }}
+        >
           האם את\ה בטוח\ה?
           <br></br>
           ניתוק המשתמש מהתפקיד ימנע ממנו להתחבר לעמדה ולהמשיך בעבודתו
           <br></br>
-          התפקיד הנבחר לאחר הניתוק ישאר ריק(פנוי)
+          התפקיד הנבחר ישאר ריק(פנוי) לאחר הניתוק
         </p>
       </Dialog>
     </div>
