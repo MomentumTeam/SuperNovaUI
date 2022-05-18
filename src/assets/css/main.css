@@ -1206,14 +1206,15 @@ main .main-wrap .main-inner-wrap {
 
 #disconectButton {
   position: relative;
-  top: 3px;
-  left: 5px;
+  top: 10px;
+  left: 10px;
   font-family: 'Heebo', sans-serif;
   border-radius: 4px;
   font-size: 13px;
   min-width: unset;
-  width: 75px !important;
-  height: 10px !important;
+  min-height: unset;
+  width: 40px !important;
+  height: 26px !important;
 }
 
 #disconectButton:hover {
