@@ -6,15 +6,18 @@ import { RoleDeleteFooter } from "./RoleDeleteFooter";
 
 import "../../../assets/css/local/components/modal-item.css";
 import { getSamAccountNameFromUniqueId } from "../../../utils/fields";
-import { getEntityByRoleId } from "../../../service/KartoffelService";
+import { getEntityByRoleId, getLastTimeConnectionBySamAccountName } from "../../../service/KartoffelService";
 import { useStores } from "../../../context/use-stores";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { isDateGreater } from "../../../utils/applies";
 
 const RoleDelete = ({ role, isDialogVisible, setDialogVisiblity, actionPopup }) => {
   const { appliesStore } = useStores();
-  const [actionIsDone, setActionIsDone] = useState(false);
   const [entity, setEntity] = useState(null);
+  const [disabled, setIsDisabled] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [actionIsDone, setActionIsDone] = useState(false);
+  const [lastTimeConnection, setLastTimeConnection] = useState(null);
 
   useEffect(() => {
     if (actionIsDone) {
@@ -38,6 +41,28 @@ const RoleDelete = ({ role, isDialogVisible, setDialogVisiblity, actionPopup }) 
 
     getEntity();
   }, [role]);
+
+  useEffect(() => {
+    const getLastTimeConnection = async () => {
+      try {
+        const samAccountName = getSamAccountNameFromUniqueId(role.roleId);
+        const res = await getLastTimeConnectionBySamAccountName(samAccountName);
+        const date =
+          res?.lastLogonTimestamp && res?.lastLogonTimestamp !== "unknown"
+            ? new Date(parseInt(res.lastLogonTimestamp))
+            : null;
+        setLastTimeConnection(date);
+      } catch (error) {
+        setLastTimeConnection(null);
+      }
+    };
+
+   (entity)? getLastTimeConnection():setLastTimeConnection(null);
+  }, [entity])
+
+  useEffect(() => {
+     lastTimeConnection ? setIsDisabled(!isDateGreater(lastTimeConnection, 14)) : setIsDisabled(false);
+  }, [lastTimeConnection]);
   
   const handleRequest = async () => {
     try {
@@ -69,7 +94,13 @@ const RoleDelete = ({ role, isDialogVisible, setDialogVisiblity, actionPopup }) 
         className={`${classNames("dialogClass12")} dialogdelete ${entity && "dialogdeleteentity"}`}
         header="מחיקת תפקיד"
         visible={isDialogVisible}
-        footer={<RoleDeleteFooter closeModal={() => setDialogVisiblity(false)} deleteHierarchy={handleRequest} />}
+        footer={
+          <RoleDeleteFooter
+            closeModal={() => setDialogVisiblity(false)}
+            deleteHierarchy={handleRequest}
+            disabled={disabled}
+          />
+        }
         onHide={() => setDialogVisiblity(false)}
         dismissableMask={true}
       >
@@ -81,7 +112,7 @@ const RoleDelete = ({ role, isDialogVisible, setDialogVisiblity, actionPopup }) 
               <p>האם את/ה בטוח/ה שברצונך למחוק תפקיד זה? </p>
               <p>
                 מחיקת תפקיד תגרום לאובדן הT הנבחר,
-                {!entity? " ו": ' '}
+                {!entity ? " ו" : " "}
                 למחיקת כל המידע שנמצא תחת הT
                 {entity ? " ולניתוק המשתמש הנמצא עליו." : "."}
               </p>
