@@ -104,7 +104,7 @@ const validationSchema = Yup.object().shape({
 
 const FullRoleInformationForm = forwardRef(
   ({ setIsActionDone, onlyForView, requestObject, reqView = true }, ref) => {
-    const { appliesStore, userStore } = useStores();
+    const { appliesStore, userStore, configStore } = useStores();
     const [jobTitleSuggestions, setJobTitleSuggestions] = useState([]);
     const [entity, setEntity] = useState({});
     const [role, setRole] = useState();
@@ -499,7 +499,8 @@ const FullRoleInformationForm = forwardRef(
                   position: "absolute",
                 }}
               />
-              {userStore.user.types.includes(USER_TYPE.ADMIN) &&
+              {!entity.entityType !== configStore.USER_ROLE_ENTITY_TYPE && 
+                userStore.user.types.includes(USER_TYPE.ADMIN) &&
                 samAccountName !== "" && (
                   <button
                     id="disconectButton"
