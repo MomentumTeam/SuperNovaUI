@@ -499,7 +499,7 @@ const FullRoleInformationForm = forwardRef(
                   position: "absolute",
                 }}
               />
-              {!entity.entityType !== configStore.USER_ROLE_ENTITY_TYPE && 
+              {!reqView && (entity.entityType !== configStore.USER_ROLE_ENTITY_TYPE) && 
                 userStore.user.types.includes(USER_TYPE.ADMIN) &&
                 samAccountName !== "" && (
                   <button

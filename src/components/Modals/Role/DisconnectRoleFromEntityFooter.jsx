@@ -22,6 +22,7 @@ const DisconnectRoleFromEntityFooter = ({
     };
 
     const res = await disconectRoleFromEntityRequest(req);
+    closeModal();
   };
 
   return (
