@@ -310,7 +310,7 @@
   background-color: rgb(4, 207, 156);
   color: #000000;
 }
-.p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-button.p-component {
+/* .p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-button.p-component {
   background-color: rgba(167, 171, 189, 0.5);
   border: 0;
   width: 47px;
@@ -321,7 +321,7 @@
   margin-bottom: 20px;
   margin-right: 15px;
   border-radius: 10px;
-}
+} */
 .p-dialog
   .p-dialog-content
   .p-fluid
@@ -2162,7 +2162,7 @@
 .p-dialog .p-dialog-content .p-fluid .p-fluid-item.p-fluid-item-flex .p-field {
   flex: 1;
 }
-
+/* 
 .p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-button.p-component {
   background-color: rgba(167, 171, 189, 0.5);
   border: 0;
@@ -2174,7 +2174,7 @@
   margin-bottom: 20px;
   margin-right: 15px;
   border-radius: 10px;
-}
+} */
 
 .p-dialog
   .p-dialog-content
