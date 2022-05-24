@@ -31,7 +31,7 @@
   font-size: 14px;
   line-height: 18px;
   color: #ffffff;
-  min-width: 112px;
+  min-width: 116.5px;
   min-height: 40px;
 }
 
@@ -1185,4 +1185,16 @@ main .main-wrap .main-inner-wrap {
     width: 75%;
     justify-content: space-evenly;
     margin: 15px auto 40px;
+}
+
+#pr_id_15_content {
+  padding: 0px;
+}
+
+#pr_id_15 {
+  height: 30%;
+}
+.hierarchyList {
+  margin-block-start: 3px;
+  margin-block-end: 7px;
 }

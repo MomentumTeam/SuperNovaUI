@@ -24,6 +24,7 @@ import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
 import { debounce } from 'lodash';
 import configStore from '../../../store/Config';
+import InfoPopup from '../../InfoPopup';
 
 const validationSchema = Yup.object().shape({
   hierarchy: Yup.object().required('יש לבחור היררכיה'),
@@ -226,9 +227,25 @@ const RenameSingleOGForm = forwardRef(
 
     return (
       <div className="p-fluid" id="createSingleRoleForm">
-        <div className="display-flex title-wrap" style={{ width: 'inherit' }}>
-          <h2>היררכיה</h2>
+        <div
+          className="display-flex title-wrap"
+          style={{
+            width: 'inherit',
+            justifyContent: 'start',
+            paddingBottom: '10px',
+          }}
+        >
+          <h2 style={{ padding: 0 }}>היררכיה </h2>
+          <InfoPopup
+            infoText={`שימו לב❣️
+            תפקיד חדש משמעותו פתיחת T חדש ריק ללא היסטוריה קודמת!`}
+            name="מעבר לתפקיד"
+            visible={!onlyForView}
+            withTitle={true}
+            warning
+          ></InfoPopup>
         </div>
+
         <div className="p-fluid-item p-fluid-item-flex1">
           <div className="p-field">
             <Hierarchy

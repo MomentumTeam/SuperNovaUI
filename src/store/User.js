@@ -1,6 +1,7 @@
 import { action, makeAutoObservable, observable } from 'mobx';
 import { getPictureByConnectedEntity, getUser } from "../service/UserService";
 import { getMyNotifications, markAsRead } from '../service/NotificationService';
+import { getAllMyApproverTypes } from '../service/ApproverService';
 import {
   getOGById,
 } from '../service/KartoffelService';
@@ -8,6 +9,7 @@ import {
 import { Base64 } from 'js-base64';
 import cookies from 'js-cookie';
 import configStore from './Config';
+import { USER_TYPE } from '../constants';
 
 export default class UserStore {
   isUserLoading = true;
@@ -67,6 +69,21 @@ export default class UserStore {
       console.log(err);
     }
   }
+
+  updateUserPremissions = async () => {
+    try {
+      let types = [];
+      await getAllMyApproverTypes(this.user.id).then((approverData) => {
+        let currentUserTypes = this.user.types;
+        types = currentUserTypes.filter((type) => (approverData.data.types.includes(type) || type === USER_TYPE.COMMANDER) )
+      });
+      
+      this.user.types = types;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
 async checkIfUserExternal() {
     if (this.user && (this.user.entityType === configStore.KARTOFFEL_EXTERNAL ||
         configStore.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL.includes(this.user.id) ||
