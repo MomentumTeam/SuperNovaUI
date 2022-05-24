@@ -402,7 +402,7 @@ const FullEntityInformationForm = forwardRef(
       }
     ];
 
-    const getInputFields = (item, fields) => {
+    const getInputFields = (item, fields, reqView) => {
       return (
         <InputForm
           fields={fields}
@@ -416,11 +416,11 @@ const FullEntityInformationForm = forwardRef(
     const getForm = (type) => {
       switch (type) {
         case REQ_TYPES.CONVERT_ENTITY_TYPE:
-          return (
+          return ( reqView &&
             getInputFields(user, convertFormFields)
           );
         case REQ_TYPES.DISCONNECT_ROLE:
-          return <>
+          return reqView && <>
             <div
             style={{
               width: "100%",
@@ -445,7 +445,7 @@ const FullEntityInformationForm = forwardRef(
     }
     return (
       <div className="p-fluid" id="fullEntityInfoForm">
-        {reqView && getForm(requestObject.type)}
+        {getForm(requestObject.type)}
       </div>
     );
   }
