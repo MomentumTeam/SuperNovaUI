@@ -108,13 +108,8 @@ const FullEntityInformationForm = forwardRef(
             const role = await getRoleByRoleId(
               requestObject.kartoffelParams.uniqueId
             );
-
-            methods.setValue("roleName", role?.displayName);
-            methods.setValue("roleHierarchy", role?.hierarchy);
-            methods.setValue("roleTitle", role?.jobTitle);
-            methods.setValue("roleId", role?.roleId);
-
             setUser(entity);
+            setRole(role)
           } else {
             if (
               Array.isArray(requestObject.kartoffelParams?.mobilePhone) &&
@@ -385,12 +380,12 @@ const FullEntityInformationForm = forwardRef(
 
     const disconnectRoleFromEntityFields = [
       {
-        fieldName: "roleTitle",
+        fieldName: "jobTitle",
         displayName: "שם תפקיד",
         inputType: InputTypes.TEXT,
       },
       {
-        fieldName: "roleHierarchy",
+        fieldName: "hierarchy",
         displayName: "היררכית תפקיד",
         inputType: InputTypes.TEXT,
         force: true,
