@@ -1,4 +1,10 @@
-import React, { useImperativeHandle, forwardRef, useEffect, useState, useRef } from 'react';
+import React, {
+  useImperativeHandle,
+  forwardRef,
+  useEffect,
+  useState,
+  useRef,
+} from 'react';
 import { useForm } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
@@ -12,32 +18,37 @@ import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isJobTitleAlreadyTakenRequest } from '../../../service/KartoffelService';
 import { isUserApproverType } from '../../../utils/user';
-import {  ROLE_CLEARANCE, ROLE_EXP } from "../../../constants";
+import { ROLE_CLEARANCE, ROLE_EXP } from '../../../constants';
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
-import { debounce } from "lodash";
+import { debounce } from 'lodash';
 import configStore from '../../../store/Config';
 import InfoPopup from '../../InfoPopup';
 
 const validationSchema = Yup.object().shape({
-  hierarchy: Yup.object().required("יש לבחור היררכיה"),
+  hierarchy: Yup.object().required('יש לבחור היררכיה'),
   isUserApprover: Yup.boolean(),
   approvers: Yup.array()
-    .when("isUserApprover", {
+    .when('isUserApprover', {
       is: false,
-      then: Yup.array().min(1, "יש לבחור לפחות גורם מאשר אחד").required("יש לבחור לפחות גורם מאשר אחד"),
+      then: Yup.array()
+        .min(1, 'יש לבחור לפחות גורם מאשר אחד')
+        .required('יש לבחור לפחות גורם מאשר אחד'),
     })
     .test({
-      name: "check-if-valid",
-      message: "יש לבחור מאשרים תקינים (מהיחידה בלבד)",
+      name: 'check-if-valid',
+      message: 'יש לבחור מאשרים תקינים (מהיחידה בלבד)',
       test: async (approvers, context) => {
         let isTotalValid = true;
 
         if (context.parent?.hierarchy?.id && Array.isArray(approvers)) {
           await Promise.all(
             approvers.map(async (approver) => {
-              const { isValid } = await isApproverValid(approver.entityId, context.parent.hierarchy.id);
+              const { isValid } = await isApproverValid(
+                approver.entityId,
+                context.parent.hierarchy.id
+              );
               if (!isValid) isTotalValid = false;
             })
           );
@@ -47,22 +58,28 @@ const validationSchema = Yup.object().shape({
       },
     }),
   comments: Yup.string().optional(),
-  clearance: Yup.string().required("יש לבחור סיווג"),
+  clearance: Yup.string().required('יש לבחור סיווג'),
   roleName: Yup.string()
-    .required("יש למלא שם תפקיד")
-    .matches(ROLE_EXP, "שם לא תקין"),
+    .required('יש למלא שם תפקיד')
+    .matches(ROLE_EXP, 'שם לא תקין'),
   isTafkidan: Yup.boolean().default(false),
   isJobTitleAlreadyTaken: Yup.boolean()
-    .oneOf([false], "התפקיד תפוס")
+    .oneOf([false], 'התפקיד תפוס')
     .test({
-      name: "valid-role-name-not-taken",
-      message: "התפקיד תפוס",
+      name: 'valid-role-name-not-taken',
+      message: 'התפקיד תפוס',
       test: async (_, context) => {
         if (context.parent?.hierarchy?.id) {
           try {
-            const isJobTitleAlreadyTaken = await isJobTitleAlreadyTakenRequest(context.parent?.roleName, context.parent?.hierarchy.id);
+            const isJobTitleAlreadyTaken = await isJobTitleAlreadyTakenRequest(
+              context.parent?.roleName,
+              context.parent?.hierarchy.id
+            );
 
-            return context.parent.roleName && !isJobTitleAlreadyTaken?.isJobTitleAlreadyTaken;
+            return (
+              context.parent.roleName &&
+              !isJobTitleAlreadyTaken?.isJobTitleAlreadyTaken
+            );
           } catch (error) {
             return true;
           }
@@ -80,7 +97,15 @@ const RenameSingleOGForm = forwardRef(
     const [defaultApprovers, setDefaultApprovers] = useState([]);
     const isUserApprover = isUserApproverType(userStore.user);
 
-    const { register, handleSubmit, setValue, watch, formState, getValues, clearErrors } = useForm({
+    const {
+      register,
+      handleSubmit,
+      setValue,
+      watch,
+      formState,
+      getValues,
+      clearErrors,
+    } = useForm({
       resolver: yupResolver(validationSchema),
       defaultValues: { isUserApprover },
     });
@@ -91,13 +116,21 @@ const RenameSingleOGForm = forwardRef(
         setValue('comments', requestObject.comments);
         setValue('clearance', requestObject.kartoffelParams.clearance);
         setValue('roleName', requestObject.kartoffelParams.jobTitle);
-        setValue('hierarchy', { name: requestObject.kartoffelParams.hierarchy });
+        setValue('hierarchy', {
+          name: requestObject.kartoffelParams.hierarchy,
+        });
         setValue('isTafkidan', !!requestObject.kartoffelParams.roleEntityType);
         setValue('roleName', requestObject.kartoffelParams.jobTitle);
-        const result = await GetDefaultApprovers({ request: requestObject, onlyForView, user: userStore.user });
+        setValue('upn', requestObject.kartoffelParams.upn);
+        setValue('roleId', requestObject.kartoffelParams.roleId);
+
+        const result = await GetDefaultApprovers({
+          request: requestObject,
+          onlyForView,
+          user: userStore.user,
+        });
         setDefaultApprovers(result || []);
       }
-
     }, []);
 
     const onSubmit = async (data) => {
@@ -124,7 +157,9 @@ const RenameSingleOGForm = forwardRef(
           source: configStore.USER_SOURCE_DI,
           type: configStore.USER_DI_TYPE,
           clearance,
-          roleEntityType: isTafkidan ? configStore.USER_ROLE_ENTITY_TYPE : undefined,
+          roleEntityType: isTafkidan
+            ? configStore.USER_ROLE_ENTITY_TYPE
+            : undefined,
           hierarchy: hierarchyConverse(hierarchy),
         },
         adParams: {
@@ -137,7 +172,6 @@ const RenameSingleOGForm = forwardRef(
 
       await appliesStore.createRoleApply(req);
       setIsActionDone(true);
-
     };
 
     useImperativeHandle(
@@ -150,9 +184,14 @@ const RenameSingleOGForm = forwardRef(
 
     const debouncedRoleName = useRef(
       debounce(async (roleNameToSearch, directGroup) => {
-          const result = await isJobTitleAlreadyTakenRequest(roleNameToSearch, directGroup);
-          setValue("JobTitleSuggestions", result.suggestions);
-          setValue("isJobTitleAlreadyTaken", result.isJobTitleAlreadyTaken, {shouldValidate: true});
+        const result = await isJobTitleAlreadyTakenRequest(
+          roleNameToSearch,
+          directGroup
+        );
+        setValue('JobTitleSuggestions', result.suggestions);
+        setValue('isJobTitleAlreadyTaken', result.isJobTitleAlreadyTaken, {
+          shouldValidate: true,
+        });
       }, 300)
     );
 
@@ -160,24 +199,29 @@ const RenameSingleOGForm = forwardRef(
       const roleNameToSearch = e.target.value;
       clearErrors('roleName');
 
-      setValue('roleName', e.target.value, {shouldValidate: true});
+      setValue('roleName', e.target.value, { shouldValidate: true });
 
       if (roleNameToSearch && getValues('hierarchy')?.id) {
-        debouncedRoleName.current(roleNameToSearch, getValues("hierarchy").id);
+        debouncedRoleName.current(roleNameToSearch, getValues('hierarchy').id);
       }
     };
 
     const onAvailableRoleName = (e) => {
       setValue('roleName', e.target.innerHTML);
 
-      clearErrors("isJobTitleAlreadyTaken");
-      setValue("isJobTitleAlreadyTaken", false, {shouldValidate: true});
+      clearErrors('isJobTitleAlreadyTaken');
+      setValue('isJobTitleAlreadyTaken', false, { shouldValidate: true });
     };
 
     const handleOrgSelected = async (org) => {
-      const result = await GetDefaultApprovers({ request: requestObject, user: userStore.user, onlyForView, groupId: org.id });
+      const result = await GetDefaultApprovers({
+        request: requestObject,
+        user: userStore.user,
+        onlyForView,
+        groupId: org.id,
+      });
       setDefaultApprovers(result || []);
-      setValue("isUserApprover", result.length > 0);
+      setValue('isUserApprover', result.length > 0);
       setValue('approvers', []);
     };
 
@@ -305,6 +349,40 @@ const RenameSingleOGForm = forwardRef(
             </label>
           </div>
         </div>
+
+        {onlyForView && requestObject.kartoffelParams.roleId && (
+          <div className="p-fluid-item p-fluid-item">
+            <div className="p-field">
+              <label>מזהה תפקיד (T)</label>
+              <span className="p-input-icon-left">
+                <InputText
+                  {...register('roleId')}
+                  id="createSingleRoleForm-roleId"
+                  disabled={onlyForView}
+                />
+              </span>
+            </div>
+          </div>
+        )}
+
+        {onlyForView &&
+          configStore.USER_ROLE_ENTITY_TYPE ===
+            requestObject.kartoffelParams.roleEntityType &&
+          requestObject.kartoffelParams.upn && (
+            <div className="p-fluid-item p-fluid-item">
+              <div className="p-field">
+                <label>מזהה כרטיס</label>
+                <span className="p-input-icon-left">
+                  <InputText
+                    {...register('upn')}
+                    id="createSingleRoleForm-upn"
+                    disabled={onlyForView}
+                  />
+                </span>
+              </div>
+            </div>
+          )}
+
         <div className="p-fluid-item">
           <Approver
             setValue={setValue}
@@ -316,7 +394,10 @@ const RenameSingleOGForm = forwardRef(
             defaultApprovers={defaultApprovers}
           />
         </div>
-        <div className="p-field-checkbox" style={{ marginBottom: '10px' }}>
+        <div
+          className="p-field-checkbox"
+          style={{ marginBottom: '10px', marginTop: '10px' }}
+        >
           <Checkbox
             id="createSingleRoleForm-isTafkidan"
             style={{ marginLeft: '10px' }}
