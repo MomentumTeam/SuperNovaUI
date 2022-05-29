@@ -8,6 +8,7 @@ import "../../assets/css/local/components/aside.min.css";
 import { StatCount } from "./StatCount";
 import { Link } from "react-router-dom";
 import HelpHamburgerMenu from "../HelpMenu/HelpHamburgerMenu";
+import Options from "../HelpMenu/Options";
 import "../../assets/css/local/components/aside.min.css";
 
 const SideToolbar = ({ recentApplies }) => {
@@ -23,6 +24,7 @@ const SideToolbar = ({ recentApplies }) => {
       <div className="main-inner-item3-content">
         <div className="display-flex display-flex-end btns-wrap">
           <HelpHamburgerMenu />
+          <Options />
           <Notifications notifications={notifications} />
         </div>
         <StatCount />

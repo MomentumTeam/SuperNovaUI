@@ -1,0 +1,8 @@
+.option {
+   margin-top: 30px;
+   display: flex; 
+}
+
+.toggleButton {
+    margin-right: 15px;
+}
