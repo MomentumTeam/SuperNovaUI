@@ -6,7 +6,9 @@ export const canEditRole = (selectedEntity, user) => {
   return (
     isRoleBelongToEntity(user, selectedEntity) ||
     isUserHoldType(user, USER_TYPE.SUPER_SECURITY) ||
-    isUserHoldType(user, USER_TYPE.SECURITY)
+    isUserHoldType(user, USER_TYPE.SECURITY) ||
+    isUserHoldType(user, USER_TYPE.SECURITY_ADMIN) ||
+    isUserHoldType(user, USER_TYPE.ADMIN)
   );
 };
 
@@ -17,7 +19,8 @@ export const isRoleBelongToEntity = (user, role) => {
 }
 export const CanEditRoleFields = (selectedRole) => {
   const { userStore } = useStores();
-  const canEdit = isRoleBelongToEntity(userStore.user, selectedRole);
+  const canEdit =
+    isUserHoldType(userStore.user, USER_TYPE.ADMIN) || isRoleBelongToEntity(userStore.user, selectedRole) !== undefined;
   return canEdit;
 };
 

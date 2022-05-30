@@ -18,14 +18,17 @@ const ResponsibleFactorWithWaitingFieldTemplate = (apply, user) => {
       if (typeof responsibles[index] === 'string') {
         waiting = responsibles[index];
       } else {
-        names = [
+        names = [ 
           ...names,
           getUserNameFromDisplayName(responsibles[index].displayName),
         ];
       }
     });
 
-  const getFormatted = () => {
+names = [...new Set(names)] 
+const getFormatted = () => {
+    const id = Math.random().toString(36).slice(2);
+
     if (waiting != null) {
       return <span className='waiting'>{waiting}</span>;
     } else {
@@ -34,11 +37,7 @@ const ResponsibleFactorWithWaitingFieldTemplate = (apply, user) => {
         return <Chip label={names[0]} icon='pi pi-user' className='person' />;
       return (
         <div>
-          <Tooltip
-            target='.more-person'
-            position='top'
-            className='approvers-tooltip'
-          >
+          <Tooltip target={`.more-person-${id}`} position="top" className="approvers-tooltip">
             {names.map((name, index) => (
               <p>
                 <b>
@@ -47,12 +46,9 @@ const ResponsibleFactorWithWaitingFieldTemplate = (apply, user) => {
               </p>
             ))}
           </Tooltip>
-          <span
-            style={{ padding: '2px', display: 'inline-block' }}
-            className='p-overlay-badge'
-          >
-            <Chip label={`${names[0]}`} icon='pi pi-users' className='person' />
-            <Badge value={`${names.length - 1}+`} className='more-person' />
+          <span style={{ padding: "2px", display: "inline-block" }} className="p-overlay-badge">
+            <Chip label={`${names[0]}`} icon="pi pi-users" className="person" />
+            <Badge value={`${names.length - 1}+`} className={`more-person-${id} person-tooltip`} />
           </span>
         </div>
       );

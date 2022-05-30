@@ -8,6 +8,32 @@ export const getUserTypeReq = async (entityId) => {
   return userType.data;
 };
 
+export const removeAsApproverFromHierarchy = async (approverId, approverType, hierarchyId) => {
+  const approverTypes = await axiosApiInstance.delete(
+    `${apiBaseUrl}/api/approvers/`,
+    {
+      params: {
+        approverId: approverId,
+        type: approverType,
+        groupInChargeId: hierarchyId === "" ? undefined : hierarchyId
+      },
+    }
+  );
+  return approverTypes;
+}
+
+export const getAllMyApproverTypes = async (entityId) => {
+  const approverTypes = await axiosApiInstance.get(
+    `${apiBaseUrl}/api/approvers/my/types/`,
+    {
+      params: {
+        entityId
+      },
+    }
+  );
+  return approverTypes;
+}
+
 export const searchApproverByDisplayNameReq = async (
   displayName,
   type,
@@ -63,7 +89,7 @@ export const updateDecisionReq = async (requestId, decision) => {
   return response.data;
 };
 
-export const isApproverValid = async (approverId, groupId) => {
-  const response = await axiosApiInstance.post(`${apiBaseUrl}/api/approvers/isValid`, { approverId, groupId });
+export const isApproverValid = async (approverId, groupId, isOrganization = false) => {
+  const response = await axiosApiInstance.post(`${apiBaseUrl}/api/approvers/isValid`, { approverId, groupId, isOrganization });
   return response.data;
 }

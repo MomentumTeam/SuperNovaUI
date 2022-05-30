@@ -84,10 +84,21 @@ const PreviewRequestsDialog = ({ request, isDialogVisible, setDialogVisiblity })
       component: FullEntityInformationForm,
       dialogClass: "dialogClass3",
     },
+    CONVERT_ENTITY_TYPE: {
+      footer: null,
+      header: `פרטי בקשה ל${TYPES.CONVERT_ENTITY_TYPE}`,
+      component: FullEntityInformationForm,
+      dialogClass: "dialogClass3",
+    },
     // DELETE_OG: { footer: null, header: '' },
     // DELETE_ROLE: { footer: null, header: '' },
     // DELETE_ENTITY: { footer: null, header: '' },
-    // DISCONNECT_ROLE: { footer: null, header: '' },
+    DISCONNECT_ROLE: {
+      footer: null,
+      header: `פרטי בקשה ל${TYPES.DISCONNECT_ROLE}`,
+      component: FullEntityInformationForm,
+      dialogClass: "dialogClass3",
+    },
     // UNRECOGNIZED: { footer: null, header: '' },
   };
 

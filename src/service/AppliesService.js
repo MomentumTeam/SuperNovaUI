@@ -5,7 +5,7 @@ import '../assets/css/local/components/status.css';
 
 //GET
 
-export const getMyRequests = async (from, to, sortField = "UPDATED_AT") => {
+export const getMyRequests = async (from, to, sortField = 'UPDATED_AT') => {
   const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/my`, {
     params: {
       from,
@@ -17,7 +17,10 @@ export const getMyRequests = async (from, to, sortField = "UPDATED_AT") => {
   return response.data;
 };
 
-export const getMyRequestsWithParams = async (params, sortField = "UPDATED_AT") => {
+export const getMyRequestsWithParams = async (
+  params,
+  sortField = 'UPDATED_AT'
+) => {
   const response = await axiosApiInstance.get(`${apiBaseUrl}/api/requests/my`, {
     params: { ...params, sortField },
   });
@@ -239,14 +242,16 @@ export const deleteOGRequest = async (applyProperties) => {
 export const disconectRoleFromEntityRequest = async (applyProperties) => {
   const response = await axiosApiInstance.delete(
     `${apiBaseUrl}/api/requests/request/entity/role`,
-    applyProperties
+    {data: applyProperties} 
   );
 
   return response.data;
 };
 
 export const deleteRequest = async (requestId) => {
-  const response = await axiosApiInstance.delete(`${apiBaseUrl}/api/requests/${requestId}`);
+  const response = await axiosApiInstance.delete(
+    `${apiBaseUrl}/api/requests/${requestId}`
+  );
 
   return response.data;
 };
@@ -331,11 +336,24 @@ export const changeRoleHierarchyBulkRequest = async (data) => {
   return response.data;
 };
 
+
+export const convertEntityTypeRequest = async (
+  applyProperties
+) => {
+  const response = await axiosApiInstance.put(
+    `${apiBaseUrl}/api/requests/request/convertEntityType`,
+    applyProperties
+  );
+
+  return response.data;
+};
+
 export const transferApproverRequest = async ({
   reqId,
   approvers,
   type,
   comment,
+  overrideApprovers,
 }) => {
   const response = await axiosApiInstance.put(
     `${apiBaseUrl}/api/requests/approver/transfer/${reqId}`,
@@ -343,6 +361,23 @@ export const transferApproverRequest = async ({
       approvers,
       type,
       commentForApprovers: comment,
+      overrideApprovers,
+    }
+  );
+
+  return response.data;
+};
+
+export const removeApproverFromApproversRequest = async ({
+  reqId,
+  approverId,
+  type,
+}) => {
+  const response = await axiosApiInstance.put(
+    `${apiBaseUrl}/api/requests/approver/delete/${reqId}`,
+    {
+      approverId,
+      type,
     }
   );
 
@@ -354,7 +389,6 @@ export const updateApproversCommentsRequest = async ({
   approversType,
   comment,
 }) => {
-  
   const response = await axiosApiInstance.put(
     `${apiBaseUrl}/api/requests/approver/comments/${requestId}`,
     {

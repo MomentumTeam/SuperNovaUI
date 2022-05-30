@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import appRoutes from '../constants/routes';
 import NotFound from '../pages/Errors/NotFound';
 import ProtectedRouteWrapper from './ProtectedRouteWrapper';
@@ -35,20 +35,11 @@ const routeGenerator = (routes) => {
 };
 routeGenerator(appRoutes);
 
-const useComponentWillMount = async(cb) => {
-  const willMount = useRef(true);
-  if (willMount.current) await cb();
-  willMount.current = false;
-};
-
 const AppRouter = () => {
   const { userStore } = useStores();
 
-  useComponentWillMount(async () => {
-    await healthStore.loadHealth();
-  });
-  
   useEffect(async () => {
+    await healthStore.loadHealth();
     await userStore.fetchUserInfo();
   }, [healthStore.isApiHealthy]);
 

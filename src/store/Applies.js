@@ -24,6 +24,8 @@ import {
   createRoleBulkRequest,
   transferApproverRequest,
   updateApproversCommentsRequest,
+  removeApproverFromApproversRequest,
+  convertEntityTypeRequest,
 } from '../service/AppliesService';
 import { updateDecisionReq } from '../service/ApproverService';
 import { isApproverAndCanEdit } from '../utils/applies';
@@ -56,6 +58,7 @@ export default class AppliesStore {
       renameOGApply: action,
       renameRoleApply: action,
       editEntityApply: action,
+      convertEntityTypeApply: action,
       deleteRoleApply: action,
       deleteOGApply: action,
       disconectRoleFromEntityApply: action,
@@ -79,7 +82,7 @@ export default class AppliesStore {
   }
 
   async removeApplyById(id) {
-    this.myApplies = this.myApplies.filter(apply => apply.id !== id);
+    this.myApplies = this.myApplies.filter((apply) => apply.id !== id);
   }
 
   async getMyApproveRequests({
@@ -230,6 +233,13 @@ export default class AppliesStore {
     this.myApplies.unshift(newEditEntityApply);
   }
 
+  async convertEntityTypeApply(applyProperties) {
+    const newConvertEntityTypeApply = await convertEntityTypeRequest(
+      applyProperties
+    );
+    this.myApplies.unshift(newConvertEntityTypeApply);
+  }
+
   async deleteRoleApply(applyProperties) {
     const newDeleteRoleApply = await deleteRoleRequest(applyProperties);
     this.myApplies.unshift(newDeleteRoleApply);
@@ -266,7 +276,14 @@ export default class AppliesStore {
     this.myApplies.unshift(changeRoleHierarchyBulkApply);
   }
 
-  async transferApprovers({ user, reqId, approvers, approversType, comment }) {
+  async transferApprovers({
+    user,
+    reqId,
+    approvers,
+    approversType,
+    comment,
+    overrideApprovers = false,
+  }) {
     if (Array.isArray(approversType)) {
       await Promise.all(
         approversType.map(async (approverType) => {
@@ -276,6 +293,7 @@ export default class AppliesStore {
               approvers,
               type: approverType,
               comment,
+              overrideApprovers,
             });
             this.updateApplyAndCount({ user, reqId, apply, removeApply: true });
           }
@@ -288,10 +306,44 @@ export default class AppliesStore {
           approvers,
           type: approversType,
           comment,
+          overrideApprovers,
         });
         this.updateApplyAndCount({ user, reqId, apply, removeApply: true });
       } else {
-        throw new Error('לא ניתן להעביר לסוג משתמש זה')
+        throw new Error('לא ניתן להעביר לסוג משתמש זה');
+      }
+    }
+  }
+
+  async removeApproverFromApprovers({
+    user,
+    reqId,
+    approverId,
+    approversType,
+  }) {
+    if (Array.isArray(approversType)) {
+      await Promise.all(
+        approversType.map(async (approverType) => {
+          if (APPROVER_TRANSFER_TYPE.includes(approverType)) {
+            const apply = await removeApproverFromApproversRequest({
+              reqId,
+              approverId,
+              type: approverType,
+            });
+            this.updateApplyAndCount({ user, reqId, apply, removeApply: true });
+          }
+        })
+      );
+    } else {
+      if (APPROVER_TRANSFER_TYPE.includes(approversType)) {
+        const apply = await removeApproverFromApproversRequest({
+          reqId,
+          approverId,
+          type: approversType,
+        });
+        this.updateApplyAndCount({ user, reqId, apply, removeApply: true });
+      } else {
+        throw new Error('בעיה בהחזרה לסל');
       }
     }
   }
@@ -321,11 +373,9 @@ export default class AppliesStore {
       user,
       reqId: requestId,
       apply: updatedRequest,
-      removeApply: true
+      removeApply: true,
     });
   }
-
-
 
   // UTILS
   updateApplyAndCount = ({ user, reqId, apply, removeApply = false }) => {
@@ -355,6 +405,7 @@ export default class AppliesStore {
 
     const responsibleAfter =
       !checkIfRequestIsDone(apply) && isApproverAndCanEdit(apply, user);
+
     if (!responsibleAfter && myApplyResponsibleBefore && removeApply) {
       this.approveMyApplies.requests.splice(myApplyIndex, 1);
       this.approveMyApplies.waitingForApproveCount =
@@ -379,9 +430,9 @@ export default class AppliesStore {
       const reqIndex = this[appliesArr].requests.findIndex(
         (apply) => apply.id === id
       );
+
       return reqIndex;
     }
-
     return -1;
   };
 

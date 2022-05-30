@@ -80,7 +80,7 @@ const validationSchema = Yup.object().shape({
     .test('required', 'יש להעלות קובץ!', (value) => {
       return value && value.length;
     })
-    .test('', 'יש להעלות קובץ תקין! ראה פורמט', async (value) => {
+    .test('', 'יש להעלות קובץ תקין! ראה פורמט', async (value, { createError, path }) => {
       const formData = new FormData();
       formData.append('bulkFiles', value[0]);
       const uploadFilesRes = await uploadBulkFile(formData, BulkTypes[1]);

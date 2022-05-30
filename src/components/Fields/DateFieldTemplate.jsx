@@ -2,12 +2,15 @@ import { isDateGreater, IsRequestCompleteForApprover } from '../../utils/applies
 
 const DateFieldTemplate = (date, props) => {
   const apply = {
+    adminDecision: props.adminDecision,
     commanderDecision: props.commanderDecision,
     superSecurityDecision: props.superSecurityDecision,
     securityDecision: props.securityDecision,
     status: props.status,
+    needAdminDecision: props.needAdminDecision,
     needSecurityDecision: props.needSecurityDecision,
     needSuperSecurityDecision: props.needSuperSecurityDecision,
+
   };
 
   let isReqDone = true;

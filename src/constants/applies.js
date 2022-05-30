@@ -1,7 +1,7 @@
-import { DateFieldTemplate } from "../components/Fields/DateFieldTemplate";
-import { RequestorFieldTemplate } from "../components/AppliesTable/RequestorFieldTemplate";
-import { TextFieldTemplate } from "../components/Fields/TextFieldTemplate";
-import { getFormattedDate } from "../utils/applies";
+import { DateFieldTemplate } from '../components/Fields/DateFieldTemplate';
+import { RequestorFieldTemplate } from '../components/AppliesTable/RequestorFieldTemplate';
+import { TextFieldTemplate } from '../components/Fields/TextFieldTemplate';
+import { getFormattedDate } from '../utils/applies';
 import { ResponsibleFactorWithWaitingFieldTemplate } from '../components/AppliesTable/ResponsibleFactorWithWaitingFieldTemplate';
 import { StatusApproverFieldTemplate } from '../components/AppliesTable/StatusApproverFieldTemplate';
 
@@ -17,13 +17,13 @@ export const TYPES = {
   // DELETE_OG: "מחיקת היררכיה",
   // DELETE_ROLE: "מחיקת תפקיד",
   // DELETE_ENTITY: "מחיקת משתמש",
-  // DISCONNECT_ROLE: "ניתוק תפקיד",
+  DISCONNECT_ROLE: "ניתוק תפקיד",
   ADD_APPROVER: 'הוספת הרשאות',
   CHANGE_ROLE_HIERARCHY: 'מעבר היררכיה לתפקיד',
   CREATE_ROLE_BULK: 'יצירת תפקידים חדשים',
   CHANGE_ROLE_HIERARCHY_BULK: 'מעבר היררכיה לתפקידים',
+  CONVERT_ENTITY_TYPE:'המרת סוג ישות'
 };
-
 
 export const REQ_TYPES = {
   CREATE_OG: 'CREATE_OG',
@@ -36,17 +36,17 @@ export const REQ_TYPES = {
   // DELETE_OG: "מחיקת היררכיה",
   // DELETE_ROLE: "מחיקת תפקיד",
   // DELETE_ENTITY: "מחיקת משתמש",
-  // DISCONNECT_ROLE: "ניתוק תפקיד",
+  DISCONNECT_ROLE: "DISCONNECT_ROLE",
   ADD_APPROVER: 'ADD_APPROVER',
   CHANGE_ROLE_HIERARCHY: 'CHANGE_ROLE_HIERARCHY',
   CREATE_ROLE_BULK: 'CREATE_ROLE_BULK',
   CHANGE_ROLE_HIERARCHY_BULK: 'CHANGE_ROLE_HIERARCHY_BULK',
+  CONVERT_ENTITY_TYPE: 'CONVERT_ENTITY_TYPE',
 };
 
-
 export const TableNames = {
-  myreqs: { tab: "myreqs", tableName: "בקשות לאישורי" },
-  allreqs: { tab: "allreqs", tableName: "סל הבקשות" },
+  myreqs: { tab: 'myreqs', tableName: 'בקשות לאישורי' },
+  allreqs: { tab: 'allreqs', tableName: 'סל הבקשות' },
 };
 
 export const TableTypes = (selectedTab, user, approverTableType) => {
@@ -83,9 +83,11 @@ export const TableTypes = (selectedTab, user, approverTableType) => {
       templateParam: [
         user,
         'status',
+        'needAdminDecision',
         'needSecurityDecision',
         'needSuperSecurityDecision',
         'superSecurityDecision',
+        'adminDecision',
         'securityDecision',
         'commanderDecision',
       ],
@@ -108,18 +110,20 @@ export const TableTypes = (selectedTab, user, approverTableType) => {
   ];
 };
 
-export const searchFields = ["שם", "מספר אישי", 'ת"ז', "מספר בקשה"];
-export const searchTooltipMessage = `ניתן לחפש לפי השדות הבאים: ${searchFields.join(", ")}`;
+export const searchFields = ['שם', 'מספר אישי', 'ת"ז', 'מספר בקשה'];
+export const searchTooltipMessage = `ניתן לחפש לפי השדות הבאים: ${searchFields.join(
+  ', '
+)}`;
 
 export const sortFields = {
-  REQUEST_TYPE: "REQUEST_TYPE",
-  SUBMITTED_BY: "SUBMITTED_BY",
-  CREATED_AT: "CREATED_AT",
-  STATUS: "STATUS",
+  REQUEST_TYPE: 'REQUEST_TYPE',
+  SUBMITTED_BY: 'SUBMITTED_BY',
+  CREATED_AT: 'CREATED_AT',
+  STATUS: 'STATUS',
 };
 export const sortOrder = {
-  INC: "INC",
-  DEC: "DEC",
+  INC: 'INC',
+  DEC: 'DEC',
 };
 
 export const pageSize = 10;
@@ -164,11 +168,10 @@ export const BulkTypes = [
   'CREATE_ROLE_REQUEST',
   'CHANGE_ROLE_HIERARCHY_REQUEST',
   'UNRECOGNIZED',
-]
-  ;
+];
 export const bulkExampleFileName = [
-  "createRoleBulkExample",
-  "changeRoleHierarchyBulkExample",
+  'createRoleBulkExample',
+  'changeRoleHierarchyBulkExample',
 ];
 
 export const assignRoleToEntityHeader = [
@@ -176,3 +179,10 @@ export const assignRoleToEntityHeader = [
   'חיבור משתמש חדש לתפקיד',
 ];
 
+export const excelLabels = {
+  hierarchyName: 'היררכיה',
+  jobTitle: 'שם תפקיד',
+  roleId: 'מזהה תפקיד T',
+  upn: 'מזהה כרטיס (UPN)',
+  entity: 'משתמש בתפקיד',
+};

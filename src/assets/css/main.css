@@ -31,7 +31,7 @@
   font-size: 14px;
   line-height: 18px;
   color: #ffffff;
-  min-width: 112px;
+  min-width: 116.5px;
   min-height: 40px;
 }
 
@@ -1178,4 +1178,46 @@ main .main-wrap .main-inner-wrap {
 .p-fluid .p-field .disabled:focus {
   border: 1px solid #b4bccb;
   box-shadow: none;
+}
+
+.userTypePick {
+    display: flex;
+    width: 75%;
+    justify-content: space-evenly;
+    margin: 15px auto 40px;
+}
+
+#pr_id_15_content {
+  padding: 0px;
+}
+
+#pr_id_15 {
+  height: 30%;
+}
+.hierarchyList {
+  margin-block-start: 3px;
+  margin-block-end: 7px;
+}
+
+#disconnectRoleFromEntityDialog .p-dialog-header-icons {
+  background: none;
+  box-shadow: none;
+}
+
+#disconectButton {
+  position: relative;
+  top: 10px;
+  left: 10px;
+  font-family: 'Heebo', sans-serif;
+  border-radius: 4px;
+  font-size: 13px;
+  min-width: unset;
+  min-height: unset;
+  width: 40px !important;
+  height: 26px !important;
+}
+
+#disconectButton:hover {
+  background-color: red;
+  color: white;
 }

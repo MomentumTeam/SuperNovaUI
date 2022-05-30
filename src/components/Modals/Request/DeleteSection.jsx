@@ -5,7 +5,7 @@ import { useToast } from '../../../context/use-toast';
 import { deleteRequest } from '../../../service/AppliesService';
 import { useStores } from '../../../context/use-stores';
 import {
-  isSubmitterReq,
+  canBeDeletedByStatus,
   isAutomaticallyApproved,
 } from '../../../utils/applies';
 
@@ -14,8 +14,9 @@ const DeleteSection = ({ request, setDialogVisiblity }) => {
   const { actionPopup } = useToast();
   const { appliesStore, userStore } = useStores();
   const enabledDelete =
-    isSubmitterReq(request, userStore.user) &&
-    !isAutomaticallyApproved(request, userStore.user);
+    canBeDeletedByStatus(request, userStore.user) &&
+    !isAutomaticallyApproved(request, userStore.user) &&
+    request?.submittedBy?.id === userStore.user.id;
 
   return (
     <>
