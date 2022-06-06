@@ -1198,3 +1198,26 @@ main .main-wrap .main-inner-wrap {
   margin-block-start: 3px;
   margin-block-end: 7px;
 }
+
+#disconnectRoleFromEntityDialog .p-dialog-header-icons {
+  background: none;
+  box-shadow: none;
+}
+
+#disconectButton {
+  position: relative;
+  top: 10px;
+  left: 10px;
+  font-family: 'Heebo', sans-serif;
+  border-radius: 4px;
+  font-size: 13px;
+  min-width: unset;
+  min-height: unset;
+  width: 40px !important;
+  height: 26px !important;
+}
+
+#disconectButton:hover {
+  background-color: red;
+  color: white;
+}
