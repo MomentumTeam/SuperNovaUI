@@ -11,6 +11,7 @@ import Approver from "../Fields/Approver";
 import {
   updateUserOptions,
   getUserOptions,
+  addFavoriteCommander,
 } from "../../service/OptionsService";
 import { ListBox } from 'primereact/listbox';
 
@@ -109,17 +110,19 @@ const Options = () => {
             multiple={true}
             />
           <button className="pi pi-user-plus" onClick={() => {
-            const chosenApprovers = getValues();
-            console.log(chosenApprovers.approvers);
-            console.log(getValues());
+            const approvers = getValues().approvers;
+            const approversIds = approvers.map(approver => approver.entityId);
+            addFavoriteCommander(approversIds);
           }}>
           </button>
         </div>
 
         <ListBox
-        style={{marinTop: 50}}
+        style={{marginTop: 50}}
         
         />
+
+        <button></button>
 
       </Dialog>
     </div>
