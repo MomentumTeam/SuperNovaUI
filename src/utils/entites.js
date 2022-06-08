@@ -8,7 +8,8 @@ import { isUserHoldType } from "./user";
 export const canEditEntity = (selectedEntity, user) => {
   return (
     selectedEntity &&
-    selectedEntity.entityType === configStore.USER_CITIZEN_ENTITY_TYPE &&
+    (selectedEntity.entityType === configStore.USER_CITIZEN_ENTITY_TYPE ||
+      selectedEntity.entityType === configStore.KARTOFFEL_SOLDIER) &&
     (isUserHoldType(user, USER_TYPE.SUPER_SECURITY) ||
       isUserHoldType(user, USER_TYPE.SECURITY) ||
       isUserHoldType(user, USER_TYPE.SECURITY_ADMIN) ||
