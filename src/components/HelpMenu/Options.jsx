@@ -2,35 +2,41 @@ import "primeicons/primeicons.css";
 import "primereact/resources/primereact.css";
 import "../../assets/css/local/components/options.css";
 import "../../assets/css/local/components/helpHamburgerMenu.css";
+import { React, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { classNames } from "primereact/utils";
 import { ToggleButton } from "primereact/togglebutton";
-import { React, useEffect, useState } from "react";
+import { ListBox } from 'primereact/listbox';
 import { Dialog } from "primereact/dialog";
+import { loadApprovers } from "../../utils";
 import Approver from "../Fields/Approver";
 import {
   updateUserOptions,
   getUserOptions,
   addFavoriteCommander,
+  removeFavoriteCommander,
 } from "../../service/OptionsService";
-import { ListBox } from 'primereact/listbox';
 
 const Options = () => {
+  const { setValue, getValues } = useForm();
+
   const [showPicture, setShowPicture] = useState(true);
   const [getMailNotifications, setGetMailNotifications] = useState(true);
   const [showPhoneNumber, setShowPhoneNumber] = useState(true);
-
+  const [approversToRemove, setApproversToRemove] = useState([]);
+  const [approvers, setApprovers] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-
-  const { setValue, getValues } = useForm();
 
   useEffect(() => {
     (async () => {
-      const { toggleProfilePicture, getMailNotifications, showPhoneNumber } =
+      const { toggleProfilePicture, getMailNotifications, showPhoneNumber, favoriteCommanders } =
         await getUserOptions();
       setShowPicture(toggleProfilePicture);
       setGetMailNotifications(getMailNotifications);
       setShowPhoneNumber(showPhoneNumber);
+
+      const approvers = await loadApprovers(favoriteCommanders);
+      setApprovers(approvers.map(approver => ({ displayName: approver.displayName, id: approver.id })));
     })();
   }, []);
 
@@ -109,20 +115,25 @@ const Options = () => {
             tooltip='רס"ן ומעלה בהיררכיה הנבחרת שבה נמצא התפקיד'
             multiple={true}
             />
-          <button className="pi pi-user-plus" onClick={() => {
+          <button className="pi pi-user-plus" onClick={async () => {
             const approvers = getValues().approvers;
+            if(!approvers) return;
             const approversIds = approvers.map(approver => approver.entityId);
             addFavoriteCommander(approversIds);
           }}>
           </button>
         </div>
 
-        <ListBox
-        style={{marginTop: 50}}
-        
-        />
-
-        <button></button>
+        <ListBox value={approversToRemove} options={approvers.map(approver => approver.displayName)} onChange={(e) => {
+          setApproversToRemove([...e.value]);
+        }}
+        multiple filter />
+          
+        <button className="pi-minus-circle" onClick={() => {
+          const approversToRemoveIds = approversToRemove.map(approver => approvers.find(a => a.displayName === approver).id);
+          setApprovers(approvers.filter(approver => !approversToRemoveIds.includes(approver.id)));
+          removeFavoriteCommander(approversToRemoveIds);
+        }}/>
 
       </Dialog>
     </div>

@@ -1,5 +1,6 @@
 import configStore from '../store/Config';
 import { isApproverValid } from '../service/ApproverService';
+import { getEntityByMongoId } from '../service/KartoffelService';
 import { isUserApproverType, isUserHoldType } from './user';
 import { USER_TYPE } from '../constants';
 
@@ -66,3 +67,18 @@ export const checkValidExternalApprover = async ({
   }
   return [];
 };
+
+export const loadApprovers = async (approversIdsArray) => {
+  const approverForAdmin = await Promise.all(
+    approversIdsArray.map(async (id) => {
+      try {
+        const entity = await getEntityByMongoId(id);
+        return entity;
+      } catch {
+        return null;
+      }
+    })
+  );
+
+  return approverForAdmin.filter((approver) => approver !== null);
+}
