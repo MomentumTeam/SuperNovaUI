@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import { Dialog } from "primereact/dialog";
 import { classNames } from "primereact/utils";
-import { Button } from "primereact/button";
 import { USER_TYPE, USER_TYPE_TAG } from "../../../constants";
 import { getUserTags, isUserHoldType } from "../../../utils/user";
 
@@ -16,7 +15,6 @@ const FullEntityPremissionsModal = ({
   isUsePremissionModal,
   closePremissionsModal,
   userTags,
-  updateUserPremissions
 }) => {
   const [premissions, setPremissions] = useState({});
   const [approverTypes, setApproverTypes] = useState({});
@@ -105,7 +103,7 @@ const FullEntityPremissionsModal = ({
       closePremissionsModal();
       closeModal();
     }
-  }, [approverTypes, closePremissionsModal, isUsePremissionModal, premissions, user]);
+  }, [closePremissionsModal, isUsePremissionModal, premissions, user]);
 
   const getImuteableApproverTypes = () => {
     if (
@@ -179,7 +177,6 @@ const FullEntityPremissionsModal = ({
               approverTypes={approverTypes}
               setPremissions={setPremissions}
               setApproverTypes={setApproverTypes}
-              updateUserPremissions={updateUserPremissions}
             />
           </div>
         </Dialog>
