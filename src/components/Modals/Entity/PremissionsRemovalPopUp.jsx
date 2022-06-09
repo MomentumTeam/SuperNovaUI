@@ -5,6 +5,7 @@ import { Dialog } from "primereact/dialog";
 
 import { removeAsApproverFromHierarchy } from "../../../service/ApproverService";
 import { getUserTags } from "../../../utils/user";
+import { useStores } from "../../../context/use-stores";
 
 const PremissionsRemovalPopUp = ({
   showModal,
@@ -15,8 +16,8 @@ const PremissionsRemovalPopUp = ({
   approverTypes,
   setPremissions,
   setApproverTypes,
-  updateUserPremissions,
 }) => {
+  const {userStore} = useStores();
   const { hierarchyToRemove, approverType } = currentHierarchyForRemoval;
   const dismissApproverFromHierarchy = async () => {
     try {
@@ -38,7 +39,7 @@ const PremissionsRemovalPopUp = ({
       setApproverTypes(() => {
         return approverTypes.filter((type) => type !== approverType);
       });
-      updateUserPremissions();
+      userStore.updateUserPremissions();
     } catch (err) {
       console.log(err);
     }
