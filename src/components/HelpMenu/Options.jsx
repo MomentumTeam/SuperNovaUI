@@ -45,15 +45,15 @@ const Options = () => {
       <button
         className="pi pi-cog"
         title="Options"
-        style={{ border: "0", backgroundColor: "transparent" }}
+        style={{ border: '0', backgroundColor: 'transparent' }}
         onClick={() => setIsOpen(true)}
       ></button>
 
       <Dialog
-        className={classNames("dialogClass7")}
-        header={"הגדרות"}
+        className={classNames('dialogClass7')}
+        header={'הגדרות'}
         visible={isOpen}
-        style={{ borderRadius: "30px" }}
+        style={{ borderRadius: '30px' }}
         onHide={() => setIsOpen(false)}
       >
         <div
@@ -70,7 +70,7 @@ const Options = () => {
             offLabel=""
             onChange={(e) => {
               setShowPicture(e.value);
-              updateUserOptions("toggleProfilePicture", e.value);
+              updateUserOptions('toggleProfilePicture', e.value);
             }}
           />
         </div>
@@ -86,7 +86,7 @@ const Options = () => {
             offLabel=""
             onChange={(e) => {
               setGetMailNotifications(e.value);
-              updateUserOptions("getMailNotifications", e.value);
+              updateUserOptions('getMailNotifications', e.value);
             }}
           />
         </div>
@@ -102,39 +102,95 @@ const Options = () => {
             offLabel=""
             onChange={(e) => {
               setShowPhoneNumber(e.value);
-              updateUserOptions("showPhoneNumber", e.value);
+              updateUserOptions('showPhoneNumber', e.value);
             }}
           />
         </div>
-        
+
         <p style={{ marginTop: 25 }}>גורמים מאשרים מועדפים: </p>
-        <div style={{ display: "flex" }}>
+        <div style={{ display: 'flex', marginTop: 10 }}>
           <Approver
             setValue={setValue}
             name="approvers"
             tooltip='רס"ן ומעלה בהיררכיה הנבחרת שבה נמצא התפקיד'
-            multiple={true}
-            />
-          <button className="pi pi-user-plus" onClick={async () => {
-            const approvers = getValues().approvers;
-            if(!approvers) return;
-            const approversIds = approvers.map(approver => approver.entityId);
-            addFavoriteCommander(approversIds);
-          }}>
-          </button>
+            multiple
+          />
+          <button
+            style={{
+              backgroundColor: 'transparent',
+              border: 'none',
+              marginRight: 5,
+            }}
+            className="pi pi-user-plus"
+            onClick={() => {
+              if (!getValues().approvers.length) return;
+              const approversToAdd = getValues().approvers.map(
+                (approverToAdd) => ({
+                  displayName: approverToAdd.displayName,
+                  id: approverToAdd.id,
+                })
+              );
+              setApprovers([
+                ...approvers,
+                ...approversToAdd.filter(
+                  (approverToAdd) =>
+                    !approvers.some(
+                      (approver) => approver.id === approverToAdd.id
+                    )
+                ),
+              ]);
+              const approversIds = approversToAdd.map(
+                (approverToAdd) => approverToAdd.id
+              );
+              addFavoriteCommander(approversIds);
+            }}
+          ></button>
         </div>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <ListBox
+            style={{
+              backgroundColor: 'transparent',
+              border: 'none',
+              marginTop: 15,
+            }}
+            value={approversToRemove}
+            options={approvers.map((approver) => approver.displayName)}
+            onChange={(e) => {
+              console.log(e.value);
+              setApproversToRemove([...e.value]);
+            }}
+            multiple
+          />
 
-        <ListBox value={approversToRemove} options={approvers.map(approver => approver.displayName)} onChange={(e) => {
-          setApproversToRemove([...e.value]);
-        }}
-        multiple filter />
-          
-        <button className="pi-minus-circle" onClick={() => {
-          const approversToRemoveIds = approversToRemove.map(approver => approvers.find(a => a.displayName === approver).id);
-          setApprovers(approvers.filter(approver => !approversToRemoveIds.includes(approver.id)));
-          removeFavoriteCommander(approversToRemoveIds);
-        }}/>
-
+          {approversToRemove.length ? (
+            <button
+              style={{
+                backgroundColor: 'transparent',
+                margin: 'auto',
+                width: '10%',
+                border: 'none',
+              }}
+              className="pi pi-trash"
+              onClick={() => {
+                if (!approversToRemove.length) return;
+                const approversToRemoveIds = approversToRemove.map(
+                  (approverToRemoveName) =>
+                    approvers.find(
+                      (approver) =>
+                        approver.displayName === approverToRemoveName
+                    ).id
+                );
+                setApprovers(
+                  approvers.filter(
+                    (approver) => !approversToRemoveIds.includes(approver.id)
+                  )
+                );
+                setApproversToRemove([]);
+                removeFavoriteCommander(approversToRemoveIds);
+              }}
+            />
+          ) : null}
+        </div>
       </Dialog>
     </div>
   );
