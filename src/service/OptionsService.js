@@ -1,6 +1,5 @@
 import axiosApiInstance from '../config/axios';
 import { apiBaseUrl } from '../constants/api';
-import { getEntityByIdentifier } from './KartoffelService';
 import { loadApprovers } from '../utils/approver';
 import '../assets/css/local/components/status.css';
 
