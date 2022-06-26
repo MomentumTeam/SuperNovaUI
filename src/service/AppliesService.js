@@ -242,7 +242,7 @@ export const deleteOGRequest = async (applyProperties) => {
 export const disconectRoleFromEntityRequest = async (applyProperties) => {
   const response = await axiosApiInstance.delete(
     `${apiBaseUrl}/api/requests/request/entity/role`,
-    applyProperties
+    {data: applyProperties} 
   );
 
   return response.data;
