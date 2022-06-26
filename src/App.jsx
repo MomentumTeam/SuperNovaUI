@@ -8,6 +8,7 @@ import React, { Suspense } from 'react';
 import { StoreProvider } from './store';
 import { ToastProvider } from './store/Toast';
 import { ToastAlert } from './components/ToastAlert';
+import { SocketProvider } from './components/Socket';
 import Loading from './Loading';
 
 const AppRouter = React.lazy(() => {
@@ -21,11 +22,12 @@ const App = () => {
     <StoreProvider>
       <ToastProvider>
         <ToastAlert />
-        <div className="display-flex main-inner-wrap">
-          <Suspense fallback={<Loading />}>
-            <AppRouter />
-          </Suspense>
-        </div>
+        <SocketProvider/>
+          <div className="display-flex main-inner-wrap">
+            <Suspense fallback={<Loading />}>
+              <AppRouter />
+            </Suspense>
+          </div>
       </ToastProvider>
     </StoreProvider>
   );

@@ -1,6 +1,5 @@
 import { action, makeAutoObservable, observable } from 'mobx';
 import { getPictureByConnectedEntity, getUser } from "../service/UserService";
-import { getMyNotifications, markAsRead } from '../service/NotificationService';
 import { getAllMyApproverTypes } from '../service/ApproverService';
 import {
   getOGById,
@@ -15,17 +14,13 @@ export default class UserStore {
   isUserLoading = true;
   user = null;
   users = null;
-  userNotifications = [];
-  userUnreadNotifications = [];
   isUserExternal = false;  
 
   constructor() {
     makeAutoObservable(this, {
       user: observable,
       isUserLoading: observable,
-      userUnreadNotifications: observable,
       fetchUserInfo: action,
-      fetchUserNotifications: action,
       getMyPicture: action,
       isUserExternal: observable
     });
@@ -87,28 +82,18 @@ export default class UserStore {
 async checkIfUserExternal() {
     if (this.user && (this.user.entityType === configStore.KARTOFFEL_EXTERNAL ||
         configStore.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL.includes(this.user.id) ||
-        configStore.organizationIds.includes(this.user.directGroup))) {
+        configStore.organizationIds && configStore.organizationIds.includes(this.user.directGroup))) {
       this.isUserExternal = true
     }
 
     if (!this.isUserExternal) {
       let userOG = await getOGById(this.user.directGroup);
       userOG.ancestors.forEach((ancestor) => {
-        if (configStore.organizationIds.includes(ancestor)) {
+        if (configStore.organizationIds && configStore.organizationIds.includes(ancestor)) {
           this.isUserExternal = true;
         }
       })
     }
-  }
-
-  async fetchUserNotifications() {
-    const userUnreadNotifications = await getMyNotifications(false);
-    this.userUnreadNotifications.replace(userUnreadNotifications.notifications);
-  }
-
-  async markNotificationsAsRead(ids) {
-    await markAsRead(ids);
-    this.userUnreadNotifications.clear();
   }
 
   async getMyPicture() {

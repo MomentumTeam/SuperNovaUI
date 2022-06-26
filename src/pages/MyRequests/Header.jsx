@@ -1,18 +1,15 @@
+import Notifications from "../../components/Notifications/Notifications";
 import { useEffect } from "react";
-
 import { TableNames } from "../../constants/myRequestsTable";
 import { useStores } from "../../context/use-stores";
-import Norifications from "../../components/Notifications/Notifications";
-import { toJS } from "mobx";
 
 import "../../assets/css/main.css";
 
 const Header = ({ setTab, selectedTab }) => {
-  const { userStore } = useStores();
-  const notifications = toJS(userStore.userUnreadNotifications);
+  const { userStore, notificationStore } = useStores();
 
   useEffect(() => {
-    userStore.fetchUserNotifications();
+    notificationStore.fetchUserUnreadNotifications();
   }, [userStore]);
 
   return (
@@ -20,16 +17,13 @@ const Header = ({ setTab, selectedTab }) => {
       <div className="display-flex h-wrap" style={{ cursor: "pointer" }}>
         {Object.entries(TableNames).map(([tableKey, tableValue]) => {
           return (
-            <h3
-              style={{ color: selectedTab === tableValue.tab && "#201961" }}
-              onClick={() => setTab(tableValue.tab)}
-            >
+            <h3 style={{ color: selectedTab === tableValue.tab && "#201961" }} onClick={() => setTab(tableValue.tab)}>
               {tableValue.tableName}
             </h3>
           );
         })}
       </div>
-      <Norifications notifications={notifications} />
+      <Notifications />
     </div>
   );
 };

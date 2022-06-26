@@ -18,14 +18,14 @@ import { useToast } from '../../context/use-toast';
 
 const Dashboard = observer(() => {
   const {actionPopup} = useToast();
-  const { userStore, appliesStore, treeStore } = useStores();
+  const { userStore, appliesStore, appliesApproveStore, treeStore } = useStores();
   const [isFullUserInfoModalOpen, setIsFullUserInfoModalOpen] = useState(false);
   const [isUserPremissionsModalOpen, setIsUserPremissionsModalOpen] = useState(false);
 
   const user = toJS(userStore.user);
   const myApplies = toJS(appliesStore.myApplies);
-  const approveMyApplies = toJS(appliesStore.approveMyApplies);
-  const approveAllApplies = toJS(appliesStore.approveAllApplies);
+  const approveMyApplies = toJS(appliesApproveStore.approveMyApplies);
+  const approveAllApplies = toJS(appliesApproveStore.approveAllApplies);
 
   const userTags = getUserTags(user?.types);
 
@@ -36,7 +36,7 @@ const Dashboard = observer(() => {
         treeStore.loadTreeByEntity(userStore.user);
       }
     }
-  }, [userStore.user, appliesStore, treeStore]);
+  }, [userStore.user, appliesStore, appliesApproveStore, treeStore]);
 
   const openFullDetailsModal = () => {
     setIsFullUserInfoModalOpen(true);

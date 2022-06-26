@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { toJS } from "mobx";
 import { useStores } from "../../context/use-stores";
 import Actions from "./Actions";
 import List from "../List";
@@ -11,11 +10,10 @@ import HelpHamburgerMenu from "../HelpMenu/HelpHamburgerMenu";
 import "../../assets/css/local/components/aside.min.css";
 
 const SideToolbar = ({ recentApplies }) => {
-  const { userStore } = useStores();
-  const notifications = toJS(userStore.userUnreadNotifications);
+  const { userStore, notificationStore } = useStores();
 
   useEffect(() => {
-    userStore.fetchUserNotifications();
+    notificationStore.fetchUserUnreadNotifications();
   }, [userStore]);
 
   return (
@@ -23,7 +21,7 @@ const SideToolbar = ({ recentApplies }) => {
       <div className="main-inner-item3-content">
         <div className="display-flex display-flex-end btns-wrap">
           <HelpHamburgerMenu />
-          <Notifications notifications={notifications} />
+          <Notifications/>
         </div>
         <StatCount />
         <div className="actions-inner-wrap">
@@ -39,7 +37,7 @@ const SideToolbar = ({ recentApplies }) => {
           </div>
           <div className="table-item-wrap">
             <div className="table-item-inner">
-              <List list={recentApplies? recentApplies.slice(0, 5): []} />
+              <List list={recentApplies ? recentApplies.slice(0, 5) : []} />
             </div>
           </div>
         </div>

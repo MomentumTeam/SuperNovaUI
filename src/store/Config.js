@@ -3,6 +3,8 @@ import { getConfig } from '../service/ConfigService';
 import { getEntityByMongoId } from '../service/KartoffelService';
 
 class ConfigStore {
+  configPromise = null; 
+
   soldierRequestsApprovers = [];
 
   // USER
@@ -58,6 +60,7 @@ class ConfigStore {
     '619e406ee4de0300121dc4c8',
     '5ebbd53f64fe6f2b1c5777ae',
   ];
+  SOCKET_URL = "localhosssssst:2001"
 
   constructor() {
     makeAutoObservable(this, {
@@ -79,6 +82,7 @@ class ConfigStore {
       HI_CHAT_SUPPORT_GROUP_NAME: observable,
       CREATE_ADMIN_REQS_APPROVERS: observable,
       CREATE_BULK_REQS_APPROVERS: observable,
+      SOCKET_URL:observable,
       CREATE_SPECIAL_GROUP_REQS_APPROVERS: observable,
       CREATE_SECURITY_ADMIN_REQS_APPROVERS: observable,
       soldierRequestsApprovers: observable,
@@ -123,6 +127,18 @@ class ConfigStore {
         this.SUPER_SECURITY_MAIL = config.SUPER_SECURITY_MAIL;
       if (config?.INSTRUCTION_VIDEOS)
         this.INSTRUCTION_VIDEOS = config.INSTRUCTION_VIDEOS;
+      if (config?.organizationNumbers)
+        this.organizationNumbers = config.organizationNumbers;
+      if (config?.organizationIds)
+        this.organizationIds = config.organizationIds;
+      if (config?.organizationNumberToGroupId)
+        this.organizationNumberToGroupId = config.organizationNumberToGroupId;
+      if (config?.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL)
+        this.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL =
+        config.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL;
+      if (config?.SOCKET_URL) this.SOCKET_URL = config.SOCKET_URL;
+      
+      
       if (config?.CREATE_ADMIN_APPROVERS) {
         const approvers = await this.loadApprovers(
           config.CREATE_ADMIN_APPROVERS
@@ -134,12 +150,6 @@ class ConfigStore {
           config.CREATE_BULK_APPROVERS
         );
         this.CREATE_BULK_REQS_APPROVERS = approvers;
-      }
-      if (config?.CREATE_SPECIAL_GROUP_APPROVERS) {
-        const approvers = await this.loadApprovers(
-          config.CREATE_SPECIAL_GROUP_APPROVERS
-        );
-        this.CREATE_SPECIAL_GROUP_REQS_APPROVERS = approvers;
       }
       if (config?.CREATE_SECURITY_ADMIN_APPROVERS) {
         const approvers = await this.loadApprovers(
@@ -154,18 +164,14 @@ class ConfigStore {
         );
         this.soldierRequestsApprovers = approvers;
       }
-      if (config?.organizationNumbers)
-        this.organizationNumbers = config.organizationNumbers;
-      if (config?.organizationIds)
-        this.organizationIds = config.organizationIds;
-      if (config?.organizationNumberToGroupId)
-        this.organizationNumberToGroupId = config.organizationNumberToGroupId;
-      if (config?.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL)
-        this.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL =
-          config.ENTITIES_WITH_VISIBLE_CREATE_EXTERNAL;
+
+      if (config?.CREATE_SPECIAL_GROUP_APPROVERS) {
+        const approvers = await this.loadApprovers(config.CREATE_SPECIAL_GROUP_APPROVERS);
+        this.CREATE_SPECIAL_GROUP_REQS_APPROVERS = approvers;
+      }
     } catch (error) {
       console.log('problem with config');
-    }
+    };
   }
 
   async loadApprovers(approversIdsArray) {

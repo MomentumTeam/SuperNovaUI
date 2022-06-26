@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useStores } from "../../../context/use-stores";
 
 const TakeRequest = ({ request, actionPopup }) => {
-  const { userStore, appliesStore } = useStores();
+  const { userStore, appliesApproveStore } = useStores();
   const user = toJS(userStore.user);
 
   const onSubmit = async () => {
@@ -18,7 +18,7 @@ const TakeRequest = ({ request, actionPopup }) => {
     };
 
     try {
-      await appliesStore.transferApprovers(req);
+      await appliesApproveStore.transferApprovers(req);
       actionPopup("העברה לטיפולי");
     } catch (e) {
       actionPopup("העברה לטיפולי", e);

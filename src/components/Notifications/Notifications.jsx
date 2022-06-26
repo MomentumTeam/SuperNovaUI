@@ -1,49 +1,47 @@
-import { useRef, useState, useEffect } from "react";
-import { Badge } from "primereact/badge";
-import { OverlayPanel } from "primereact/overlaypanel";
 import AllNotifications from "./AllNotifications";
 import HorizontalLine from "../HorizontalLine";
 import NotificationsScroll from "./NotificationsScroll";
-import { useStores } from "../../context/use-stores";
-import { getMyNotifications } from "../../service/NotificationService";
+import { useRef, useState, useEffect } from "react";
+import { Badge } from "primereact/badge";
+import { OverlayPanel } from "primereact/overlaypanel";
+import { observer } from "mobx-react";
+import { useStores } from '../../context/use-stores';
+
 import "../../assets/css/local/components/notifications.css";
 
-const Notifications = ({ notifications }) => {
+const Notifications = observer(() => {
   const op = useRef(null);
+  const {notificationStore} = useStores();
   const [isVisible, setIsVisible] = useState(false);
-  const { userStore } = useStores();
-  const [readNotifications, setReadNotifications] = useState([]);
-
-  const isNewNotificationsAvailable = notifications.length > 0;
+  const [hasUnreadNotify, setHasUnreadNotify] = useState(false);
+  const unreadNotifications = notificationStore.userUnreadNotifications;
 
   useEffect(() => {
     const updateReadNotifications = async () => {
-      const data = (await getMyNotifications(true, 1, 5)).notifications;
-      setReadNotifications(data);
+      await notificationStore.fetchUserReadNotifications(true, 1, 5);
     };
+    if (!hasUnreadNotify) updateReadNotifications();
+  }, [hasUnreadNotify]);
 
-    if (!isNewNotificationsAvailable) {
-      updateReadNotifications();
-    }
-  }, [setReadNotifications]);
+  useEffect(() => {
+    setHasUnreadNotify(unreadNotifications && unreadNotifications.length > 0);
+  }, [unreadNotifications]);
 
   return (
     <div style={{ display: "inline-block" }}>
       <button
         className="btn btn-notification p-mr-4"
-        title="Notification"
+        title="התראות"
         type="button"
         onClick={(e) => {
           op.current.toggle(e);
         }}
       >
-        {isNewNotificationsAvailable > 0 && (
-          <Badge
-            value={notifications.length}
-            style={{ position: "relative", top: "1.2rem", left: "1.2rem" }}
-          />
+        {hasUnreadNotify && (
+          <Badge value={unreadNotifications.length} style={{ position: "relative", top: "1.2rem", left: "1.2rem" }} />
         )}
       </button>
+
       <OverlayPanel
         showCloseIcon={true}
         ref={op}
@@ -51,25 +49,16 @@ const Notifications = ({ notifications }) => {
         style={{ width: "350px", direction: "rtl", borderRadius: "40px" }}
         className="overlaypanel-demo"
         onHide={async () => {
-          isNewNotificationsAvailable &&
-            (await userStore.markNotificationsAsRead(
-              notifications.map(({ id }) => id)
-            ));
+          hasUnreadNotify && (await notificationStore.markAllNotificationsAsRead());
         }}
       >
-        <h2 style={{ textAlign: "center" }}>
-          {isNewNotificationsAvailable ? "התראות חדשות" : "התראות שנקראו"}
-        </h2>
+        <h2 style={{ textAlign: "center" }}>{hasUnreadNotify ? "התראות חדשות" : "התראות שנקראו"}</h2>
         <HorizontalLine />
-        {isNewNotificationsAvailable && (
-          <NotificationsScroll notifications={notifications} height="400px" />
-        )}
-        {!isNewNotificationsAvailable && (
-          <NotificationsScroll
-            notifications={readNotifications}
-            height="400px"
-          />
-        )}
+        <NotificationsScroll
+          notifications={hasUnreadNotify ? unreadNotifications : notificationStore.userReadNotifications}
+          height="400px"
+        />
+
         <h2
           style={{
             textAlign: "center",
@@ -84,6 +73,6 @@ const Notifications = ({ notifications }) => {
       <AllNotifications isVisible={isVisible} setIsVisible={setIsVisible} />
     </div>
   );
-};
+});
 
 export default Notifications;

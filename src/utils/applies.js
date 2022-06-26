@@ -5,6 +5,7 @@ import {
   checkIfRequestIsDone,
   REQ_TYPES,
   REQ_STATUSES,
+  DECISIONS,
 } from '../constants';
 import datesUtil from '../utils/dates';
 import { isUserApproverType, isUserHoldType } from './user';
@@ -26,16 +27,6 @@ export const organizeRows = (rows) => {
 export const getFormattedDate = (timestamp) => {
   const newDate = new Date(parseInt(timestamp));
   return datesUtil.formattedDate(newDate);
-};
-
-export const getResponsibleFactor = (apply, user) => {
-  const fields = getResponsibleFactorFields(user);
-  let responsibles = [];
-  fields.map((field) => {
-    responsibles = [...responsibles, ...apply[field]];
-  });
-
-  return responsibles;
 };
 
 export const getResponsibleFactors = (apply, user) => {
@@ -115,22 +106,6 @@ export const getResponsibleFactors = (apply, user) => {
   return fields;
 };
 
-export const getResponsibleFactorFields = (user) => {
-  const fields = [];
-  if (user === undefined || isUserHoldType(user, USER_TYPE.SUPER_SECURITY))
-    fields.push('superSecurityApprovers');
-  if (user === undefined || isUserHoldType(user, USER_TYPE.ADMIN))
-    fields.push('adminApprovers');
-  if (
-    user === undefined ||
-    isUserHoldType(user, USER_TYPE.SECURITY) ||
-    isUserHoldType(user, USER_TYPE.SECURITY_ADMIN)
-  )
-    fields.push('securityApprovers');
-  if (user === undefined || isUserApproverType(user)) fields.push('commanders');
-  return fields;
-};
-
 export const getApproverComments = (apply, user) => {
   const comments = [];
   const applyComments = apply['approversComments'];
@@ -169,59 +144,129 @@ export const getApproverComments = (apply, user) => {
   return comments;
 };
 
-export const isApproverAndCanEdit = (apply, user) => {
-  return isApprover(apply, user) && canEditApply(apply, user);
+export const isDirectApproverAndCanEdit = (apply, user) => {
+  return isDirectApprover(apply, user) && canEditApply(apply, user);
 };
 
-export const isApprover = (apply, user) => {
-  if (apply === undefined) return false;
-  const approvers = getResponsibleFactor(apply, user);
-  const isApprover = approvers.some((approver) => approver.id === user.id);
-  return isApprover;
-};
-
-export const canEditApply = (apply, user) => {
-  if (apply === undefined) return false;
+export const isApprovedByFirstCommander = (apply) => {
   return (
-    (isUserHoldType(user, USER_TYPE.SUPER_SECURITY) &&
-      !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)) ||
-    (isUserHoldType(user, USER_TYPE.SECURITY) &&
-      !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) ||
-    (apply.needAdminDecision &&
-      isUserHoldType(user, USER_TYPE.ADMIN) &&
-      !IsRequestCompleteForApprover(apply, USER_TYPE.ADMIN)) ||
-    (isUserApproverType(user) &&
-      !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER)) ||
-    (isUserHoldType(user, USER_TYPE.SECURITY_ADMIN) &&
-      !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY_ADMIN))
+    apply.status === STATUSES.APPROVED_BY_COMMANDER ||
+    apply.status === STATUSES.APPROVED_BY_ADMIN ||
+    (apply?.commanderDecision?.decision && apply.commanderDecision.decision === DECISIONS.APPROVED) ||
+    (apply?.adminDecision?.decision && apply.adminDecision.decision === DECISIONS.APPROVED)
+  );
+}
+
+export const isApprovedByAnySecurity = (apply) => {
+  return (
+    (apply?.securityDecision?.decision && apply.securityDecision.decision === DECISIONS.APPROVED) ||
+    apply.status === STATUSES.APPROVED_BY_SECURITY
   );
 };
+
+export const getDirectApprovers = (apply) => {
+  const isApprovedByCommander = isApprovedByFirstCommander(apply);
+  const isApprovedBySecurity = isApprovedByAnySecurity(apply);
+
+  const commanders = apply?.commanders;
+  const admins = apply?.adminApprovers;
+  const securityApprovers =  apply.needSecurityDecision && isApprovedByCommander?  apply?.securityApprovers: [];
+  const superSecurityApprovers = apply.needSuperSecurityDecision && isApprovedBySecurity ? apply.superSecurityApprovers : [];
+
+  const directApprovers = [...commanders, ...admins, ...securityApprovers, ...superSecurityApprovers]
+  return directApprovers;
+}
+
+export const isDirectApprover = (apply, user) => {
+  if (apply === undefined || user === undefined) return false;
+
+  const directApprovers = getDirectApprovers(apply);
+  return directApprovers.some(directApprover => directApprover.id === user.id)
+}
+
+export const isUndirectApprover = (apply, user) => {
+   const isUndirectApproverByType = (approverType) => {
+     switch (approverType) {
+       case USER_TYPE.ADMIN:
+         return true;
+       case USER_TYPE.SECURITY_ADMIN:
+         return apply.needSecurityDecision;
+       case USER_TYPE.SECURITY:
+         return apply.needSecurityDecision && !apply.hasSecurityAdmin;
+       case USER_TYPE.SUPER_SECURITY:
+         return apply.needSuperSecurityDecision;
+       default:
+         return false;
+     }
+   };
+
+  return user?.types && user.types.some((userType) => isUndirectApproverByType(userType));
+}
+
+export const isSubmitter = (apply, user) => {
+  return apply?.submittedBy?.id === user.id;
+}
+
+export const canEditApply = (apply, user) => {
+  if (apply === undefined || user === undefined) return false;
+  
+  const isAdminComplete = IsRequestCompleteForApprover(apply, USER_TYPE.ADMIN)
+  const isCommanderComplete = IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER);
+  const isFirstCommanderComplete = isAdminComplete || isCommanderComplete;
+  
+  const isApproverCanEdit = (approverType) => {
+    switch (approverType) {
+      case USER_TYPE.ADMIN:
+        return !isAdminComplete;
+      case USER_TYPE.COMMANDER:
+        return !isCommanderComplete &&  apply.commanders.some((commander) => user.id === commander.id);
+      case USER_TYPE.SECURITY:
+        if (apply.hasSecurityAdmin) {
+          if (!apply.securityApprovers.some(securityApprover => user.id === securityApprover.id)) {
+            return false;
+          }
+        }
+      case USER_TYPE.SECURITY_ADMIN:
+        return  !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY) && isFirstCommanderComplete
+      case USER_TYPE.SUPER_SECURITY:
+         return (
+           !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY) &&
+           ((!apply.needSecurityDecision && isFirstCommanderComplete) ||
+             (apply.needSecurityDecision &&
+               IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)))
+         );
+      default:
+        return false;
+    }
+  };
+
+  return user?.types && user.types.some(userType => isApproverCanEdit(userType))
+}
 
 export const canPassApply = (apply, user, kartoffelSoldierEnum) => {
   if (apply === undefined) return false;
 
   const isCreateSoldierApply =
-    apply?.type === REQ_TYPES.CREATE_ENTITY &&
-    apply?.kartoffelParams?.entityType === kartoffelSoldierEnum;
+    apply?.type === REQ_TYPES.CREATE_ENTITY && apply?.kartoffelParams?.entityType === kartoffelSoldierEnum;
 
-  
   const isAddSecurityAdminApproverApply =
-    apply?.type === REQ_TYPES.ADD_APPROVER &&
-    apply?.additionalParams?.type === USER_TYPE.SECURITY_ADMIN;
+    apply?.type === REQ_TYPES.ADD_APPROVER && apply?.additionalParams?.type === USER_TYPE.SECURITY_ADMIN;
 
   return (
     ((isUserHoldType(user, USER_TYPE.SUPER_SECURITY) &&
       !IsRequestCompleteForApprover(apply, USER_TYPE.SUPER_SECURITY)) ||
-      (isUserHoldType(user, USER_TYPE.SECURITY) &&
-        !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) ||
-      (isUserHoldType(user, USER_TYPE.ADMIN) &&
+      (isUserHoldType(user, USER_TYPE.SECURITY) && !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY)) ||
+      (apply.needAdminDecision &&
+        isUserHoldType(user, USER_TYPE.ADMIN) &&
         !IsRequestCompleteForApprover(apply, USER_TYPE.ADMIN)) ||
+      (isUserApproverType(user) && !IsRequestCompleteForApprover(apply, USER_TYPE.COMMANDER)) ||
       (isUserHoldType(user, USER_TYPE.SECURITY_ADMIN) &&
         !IsRequestCompleteForApprover(apply, USER_TYPE.SECURITY_ADMIN))) &&
     !isCreateSoldierApply &&
     !isAddSecurityAdminApproverApply
   );
 };
+
 
 export const getUserPassOptions = (apply, user) => {
   let passOptions = [];
@@ -270,26 +315,27 @@ export const IsRequestCompleteForApprover = (apply, approverType) => {
     case USER_TYPE.SUPER_SECURITY:
       return (
         !apply?.needSuperSecurityDecision ||
-        isStatusComplete(apply['superSecurityDecision']['decision'])
+        isStatusComplete(apply["superSecurityDecision"]["decision"])
       );
     case USER_TYPE.SECURITY:
     case USER_TYPE.SECURITY_ADMIN:
       return (
         !apply?.needSecurityDecision ||
-        isStatusComplete(apply['securityDecision']['decision']) ||
-        apply['status'] === STATUSES.APPROVED_BY_SECURITY
+        isStatusComplete(apply["securityDecision"]["decision"]) ||
+        apply["status"] === STATUSES.APPROVED_BY_SECURITY
       );
     case USER_TYPE.COMMANDER:
     case USER_TYPE.ADMIN:
-      if (apply.needAdminDecision && approverType === USER_TYPE.ADMIN) {
-        return (
-          apply['status'] === STATUSES.APPROVED_BY_ADMIN ||
-          isStatusComplete(apply['adminDecision']['decision'])
-        );
-      }
+      if (apply.needAdminDecision && isStatusComplete(apply["commanderDecision"]["decision"])) {
+        if (approverType === USER_TYPE.ADMIN) {
+          return apply["status"] === STATUSES.APPROVED_BY_ADMIN || isStatusComplete(apply["adminDecision"]["decision"]);
+        } else {
+          return true;
+        }
+      } 
       return (
-        apply['status'] === STATUSES.APPROVED_BY_COMMANDER ||
-        isStatusComplete(apply['commanderDecision']['decision'])
+        apply["status"] === STATUSES.APPROVED_BY_COMMANDER ||
+        isStatusComplete(apply["commanderDecision"]["decision"])
       );
     default:
       return true;

@@ -60,7 +60,7 @@ const Approver = ({
 
   const itemSelectedTemplate = (item) => {
     const id = Math.random().toString(36).slice(2);
-    const userFullName = getUserNameFromDisplayName(item.displayName);
+    const userFullName = item?.displayName && getUserNameFromDisplayName(item.displayName);
     return (
       <>
         <Tooltip

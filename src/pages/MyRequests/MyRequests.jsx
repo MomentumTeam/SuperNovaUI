@@ -13,8 +13,8 @@ import configStore from '../../store/Config';
 let defaultSearchFuncName = "loadMyRequests";
 let defaultSearchValue = "";
 
-const Requests = observer(() => {
-  const { myRequestsStore, userStore } = useStores();
+const Requests = observer(({myRequests}) => {
+  const { appliesMyStore, userStore } = useStores();
   const [tabId, setTabId] = useState(TableNames.myRequests.tab);
   const [first, setFirst] = useState(0);
   const [page, setPage] = useState(0);
@@ -41,7 +41,7 @@ const Requests = observer(() => {
 
     switch (tabId) {
       case TableNames.myRequests.tab:
-        data = await myRequestsStore[funcName](from, to, append, searchValue);
+        data = await appliesMyStore[funcName](from, to, append, searchValue);
         break;
       default:
         break;
@@ -55,11 +55,11 @@ const Requests = observer(() => {
 
     if (event && event.first !== undefined) {
       if (
-        tableData.length >= myRequestsStore.totalCount ||
+        tableData.length >= appliesMyStore.totalCount ||
         first >= event.first ||
         tableData.length / (event.page + 1) > configStore.ITEMS_IN_PAGE
       )
-      getNextPage = false;
+        getNextPage = false;
       setFirst(event.first);
     }
 
@@ -77,8 +77,8 @@ const Requests = observer(() => {
   };
 
   useEffect(() => {
-    setTableData(myRequestsStore.myRequests);
-  }, [myRequestsStore.myRequests, myRequestsStore.totalCount]);
+    setTableData(myRequests);
+  }, [myRequests]);
 
   useEffect(() => {
     searchActivate();

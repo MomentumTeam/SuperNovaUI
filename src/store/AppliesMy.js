@@ -8,9 +8,10 @@ import {
   getMyRequestsBySearch,
 } from "../service/AppliesService";
 
-export default class MyRequestsStore {
+export default class AppliesMyStore {
   myRequests = [];
   totalCount = 0;
+
   constructor() {
     makeAutoObservable(this, {
       myRequests: observable,
@@ -22,11 +23,10 @@ export default class MyRequestsStore {
     });
   }
 
-
   async loadMyRequests(from, to, append = false) {
     const myRequests = await getMyRequests(from, to, "CREATED_AT");
     this.myRequests = append ? [...this.myRequests, ...myRequests.requests] : myRequests.requests;
-    this.totalCount  = myRequests.totalCount;
+    this.totalCount = myRequests.totalCount;
   }
 
   async loadMyRequestsBySerialNumber(_from, _to, append = false, value) {
@@ -73,5 +73,27 @@ export default class MyRequestsStore {
       filteredResults = await getMyRequestsByStatus(from, to, status[0]);
       this.myRequests = append ? [...this.myRequests, ...filteredResults] : filteredResults;
     }
+  }
+
+  // UTILS
+  checkIfApplyExist = (id) => {
+    if (Array.isArray(this.myRequests)) {
+      const reqIndex = this.myRequests.findIndex((apply) => apply.id === id);
+      return reqIndex;
+    }
+
+    return -1;
+  };
+
+  updateApply = (apply) => {
+    // Requests that the user created
+    const isApplyExists = this.checkIfApplyExist(apply.id);
+    if (isApplyExists != -1) this.myRequests[isApplyExists] = apply;
+  };
+
+  removeApply = (apply) => {
+    const isApplyExists = this.checkIfApplyExist(apply.id);
+    if (isApplyExists != -1) this.myRequests.splice(isApplyExists, 1);
+
   }
 }
