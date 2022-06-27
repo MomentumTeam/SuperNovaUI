@@ -28,16 +28,16 @@ const RoleDelete = ({ role, isDialogVisible, setDialogVisiblity, actionPopup }) 
   }, [actionIsDone]);
 
   useEffect(() => {
-    const getEntity = async() => {
+    const getEntity = async () => {
       try {
         setIsLoading(true);
         const entityRes = await getEntityByRoleId(role?.roleId);
         setEntity(entityRes);
       } catch (error) {
-        setEntity(null)
+        setEntity(null);
       }
       setIsLoading(false);
-    }
+    };
 
     getEntity();
   }, [role]);
@@ -47,6 +47,7 @@ const RoleDelete = ({ role, isDialogVisible, setDialogVisiblity, actionPopup }) 
       try {
         const samAccountName = getSamAccountNameFromUniqueId(role.roleId);
         const res = await getLastTimeConnectionBySamAccountName(samAccountName);
+
         const date =
           res?.lastLogonTimestamp && res?.lastLogonTimestamp !== "unknown"
             ? new Date(parseInt(res.lastLogonTimestamp))
@@ -57,32 +58,32 @@ const RoleDelete = ({ role, isDialogVisible, setDialogVisiblity, actionPopup }) 
       }
     };
 
-   (entity)? getLastTimeConnection():setLastTimeConnection(null);
-  }, [entity])
+    entity ? getLastTimeConnection() : setLastTimeConnection(null);
+  }, [entity]);
 
   useEffect(() => {
-     lastTimeConnection ? setIsDisabled(!isDateGreater(lastTimeConnection, 14)) : setIsDisabled(false);
+    lastTimeConnection ? setIsDisabled(!isDateGreater(lastTimeConnection, 14)) : setIsDisabled(false);
   }, [lastTimeConnection]);
-  
+
   const handleRequest = async () => {
     try {
-        const req = {
-          kartoffelParams: {
-            roleId: role.roleId,
-            uniqueId: role?.digitalIdentityUniqueId,
-            jobTitle: role.jobTitle,
-            ...(entity?.firstName && { firstName: entity.firstName }),
-            ...(entity?.lastName && { lastName: entity.lastName }),
-            ...(entity?.personalNumber && { personalNumber: entity.personalNumber }),
-            ...(entity?.identityCard && { identityCard: entity.identityCard }),
-          },
-          adParams: {
-            samAccountName: getSamAccountNameFromUniqueId(role.roleId),
-          },
-        };
+      const req = {
+        kartoffelParams: {
+          roleId: role.roleId,
+          uniqueId: role?.digitalIdentityUniqueId,
+          jobTitle: role.jobTitle,
+          ...(entity?.firstName && { firstName: entity.firstName }),
+          ...(entity?.lastName && { lastName: entity.lastName }),
+          ...(entity?.personalNumber && { personalNumber: entity.personalNumber }),
+          ...(entity?.identityCard && { identityCard: entity.identityCard }),
+        },
+        adParams: {
+          samAccountName: getSamAccountNameFromUniqueId(role.roleId),
+        },
+      };
 
-        await appliesStore.deleteRoleApply(req);
-        setActionIsDone(true)
+      await appliesStore.deleteRoleApply(req);
+      setActionIsDone(true);
     } catch (e) {
       actionPopup("מחיקת תפקיד", e);
     }
@@ -126,8 +127,16 @@ const RoleDelete = ({ role, isDialogVisible, setDialogVisiblity, actionPopup }) 
                   <p style={{ color: "red", textDecoration: "underline", marginBottom: "5px" }}>
                     שימו לב- לתפקיד זה יש משתמש מקושר
                   </p>
-                  לא ניתן למחוק תפקידים של משתמשים שהתחברו בשבועיים האחרונים <br />
-                  (בקשות אלו יכשלו באופן אוטומטי)
+                  {disabled ? (
+                    <>
+                    המשתמש היה פעיל בשבועיים האחרונים ולכן לא ניתן למחוק אותו.
+                    </>
+                  ) : (
+                    <>
+                      לא ניתן למחוק תפקידים של משתמשים שהתחברו בשבועיים האחרונים <br />
+                      (בקשות אלו יכשלו באופן אוטומטי)
+                    </>
+                  )}
                 </p>
               )}
             </div>
