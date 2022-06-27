@@ -8,9 +8,9 @@ const InputTextField = ({
   item,
   fieldName,
   displayName,
-  methods,
-  errors,
-  isEdit,
+  methods = null,
+  errors = null,
+  isEdit = false,
   canEdit = false,
   type = 'text',
   keyFilter = null,
@@ -22,46 +22,46 @@ const InputTextField = ({
   const id = Math.random().toString(36).slice(2);
 
   useEffect(() => {
-    if (item) methods.setValue(fieldName, item[fieldName]);
-    methods.clearErrors();
+    if (methods) {
+      if (item) methods.setValue(fieldName, item[fieldName]);
+      methods.clearErrors();
+    }
   }, [isEdit, item]);
 
   return (
     <div className={`p-fluid-item ${additionalClass}`}>
-      <div className='p-field'>
+      <div className="p-field">
         {getLabel({ canEdit, isEdit, labelName: displayName })}
         {withTooltip && disabled && (
           <Tooltip
-            position='top'
+            position="top"
             target={`.hierarchyText-${id}`}
-            content={methods.watch(fieldName)}
+            content={methods ? methods.watch(fieldName) : item[fieldName]}
           />
         )}
 
         <div className={`hierarchyText-${id}`}>
           <InputText
             id={`field-${fieldName}`}
-            {...methods.register(fieldName)}
-            className={errors[fieldName] ? 'p-invalid' : ''}
+            {...(methods && methods.register(fieldName))}
+            className={errors && errors[fieldName] ? "p-invalid" : ""}
             disabled={disabled}
             style={disabled ? disabledInputStyle : {}}
-            value={methods.watch(fieldName)}
+            value={methods ? methods.watch(fieldName) : item[fieldName]}
             type={type}
             keyfilter={keyFilter}
             onChange={(e) => {
-              methods.setValue(fieldName, e.target.value, {
-                shouldValidate: true,
-              });
+              if (methods) {
+                methods.setValue(fieldName, e.target.value, {
+                  shouldValidate: true,
+                });
+              }
             }}
             placeholder={placeholder}
           />
         </div>
 
-        {errors[fieldName] && (
-          <small className='p-error p-d-block'>
-            {errors[fieldName].message}
-          </small>
-        )}
+        {errors && errors[fieldName] && <small className="p-error p-d-block">{errors[fieldName].message}</small>}
       </div>
     </div>
   );

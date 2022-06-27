@@ -270,3 +270,14 @@ export const getDIByUniqueId = async (uniqueId) => {
   );
   return response.data;
 };
+
+
+// LDAP
+export const getLastTimeConnectionBySamAccountName = async (samAccountName) => {
+  const response = await axiosApiInstance.get(`${apiBaseUrl}/api/kartoffel/ldap/user`, {
+    params: {
+      samAccountName,
+    },
+  });
+  return response.data;
+};
