@@ -42,6 +42,10 @@ const RoleDelete = ({ role, isDialogVisible, setDialogVisiblity, actionPopup }) 
     getEntity();
   }, [role]);
 
+  const ldapDateToJs = (ldapDate) => {
+    return new Date(parseInt(ldapDate) / 1e4 - 1.16444736e13);
+  }
+  
   useEffect(() => {
     const getLastTimeConnection = async () => {
       try {
@@ -50,7 +54,7 @@ const RoleDelete = ({ role, isDialogVisible, setDialogVisiblity, actionPopup }) 
 
         const date =
           res?.lastLogonTimestamp && res?.lastLogonTimestamp !== "unknown"
-            ? new Date(parseInt(res.lastLogonTimestamp))
+            ? ldapDateToJs(res.lastLogonTimestamp)
             : null;
         setLastTimeConnection(date);
       } catch (error) {
