@@ -110,6 +110,14 @@ const FullEntityInformationForm = forwardRef(
             );
             setUser(entity);
             setRole(role)
+          } else if(requestObject.type === REQ_TYPES.EDIT_ENTITY) {
+            const entity = await getEntityByMongoId(
+              requestObject.kartoffelParams.id
+            );
+            entity.fullName = entity.firstName + " " + entity.lastName;
+            console.log(entity)
+            setUser(entity);
+
           } else {
             if (
               Array.isArray(requestObject.kartoffelParams?.mobilePhone) &&
@@ -397,6 +405,33 @@ const FullEntityInformationForm = forwardRef(
       }
     ];
 
+    const editEntityFields = [
+      {
+        fieldName: "id",
+        displayName: "מזהה",
+        inputType: InputTypes.TEXT,
+        force: true,
+        secured: () => reqView,
+      },
+      {
+        fieldName: "fullName",
+        displayName: "שם המשתמש שנערך",
+        inputType: InputTypes.TEXT,
+        force: true,
+      },
+      {
+        fieldName: "clearance",
+        displayName: "סיווג המשתמש שנערך",
+        canEdit: true,
+        secured: () => methods.watch("canSeeUserClearance"),
+        force: true,
+        inputType: InputTypes.TEXT,
+        type: "num",
+        keyFilter: "num",
+
+      }
+    ];
+
     const getInputFields = (item, fields, reqView) => {
       return (
         <InputForm
@@ -414,6 +449,8 @@ const FullEntityInformationForm = forwardRef(
           return ( reqView &&
             getInputFields(user, convertFormFields)
           );
+        case REQ_TYPES.EDIT_ENTITY:
+          return ( getInputFields(user, editEntityFields) );
         case REQ_TYPES.DISCONNECT_ROLE:
           return reqView && <>
             <div

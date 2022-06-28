@@ -34,7 +34,9 @@ import { getSamAccountNameFromEntity } from "../../../utils/fields";
 import DisconnectRoleFromEntityPopup from './DisconnectRoleFromEntityPopup';
 
 const validationSchema = Yup.object().shape({
+  entityPrevName: Yup.string(),
   oldRole: Yup.object(),
+  isGoalUser: Yup.boolean(),
   isUserApprover: Yup.boolean(),
   canEditRoleFields: Yup.boolean(),
   isUserSecurity: Yup.boolean(),
@@ -44,8 +46,9 @@ const validationSchema = Yup.object().shape({
       .min(1, 'יש לבחור לפחות גורם מאשר אחד')
       .required('יש לבחור לפחות גורם מאשר אחד'),
   }),
-  roleName: Yup.string().when('canEditRoleFields', {
-    is: true,
+  roleName: Yup.string().when(['canEditRoleFields', 'isGoalUser'], {
+    is: (canEditRoleFields,
+      isGoalUser) => canEditRoleFields && !isGoalUser,
     then: Yup.string()
       .required('יש לבחור שם תפקיד')
       .matches(ROLE_EXP, 'תפקיד לא תקין')
@@ -83,8 +86,9 @@ const validationSchema = Yup.object().shape({
         },
       }),
   }),
-  clearance: Yup.string().when('canEditRoleFields', {
-    is: true,
+  clearance: Yup.string().when(['canEditRoleFields', 'isGoalUser'], {
+    is: (canEditRoleFields,
+      isGoalUser) => canEditRoleFields && !isGoalUser,
     then: Yup.string()
       // .required('יש לבחור סיווג')      //commented-in case some roles don't have clearance
       .test({
@@ -95,6 +99,22 @@ const validationSchema = Yup.object().shape({
             clearance !== context.parent.oldRole.clearance ||
             context.parent.roleName !== context.parent.oldRole.jobTitle
           );
+        },
+      }),
+  }),
+  userInRole: Yup.string().when(['canEditRoleFields', 'isGoalUser'], {
+    is: (canEditRoleFields,
+      isGoalUser) => canEditRoleFields && isGoalUser,
+    then: Yup.string()
+      // .required('יש לבחור סיווג')      //commented-in case some roles don't have clearance
+      .test({
+        name: 'userInRole-is-the-same',
+        message: 'יש לשנות שם משתמש בתפקיד!',
+        test: async (userInRole, context) => {
+          console.log(userInRole, context.parent.entityPrevName)
+          return (
+            userInRole !== context.parent.entityPrevName
+            );
         },
       }),
   }),
@@ -134,7 +154,7 @@ const FullRoleInformationForm = forwardRef(
         }
       }, 300)
     );
-
+    
     const defaultValues = {
       oldRole: requestObject,
       comments: reqView ? requestObject?.comments : '',
@@ -203,6 +223,9 @@ const FullRoleInformationForm = forwardRef(
             );
             setEntity(entityRes);
             setValue('entityId', entityRes.id);
+            setValue('userInRole', entityRes.fullName);
+            setValue('entityPrevName', entityRes.fullName);
+
           } catch (error) {}
 
           try {
@@ -215,6 +238,8 @@ const FullRoleInformationForm = forwardRef(
           } catch (error) {}
         }
       }
+      // setValue('isGoalUser', entity?.entityType === configStore.USER_ROLE_ENTITY_TYPE)      
+      setValue('isGoalUser', true);
 
       await initDefaultApprovers();
     }, [requestObject, onlyForView]);
@@ -226,8 +251,10 @@ const FullRoleInformationForm = forwardRef(
         console.log(err);
         throw new Error(err.errors);
       }
-      const { approvers, comments, roleName, clearance, oldRole, entityId } =
+      const { approvers, comments, roleName, clearance, oldRole, entityId, entityPrevName, userInRole } =
         data;
+
+      console.log(userInRole)
       const req = {
         commanders: approvers,
         kartoffelParams: {
@@ -255,7 +282,26 @@ const FullRoleInformationForm = forwardRef(
         };
       }
 
-      await appliesStore.renameRoleApply(req);
+      if (entityPrevName !== userInRole) {
+        let fullName = watch('userInRole').split(' ');
+        req.kartoffelParams = {
+          id: entityId,
+          firstName: fullName[0],
+          lastName: fullName[1] ? fullName[1] : '',
+        };
+
+        req.adParams = {
+          firstName: fullName[0],
+          lastName: fullName[1] ? fullName[1] : '',
+          fullName: watch('userInRole'),
+        };
+
+        await appliesStore.editEntityApply(req);
+        console.log(req)
+      } else {
+        await appliesStore.renameRoleApply(req);
+      }
+
       setIsActionDone(true);
     };
 
@@ -317,8 +363,13 @@ const FullRoleInformationForm = forwardRef(
                 id="editSingleRoleForm-roleName"
                 {...register("roleName")}
                 onChange={onRoleNameChange}
-                disabled={onlyForView || !canEditRoleFields}
+                disabled={
+                  onlyForView ||
+                  entity?.entityType === USER_TYPE.USER_ROLE_ENTITY_TYPE ||
+                  !canEditRoleFields
+                }
               />
+
               <label>
                 {(errors.roleName || errors.isJobTitleAlreadyTaken) && (
                   <small style={{ color: "red" }}>
@@ -489,17 +540,34 @@ const FullRoleInformationForm = forwardRef(
         <div className="p-fluid-item p-fluid-item">
           <div className="p-field">
             <label> משתמש בתפקיד </label>
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <div className="p-field">
               <InputText
                 id="fullRoleInfoForm-entity"
-                value={entity?.fullName || "- - -"}
-                disabled={true}
+                {...register("userInRole")}
+                value={watch("userInRole")}
+                placeholder={watch("userInRole") || entity.fullName}
+                disabled={ reqView ||
+                  !(
+                    isUserHoldType(userStore.user, USER_TYPE.ADMIN)
+                    && entity.entityType === USER_TYPE.USER_ROLE_ENTITY_TYPE
+                  )
+                }
                 style={{
                   textAlign: !entity?.fullName && "center",
-                  position: "absolute",
                 }}
               />
-              {!reqView && (entity.entityType !== configStore.USER_ROLE_ENTITY_TYPE) && 
+              <label>
+                {errors.userInRole && (
+                  <small style={{ color: "red" }}>
+                    {errors.userInRole?.message
+                      ? errors.userInRole?.message
+                      : "יש למלא ערך"}
+                  </small>
+                )}
+              </label>
+
+              {!reqView &&
+                entity.entityType !== configStore.USER_ROLE_ENTITY_TYPE &&
                 userStore.user.types.includes(USER_TYPE.ADMIN) &&
                 samAccountName !== "" && (
                   <button
