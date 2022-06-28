@@ -121,7 +121,7 @@ const ApproverForm = forwardRef(
 
           let hierarchyOfId;
           switch (requestObject.additionalParams.type) {
-            case USER_TYPE.ADMIN :
+            case USER_TYPE.ADMIN:
             case USER_TYPE.SECURITY_ADMIN:
               hierarchyOfId = requestObject.additionalParams.groupInChargeId;
               break;
@@ -426,7 +426,8 @@ const ApproverForm = forwardRef(
                   'personalNumber',
                   e.value.employeeId ||
                     e.value.personalNumber ||
-                    e.value.identityCard
+                    e.value.identityCard ||
+                    e.value.goalUserID
                 );
                 setValue('hierarchy', {
                   hierarchy: e.value.hierarchy,
@@ -459,7 +460,7 @@ const ApproverForm = forwardRef(
           <div className="p-field">
             <label htmlFor="2021">
               {' '}
-              <span className="required-field">*</span>מ"א/ת"ז
+              <span className="required-field">*</span>מ"א/ת"ז/brole
             </label>
             <InputText
               {...register('personalNumber', { required: true })}
