@@ -53,9 +53,10 @@ const HelpHamburgerMenu = () => {
           header="צור קשר"
           visible={displayContactInfo}
           onHide={onContactInfoHide}
-          breakpoints={{ "960px": "50vw" }}
-          style={{ width: "35vw", minHeight: "250px", height: "350px" }}
+          breakpoints={{ '960px': '50vw' }}
+          style={{ width: '35vw', minHeight: '250px', height: '350px' }}
           className="contact-info-dialog"
+          dismissableMask={true}
         >
           <ContactInfo />
         </Dialog>
@@ -64,9 +65,10 @@ const HelpHamburgerMenu = () => {
           header="שאלות ותשובות"
           visible={displayFAQ}
           onHide={onFAQHide}
-          breakpoints={{ "960px": "75vw" }}
-          style={{ width: "60vw" }}
+          breakpoints={{ '960px': '75vw' }}
+          style={{ width: '60vw' }}
           className="faq-dialog"
+          dismissableMask={true}
         >
           <FAQ />
         </Dialog>
