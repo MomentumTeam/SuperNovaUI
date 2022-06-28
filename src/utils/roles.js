@@ -12,6 +12,10 @@ export const canEditRole = (selectedEntity, user) => {
   );
 };
 
+export const canDeleteRole = (user) => {
+  return isUserHoldType(user, USER_TYPE.ADMIN)
+}
+
 export const isRoleBelongToEntity = (user, role) => {
   return (
     role && user.digitalIdentities && user.digitalIdentities.find((di) => di.role?.roleId && di.role.roleId === role.roleId)

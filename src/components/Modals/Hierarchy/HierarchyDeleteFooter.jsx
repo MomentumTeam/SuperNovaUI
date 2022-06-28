@@ -1,36 +1,15 @@
 import React from "react";
 import { Button } from "primereact/button";
-import { deleteOGRequest } from '../../../service/AppliesService';
-import { getHierarchy } from '../../../utils/hierarchy';
 
-const HierarchyDeleteFooter = ({closeModal, item, disabled}) => {
-  const sendForm = async() => {
-    const kartoffelParams = {
-        id: item.id,
-    };
-    
-    const {hierarchyName} =  getHierarchy(item.hierarchy)
-    const adParams = {
-        ouDisplayName: item.hierarchy,
-        ouName: "dd",
-        name: hierarchyName,
-    };
-
-    const res = await deleteOGRequest({ kartoffelParams: kartoffelParams, adParams: adParams });
-  }  
-
+const HierarchyDeleteFooter = ({ closeModal, deleteHierarchy }) => {
   return (
-    <div className="display-flex display-flex-end">
-      <Button label="ביטול" onClick={closeModal} className="btn-underline" />
+    <div className="display-flex ">
       <Button
-        disabled={disabled}
-        label="מחיקה"
-        onClick={() => {
-          sendForm();
-          closeModal();
-        }}
-        className={disabled ? "btn-gradient gray" : "btn-gradient red"}
+        label={"כן, ההיררכיה ריקה. אנא מחקו אותה."}
+        onClick={() => deleteHierarchy()}
+        className="btn-gradient cyon"
       />
+      <Button label="לא, אל תמחקו את ההיררכיה!" onClick={closeModal} className="btn-gradient red" />
     </div>
   );
 };
