@@ -33,3 +33,13 @@ export const CanSeeUserClearance = () => {
   return field.secured.some((allowedType) => isUserHoldType(user, allowedType));
 };
 
+export const CanSeeUserFullClearance = () => {
+  const { userStore } = useStores();
+  const user = toJS(userStore.user);
+
+  const field = TableTypes.entities.find(
+    (field) => field.field === "fullClearance"
+  );
+  return field.secured.some((allowedType) => isUserHoldType(user, allowedType));
+};
+

@@ -18,6 +18,7 @@ import { getEntityByMongoId, getRoleByRoleId } from '../../../service/KartoffelS
 import { USER_ENTITY_TYPE } from '../../../constants/user';
 import {
   CanSeeUserClearance,
+  CanSeeUserFullClearance,
   CanEditEntityFields,
 } from '../../../utils/entites';
 import {
@@ -143,7 +144,9 @@ const FullEntityInformationForm = forwardRef(
           if (Array.isArray(requestObject.mobilePhone))
             requestObject.mobilePhone = requestObject.mobilePhone[0];
           setUser(requestObject);
+        
         }
+        console.log(requestObject)
       }
     }, [requestObject]);
 
@@ -305,6 +308,16 @@ const FullEntityInformationForm = forwardRef(
         displayName: "סיווג",
         canEdit: true,
         secured: () => methods.watch("canSeeUserClearance"),
+        force: true,
+        inputType: InputTypes.TEXT,
+        type: "num",
+        keyFilter: "num",
+      },
+      {
+        fieldName: "fullClearance",
+        displayName: "סיווג מלא",
+        canEdit: true,
+        secured: () => methods.watch("CanSeeUserFullClearance"),
         force: true,
         inputType: InputTypes.TEXT,
         type: "num",
