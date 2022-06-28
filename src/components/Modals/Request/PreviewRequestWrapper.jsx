@@ -8,12 +8,7 @@ import HorizontalLine from '../../HorizontalLine';
 import { Tooltip } from 'primereact/tooltip';
 
 
-const PreviewRequestWrapper = ({
-  ModalComponent,
-  request,
-  showJob,
-  setDialogVisiblity,
-}) => {
+const PreviewRequestWrapper = ({ ModalComponent, request, showJob, setDialogVisiblity, showApproverSection }) => {
   return (
     <>
       <RequestFlowChart request={request} />
@@ -24,10 +19,7 @@ const PreviewRequestWrapper = ({
             <label htmlFor="2020">
               <span className="required-field">*</span>שם משתמש
             </label>
-            <Tooltip
-              target=".username"
-              content={request?.submittedBy?.displayName}
-            />
+            <Tooltip target=".username" content={request?.submittedBy?.displayName} />
             <div className="username">
               <InputText id="2022" disabled={true} value={request?.submittedBy?.displayName} field="displayName" />
             </div>
@@ -49,12 +41,12 @@ const PreviewRequestWrapper = ({
           </div>
         </div>
       </div>
-      <hr style={{ borderWidth: '1px' }} />
+      <hr style={{ borderWidth: "1px" }} />
       <h2>פרטי הבקשה</h2>
       <ModalComponent onlyForView={true} requestObject={request} showJob={showJob} />
       <HorizontalLine />
 
-      <ApproverSection request={request} setDialogVisiblity={setDialogVisiblity} />
+      {showApproverSection && <ApproverSection request={request} setDialogVisiblity={setDialogVisiblity} />}
       <DeleteSection request={request} setDialogVisiblity={setDialogVisiblity} />
     </>
   );
