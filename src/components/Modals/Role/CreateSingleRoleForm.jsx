@@ -25,6 +25,7 @@ import { isApproverValid } from '../../../service/ApproverService';
 import { debounce } from 'lodash';
 import configStore from '../../../store/Config';
 import InfoPopup from '../../InfoPopup';
+import { Link } from 'react-router-dom';
 
 const validationSchema = Yup.object().shape({
   hierarchy: Yup.object().required('יש לבחור היררכיה'),
@@ -227,6 +228,22 @@ const RenameSingleOGForm = forwardRef(
 
     return (
       <div className="p-fluid" id="createSingleRoleForm">
+        <span
+          style={{
+            // marginRight: '60px',
+            marginBottom: '30px',
+            // marginTop: '-20px',
+            fontSize: '85%',
+            color: '#73777B',
+          }}
+        >
+          פתיחת תפקיד חדש (t ריק) תחת היררכיה נבחרת.
+          <br />
+          "תפקיד" הינו הערך האחרון בשורת ההיררכיה לדוגמה "מערך / מטה/………./ מדור
+          X/ <b>יועץ מס</b>- ישראל ישראלי"
+          <br />( במידה וברצונך לעדכן את שם התפקיד שלך, אנא עבור לטבלת
+          <Link to="/listUsersPage"> רשימת תפקידים</Link>){/* </p> */}
+        </span>
         <div
           className="display-flex title-wrap"
           style={{

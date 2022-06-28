@@ -322,6 +322,21 @@ const ApproverForm = forwardRef(
 
     return (
       <div className="p-fluid">
+        <span
+          style={{
+            // marginRight: '60px',
+            marginBottom: '30px',
+            // marginTop: '-20px',
+            // display: 'inline-block',
+            fontSize: '85%',
+            color: '#73777B',
+          }}
+        >
+          בקשה להרשאות במערכת LEGO.
+           <br />הרשאות מסוג ניהול עבור אישור בקשות במערכת
+          בהתאם לצורך. עבור הרשאת מקורות ומערכות מודיעיניות יש לפנות למערכת
+          במוס.
+        </span>{' '}
         <div
           className={
             watch('approverType') == USER_TYPE.ADMIN ||
