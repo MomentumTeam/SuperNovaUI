@@ -146,7 +146,6 @@ const FullEntityInformationForm = forwardRef(
           setUser(requestObject);
         
         }
-        console.log(requestObject)
       }
     }, [requestObject]);
 
