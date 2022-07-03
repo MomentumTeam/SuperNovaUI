@@ -12,9 +12,15 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import datesUtil from '../../../utils/dates';
 import { InputForm, InputTypes } from '../../Fields/InputForm';
 import { useStores } from '../../../context/use-stores';
-import { getSamAccountNameFromEntity } from '../../../utils/fields';
+import {
+  getSamAccountNameFromEntity,
+  getUserRelevantIdentity,
+} from '../../../utils/fields';
 import { kartoffelIdentityCardValidation } from '../../../utils/user';
-import { getEntityByMongoId, getRoleByRoleId } from '../../../service/KartoffelService';
+import {
+  getEntityByMongoId,
+  getRoleByRoleId,
+} from '../../../service/KartoffelService';
 import { USER_ENTITY_TYPE } from '../../../constants/user';
 import {
   CanSeeUserClearance,
@@ -70,6 +76,7 @@ const validationSchema = Yup.object().shape({
 const FullEntityInformationForm = forwardRef(
   (
     { setIsActionDone, onlyForView, requestObject, reqView = true, setIsEdit },
+
     ref
   ) => {
     const { appliesStore, configStore } = useStores();
@@ -95,7 +102,7 @@ const FullEntityInformationForm = forwardRef(
             );
             entity.newEntityType =
               USER_ENTITY_TYPE[
-                `${requestObject.kartoffelParams.newEntityType}`
+              `${requestObject.kartoffelParams.newEntityType}`
               ];
 
             entity.upn = requestObject.kartoffelParams.upn;
@@ -109,15 +116,36 @@ const FullEntityInformationForm = forwardRef(
               requestObject.kartoffelParams.uniqueId
             );
             setUser(entity);
-            setRole(role)
-          } else if(requestObject.type === REQ_TYPES.EDIT_ENTITY) {
+            setRole(role);
+          } else if (requestObject.type === REQ_TYPES.EDIT_ENTITY) {
             const entity = await getEntityByMongoId(
+              /*  */
               requestObject.kartoffelParams.id
             );
-            entity.fullName = entity.firstName + " " + entity.lastName;
-            console.log(entity)
-            setUser(entity);
 
+            entity.goalUserBrol = getUserRelevantIdentity(entity)?.role?.brol;
+            entity.firstName =
+              methods.watch('kartoffelParams').firstName || entity.firstName;
+            entity.lastName =
+              methods.watch('kartoffelParams').lastName || entity.lastName;
+            entity.identityCard =
+              methods.watch('kartoffelParams').identityCard ||
+              entity.identityCard;
+            entity.mobilePhone =
+              methods.watch('kartoffelParams').mobilePhone?.length > 0
+                ? methods.watch('kartoffelParams').mobilePhone[0]
+                : entity.mobilePhone[0];
+            entity.rank = methods.watch('kartoffelParams').rank || entity.rank;
+
+            entity.oldFirstName = methods.watch('kartoffelParams').oldFirstName;
+            entity.oldLastName = methods.watch('kartoffelParams').oldLastName;
+            entity.oldIdentityCard =
+              methods.watch('kartoffelParams').oldIdentityCard;
+            entity.oldMobilePhone =
+              methods.watch('kartoffelParams').oldMobilePhone;
+            entity.oldRank = methods.watch('kartoffelParams').oldRank;
+
+            setUser(entity);
           } else {
             if (
               Array.isArray(requestObject.kartoffelParams?.mobilePhone) &&
@@ -145,7 +173,7 @@ const FullEntityInformationForm = forwardRef(
             ) {
               requestObject.mobilePhone = requestObject.phone[0];
             } else {
-              requestObject.mobilePhone = "";
+              requestObject.mobilePhone = '';
             }
           }
           if (Array.isArray(requestObject.mobilePhone))
@@ -158,17 +186,18 @@ const FullEntityInformationForm = forwardRef(
     const onSubmit = async (data) => {
       try {
         let tempForm = { ...user, ...data };
+
         tempForm.fullName = `${tempForm.firstName} ${tempForm.lastName}`;
 
         const kartoffelParams = {
           id: tempForm.id,
           firstName: tempForm.firstName,
           lastName: tempForm.lastName,
-          phone: !tempForm?.mobilePhone
+          mobilePhone: !tempForm?.mobilePhone
             ? []
             : Array.isArray(tempForm.mobilePhone)
-            ? tempForm.mobilePhone
-            : [tempForm.mobilePhone],
+              ? tempForm.mobilePhone
+              : [tempForm.mobilePhone],
           ...(tempForm.serviceType && { serviceType: tempForm.serviceType }),
           ...(tempForm.address && { address: tempForm.address }),
           ...(tempForm.clearance && { clearance: tempForm.clearance }),
@@ -181,6 +210,17 @@ const FullEntityInformationForm = forwardRef(
             personalNumber: tempForm.personalNumber,
           }),
           ...(tempForm.identityCard && { identityCard: tempForm.identityCard }),
+          ...(user.firstName && { oldFirstName: user.firstName }),
+          ...(user.lastName && { oldLastName: user.lastName }),
+          ...(user.identityCard && {
+            oldIdentityCard: user.identityCard,
+          }),
+          oldMobilePhone: !user?.mobilePhone
+            ? []
+            : Array.isArray(user.mobilePhone)
+              ? user.mobilePhone
+              : [user.mobilePhone],
+          ...(user.rank && { oldRank: user.rank }),
         };
 
         const samAccountName = getSamAccountNameFromEntity(tempForm);
@@ -209,227 +249,391 @@ const FullEntityInformationForm = forwardRef(
       []
     );
 
+    const getFormFieldsByEntityType = (user) => {
+      const isEditEntity = requestObject.type === REQ_TYPES.EDIT_ENTITY;
+      const isSoldier = user.entityType === configStore.KARTOFFEL_SOLDIER;
+      const isCivilian = user.entityType === configStore.KARTOFFEL_CIVILIAN;
+      const isExternal = user.entityType === configStore.KARTOFFEL_EXTERNAL;
+      const isGoalUser =
+        user.entityType === configStore.USER_ROLE_ENTITY_TYPE;
+
+      const isDifferentFromPrev = (oldFieldValue, newFieldValue) => {
+        return oldFieldValue !== newFieldValue && oldFieldValue !== undefined && newFieldValue != undefined;
+      }
+      
+      const conditionalFields = [
+        {
+          fieldName: 'presonalNumber',
+          condition: isSoldier,
+        },
+        {
+          fieldName: 'rank',
+          condition: isSoldier,
+        },
+        {
+          fieldName: 'oldRank',
+          condition: isSoldier,
+        },
+        {
+          fieldName: 'dischargeDay',
+          condition: isSoldier,
+        },
+        {
+          fieldName: 'oldFirstName',
+          condition:
+            isEditEntity &&
+            isDifferentFromPrev(user['firstName'], user['oldFirstName']),
+        },
+        {
+          fieldName: 'oldLastName',
+          condition:
+            isEditEntity &&
+            isDifferentFromPrev(user['lastName'], user['oldLastName']),
+        },
+        {
+          fieldName: 'oldIdentityCard',
+          condition:
+            isEditEntity &&
+            isDifferentFromPrev(user['identityCard'], user['oldIdentityCard']),
+        },
+        {
+          fieldName: 'oldMobilePhone',
+          condition:
+            isEditEntity &&
+            isDifferentFromPrev(user['mobilePhone'], user['oldMobilePhone']),
+        },
+        {
+          fieldName: 'rank',
+          condition:
+            isSoldier
+        },
+        {
+          fieldName: 'oldRank',
+          condition:
+            isSoldier &&
+            isEditEntity &&
+            isDifferentFromPrev(user['rank'], user['oldRank']),
+        },
+
+        {
+          fieldName: 'organization',
+          condition: isExternal,
+        },
+        {
+          fieldName: 'employeeNumber',
+          condition: isExternal,
+        },
+        {
+          fieldName: 'goalUserBrol',
+          condition: isGoalUser,
+        },
+      ];
+
+      // TODO: check with liron which fields are needed in display each of the entity types
+  
+      let fieldsToDisplay = [
+        'id',
+        'samAccountName',
+        'firstName',
+        'oldFirstName',
+        'lastName',
+        'oldLastName',
+        'personalNumber',
+        'identityCard',
+        'oldIdentityCard',
+        'hierarchy',
+        'mail',
+        'jobTitle',
+        'rank',
+        'oldRank',
+        'address',
+        'mobilePhone',
+        'oldMobilePhone',
+        'birthDate',
+        'dischargeDay',
+        'organization',
+        'employeeNumber',
+        'brol',
+      ];
+
+      // filters from form fields with conditional value
+      fieldsToDisplay = fieldsToDisplay.filter((field) => {
+        let currField = conditionalFields.find((filterFields) => field === filterFields.fieldName)
+        return currField === undefined || currField['condition'] ? true : false;
+      })
+      
+      // takes from list of form fields the ones left after filtering
+      let newForm = formFields.filter((field) => {
+        return fieldsToDisplay.includes(field['fieldName']);
+      });
+
+      const getCustomFields = () => {
+        let customFields = [];
+        switch (requestObject.type) {
+          case REQ_TYPES.EDIT_ENTITY:
+            // Some fields required different conditions or different display names in edit entity request type
+            customFields = [
+              ...(reqView &&
+              isDifferentFromPrev(user['firstName'], user['oldFirstName'])
+                ? [{ fieldName: 'firstName', displayName: 'שם פרטי חדש' }]
+                : []),
+              ...(reqView &&
+              isDifferentFromPrev(user['lastName'], user['oldLastName'])
+                ? [{ fieldName: 'lastName', displayName: 'שם משפחה חדש' }]
+                : []),
+            ];
+            break;
+        }
+
+        return customFields;
+      };
+
+      // customized field propreties
+      getCustomFields().forEach((customField) => {
+        Object.keys(customField).forEach((key) => {
+          newForm.find((field) => field.fieldName === customField.fieldName)[
+            key
+          ] = customField[key];
+        });
+      });
+
+      return newForm;
+    };
+
     const formFields = [
       {
-        fieldName: "id",
-        displayName: "מזהה",
+        fieldName: 'id',
+        displayName: 'מזהה',
         inputType: InputTypes.TEXT,
         force: true,
         secured: () => reqView,
       },
       {
-        fieldName: "samAccountName",
-        displayName: "מזהה משתמש",
+        fieldName: 'samAccountName',
+        displayName: 'מזהה משתמש',
         inputType: InputTypes.TEXT,
         force: true,
         secured: () => reqView,
       },
       {
-        fieldName: "firstName",
-        displayName: "שם פרטי",
+        fieldName: 'firstName',
+        displayName: 'שם פרטי',
         inputType: InputTypes.TEXT,
-        canEdit: methods.watch("canEditEntityFields"),
+        canEdit: methods.watch('canEditEntityFields'),
         force: true,
       },
       {
-        fieldName: "lastName",
-        displayName: "שם משפחה",
+        fieldName: 'oldFirstName',
+        displayName: 'שם פרטי ישן',
         inputType: InputTypes.TEXT,
-        canEdit: methods.watch("canEditEntityFields"),
+        force: true,
+        secured: () => reqView,
+      },
+      {
+        fieldName: 'lastName',
+        displayName: 'שם משפחה',
+        inputType: InputTypes.TEXT,
+        canEdit: methods.watch('canEditEntityFields'),
         force: true,
       },
       {
-        fieldName: "personalNumber",
+        fieldName: 'oldLastName',
+        displayName: 'שם משפחה ישן',
+        inputType: InputTypes.TEXT,
+        force: true,
+        secured: () => reqView,
+      },
+      {
+        fieldName: 'personalNumber',
         displayName: 'מ"א',
         inputType: InputTypes.TEXT,
         secured: () => !reqView,
       },
       {
-        fieldName: "identityCard",
+        fieldName: 'identityCard',
         displayName: 'ת"ז',
         inputType: InputTypes.TEXT,
-        type: "num",
-        keyFilter: "num",
-        canEdit: methods.watch("canEditEntityFields"),
+        type: 'num',
+        keyFilter: 'num',
+        canEdit: methods.watch('canEditEntityFields'),
       },
       {
-        fieldName: "rank",
-        displayName: "דרגה",
+        fieldName: 'oldIdentityCard',
+        displayName: 'ת"ז קודמת',
+        inputType: InputTypes.TEXT,
+        force: true,
+        secured: () => reqView,
+      },
+      {
+        fieldName: 'rank',
+        displayName: 'דרגה',
         inputType: InputTypes.TEXT,
         secured: () => !reqView,
       },
       {
-        fieldName: "hierarchy",
-        displayName: "היררכיה",
+        fieldName: 'oldRank',
+        displayName: 'דרגה ישנה',
+        inputType: InputTypes.TEXT,
+        force: true,
+        secured: () => reqView,
+      },
+      {
+        fieldName: 'hierarchy',
+        displayName: 'היררכיה',
         inputType: InputTypes.TEXT,
         force: true,
         secured: () => !reqView,
         withTooltip: true,
       },
       {
-        fieldName: "mail",
-        displayName: "מייל",
+        fieldName: 'mail',
+        displayName: 'מייל',
         inputType: InputTypes.TEXT,
         force: true,
         secured: () => !reqView,
       },
       {
-        fieldName: "jobTitle",
-        displayName: "תפקיד",
+        fieldName: 'jobTitle',
+        displayName: 'תפקיד',
         inputType: InputTypes.TEXT,
         force: true,
         secured: () => !reqView,
       },
       {
-        fieldName: "address",
-        displayName: "כתובת",
+        fieldName: 'address',
+        displayName: 'כתובת',
         inputType: InputTypes.TEXT,
         secured: () => !reqView,
       },
       {
-        fieldName: "mobilePhone",
-        displayName: "פלאפון נייד",
+        fieldName: 'mobilePhone',
+        displayName: 'פלאפון נייד',
         inputType: InputTypes.TEXT,
-        type: "num",
-        keyFilter: "num",
-        canEdit: methods.watch("canEditEntityFields"),
+        type: 'num',
+        keyFilter: 'num',
+        canEdit: methods.watch('canEditEntityFields'),
         force: true,
       },
       {
-        fieldName: "birthDate",
-        displayName: "תאריך לידה",
+        fieldName: 'oldMobilePhone',
+        displayName: 'פלאפון נייד ישן',
+        inputType: InputTypes.TEXT,
+        force: true,
+        secured: () => reqView,
+      },
+      {
+        fieldName: 'birthDate',
+        displayName: 'תאריך לידה',
         inputType: InputTypes.CALANDER,
         secured: () => !reqView,
         untilNow: true,
       },
       {
-        fieldName: "dischargeDay",
+        fieldName: 'dischargeDay',
         displayName: 'תק"ש',
         inputType: InputTypes.CALANDER,
         secured: () => !reqView,
       },
       {
-        fieldName: "clearance",
-        displayName: "סיווג",
+        fieldName: 'clearance',
+        displayName: 'סיווג',
         canEdit: true,
-        secured: () => methods.watch("canSeeUserClearance"),
+        secured: () => methods.watch('canSeeUserClearance'),
         force: true,
         inputType: InputTypes.TEXT,
-        type: "num",
-        keyFilter: "num",
+        type: 'num',
+        keyFilter: 'num',
       },
-      user.entityType === configStore.KARTOFFEL_EXTERNAL
-        ? {
-            fieldName: "organization",
-            displayName: "ארגון",
-            inputType: InputTypes.TEXT,
-            type: "string",
-            keyFilter: "string",
-            canEdit: false,
-            force: true,
-          }
-        : {},
-      user.entityType === configStore.KARTOFFEL_EXTERNAL
-        ? {
-            fieldName: "employeeNumber",
-            displayName: "מספר עובד",
-            inputType: InputTypes.TEXT,
-            type: "string",
-            keyFilter: "string",
-            canEdit: false,
-            force: true,
-          }
-        : {},
+      {
+        fieldName: 'organization',
+        displayName: 'ארגון',
+        inputType: InputTypes.TEXT,
+        type: 'string',
+        keyFilter: 'string',
+        canEdit: false,
+        force: true,
+      },
+      {
+        fieldName: 'employeeNumber',
+        displayName: 'מספר עובד',
+        inputType: InputTypes.TEXT,
+        type: 'string',
+        keyFilter: 'string',
+        canEdit: false,
+        force: true,
+      },
+      {
+        fieldName: 'goalUserBrol',
+        displayName: 'brol',
+        inputType: InputTypes.TEXT,
+        type: 'string',
+        keyFilter: 'string',
+        canEdit: false,
+        force: true,
+      },
     ];
 
     const convertFormFields = [
       {
-        fieldName: "newEntityType",
-        displayName: "סוג הישות החדש",
+        fieldName: 'newEntityType',
+        displayName: 'סוג הישות החדש',
         inputType: InputTypes.TEXT,
       },
       {
-        fieldName: "upn",
-        displayName: "מזהה כרטיס חדש",
+        fieldName: 'upn',
+        displayName: 'מזהה כרטיס חדש',
         inputType: InputTypes.TEXT,
         force: true,
       },
       {
-        fieldName: "firstName",
-        displayName: "שם פרטי",
+        fieldName: 'firstName',
+        displayName: 'שם פרטי',
         inputType: InputTypes.TEXT,
       },
       {
-        fieldName: "lastName",
-        displayName: "שם משפחה",
+        fieldName: 'lastName',
+        displayName: 'שם משפחה',
         inputType: InputTypes.TEXT,
       },
       {
-        fieldName: "identifier",
+        fieldName: 'identifier',
         displayName: 'מ"א/ת"ז להוספה',
         inputType: InputTypes.TEXT,
       },
       {
-        fieldName: "personalNumber",
+        fieldName: 'personalNumber',
         displayName: 'מ"א',
         inputType: InputTypes.TEXT,
       },
       {
-        fieldName: "identityCard",
+        fieldName: 'identityCard',
         displayName: 'ת"ז',
         inputType: InputTypes.TEXT,
       },
       {
-        fieldName: "jobTitle",
-        displayName: "תפקיד",
+        fieldName: 'jobTitle',
+        displayName: 'תפקיד',
         inputType: InputTypes.TEXT,
       },
     ];
 
     const disconnectRoleFromEntityFields = [
       {
-        fieldName: "jobTitle",
-        displayName: "שם תפקיד",
+        fieldName: 'jobTitle',
+        displayName: 'שם תפקיד',
         inputType: InputTypes.TEXT,
       },
       {
-        fieldName: "hierarchy",
-        displayName: "היררכית תפקיד",
+        fieldName: 'hierarchy',
+        displayName: 'היררכית תפקיד',
         inputType: InputTypes.TEXT,
         force: true,
       },
       {
-        fieldName: "roleId",
-        displayName: "מזהה תפקיד",
+        fieldName: 'roleId',
+        displayName: 'מזהה תפקיד',
         inputType: InputTypes.TEXT,
-      }
-    ];
-
-    const editEntityFields = [
-      {
-        fieldName: "id",
-        displayName: "מזהה",
-        inputType: InputTypes.TEXT,
-        force: true,
-        secured: () => reqView,
       },
-      {
-        fieldName: "fullName",
-        displayName: "שם המשתמש שנערך",
-        inputType: InputTypes.TEXT,
-        force: true,
-      },
-      {
-        fieldName: "clearance",
-        displayName: "סיווג המשתמש שנערך",
-        canEdit: true,
-        secured: () => methods.watch("canSeeUserClearance"),
-        force: true,
-        inputType: InputTypes.TEXT,
-        type: "num",
-        keyFilter: "num",
-
-      }
     ];
 
     const getInputFields = (item, fields, reqView) => {
@@ -446,35 +650,32 @@ const FullEntityInformationForm = forwardRef(
     const getForm = (type) => {
       switch (type) {
         case REQ_TYPES.CONVERT_ENTITY_TYPE:
-          return ( reqView &&
-            getInputFields(user, convertFormFields)
-          );
-        case REQ_TYPES.EDIT_ENTITY:
-          return ( getInputFields(user, editEntityFields) );
+          return reqView && getInputFields(user, convertFormFields);
         case REQ_TYPES.DISCONNECT_ROLE:
-          return reqView && <>
-            <div
-            style={{
-              width: "100%",
-              paddingBottom: "10px",
-            }}
-          >
-            <p>פרטי המשתמש שנותק מהתפקיד:</p>
-          </div>
-            {getInputFields(user, formFields)}
-            <div
-              style={{ width: "100%", paddingBottom: "10px" }}
-            >
-              <p>פרטי התפקיד שנותק:</p>
-            </div>
-            {getInputFields(role, disconnectRoleFromEntityFields)}
-            </>;
-        default:
           return (
-            getInputFields(user, formFields)
+            reqView && (
+              <>
+                <div
+                  style={{
+                    width: '100%',
+                    paddingBottom: '10px',
+                  }}
+                >
+                  <p>פרטי המשתמש שנותק מהתפקיד:</p>
+                </div>
+                {getInputFields(user, formFields)}
+                <div style={{ width: '100%', paddingBottom: '10px' }}>
+                  <p>פרטי התפקיד שנותק:</p>
+                </div>
+                {getInputFields(role, disconnectRoleFromEntityFields)}
+              </>
+            )
           );
+        default:
+          let fields = getFormFieldsByEntityType(user);
+          return getInputFields(user, fields);
       }
-    }
+    };
     return (
       <div className="p-fluid" id="fullEntityInfoForm">
         {getForm(requestObject.type)}
