@@ -101,7 +101,7 @@ const FullEntityInformationForm = forwardRef(
             );
             entity.newEntityType =
               USER_ENTITY_TYPE[
-              `${requestObject.kartoffelParams.newEntityType}`
+                `${requestObject.kartoffelParams.newEntityType}`
               ];
 
             entity.upn = requestObject.kartoffelParams.upn;
@@ -117,7 +117,7 @@ const FullEntityInformationForm = forwardRef(
             setUser(entity);
             setRole(role);
           } else if (requestObject.type === REQ_TYPES.EDIT_ENTITY) {
-            // TODO: ask limora - why is this nessacery? 
+            // TODO: ask limora - why is this nessacery?
             const entity = await getEntityByMongoId(
               requestObject.kartoffelParams.id
             );
@@ -126,9 +126,11 @@ const FullEntityInformationForm = forwardRef(
 
             // fills the gaps in request object
             Object.keys(requestObject.kartoffelParams).forEach((key) => {
-              entity[key] = requestObject.kartoffelParams[key] ? requestObject.kartoffelParams[key] : entity[key]
-            })
-         
+              entity[key] = requestObject.kartoffelParams[key]
+                ? requestObject.kartoffelParams[key]
+                : entity[key];
+            });
+
             setUser(entity);
           } else {
             if (
@@ -180,8 +182,8 @@ const FullEntityInformationForm = forwardRef(
           mobilePhone: !tempForm?.mobilePhone
             ? []
             : Array.isArray(tempForm.mobilePhone)
-              ? tempForm.mobilePhone
-              : [tempForm.mobilePhone],
+            ? tempForm.mobilePhone
+            : [tempForm.mobilePhone],
           ...(tempForm.serviceType && { serviceType: tempForm.serviceType }),
           ...(tempForm.address && { address: tempForm.address }),
           ...(tempForm.clearance && { clearance: tempForm.clearance }),
@@ -202,8 +204,8 @@ const FullEntityInformationForm = forwardRef(
           oldMobilePhone: !user?.mobilePhone
             ? []
             : Array.isArray(user.mobilePhone)
-              ? user.mobilePhone
-              : [user.mobilePhone],
+            ? user.mobilePhone
+            : [user.mobilePhone],
           ...(user.rank && { oldRank: user.rank }),
         };
 
@@ -238,16 +240,19 @@ const FullEntityInformationForm = forwardRef(
       const isSoldier = user.entityType === configStore.KARTOFFEL_SOLDIER;
       const isCivilian = user.entityType === configStore.KARTOFFEL_CIVILIAN;
       const isExternal = user.entityType === configStore.KARTOFFEL_EXTERNAL;
-      const isGoalUser =
-        user.entityType === configStore.USER_ROLE_ENTITY_TYPE;
+      const isGoalUser = user.entityType === configStore.USER_ROLE_ENTITY_TYPE;
 
       const isDifferentFromPrev = (oldFieldValue, newFieldValue) => {
-        return oldFieldValue !== newFieldValue && oldFieldValue !== undefined && newFieldValue != undefined;
-      }
-      
+        return (
+          oldFieldValue !== newFieldValue &&
+          oldFieldValue !== undefined &&
+          newFieldValue != undefined
+        );
+      };
+
       const conditionalFields = [
         {
-          fieldName: 'presonalNumber',
+          fieldName: 'personalNumber',
           condition: isSoldier,
         },
         {
@@ -256,7 +261,10 @@ const FullEntityInformationForm = forwardRef(
         },
         {
           fieldName: 'oldRank',
-          condition: isSoldier,
+          condition:
+            isSoldier &&
+            isEditEntity &&
+            isDifferentFromPrev(user['firstName'], user['oldFirstName']),
         },
         {
           fieldName: 'dischargeDay',
@@ -288,8 +296,7 @@ const FullEntityInformationForm = forwardRef(
         },
         {
           fieldName: 'rank',
-          condition:
-            isSoldier
+          condition: isSoldier,
         },
         {
           fieldName: 'oldRank',
@@ -298,7 +305,6 @@ const FullEntityInformationForm = forwardRef(
             isEditEntity &&
             isDifferentFromPrev(user['rank'], user['oldRank']),
         },
-
         {
           fieldName: 'organization',
           condition: isExternal,
@@ -339,12 +345,14 @@ const FullEntityInformationForm = forwardRef(
         'brol',
       ];
 
-      // filters from form fields with conditional value
+      // filters form fields that appear only conditionally
       fieldsToDisplay = fieldsToDisplay.filter((field) => {
-        let currField = conditionalFields.find((filterFields) => field === filterFields.fieldName)
+        let currField = conditionalFields.find(
+          (filterFields) => field === filterFields.fieldName
+        );
         return currField === undefined || currField['condition'] ? true : false;
-      })
-      
+      });
+
       // takes from list of form fields the ones left after filtering
       let newForm = formFields.filter((field) => {
         return fieldsToDisplay.includes(field['fieldName']);
@@ -441,7 +449,7 @@ const FullEntityInformationForm = forwardRef(
         fieldName: 'personalNumber',
         displayName: 'מ"א',
         inputType: InputTypes.TEXT,
-        secured: () => !reqView,
+        // secured: () => !reqView,
       },
       {
         fieldName: 'identityCard',
@@ -469,14 +477,14 @@ const FullEntityInformationForm = forwardRef(
         displayName: 'דרגה ישנה',
         inputType: InputTypes.TEXT,
         force: true,
-        secured: () => reqView,
+        secured: () => !reqView,
       },
       {
         fieldName: 'hierarchy',
         displayName: 'היררכיה',
         inputType: InputTypes.TEXT,
         force: true,
-        secured: () => !reqView,
+        // secured: () => !reqView,
         withTooltip: true,
       },
       {
@@ -484,7 +492,7 @@ const FullEntityInformationForm = forwardRef(
         displayName: 'מייל',
         inputType: InputTypes.TEXT,
         force: true,
-        secured: () => !reqView,
+        // secured: () => !reqView,
       },
       {
         fieldName: 'jobTitle',
@@ -519,7 +527,7 @@ const FullEntityInformationForm = forwardRef(
         fieldName: 'birthDate',
         displayName: 'תאריך לידה',
         inputType: InputTypes.CALANDER,
-        secured: () => !reqView,
+        // secured: () => !reqView,
         untilNow: true,
       },
       {
