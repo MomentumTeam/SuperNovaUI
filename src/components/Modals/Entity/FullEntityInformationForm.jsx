@@ -81,7 +81,6 @@ const FullEntityInformationForm = forwardRef(
   ) => {
     const { appliesStore, configStore } = useStores();
     const [user, setUser] = useState(requestObject);
-    const [fields, setFormFields] = useState({});
     const [role, setRole] = useState(null);
     const methods = useForm({
       resolver: yupResolver(validationSchema),
@@ -118,33 +117,18 @@ const FullEntityInformationForm = forwardRef(
             setUser(entity);
             setRole(role);
           } else if (requestObject.type === REQ_TYPES.EDIT_ENTITY) {
+            // TODO: ask limora - why is this nessacery? 
             const entity = await getEntityByMongoId(
-              /*  */
               requestObject.kartoffelParams.id
             );
 
             entity.goalUserBrol = getUserRelevantIdentity(entity)?.role?.brol;
-            entity.firstName =
-              methods.watch('kartoffelParams').firstName || entity.firstName;
-            entity.lastName =
-              methods.watch('kartoffelParams').lastName || entity.lastName;
-            entity.identityCard =
-              methods.watch('kartoffelParams').identityCard ||
-              entity.identityCard;
-            entity.mobilePhone =
-              methods.watch('kartoffelParams').mobilePhone?.length > 0
-                ? methods.watch('kartoffelParams').mobilePhone[0]
-                : entity.mobilePhone[0];
-            entity.rank = methods.watch('kartoffelParams').rank || entity.rank;
 
-            entity.oldFirstName = methods.watch('kartoffelParams').oldFirstName;
-            entity.oldLastName = methods.watch('kartoffelParams').oldLastName;
-            entity.oldIdentityCard =
-              methods.watch('kartoffelParams').oldIdentityCard;
-            entity.oldMobilePhone =
-              methods.watch('kartoffelParams').oldMobilePhone;
-            entity.oldRank = methods.watch('kartoffelParams').oldRank;
-
+            // fills the gaps in request object
+            Object.keys(requestObject.kartoffelParams).forEach((key) => {
+              entity[key] = requestObject.kartoffelParams[key] ? requestObject.kartoffelParams[key] : entity[key]
+            })
+         
             setUser(entity);
           } else {
             if (
@@ -330,7 +314,6 @@ const FullEntityInformationForm = forwardRef(
       ];
 
       // TODO: check with liron which fields are needed in display each of the entity types
-  
       let fieldsToDisplay = [
         'id',
         'samAccountName',
@@ -380,6 +363,17 @@ const FullEntityInformationForm = forwardRef(
               ...(reqView &&
               isDifferentFromPrev(user['lastName'], user['oldLastName'])
                 ? [{ fieldName: 'lastName', displayName: 'שם משפחה חדש' }]
+                : []),
+              ...(reqView &&
+              isDifferentFromPrev(user['mobilePhone'], user['oldMobilePhone'])
+                ? [{ fieldName: 'mobilePhone', displayName: 'טלפון נייד חדש' }]
+                : []),
+              ...(reqView && isDifferentFromPrev(user['rank'], user['oldRank'])
+                ? [{ fieldName: 'rank', displayName: 'שם משפחה חדש' }]
+                : []),
+              ...(reqView &&
+              isDifferentFromPrev(user['identityCard'], user['oldIdentityCard'])
+                ? [{ fieldName: 'identityCard', displayName: 'ת"ז חדשה' }]
                 : []),
             ];
             break;
@@ -652,6 +646,7 @@ const FullEntityInformationForm = forwardRef(
         case REQ_TYPES.CONVERT_ENTITY_TYPE:
           return reqView && getInputFields(user, convertFormFields);
         case REQ_TYPES.DISCONNECT_ROLE:
+          let viewUserFields = getFormFieldsByEntityType(user);
           return (
             reqView && (
               <>
@@ -663,7 +658,7 @@ const FullEntityInformationForm = forwardRef(
                 >
                   <p>פרטי המשתמש שנותק מהתפקיד:</p>
                 </div>
-                {getInputFields(user, formFields)}
+                {getInputFields(user, viewUserFields)}
                 <div style={{ width: '100%', paddingBottom: '10px' }}>
                   <p>פרטי התפקיד שנותק:</p>
                 </div>
