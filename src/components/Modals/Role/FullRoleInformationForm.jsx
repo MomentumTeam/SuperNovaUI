@@ -474,8 +474,8 @@ const FullRoleInformationForm = forwardRef(
               } `}
               disabled={
                 onlyForView ||
-                !canEditRoleFields ||
-                entity?.entityType === USER_TYPE.USER_ROLE_ENTITY_TYPE
+                entity?.entityType === USER_TYPE.USER_ROLE_ENTITY_TYPE ||
+                !canEditRoleFields
               }
               style={{
                 textAlignLast: !watch('clearance') && 'center',
@@ -495,7 +495,6 @@ const FullRoleInformationForm = forwardRef(
         </div>
 
         {reqView &&
-          entity.entityType !== USER_TYPE.USER_ROLE_ENTITY_TYPE &&
           requestObject?.kartoffelParams?.clearance &&
           requestObject?.kartoffelParams?.clearance !==
             watch('oldClearance') && (
@@ -546,7 +545,6 @@ const FullRoleInformationForm = forwardRef(
             />
           </div>
         </div>
-
         <div className="p-fluid-item p-fluid-item">
           <div className="p-field">
             <label> משתמש בתפקיד </label>
@@ -557,11 +555,9 @@ const FullRoleInformationForm = forwardRef(
                 value={watch('userInRole')}
                 placeholder={watch('userInRole') || entity.fullName}
                 disabled={
-                  reqView ||
-                  !(
-                    isUserHoldType(userStore.user, USER_TYPE.ADMIN) &&
-                    entity.entityType === USER_TYPE.USER_ROLE_ENTITY_TYPE
-                  )
+                  onlyForView ||
+                  (isUserHoldType(userStore.user, USER_TYPE.ADMIN) &&
+                    entity.entityType === USER_TYPE.USER_ROLE_ENTITY_TYPE)
                 }
                 style={{
                   textAlign: !entity?.fullName && 'center',
