@@ -241,7 +241,7 @@ const FullEntityInformationForm = forwardRef(
       const isGoalUser = user.entityType === configStore.USER_ROLE_ENTITY_TYPE;
 
       const isDifferentFromPrev = (oldFieldValue, newFieldValue) => {
-        return oldFieldValue !== newFieldValue;
+        return oldFieldValue !== newFieldValue && newFieldValue != undefined;
       };
 
       const conditionalFields = [
@@ -286,7 +286,7 @@ const FullEntityInformationForm = forwardRef(
           fieldName: 'oldMobilePhone',
           condition:
             isEditEntity &&
-            isDifferentFromPrev(user['mobilePhone'], user['oldMobilePhone']),
+            isDifferentFromPrev(user['mobilePhone'] , user['oldMobilePhone']),
         },
         {
           fieldName: 'rank',
@@ -466,7 +466,7 @@ const FullEntityInformationForm = forwardRef(
         fieldName: 'rank',
         displayName: 'דרגה',
         inputType: InputTypes.TEXT,
-        secured: () => !reqView,
+        canEdit: methods.watch('canEditEntityFields'),
         isEdit: !onlyForView && methods.watch('canEditEntityFields'),
       },
       {
