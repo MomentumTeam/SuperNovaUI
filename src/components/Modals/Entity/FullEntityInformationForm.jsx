@@ -245,9 +245,7 @@ const FullEntityInformationForm = forwardRef(
 
       const isDifferentFromPrev = (oldFieldValue, newFieldValue) => {
         return (
-          oldFieldValue !== newFieldValue &&
-          oldFieldValue !== undefined &&
-          newFieldValue != undefined
+          oldFieldValue !== newFieldValue
         );
       };
 
@@ -404,6 +402,7 @@ const FullEntityInformationForm = forwardRef(
       return newForm;
     };
 
+    console.log(methods.watch('canEditEntityFields'), !reqView);
     const formFields = [
       {
         fieldName: 'id',
@@ -425,6 +424,7 @@ const FullEntityInformationForm = forwardRef(
         inputType: InputTypes.TEXT,
         canEdit: methods.watch('canEditEntityFields'),
         force: true,
+        isEdit: !onlyForView && methods.watch('canEditEntityFields'),
       },
       {
         fieldName: 'oldFirstName',
@@ -439,6 +439,7 @@ const FullEntityInformationForm = forwardRef(
         inputType: InputTypes.TEXT,
         canEdit: methods.watch('canEditEntityFields'),
         force: true,
+        isEdit: !onlyForView && methods.watch('canEditEntityFields'),
       },
       {
         fieldName: 'oldLastName',
@@ -473,6 +474,7 @@ const FullEntityInformationForm = forwardRef(
         displayName: 'דרגה',
         inputType: InputTypes.TEXT,
         secured: () => !reqView,
+        isEdit: !onlyForView && methods.watch('canEditEntityFields'),
       },
       {
         fieldName: 'oldRank',
@@ -517,6 +519,7 @@ const FullEntityInformationForm = forwardRef(
         keyFilter: 'num',
         canEdit: methods.watch('canEditEntityFields'),
         force: true,
+        isEdit: !onlyForView && methods.watch('canEditEntityFields'),
       },
       {
         fieldName: 'oldMobilePhone',

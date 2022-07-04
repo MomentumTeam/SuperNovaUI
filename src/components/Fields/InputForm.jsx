@@ -32,7 +32,7 @@ const InputForm = ({ fields, item = null, methods = null, isEdit = false, errors
             errors={errors}
             fieldName={field.fieldName}
             displayName={field.displayName}
-            isEdit={isEdit}
+            isEdit={field.isEdit ? field.isEdit : isEdit}
             canEdit={field?.canEdit}
             type={field?.type}
             keyFilter={field?.keyFilter}
