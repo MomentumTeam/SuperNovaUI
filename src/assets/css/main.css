@@ -1206,12 +1206,13 @@ main .main-wrap .main-inner-wrap {
 
 #disconectButton {
   margin-top: -42px;
-  margin-right: 260px;
+  margin-right: 84%;
   font-family: 'Heebo', sans-serif;
   border-radius: 4px;
   font-size: 13px;
   min-width: unset;
   min-height: unset;
+  padding: 0px;
   width: 40px !important;
   height: 26px !important;
 }
