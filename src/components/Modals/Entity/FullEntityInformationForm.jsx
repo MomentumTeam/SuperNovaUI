@@ -388,9 +388,12 @@ const FullEntityInformationForm = forwardRef(
       // customized field propreties
       getCustomFields().forEach((customField) => {
         Object.keys(customField).forEach((key) => {
-          newForm.find((field) => field.fieldName === customField.fieldName)[
+          let currField = newForm.find((field) => field.fieldName === customField.fieldName)
+          if (currField) {
+            currField[
             key
-          ] = customField[key];
+            ] = customField[key];
+          }
         });
       });
 
