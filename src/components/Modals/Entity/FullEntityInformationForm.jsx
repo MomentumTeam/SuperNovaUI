@@ -94,7 +94,6 @@ const FullEntityInformationForm = forwardRef(
 
     useEffect(async () => {
       if (requestObject) {
-        console.log(requestObject)
         if (reqView) {
           if (requestObject.type === REQ_TYPES.CONVERT_ENTITY_TYPE) {
             const entity = await getEntityByMongoId(
