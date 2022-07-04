@@ -472,7 +472,11 @@ const FullRoleInformationForm = forwardRef(
               className={`dropDownInput ${
                 onlyForView || !canEditRoleFields ? `disabled` : ''
               } `}
-              disabled={onlyForView || !canEditRoleFields}
+              disabled={
+                onlyForView ||
+                !canEditRoleFields ||
+                entity?.entityType === USER_TYPE.USER_ROLE_ENTITY_TYPE
+              }
               style={{
                 textAlignLast: !watch('clearance') && 'center',
               }}
@@ -491,7 +495,7 @@ const FullRoleInformationForm = forwardRef(
         </div>
 
         {reqView &&
-          entity.entityType !== USER_TYPE.USER_ROLE_ENTITY_TYPE && 
+          entity.entityType !== USER_TYPE.USER_ROLE_ENTITY_TYPE &&
           requestObject?.kartoffelParams?.clearance &&
           requestObject?.kartoffelParams?.clearance !==
             watch('oldClearance') && (
