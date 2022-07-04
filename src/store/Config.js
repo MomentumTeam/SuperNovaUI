@@ -18,7 +18,7 @@ class ConfigStore {
   USER_NO_PICTURE = 'pictureUrl';
   USER_HIGH_COMMANDER_RANKS = ['rookie', 'champion'];
   USER_DI_TYPE = 'domainUser';
-  USER_ROLE_ENTITY_TYPE = 'goalUser';
+  USER_ROLE_ENTITY_TYPE = 'GoalUser';
 
   // GENERAL
   TOKEN_NAME = 'sp-token';
