@@ -397,7 +397,6 @@ const FullEntityInformationForm = forwardRef(
       return newForm;
     };
 
-    console.log(methods.watch('canEditEntityFields'), !reqView);
     const formFields = [
       {
         fieldName: 'id',
