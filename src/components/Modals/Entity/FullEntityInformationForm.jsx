@@ -123,14 +123,12 @@ const FullEntityInformationForm = forwardRef(
             );
 
             entity.goalUserBrol = getUserRelevantIdentity(entity)?.role?.brol;
-
             // fills the gaps in request object
             Object.keys(requestObject.kartoffelParams).forEach((key) => {
               entity[key] = requestObject.kartoffelParams[key]
                 ? requestObject.kartoffelParams[key]
                 : entity[key];
             });
-
             setUser(entity);
           } else {
             if (
@@ -335,9 +333,9 @@ const FullEntityInformationForm = forwardRef(
         'jobTitle',
         'rank',
         'oldRank',
-        'address',
         'mobilePhone',
         'oldMobilePhone',
+        'address',
         'birthDate',
         'dischargeDay',
         'organization',
@@ -428,7 +426,6 @@ const FullEntityInformationForm = forwardRef(
         fieldName: 'oldFirstName',
         displayName: 'שם פרטי ישן',
         inputType: InputTypes.TEXT,
-        force: true,
         secured: () => reqView,
       },
       {
@@ -436,20 +433,17 @@ const FullEntityInformationForm = forwardRef(
         displayName: 'שם משפחה',
         inputType: InputTypes.TEXT,
         canEdit: methods.watch('canEditEntityFields'),
-        force: true,
       },
       {
         fieldName: 'oldLastName',
         displayName: 'שם משפחה ישן',
         inputType: InputTypes.TEXT,
-        force: true,
         secured: () => reqView,
       },
       {
         fieldName: 'personalNumber',
         displayName: 'מ"א',
         inputType: InputTypes.TEXT,
-        // secured: () => !reqView,
       },
       {
         fieldName: 'identityCard',
@@ -463,7 +457,6 @@ const FullEntityInformationForm = forwardRef(
         fieldName: 'oldIdentityCard',
         displayName: 'ת"ז קודמת',
         inputType: InputTypes.TEXT,
-        force: true,
         secured: () => reqView,
       },
       {
@@ -483,16 +476,12 @@ const FullEntityInformationForm = forwardRef(
         fieldName: 'hierarchy',
         displayName: 'היררכיה',
         inputType: InputTypes.TEXT,
-        force: true,
-        // secured: () => !reqView,
         withTooltip: true,
       },
       {
         fieldName: 'mail',
         displayName: 'מייל',
         inputType: InputTypes.TEXT,
-        force: true,
-        // secured: () => !reqView,
       },
       {
         fieldName: 'jobTitle',
@@ -527,7 +516,6 @@ const FullEntityInformationForm = forwardRef(
         fieldName: 'birthDate',
         displayName: 'תאריך לידה',
         inputType: InputTypes.CALANDER,
-        // secured: () => !reqView,
         untilNow: true,
       },
       {
