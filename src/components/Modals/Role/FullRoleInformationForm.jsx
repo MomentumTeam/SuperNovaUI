@@ -556,7 +556,7 @@ const FullRoleInformationForm = forwardRef(
                 placeholder={watch('userInRole') || entity.fullName}
                 disabled={
                   onlyForView ||
-                  (isUserHoldType(userStore.user, USER_TYPE.ADMIN) &&
+                  !(isUserHoldType(userStore.user, USER_TYPE.ADMIN) &&
                     entity.entityType === USER_TYPE.USER_ROLE_ENTITY_TYPE)
                 }
                 style={{
