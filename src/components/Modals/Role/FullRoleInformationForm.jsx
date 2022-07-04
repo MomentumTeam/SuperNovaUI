@@ -117,7 +117,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const FullRoleInformationForm = forwardRef(
-  ({ setIsActionDone, onlyForView, requestObject, reqView = true }, ref) => {
+  ({ setIsActionDone, onlyForView, requestObject, reqView = true, actionPopup }, ref) => {
     const { appliesStore, userStore, configStore } = useStores();
     const [jobTitleSuggestions, setJobTitleSuggestions] = useState([]);
     const [entity, setEntity] = useState({});
@@ -643,6 +643,7 @@ const FullRoleInformationForm = forwardRef(
           entity={entity}
           samAccountName={samAccountName}
           showModal={showDisconnectRoleModal}
+          actionPopup={actionPopup}
           closeModal={closeDisconnectRoleFromEntityModal}
         />
       </div>

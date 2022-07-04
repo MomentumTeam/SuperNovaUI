@@ -23,7 +23,7 @@ import {
 } from '../../../service/KartoffelService';
 import { USER_ENTITY_TYPE } from '../../../constants/user';
 import {
-  CanSeeUserClearance,
+  CanSeeUserFullClearance,
   CanEditEntityFields,
 } from '../../../utils/entites';
 import {
@@ -66,8 +66,8 @@ const validationSchema = Yup.object().shape({
       .required('נא להזין מספר')
       .matches(PHONE_REG_EXP, 'מספר לא תקין'),
   }),
-  canSeeUserClearance: Yup.boolean(),
-  clearance: Yup.string().when('canSeeUserClearance', {
+  canSeeUserFullClearance: Yup.boolean(),
+  clearance: Yup.string().when('canSeeUserFullClearance', {
     is: true,
     then: Yup.string().required('יש להכניס סיווג'),
   }),
@@ -87,7 +87,7 @@ const FullEntityInformationForm = forwardRef(
       defaultValues: {
         ...user,
         canEditEntityFields: CanEditEntityFields(user),
-        canSeeUserClearance: CanSeeUserClearance(),
+        canSeeUserFullClearance: CanSeeUserFullClearance(),
       },
     });
     const { errors } = methods.formState;
@@ -241,11 +241,7 @@ const FullEntityInformationForm = forwardRef(
       const isGoalUser = user.entityType === configStore.USER_ROLE_ENTITY_TYPE;
 
       const isDifferentFromPrev = (oldFieldValue, newFieldValue) => {
-        return (
-          oldFieldValue !== newFieldValue &&
-          oldFieldValue !== undefined &&
-          newFieldValue != undefined
-        );
+        return oldFieldValue !== newFieldValue;
       };
 
       const conditionalFields = [
@@ -333,9 +329,10 @@ const FullEntityInformationForm = forwardRef(
         'jobTitle',
         'rank',
         'oldRank',
+        'fullClearance',
+        'address',
         'mobilePhone',
         'oldMobilePhone',
-        'address',
         'birthDate',
         'dischargeDay',
         'organization',
@@ -421,6 +418,7 @@ const FullEntityInformationForm = forwardRef(
         inputType: InputTypes.TEXT,
         canEdit: methods.watch('canEditEntityFields'),
         force: true,
+        isEdit: !onlyForView && methods.watch('canEditEntityFields'),
       },
       {
         fieldName: 'oldFirstName',
@@ -433,6 +431,8 @@ const FullEntityInformationForm = forwardRef(
         displayName: 'שם משפחה',
         inputType: InputTypes.TEXT,
         canEdit: methods.watch('canEditEntityFields'),
+        force: true,
+        isEdit: !onlyForView && methods.watch('canEditEntityFields'),
       },
       {
         fieldName: 'oldLastName',
@@ -464,6 +464,7 @@ const FullEntityInformationForm = forwardRef(
         displayName: 'דרגה',
         inputType: InputTypes.TEXT,
         secured: () => !reqView,
+        isEdit: !onlyForView && methods.watch('canEditEntityFields'),
       },
       {
         fieldName: 'oldRank',
@@ -504,6 +505,7 @@ const FullEntityInformationForm = forwardRef(
         keyFilter: 'num',
         canEdit: methods.watch('canEditEntityFields'),
         force: true,
+        isEdit: !onlyForView && methods.watch('canEditEntityFields'),
       },
       {
         fieldName: 'oldMobilePhone',
@@ -523,16 +525,6 @@ const FullEntityInformationForm = forwardRef(
         displayName: 'תק"ש',
         inputType: InputTypes.CALANDER,
         secured: () => !reqView,
-      },
-      {
-        fieldName: 'clearance',
-        displayName: 'סיווג',
-        canEdit: true,
-        secured: () => methods.watch('canSeeUserClearance'),
-        force: true,
-        inputType: InputTypes.TEXT,
-        type: 'num',
-        keyFilter: 'num',
       },
       {
         fieldName: 'organization',
@@ -560,6 +552,16 @@ const FullEntityInformationForm = forwardRef(
         keyFilter: 'string',
         canEdit: false,
         force: true,
+      },
+      {
+        fieldName: 'fullClearance',
+        displayName: 'סיווג מלא',
+        canEdit: true,
+        secured: () => methods.watch('canSeeUserFullClearance'),
+        force: true,
+        inputType: InputTypes.TEXT,
+        type: 'num',
+        keyFilter: 'num',
       },
     ];
 

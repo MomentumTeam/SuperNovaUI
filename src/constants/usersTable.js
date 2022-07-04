@@ -32,6 +32,14 @@ export const TableTypes = {
         USER_TYPE.SUPER_SECURITY,
       ],
     },
+    {
+      field: 'fullClearance',
+      displayName: 'סיווג',
+      secured: [
+        USER_TYPE.SECURITY,
+        USER_TYPE.SUPER_SECURITY,
+      ],
+    },
     { field: 'jobTitle', displayName: 'תפקיד' },
     { field: 'displayName', displayName: 'יוזר', template: TextFieldTemplate },
     { field: 'rank', displayName: 'דרגה' },
