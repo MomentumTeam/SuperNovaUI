@@ -24,7 +24,6 @@ const DisconnectRoleFromEntityPopup = ({
 
   const handleRequest = async () => {
     try {
-      // const disconnectRole = async () => {
       const req = {
         submittedBy: { id: user.id, displayName: user.displayName },
         kartoffelParams: {
@@ -55,6 +54,7 @@ const DisconnectRoleFromEntityPopup = ({
             user={user}
             role={role}
             entity={entity}
+            closeModal={closeModal}
             samAccountName={samAccountName}
             disconnectRole={handleRequest}
           />

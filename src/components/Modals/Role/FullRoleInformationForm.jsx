@@ -215,6 +215,10 @@ const FullRoleInformationForm = forwardRef(
               const entityRes = await getEntityByMongoId(
                 requestObject?.kartoffelParams?.entityId
               );
+              setValue(
+                'isGoalUser',
+                entityRes?.entityType === configStore.USER_ROLE_ENTITY_TYPE
+              );
               setEntity(entityRes);
             } catch (error) {}
           }
@@ -223,9 +227,14 @@ const FullRoleInformationForm = forwardRef(
 
           try {
             const entityRes = await getEntityByRoleId(
+
               requestObject?.roleId || requestObject?.kartoffelParams?.roleId
             );
             setEntity(entityRes);
+            setValue(
+              'isGoalUser',
+              entityRes?.entityType === configStore.USER_ROLE_ENTITY_TYPE
+            );
             setValue('entityId', entityRes.id);
             setValue('userInRole', entityRes.fullName);
             setValue('entityPrevName', entityRes.fullName);
@@ -241,10 +250,6 @@ const FullRoleInformationForm = forwardRef(
           } catch (error) {}
         }
       }
-      setValue(
-        'isGoalUser',
-        entity?.entityType === configStore.USER_ROLE_ENTITY_TYPE
-      );
 
       await initDefaultApprovers();
     }, [requestObject, onlyForView]);
@@ -378,7 +383,9 @@ const FullRoleInformationForm = forwardRef(
                 {...register('roleName')}
                 onChange={onRoleNameChange}
                 disabled={
-                  onlyForView || watch('isGoalUser') || !canEditRoleFields
+                  onlyForView ||
+                  watch('isGoalUser') ||
+                  !canEditRoleFields
                 }
               />
 
@@ -477,7 +484,11 @@ const FullRoleInformationForm = forwardRef(
               {...register('clearance')}
               value={watch('clearance')}
               className={`dropDownInput ${
-                onlyForView || !canEditRoleFields ? `disabled` : ''
+                onlyForView ||
+                !canEditRoleFields ||
+                entity?.entityType === configStore.USER_ROLE_ENTITY_TYPE
+                  ? `disabled`
+                  : ''
               } `}
               disabled={
                 onlyForView || watch('isGoalUser') || !canEditRoleFields
@@ -563,7 +574,7 @@ const FullRoleInformationForm = forwardRef(
                   onlyForView ||
                   !(
                     isUserHoldType(userStore.user, USER_TYPE.ADMIN) &&
-                    entity.entityType === USER_TYPE.USER_ROLE_ENTITY_TYPE
+                    watch('isGoalUser')
                   )
                 }
                 style={{
@@ -581,7 +592,7 @@ const FullRoleInformationForm = forwardRef(
               </label>
 
               {!reqView &&
-                entity.entityType !== configStore.USER_ROLE_ENTITY_TYPE &&
+                watch('isGoalUser') &&
                 userStore.user.types.includes(USER_TYPE.ADMIN) &&
                 samAccountName !== '' && (
                   <button
