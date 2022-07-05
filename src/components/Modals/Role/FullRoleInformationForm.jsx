@@ -117,7 +117,16 @@ const validationSchema = Yup.object().shape({
 });
 
 const FullRoleInformationForm = forwardRef(
-  ({ setIsActionDone, onlyForView, requestObject, reqView = true, actionPopup }, ref) => {
+  (
+    {
+      setIsActionDone,
+      onlyForView,
+      requestObject,
+      reqView = true,
+      actionPopup,
+    },
+    ref
+  ) => {
     const { appliesStore, userStore, configStore } = useStores();
     const [jobTitleSuggestions, setJobTitleSuggestions] = useState([]);
     const [entity, setEntity] = useState({});
@@ -369,9 +378,7 @@ const FullRoleInformationForm = forwardRef(
                 {...register('roleName')}
                 onChange={onRoleNameChange}
                 disabled={
-                  onlyForView ||
-                  entity?.entityType === USER_TYPE.USER_ROLE_ENTITY_TYPE ||
-                  !canEditRoleFields
+                  onlyForView || watch('isGoalUser') || !canEditRoleFields
                 }
               />
 
@@ -473,9 +480,7 @@ const FullRoleInformationForm = forwardRef(
                 onlyForView || !canEditRoleFields ? `disabled` : ''
               } `}
               disabled={
-                onlyForView ||
-                entity?.entityType === USER_TYPE.USER_ROLE_ENTITY_TYPE ||
-                !canEditRoleFields
+                onlyForView || watch('isGoalUser') || !canEditRoleFields
               }
               style={{
                 textAlignLast: !watch('clearance') && 'center',
@@ -556,8 +561,10 @@ const FullRoleInformationForm = forwardRef(
                 placeholder={watch('userInRole') || entity.fullName}
                 disabled={
                   onlyForView ||
-                  !(isUserHoldType(userStore.user, USER_TYPE.ADMIN) &&
-                    entity.entityType === USER_TYPE.USER_ROLE_ENTITY_TYPE)
+                  !(
+                    isUserHoldType(userStore.user, USER_TYPE.ADMIN) &&
+                    entity.entityType === USER_TYPE.USER_ROLE_ENTITY_TYPE
+                  )
                 }
                 style={{
                   textAlign: !entity?.fullName && 'center',
