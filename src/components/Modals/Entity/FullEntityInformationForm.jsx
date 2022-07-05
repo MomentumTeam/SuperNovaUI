@@ -404,7 +404,6 @@ const FullEntityInformationForm = forwardRef(
         });
       });
 
-      // console.log(newForm)
       return newForm;
     };
 
@@ -473,7 +472,7 @@ const FullEntityInformationForm = forwardRef(
       },
       {
         fieldName: 'rank',
-        displayName: 'דרגה ',
+        displayName: 'דרגה',
         inputType: InputTypes.DROPDOWN,
         options: configStore.KARTOFFEL_RANKS,
         canEdit: methods.watch('canEditEntityFields'),

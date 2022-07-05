@@ -75,7 +75,7 @@ const InputForm = ({ fields, item = null, methods = null, isEdit = false, errors
             additionalClass={field?.additionalClass}
             errors={errors}
             required={field?.required}
-          />
+          ></InputDropdown>
         );
       case InputTypes.LISTBOX:
         return (
