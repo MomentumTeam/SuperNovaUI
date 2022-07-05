@@ -70,7 +70,7 @@ const InputForm = ({ fields, item = null, methods = null, isEdit = false, errors
             displayName={field.displayName}
             options={field.options}
             optionLabel={field?.optionLabel}
-            isEdit={isEdit}
+            isEdit={field.isEdit ? field.isEdit : isEdit}
             canEdit={field?.canEdit}
             additionalClass={field?.additionalClass}
             errors={errors}

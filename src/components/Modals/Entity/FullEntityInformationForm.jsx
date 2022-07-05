@@ -241,9 +241,17 @@ const FullEntityInformationForm = forwardRef(
       const isGoalUser = user.entityType === configStore.USER_ROLE_ENTITY_TYPE;
 
       const isDifferentFromPrev = (oldFieldValue, newFieldValue) => {
-        return oldFieldValue !== newFieldValue && newFieldValue != undefined;
+        return oldFieldValue !== newFieldValue;
       };
-
+      console.log(
+        isSoldier,
+        isEditEntity,
+        isDifferentFromPrev(user['rank'], user['oldRank']),
+        user['rank'], user['oldRank'],
+        isSoldier &&
+          isEditEntity &&
+          isDifferentFromPrev(user['rank'], user['oldRank'])
+      );
       const conditionalFields = [
         {
           fieldName: 'personalNumber',
@@ -286,7 +294,12 @@ const FullEntityInformationForm = forwardRef(
           fieldName: 'oldMobilePhone',
           condition:
             isEditEntity &&
-            isDifferentFromPrev(user['mobilePhone'] , user['oldMobilePhone']),
+            isDifferentFromPrev(user['mobilePhone'], user['oldMobilePhone']),
+        },
+        {
+          fieldName: 'mobilePhone',
+          condition:
+            !isGoalUser
         },
         {
           fieldName: 'rank',
@@ -388,18 +401,20 @@ const FullEntityInformationForm = forwardRef(
       // customized field propreties
       getCustomFields().forEach((customField) => {
         Object.keys(customField).forEach((key) => {
-          let currField = newForm.find((field) => field.fieldName === customField.fieldName)
+          let currField = newForm.find(
+            (field) => field.fieldName === customField.fieldName
+          );
           if (currField) {
-            currField[
-            key
-            ] = customField[key];
+            currField[key] = customField[key];
           }
         });
       });
 
+      // console.log(newForm)
       return newForm;
     };
 
+    // console.log(configStore.KARTOFFEL_RANKS)
     const formFields = [
       {
         fieldName: 'id',
@@ -464,17 +479,20 @@ const FullEntityInformationForm = forwardRef(
       },
       {
         fieldName: 'rank',
-        displayName: 'דרגה',
-        inputType: InputTypes.TEXT,
+        displayName: 'דרגה ',
+        inputType: InputTypes.DROPDOWN,
         canEdit: methods.watch('canEditEntityFields'),
         isEdit: !onlyForView && methods.watch('canEditEntityFields'),
+        options: configStore.KARTOFFEL_RANKS,
+        force: true,
+        additionalClass: 'dropDownInput',
       },
       {
         fieldName: 'oldRank',
         displayName: 'דרגה ישנה',
         inputType: InputTypes.TEXT,
         force: true,
-        secured: () => !reqView,
+        // secured: () =>/ !reqView,
       },
       {
         fieldName: 'hierarchy',
