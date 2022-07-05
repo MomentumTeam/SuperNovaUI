@@ -67,10 +67,10 @@ const validationSchema = Yup.object().shape({
       .matches(PHONE_REG_EXP, 'מספר לא תקין'),
   }),
   canSeeUserFullClearance: Yup.boolean(),
-  clearance: Yup.string().when('canSeeUserFullClearance', {
-    is: true,
-    then: Yup.string().required('יש להכניס סיווג'),
-  }),
+  // fullClearance: Yup.string().when(['canSeeUserFullClearance', 'canEditEntityFields'], {
+  //   is: (canSeeUserFullClearance, canEditEntityFields) => canSeeUserFullClearance && canEditEntityFields,
+  //   then: Yup.string().required('יש להכניס סיווג'),
+  // }),
 });
 
 const FullEntityInformationForm = forwardRef(
@@ -184,7 +184,9 @@ const FullEntityInformationForm = forwardRef(
             : [tempForm.mobilePhone],
           ...(tempForm.serviceType && { serviceType: tempForm.serviceType }),
           ...(tempForm.address && { address: tempForm.address }),
-          ...(tempForm.clearance && { clearance: tempForm.clearance }),
+          ...(tempForm.fullClearance && {
+            fullClearance: tempForm.fullClearance,
+          }),
           ...(tempForm.sex && { sex: tempForm.sex }),
           ...(tempForm.birthDate && {
             birthdate: datesUtil.getTime(tempForm.birthDate),
@@ -407,7 +409,6 @@ const FullEntityInformationForm = forwardRef(
       return newForm;
     };
 
- 
     const formFields = [
       {
         fieldName: 'id',
