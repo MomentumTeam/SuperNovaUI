@@ -193,12 +193,15 @@ const FullEntityInformationForm = forwardRef(
           ...(tempForm.personalNumber && {
             personalNumber: tempForm.personalNumber,
           }),
+          ...(tempForm.rank && { rank: tempForm.rank }),
+
           ...(tempForm.identityCard && { identityCard: tempForm.identityCard }),
           ...(user.firstName && { oldFirstName: user.firstName }),
           ...(user.lastName && { oldLastName: user.lastName }),
           ...(user.identityCard && {
             oldIdentityCard: user.identityCard,
           }),
+          ...(user.rank && { oldRank: user.rank }),
           oldMobilePhone: !user?.mobilePhone
             ? []
             : Array.isArray(user.mobilePhone)
@@ -243,15 +246,7 @@ const FullEntityInformationForm = forwardRef(
       const isDifferentFromPrev = (oldFieldValue, newFieldValue) => {
         return oldFieldValue !== newFieldValue;
       };
-      console.log(
-        isSoldier,
-        isEditEntity,
-        isDifferentFromPrev(user['rank'], user['oldRank']),
-        user['rank'], user['oldRank'],
-        isSoldier &&
-          isEditEntity &&
-          isDifferentFromPrev(user['rank'], user['oldRank'])
-      );
+
       const conditionalFields = [
         {
           fieldName: 'personalNumber',
@@ -266,7 +261,7 @@ const FullEntityInformationForm = forwardRef(
           condition:
             isSoldier &&
             isEditEntity &&
-            isDifferentFromPrev(user['firstName'], user['oldFirstName']),
+            isDifferentFromPrev(user['rank'], user['oldRank']),
         },
         {
           fieldName: 'dischargeDay',
@@ -298,8 +293,7 @@ const FullEntityInformationForm = forwardRef(
         },
         {
           fieldName: 'mobilePhone',
-          condition:
-            !isGoalUser
+          condition: !isGoalUser,
         },
         {
           fieldName: 'rank',
@@ -385,7 +379,7 @@ const FullEntityInformationForm = forwardRef(
                 ? [{ fieldName: 'mobilePhone', displayName: 'טלפון נייד חדש' }]
                 : []),
               ...(reqView && isDifferentFromPrev(user['rank'], user['oldRank'])
-                ? [{ fieldName: 'rank', displayName: 'שם משפחה חדש' }]
+                ? [{ fieldName: 'rank', displayName: 'דרגה חדשה' }]
                 : []),
               ...(reqView &&
               isDifferentFromPrev(user['identityCard'], user['oldIdentityCard'])
@@ -414,7 +408,7 @@ const FullEntityInformationForm = forwardRef(
       return newForm;
     };
 
-    // console.log(configStore.KARTOFFEL_RANKS)
+ 
     const formFields = [
       {
         fieldName: 'id',
@@ -481,9 +475,9 @@ const FullEntityInformationForm = forwardRef(
         fieldName: 'rank',
         displayName: 'דרגה ',
         inputType: InputTypes.DROPDOWN,
+        options: configStore.KARTOFFEL_RANKS,
         canEdit: methods.watch('canEditEntityFields'),
         isEdit: !onlyForView && methods.watch('canEditEntityFields'),
-        options: configStore.KARTOFFEL_RANKS,
         force: true,
         additionalClass: 'dropDownInput',
       },

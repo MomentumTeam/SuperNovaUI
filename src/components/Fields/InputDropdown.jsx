@@ -14,7 +14,6 @@ const InputDropdown = ({
   additionalClass = "",
   errors,
   required = true,
-  optionLabel
 }) => {
   const disabled = !canEdit || !isEdit;
 
@@ -26,7 +25,6 @@ const InputDropdown = ({
   return (
     <div className={`p-fluid-item ${additionalClass}`}>
       <div className="p-field">
-        {getLabel({ canEdit: required && canEdit, isEdit, labelName: displayName })}
         <Dropdown
           id={`field-${fieldName}`}
           {...methods.register(fieldName)}
