@@ -587,11 +587,7 @@ const FullRoleInformationForm = forwardRef(
                   </small>
                 )}
               </label>
-              {/* {console.log(
-                !reqView,
-                !watch('isGoalUser'),
-                userStore.user.types.includes(USER_TYPE.ADMIN)
-              )}{' '} */}
+ 
               {!reqView &&
                 !watch('isGoalUser') &&
                 userStore.user.types.includes(USER_TYPE.ADMIN) &&
