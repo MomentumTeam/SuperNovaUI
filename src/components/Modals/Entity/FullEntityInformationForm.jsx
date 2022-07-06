@@ -63,8 +63,8 @@ const validationSchema = Yup.object().shape({
   mobilePhone: Yup.mixed().when('canEditEntityFields', {
     is: true,
     then: Yup.string('נא להזין מספר')
-      .required('נא להזין מספר')
-      .matches(PHONE_REG_EXP, 'מספר לא תקין'),
+    .required('נא להזין מספר')
+    .matches(PHONE_REG_EXP, 'מספר לא תקין'),
   }),
   canSeeUserFullClearance: Yup.boolean(),
   // fullClearance: Yup.string().when(['canSeeUserFullClearance', 'canEditEntityFields'], {
@@ -167,6 +167,31 @@ const FullEntityInformationForm = forwardRef(
       }
     }, [requestObject]);
 
+    const hasFieldsChanged = (user) => {
+      if (!user) {
+        return false;
+      }
+
+      let changedForm = false;
+      let formFields = getFormFieldsByEntityType(user);
+
+      let fieldsToCheck = [];
+      formFields.forEach((field) => {
+        if (field?.canEdit === true) {
+          fieldsToCheck.push(field.fieldName);
+        }
+      });
+
+      fieldsToCheck.forEach((field) => {
+        if (isDifferentFromPrev(methods.watch(field), user[field])) {
+          console.log(methods.watch(field), user[field]);
+          changedForm = true;
+        }
+      });
+
+      return changedForm;
+    };
+
     const onSubmit = async (data) => {
       try {
         let tempForm = { ...user, ...data };
@@ -189,7 +214,9 @@ const FullEntityInformationForm = forwardRef(
           }),
           ...(tempForm.sex && { sex: tempForm.sex }),
           ...(tempForm.birthDate && {
-            birthdate: datesUtil.getTime(tempForm.birthDate),
+            birthdate: datesUtil.getTime(tempForm.birthDate)
+              ? datesUtil.getTime(tempForm.birthDate)
+              : datesUtil.getTime(user.birthDate),
           }),
           ...(tempForm.entityType && { entityType: tempForm.entityType }),
           ...(tempForm.personalNumber && {
@@ -214,17 +241,23 @@ const FullEntityInformationForm = forwardRef(
 
         const samAccountName = getSamAccountNameFromEntity(tempForm);
 
-        await appliesStore.editEntityApply({
-          kartoffelParams,
-          adParams: {
-            samAccountName: samAccountName,
-            firstName: tempForm.firstName,
-            lastName: tempForm.lastName,
-            fullName: tempForm.fullName,
-          },
-        });
-        setIsEdit(false);
-        setIsActionDone(true);
+        if (hasFieldsChanged(user)) {
+          await appliesStore.editEntityApply({
+            kartoffelParams,
+            adParams: {
+              samAccountName: samAccountName,
+              firstName: tempForm.firstName,
+              lastName: tempForm.lastName,
+              fullName: tempForm.fullName,
+            },
+          });
+          setIsActionDone(true);
+          setIsEdit(false);
+        } else {
+          methods.setError('editEntity', {
+            message: 'לא חל שינוי בטופס לצורך ביצוע העריכה',
+          });
+        }
       } catch (error) {
         console.log(error);
       }
@@ -238,16 +271,15 @@ const FullEntityInformationForm = forwardRef(
       []
     );
 
+    const isDifferentFromPrev = (oldFieldValue, newFieldValue) => {
+      return oldFieldValue !== newFieldValue;
+    };
+
     const getFormFieldsByEntityType = (user) => {
       const isEditEntity = requestObject.type === REQ_TYPES.EDIT_ENTITY;
       const isSoldier = user.entityType === configStore.KARTOFFEL_SOLDIER;
-      const isCivilian = user.entityType === configStore.KARTOFFEL_CIVILIAN;
       const isExternal = user.entityType === configStore.KARTOFFEL_EXTERNAL;
       const isGoalUser = user.entityType === configStore.USER_ROLE_ENTITY_TYPE;
-
-      const isDifferentFromPrev = (oldFieldValue, newFieldValue) => {
-        return oldFieldValue !== newFieldValue;
-      };
 
       const conditionalFields = [
         {
@@ -434,7 +466,7 @@ const FullEntityInformationForm = forwardRef(
       },
       {
         fieldName: 'oldFirstName',
-        displayName: 'שם פרטי ישן',
+        displayName: 'שם פרטי קודם',
         inputType: InputTypes.TEXT,
         secured: () => reqView,
       },
@@ -448,7 +480,7 @@ const FullEntityInformationForm = forwardRef(
       },
       {
         fieldName: 'oldLastName',
-        displayName: 'שם משפחה ישן',
+        displayName: 'שם משפחה קודם',
         inputType: InputTypes.TEXT,
         secured: () => reqView,
       },
@@ -483,7 +515,7 @@ const FullEntityInformationForm = forwardRef(
       },
       {
         fieldName: 'oldRank',
-        displayName: 'דרגה ישנה',
+        displayName: 'דרגה קודמת',
         inputType: InputTypes.TEXT,
         force: true,
         // secured: () =>/ !reqView,
@@ -496,7 +528,7 @@ const FullEntityInformationForm = forwardRef(
       },
       {
         fieldName: 'mail',
-        displayName: 'מייל',
+        displayName: 'מזהה ייחודי',
         inputType: InputTypes.TEXT,
       },
       {
@@ -524,7 +556,7 @@ const FullEntityInformationForm = forwardRef(
       },
       {
         fieldName: 'oldMobilePhone',
-        displayName: 'פלאפון נייד ישן',
+        displayName: 'פלאפון נייד קודם',
         inputType: InputTypes.TEXT,
         force: true,
         secured: () => reqView,
@@ -534,6 +566,7 @@ const FullEntityInformationForm = forwardRef(
         displayName: 'תאריך לידה',
         inputType: InputTypes.CALANDER,
         untilNow: true,
+        secured: () => !reqView,
       },
       {
         fieldName: 'dischargeDay',
@@ -643,7 +676,7 @@ const FullEntityInformationForm = forwardRef(
       },
     ];
 
-    const getInputFields = (item, fields, reqView) => {
+    const getInputFields = (item, fields) => {
       return (
         <InputForm
           fields={fields}
@@ -687,6 +720,14 @@ const FullEntityInformationForm = forwardRef(
     return (
       <div className="p-fluid" id="fullEntityInfoForm">
         {getForm(requestObject.type)}
+        {console.log(errors)}
+        {errors && errors?.editEntity && (
+          <small style={{ color: 'red' }}>
+            {errors.editEntity?.message
+              ? errors.editEntity.message
+              : 'יש למלא ערך'}
+          </small>
+        )}
       </div>
     );
   }
