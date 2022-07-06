@@ -67,10 +67,10 @@ const validationSchema = Yup.object().shape({
       .matches(PHONE_REG_EXP, 'מספר לא תקין'),
   }),
   canSeeUserFullClearance: Yup.boolean(),
-  clearance: Yup.string().when('canSeeUserFullClearance', {
-    is: true,
-    then: Yup.string().required('יש להכניס סיווג'),
-  }),
+  // fullClearance: Yup.string().when(['canSeeUserFullClearance', 'canEditEntityFields'], {
+  //   is: (canSeeUserFullClearance, canEditEntityFields) => canSeeUserFullClearance && canEditEntityFields,
+  //   then: Yup.string().required('יש להכניס סיווג'),
+  // }),
 });
 
 const FullEntityInformationForm = forwardRef(
@@ -184,7 +184,9 @@ const FullEntityInformationForm = forwardRef(
             : [tempForm.mobilePhone],
           ...(tempForm.serviceType && { serviceType: tempForm.serviceType }),
           ...(tempForm.address && { address: tempForm.address }),
-          ...(tempForm.clearance && { clearance: tempForm.clearance }),
+          ...(tempForm.fullClearance && {
+            fullClearance: tempForm.fullClearance,
+          }),
           ...(tempForm.sex && { sex: tempForm.sex }),
           ...(tempForm.birthDate && {
             birthdate: datesUtil.getTime(tempForm.birthDate),
@@ -193,12 +195,15 @@ const FullEntityInformationForm = forwardRef(
           ...(tempForm.personalNumber && {
             personalNumber: tempForm.personalNumber,
           }),
+          ...(tempForm.rank && { rank: tempForm.rank }),
+
           ...(tempForm.identityCard && { identityCard: tempForm.identityCard }),
           ...(user.firstName && { oldFirstName: user.firstName }),
           ...(user.lastName && { oldLastName: user.lastName }),
           ...(user.identityCard && {
             oldIdentityCard: user.identityCard,
           }),
+          ...(user.rank && { oldRank: user.rank }),
           oldMobilePhone: !user?.mobilePhone
             ? []
             : Array.isArray(user.mobilePhone)
@@ -241,7 +246,7 @@ const FullEntityInformationForm = forwardRef(
       const isGoalUser = user.entityType === configStore.USER_ROLE_ENTITY_TYPE;
 
       const isDifferentFromPrev = (oldFieldValue, newFieldValue) => {
-        return oldFieldValue !== newFieldValue && newFieldValue != undefined;
+        return oldFieldValue !== newFieldValue;
       };
 
       const conditionalFields = [
@@ -258,7 +263,7 @@ const FullEntityInformationForm = forwardRef(
           condition:
             isSoldier &&
             isEditEntity &&
-            isDifferentFromPrev(user['firstName'], user['oldFirstName']),
+            isDifferentFromPrev(user['rank'], user['oldRank']),
         },
         {
           fieldName: 'dischargeDay',
@@ -286,7 +291,11 @@ const FullEntityInformationForm = forwardRef(
           fieldName: 'oldMobilePhone',
           condition:
             isEditEntity &&
-            isDifferentFromPrev(user['mobilePhone'] , user['oldMobilePhone']),
+            isDifferentFromPrev(user['mobilePhone'], user['oldMobilePhone']),
+        },
+        {
+          fieldName: 'mobilePhone',
+          condition: !isGoalUser,
         },
         {
           fieldName: 'rank',
@@ -372,7 +381,7 @@ const FullEntityInformationForm = forwardRef(
                 ? [{ fieldName: 'mobilePhone', displayName: 'טלפון נייד חדש' }]
                 : []),
               ...(reqView && isDifferentFromPrev(user['rank'], user['oldRank'])
-                ? [{ fieldName: 'rank', displayName: 'שם משפחה חדש' }]
+                ? [{ fieldName: 'rank', displayName: 'דרגה חדשה' }]
                 : []),
               ...(reqView &&
               isDifferentFromPrev(user['identityCard'], user['oldIdentityCard'])
@@ -388,11 +397,11 @@ const FullEntityInformationForm = forwardRef(
       // customized field propreties
       getCustomFields().forEach((customField) => {
         Object.keys(customField).forEach((key) => {
-          let currField = newForm.find((field) => field.fieldName === customField.fieldName)
+          let currField = newForm.find(
+            (field) => field.fieldName === customField.fieldName
+          );
           if (currField) {
-            currField[
-            key
-            ] = customField[key];
+            currField[key] = customField[key];
           }
         });
       });
@@ -465,16 +474,19 @@ const FullEntityInformationForm = forwardRef(
       {
         fieldName: 'rank',
         displayName: 'דרגה',
-        inputType: InputTypes.TEXT,
+        inputType: InputTypes.DROPDOWN,
+        options: configStore.KARTOFFEL_RANKS,
         canEdit: methods.watch('canEditEntityFields'),
         isEdit: !onlyForView && methods.watch('canEditEntityFields'),
+        force: true,
+        additionalClass: 'dropDownInput',
       },
       {
         fieldName: 'oldRank',
         displayName: 'דרגה ישנה',
         inputType: InputTypes.TEXT,
         force: true,
-        secured: () => !reqView,
+        // secured: () =>/ !reqView,
       },
       {
         fieldName: 'hierarchy',

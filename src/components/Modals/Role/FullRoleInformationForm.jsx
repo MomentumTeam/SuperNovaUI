@@ -117,7 +117,16 @@ const validationSchema = Yup.object().shape({
 });
 
 const FullRoleInformationForm = forwardRef(
-  ({ setIsActionDone, onlyForView, requestObject, reqView = true, actionPopup }, ref) => {
+  (
+    {
+      setIsActionDone,
+      onlyForView,
+      requestObject,
+      reqView = true,
+      actionPopup,
+    },
+    ref
+  ) => {
     const { appliesStore, userStore, configStore } = useStores();
     const [jobTitleSuggestions, setJobTitleSuggestions] = useState([]);
     const [entity, setEntity] = useState({});
@@ -218,7 +227,6 @@ const FullRoleInformationForm = forwardRef(
 
           try {
             const entityRes = await getEntityByRoleId(
-
               requestObject?.roleId || requestObject?.kartoffelParams?.roleId
             );
             setEntity(entityRes);
@@ -374,9 +382,7 @@ const FullRoleInformationForm = forwardRef(
                 {...register('roleName')}
                 onChange={onRoleNameChange}
                 disabled={
-                  onlyForView ||
-                  watch('isGoalUser') ||
-                  !canEditRoleFields
+                  onlyForView || watch('isGoalUser') || !canEditRoleFields
                 }
               />
 
@@ -581,13 +587,14 @@ const FullRoleInformationForm = forwardRef(
                   </small>
                 )}
               </label>
-
+ 
               {!reqView &&
-                watch('isGoalUser') &&
+                !watch('isGoalUser') &&
                 userStore.user.types.includes(USER_TYPE.ADMIN) &&
                 samAccountName !== '' && (
                   <button
                     id="disconectButton"
+                    s
                     className="p-button p-component btn-gradient red"
                     onClick={(e) => {
                       openDisconnectRoleFromEntityModal();

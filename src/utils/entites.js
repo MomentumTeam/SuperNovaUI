@@ -7,13 +7,12 @@ import { isUserHoldType } from "./user";
 
 export const canEditEntity = (selectedEntity, user) => {
   return (
-    selectedEntity &&
-    (selectedEntity.entityType === configStore.USER_CITIZEN_ENTITY_TYPE ||
-      selectedEntity.entityType === configStore.KARTOFFEL_SOLDIER) &&
-    (isUserHoldType(user, USER_TYPE.SUPER_SECURITY) ||
-      isUserHoldType(user, USER_TYPE.SECURITY) ||
-      isUserHoldType(user, USER_TYPE.SECURITY_ADMIN) ||
-      selectedEntity.id === user.id)
+    (selectedEntity &&
+      (selectedEntity?.entityType === configStore.USER_CITIZEN_ENTITY_TYPE ||
+        selectedEntity?.entityType === configStore.KARTOFFEL_SOLDIER) &&
+      selectedEntity?.id === user.id) ||
+    (selectedEntity?.entityType === configStore.USER_ROLE_ENTITY_TYPE &&
+      isUserHoldType(user, USER_TYPE.ADMIN))
   );
 };
 

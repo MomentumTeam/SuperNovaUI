@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Dropdown } from "primereact/dropdown";
+import React, { useEffect, useState } from 'react';
+import { Dropdown } from 'primereact/dropdown';
 
-import { getLabel, disabledInputStyle } from "./InputCommon";
+import { getLabel, disabledInputStyle } from './InputCommon';
 
 const InputDropdown = ({
   item,
@@ -11,10 +11,10 @@ const InputDropdown = ({
   options,
   isEdit,
   canEdit = false,
-  additionalClass = "",
+  additionalClass = '',
   errors,
   required = true,
-  optionLabel
+  optionLabel,
 }) => {
   const disabled = !canEdit || !isEdit;
 
@@ -26,7 +26,11 @@ const InputDropdown = ({
   return (
     <div className={`p-fluid-item ${additionalClass}`}>
       <div className="p-field">
-        {getLabel({ canEdit: required && canEdit, isEdit, labelName: displayName })}
+        {getLabel({
+          canEdit: required && canEdit,
+          isEdit,
+          labelName: displayName,
+        })}
         <Dropdown
           id={`field-${fieldName}`}
           {...methods.register(fieldName)}
@@ -35,11 +39,17 @@ const InputDropdown = ({
           style={disabled ? disabledInputStyle : {}}
           optionLabel={optionLabel}
           onChange={(e) => {
-            methods.setValue(fieldName, e.target.value, { shouldValidate: true });
+            methods.setValue(fieldName, e.target.value, {
+              shouldValidate: true,
+            });
           }}
           value={methods.watch(fieldName)}
         />
-        {errors[fieldName] && <small className="p-error p-d-block">{errors[fieldName].message}</small>}
+        {errors[fieldName] && (
+          <small className="p-error p-d-block">
+            {errors[fieldName].message}
+          </small>
+        )}
       </div>
     </div>
   );
