@@ -32,6 +32,7 @@ import { CanEditRoleFields } from '../../../utils/roles';
 import { Dropdown } from 'primereact/dropdown';
 import { getSamAccountNameFromEntity } from '../../../utils/fields';
 import DisconnectRoleFromEntityPopup from './DisconnectRoleFromEntityPopup';
+import { FULL_NAME_REG_EXP } from '../../../constants/general'
 
 const validationSchema = Yup.object().shape({
   entityPrevName: Yup.string(),
@@ -110,7 +111,7 @@ const validationSchema = Yup.object().shape({
         test: async (userInRole, context) => {
           return userInRole !== context.parent.entityPrevName;
         },
-      }),
+      }).matches(FULL_NAME_REG_EXP, 'על השם להיות בעל שני מילים, יכול להכיל מספרים'),
   }),
   comments: Yup.string().optional(),
   entityId: Yup.string().optional(),
