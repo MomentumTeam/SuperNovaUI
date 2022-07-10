@@ -121,7 +121,7 @@ const ApproverForm = forwardRef(
 
           let hierarchyOfId;
           switch (requestObject.additionalParams.type) {
-            case USER_TYPE.ADMIN :
+            case USER_TYPE.ADMIN:
             case USER_TYPE.SECURITY_ADMIN:
               hierarchyOfId = requestObject.additionalParams.groupInChargeId;
               break;
@@ -322,6 +322,21 @@ const ApproverForm = forwardRef(
 
     return (
       <div className="p-fluid">
+        <span
+          style={{
+            // marginRight: '60px',
+            marginBottom: '30px',
+            // marginTop: '-20px',
+            // display: 'inline-block',
+            fontSize: '85%',
+            color: '#73777B',
+          }}
+        >
+          בקשה להרשאות במערכת LEGO.
+           <br />הרשאות מסוג ניהול עבור אישור בקשות במערכת
+          בהתאם לצורך. עבור הרשאת מקורות ומערכות מודיעיניות יש לפנות למערכת
+          במוס.
+        </span>{' '}
         <div
           className={
             watch('approverType') == USER_TYPE.ADMIN ||
@@ -426,7 +441,8 @@ const ApproverForm = forwardRef(
                   'personalNumber',
                   e.value.employeeId ||
                     e.value.personalNumber ||
-                    e.value.identityCard
+                    e.value.identityCard ||
+                    e.value.goalUserID
                 );
                 setValue('hierarchy', {
                   hierarchy: e.value.hierarchy,
@@ -459,7 +475,7 @@ const ApproverForm = forwardRef(
           <div className="p-field">
             <label htmlFor="2021">
               {' '}
-              <span className="required-field">*</span>מ"א/ת"ז
+              <span className="required-field">*</span>מ"א/ת"ז/brole
             </label>
             <InputText
               {...register('personalNumber', { required: true })}

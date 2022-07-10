@@ -32,6 +32,14 @@ export const TableTypes = {
         USER_TYPE.SUPER_SECURITY,
       ],
     },
+    {
+      field: 'fullClearance',
+      displayName: 'סיווג',
+      secured: [
+        USER_TYPE.SECURITY,
+        USER_TYPE.SUPER_SECURITY,
+      ],
+    },
     { field: 'jobTitle', displayName: 'תפקיד' },
     { field: 'displayName', displayName: 'יוזר', template: TextFieldTemplate },
     { field: 'rank', displayName: 'דרגה' },
@@ -95,12 +103,12 @@ export const TableActionsTypes = {
   hierarchy: {
     view: tableActionsEnum.VIEW_HIERARCHY,
     edit: tableActionsEnum.EDIT_HIERARCHY,
-    // delete: tableActionsEnum.DELETE_HIERARCHY,
+    delete: tableActionsEnum.DELETE_HIERARCHY,
   },
   roles: {
     view: tableActionsEnum.VIEW_ROLE,
     edit: tableActionsEnum.EDIT_ROLE,
-    // delete: tableActionsEnum.DELETE_ROLE,
+    delete: tableActionsEnum.DELETE_ROLE,
   },
 };
 

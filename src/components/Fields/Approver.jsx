@@ -13,12 +13,12 @@ import { useToast } from '../../context/use-toast';
 import { USER_TYPE } from '../../constants';
 
 const Approver = ({
-  setValue,
+  setValue = null,
   name,
   multiple,
   disabled = false,
   defaultApprovers,
-  errors,
+  errors = null,
   type = USER_TYPE.COMMANDER,
   isHighRank = false,
   tooltip = 'גורם מאשר',
@@ -107,7 +107,7 @@ const Approver = ({
           selectedItemTemplate={multiple && itemSelectedTemplate}
           field="displayName"
           onChange={(e) => {
-            if (multiple && Array.isArray(e.value)) {
+            if (multiple && Array.isArray(e.value) && setValue) {
               const approvers = e.value.map(({ id, displayName, entityId, identityCard, personalNumber }) => ({
                 id,
                 displayName,
@@ -120,7 +120,7 @@ const Approver = ({
               setValue(name, approvers);
             }
 
-            if (!multiple) {
+            if (!multiple && setValue) {
               setSelectedApprover(e.value);
 
               if (e.value?.id) {
@@ -135,7 +135,7 @@ const Approver = ({
           }}
         />
         <label htmlFor="2020">
-          {errors?.approvers && (
+          {errors && errors?.approvers && (
             <small style={{ color: 'red' }}>
               {errors.approvers?.message
                 ? errors.approvers.message

@@ -484,6 +484,25 @@ const AssignRoleToEntityForm = forwardRef(
         style={{ flexDirection: 'column' }}
         id="assignRoleToEntityForm"
       >
+        <span
+          style={{
+            // marginRight: '60px',
+            marginBottom: '30px',
+            // marginTop: '-20px',
+            // display: 'inline-block',
+            fontSize: '85%',
+            color: '#73777B',
+          }}
+        >
+          {showJob
+            ? 'מעבר משתמש לתפקיד (T) הקיים במערכת.'
+            : 'חיבור בין משתמש חדש במערכת שעדין לא מחובר לתפקיד.'}
+          <br />
+          {showJob
+            ? 'מעבר תפקיד נועד למשתמשים שעוברים בין תפקידים ומחליפים את הT שלהם ל-T הרלוונטי לתפקיד'
+            : ' במידה והוזנו פרטי המשתמש בטופס החיבור ופרטיו לא נמצאו, יש לעבור לטופס מטה "יצירת משתמש מיוחד" ולהכניס את פרטי המשתמש למערכת בהתאם לסוג השירות שלו.  לאחר יצירת המשתמש, יש לחזור לטופס החיבור'}.
+      
+        </span>{' '}
         <div style={{ display: 'flex' }}>
           <div className="p-fluid-item-flex p-fluid-item">
             <div className="p-field">
@@ -552,19 +571,19 @@ const AssignRoleToEntityForm = forwardRef(
             <div className="p-field">
               <label htmlFor="2021">
                 {' '}
-                <span className='required-field'>*</span>מ"א/ת"ז
+                <span className="required-field">*</span>מ"א/ת"ז
                 {userStore.isUserExternal ? '/מזהה עובד' : ''}
                 {userStore.isUserExternal && (
                   <>
-                    <Tooltip target='.pi-caret-down' />
+                    <Tooltip target=".pi-caret-down" />
                     <i
                       data-pr-tooltip={`מזהה עובד יכתב בפורמט הבא -
                       x-y
                       כאשר x הוא מספר יחידה מלא
                       y הוא מספר עובד
                       ומקף מפריד בינהם `}
-                      data-pr-position='left'
-                      className='pi pi-caret-down'
+                      data-pr-position="left"
+                      className="pi pi-caret-down"
                       style={{ fontSize: '10px', paddingRight: '5px' }}
                     ></i>
                   </>
@@ -572,8 +591,8 @@ const AssignRoleToEntityForm = forwardRef(
               </label>
               <InputText
                 {...register('personalNumber', { required: true })}
-                id='assignRoleToEntityForm-personalNumber'
-                type='text'
+                id="assignRoleToEntityForm-personalNumber"
+                type="text"
                 keyfilter={userStore.isUserExternal ? '' : 'pnum'}
                 required
                 onInput={() => {

@@ -21,7 +21,7 @@ export const InputTypes = {
 
 export const InputFormContext = createContext(null);
 
-const InputForm = ({ fields, item = null, methods, isEdit, errors }) => {
+const InputForm = ({ fields, item = null, methods = null, isEdit = false, errors = null }) => {
   const getField = (field) => {
     switch (field.inputType) {
       case InputTypes.TEXT:
@@ -32,7 +32,7 @@ const InputForm = ({ fields, item = null, methods, isEdit, errors }) => {
             errors={errors}
             fieldName={field.fieldName}
             displayName={field.displayName}
-            isEdit={isEdit}
+            isEdit={field.isEdit ? field.isEdit : isEdit}
             canEdit={field?.canEdit}
             type={field?.type}
             keyFilter={field?.keyFilter}
@@ -70,12 +70,12 @@ const InputForm = ({ fields, item = null, methods, isEdit, errors }) => {
             displayName={field.displayName}
             options={field.options}
             optionLabel={field?.optionLabel}
-            isEdit={isEdit}
+            isEdit={field.isEdit ? field.isEdit : isEdit}
             canEdit={field?.canEdit}
             additionalClass={field?.additionalClass}
             errors={errors}
             required={field?.required}
-          />
+          ></InputDropdown>
         );
       case InputTypes.LISTBOX:
         return (
@@ -150,7 +150,7 @@ const InputForm = ({ fields, item = null, methods, isEdit, errors }) => {
         return (
           <div className='p-fluid-item'>
             <Approver
-              setValue={methods.setValue}
+              setValue={methods?.setValue}
               name={field.fieldName}
               tooltip={field?.tooltip}
               multiple={true}

@@ -13,6 +13,8 @@ import { TYPES, assignRoleToEntityHeader } from '../../../constants/applies';
 import { FullRoleInformationForm } from '../Role/FullRoleInformationForm';
 import { FullHierarchyInformationForm } from '../Hierarchy/FullHierarchyInformationForm';
 import { FullEntityInformationForm } from "../Entity/FullEntityInformationForm";
+import { HierarchyDeleteInfo } from '../Hierarchy/HierarchyDeleteInfo';
+import { RoleDeleteInfo } from '../Role/RoleDeleteInfo';
 
 const PreviewRequestsDialog = ({ request, isDialogVisible, setDialogVisiblity }) => {
   const [dialogContent, setDialogContent] = useState(null);
@@ -22,78 +24,95 @@ const PreviewRequestsDialog = ({ request, isDialogVisible, setDialogVisiblity })
       footer: null,
       header: `פרטי בקשה ל${TYPES.CREATE_OG}`,
       component: CreateOGForm,
-      classDialog: 'dialogClass5',
+      classDialog: "dialogClass5",
     },
     CREATE_ROLE: {
       footer: null,
       header: `פרטי בקשה ל${TYPES.CREATE_ROLE}`,
       component: CreateSingleRoleForm,
-      dialogClass: 'dialogClass1',
+      dialogClass: "dialogClass1",
     },
     ASSIGN_ROLE_TO_ENTITY: {
       footer: null,
       // header: `פרטי בקשה ל${TYPES.ASSIGN_ROLE_TO_ENTITY}`,
       component: AssignRoleToEntityForm,
-      dialogClass: 'dialogClass3',
+      dialogClass: "dialogClass3",
     },
     CREATE_ENTITY: {
       footer: null,
       header: `פרטי בקשה ל${TYPES.CREATE_ENTITY}`,
       component: CreateSpecialEntityForm,
-      dialogClass: 'dialogClass3',
+      dialogClass: "dialogClass3",
     },
     ADD_APPROVER: {
       footer: null,
       header: `פרטי בקשה ל${TYPES.ADD_APPROVER}`,
       component: ApproverForm,
-      dialogClass: 'dialogClass6',
+      dialogClass: "dialogClass6",
     },
     CHANGE_ROLE_HIERARCHY: {
       footer: null,
       header: `פרטי בקשה ל${TYPES.CHANGE_ROLE_HIERARCHY}`,
       component: RenameSingleOGForm,
-      dialogClass: 'dialogClass2',
+      dialogClass: "dialogClass2",
     },
     CREATE_ROLE_BULK: {
       footer: null,
       header: `פרטי בקשה מרובה ל${TYPES.CREATE_ROLE_BULK}`,
       component: CreateBulkRoleForm,
-      dialogClass: 'dialogClass1',
+      dialogClass: "dialogClass1",
     },
     CHANGE_ROLE_HIERARCHY_BULK: {
       footer: null,
       header: `פרטי בקשה מרובה ל${TYPES.CHANGE_ROLE_HIERARCHY_BULK}`,
       component: RenameBulkOGForm,
-      dialogClass: 'dialogClass2',
+      dialogClass: "dialogClass2",
     },
     RENAME_OG: {
       footer: null,
       header: `פרטי בקשה ל${TYPES.RENAME_OG}`,
       component: FullHierarchyInformationForm,
-      dialogClass: 'dialogClass5',
+      dialogClass: "dialogClass5",
     },
     RENAME_ROLE: {
       footer: null,
       header: `פרטי בקשה ל${TYPES.RENAME_ROLE}`,
       component: FullRoleInformationForm,
-      dialogClass: 'dialogClass1',
+      dialogClass: "dialogClass1",
     },
     EDIT_ENTITY: {
       footer: null,
       header: `פרטי בקשה ל${TYPES.EDIT_ENTITY}`,
       component: FullEntityInformationForm,
-      dialogClass: 'dialogClass3',
+      dialogClass: "dialogClass3",
     },
     CONVERT_ENTITY_TYPE: {
       footer: null,
       header: `פרטי בקשה ל${TYPES.CONVERT_ENTITY_TYPE}`,
       component: FullEntityInformationForm,
-      dialogClass: 'dialogClass3',
+      dialogClass: "dialogClass3",
     },
-    // DELETE_OG: { footer: null, header: '' },
-    // DELETE_ROLE: { footer: null, header: '' },
+    DELETE_OG: {
+      footer: null,
+      header: `פרטי בקשה ל${TYPES.DELETE_OG}`,
+      component: HierarchyDeleteInfo,
+      showApproverSection: false,
+      dialogClass: "dialogClass2",
+    },
+    DELETE_ROLE: {
+      footer: null,
+      header: `פרטי בקשה ל${TYPES.DELETE_ROLE}`,
+      component: RoleDeleteInfo,
+      showApproverSection: false,
+      dialogClass: "dialogClass1",
+    },
     // DELETE_ENTITY: { footer: null, header: '' },
-    // DISCONNECT_ROLE: { footer: null, header: '' },
+    DISCONNECT_ROLE: {
+      footer: null,
+      header: `פרטי בקשה ל${TYPES.DISCONNECT_ROLE}`,
+      component: FullEntityInformationForm,
+      dialogClass: "dialogClass3",
+    },
     // UNRECOGNIZED: { footer: null, header: '' },
   };
 
@@ -103,6 +122,9 @@ const PreviewRequestsDialog = ({ request, isDialogVisible, setDialogVisiblity })
       if (dialogParams[request.type]) {
         setDialogContent(
           <PreviewRequestWrapper
+            showApproverSection={
+              'showApproverSection' in dialogParams[request.type] ? dialogParams[request.type].showApproverSection : true
+            }
             request={request}
             showJob={request.kartoffelParams?.needDisconnect} //relevant only to ASSIGN_ROLE_TO_ENTITY requests (מעבר תפקיד או חיבור משתמש חדש לתפקיד)
             ModalComponent={dialogParams[request.type].component}

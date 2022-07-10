@@ -7,12 +7,12 @@ import { isUserHoldType } from "./user";
 
 export const canEditEntity = (selectedEntity, user) => {
   return (
-    selectedEntity &&
-    selectedEntity.entityType === configStore.USER_CITIZEN_ENTITY_TYPE &&
-    (isUserHoldType(user, USER_TYPE.SUPER_SECURITY) ||
-      isUserHoldType(user, USER_TYPE.SECURITY) ||
-      isUserHoldType(user, USER_TYPE.SECURITY_ADMIN) ||
-      selectedEntity.id === user.id)
+    (selectedEntity &&
+      (selectedEntity?.entityType === configStore.USER_CITIZEN_ENTITY_TYPE ||
+        selectedEntity?.entityType === configStore.KARTOFFEL_SOLDIER) &&
+      selectedEntity?.id === user.id) ||
+    (selectedEntity?.entityType === configStore.USER_ROLE_ENTITY_TYPE &&
+      isUserHoldType(user, USER_TYPE.ADMIN))
   );
 };
 
@@ -28,6 +28,16 @@ export const CanSeeUserClearance = () => {
 
   const field = TableTypes.entities.find(
     (field) => field.field === "clearance"
+  );
+  return field.secured.some((allowedType) => isUserHoldType(user, allowedType));
+};
+
+export const CanSeeUserFullClearance = () => {
+  const { userStore } = useStores();
+  const user = toJS(userStore.user);
+
+  const field = TableTypes.entities.find(
+    (field) => field.field === "fullClearance"
   );
   return field.secured.some((allowedType) => isUserHoldType(user, allowedType));
 };

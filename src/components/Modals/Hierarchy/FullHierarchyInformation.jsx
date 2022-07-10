@@ -24,7 +24,6 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit, actionP
     }
   };
 
-  const resetForm = () => ref.current.resetForm();
 
   const openDeleteModal = () => setIsDeleteModalOpen(true);
   const closeDeleteModal = () => setIsDeleteModalOpen(false);
@@ -34,6 +33,7 @@ const FullHierarchyInformation = ({ hierarchy, isOpen, closeModal, edit, actionP
       closeModal();
     }
   }, [isActionDone]);
+
   return (
     <>
       <Dialog

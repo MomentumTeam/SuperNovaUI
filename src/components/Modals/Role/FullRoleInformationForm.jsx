@@ -30,9 +30,14 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { getSamAccountNameFromUniqueId } from '../../../utils/fields';
 import { CanEditRoleFields } from '../../../utils/roles';
 import { Dropdown } from 'primereact/dropdown';
+import { getSamAccountNameFromEntity } from '../../../utils/fields';
+import DisconnectRoleFromEntityPopup from './DisconnectRoleFromEntityPopup';
+import { FULL_NAME_REG_EXP } from '../../../constants/general'
 
 const validationSchema = Yup.object().shape({
+  entityPrevName: Yup.string(),
   oldRole: Yup.object(),
+  isGoalUser: Yup.boolean(),
   isUserApprover: Yup.boolean(),
   canEditRoleFields: Yup.boolean(),
   isUserSecurity: Yup.boolean(),
@@ -42,8 +47,8 @@ const validationSchema = Yup.object().shape({
       .min(1, 'יש לבחור לפחות גורם מאשר אחד')
       .required('יש לבחור לפחות גורם מאשר אחד'),
   }),
-  roleName: Yup.string().when('canEditRoleFields', {
-    is: true,
+  roleName: Yup.string().when(['canEditRoleFields', 'isGoalUser'], {
+    is: (canEditRoleFields, isGoalUser) => canEditRoleFields && !isGoalUser,
     then: Yup.string()
       .required('יש לבחור שם תפקיד')
       .matches(ROLE_EXP, 'תפקיד לא תקין')
@@ -81,8 +86,8 @@ const validationSchema = Yup.object().shape({
         },
       }),
   }),
-  clearance: Yup.string().when('canEditRoleFields', {
-    is: true,
+  clearance: Yup.string().when(['canEditRoleFields', 'isGoalUser'], {
+    is: (canEditRoleFields, isGoalUser) => canEditRoleFields && !isGoalUser,
     then: Yup.string()
       // .required('יש לבחור סיווג')      //commented-in case some roles don't have clearance
       .test({
@@ -96,18 +101,41 @@ const validationSchema = Yup.object().shape({
         },
       }),
   }),
+  userInRole: Yup.string().when(['canEditRoleFields', 'isGoalUser'], {
+    is: (canEditRoleFields, isGoalUser) => canEditRoleFields && isGoalUser,
+    then: Yup.string()
+      // .required('יש לבחור סיווג')      //commented-in case some roles don't have clearance
+      .test({
+        name: 'userInRole-is-the-same',
+        message: 'יש לשנות שם משתמש בתפקיד!',
+        test: async (userInRole, context) => {
+          return userInRole !== context.parent.entityPrevName;
+        },
+      }).matches(FULL_NAME_REG_EXP, 'על השם להיות בעל שני מילים, יכול להכיל מספרים'),
+  }),
   comments: Yup.string().optional(),
   entityId: Yup.string().optional(),
 });
 
 const FullRoleInformationForm = forwardRef(
-  ({ setIsActionDone, onlyForView, requestObject, reqView = true }, ref) => {
-    const { appliesStore, userStore } = useStores();
+  (
+    {
+      setIsActionDone,
+      onlyForView,
+      requestObject,
+      reqView = true,
+      actionPopup,
+    },
+    ref
+  ) => {
+    const { appliesStore, userStore, configStore } = useStores();
     const [jobTitleSuggestions, setJobTitleSuggestions] = useState([]);
     const [entity, setEntity] = useState({});
     const [role, setRole] = useState();
     const [digitalIdentity, setDigitalIdentity] = useState();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
+    const [showDisconnectRoleModal, setShowDisconnectRoleModal] =
+      useState(false);
 
     const isUserApprover = isUserApproverType(userStore.user);
     const canEditRoleFields = CanEditRoleFields(requestObject);
@@ -152,7 +180,7 @@ const FullRoleInformationForm = forwardRef(
         defaultValues: defaultValues,
       });
     const { errors } = formState;
-
+    const samAccountName = getSamAccountNameFromEntity(entity);
     const initDefaultApprovers = async () => {
       const result = await GetDefaultApprovers({
         request: requestObject,
@@ -188,6 +216,10 @@ const FullRoleInformationForm = forwardRef(
               const entityRes = await getEntityByMongoId(
                 requestObject?.kartoffelParams?.entityId
               );
+              setValue(
+                'isGoalUser',
+                entityRes?.entityType === configStore.USER_ROLE_ENTITY_TYPE
+              );
               setEntity(entityRes);
             } catch (error) {}
           }
@@ -199,7 +231,13 @@ const FullRoleInformationForm = forwardRef(
               requestObject?.roleId || requestObject?.kartoffelParams?.roleId
             );
             setEntity(entityRes);
+            setValue(
+              'isGoalUser',
+              entityRes?.entityType === configStore.USER_ROLE_ENTITY_TYPE
+            );
             setValue('entityId', entityRes.id);
+            setValue('userInRole', entityRes.fullName);
+            setValue('entityPrevName', entityRes.fullName);
           } catch (error) {}
 
           try {
@@ -223,8 +261,17 @@ const FullRoleInformationForm = forwardRef(
         console.log(err);
         throw new Error(err.errors);
       }
-      const { approvers, comments, roleName, clearance, oldRole, entityId } =
-        data;
+      const {
+        approvers,
+        comments,
+        roleName,
+        clearance,
+        oldRole,
+        entityId,
+        entityPrevName,
+        userInRole,
+      } = data;
+
       const req = {
         commanders: approvers,
         kartoffelParams: {
@@ -252,7 +299,28 @@ const FullRoleInformationForm = forwardRef(
         };
       }
 
-      await appliesStore.renameRoleApply(req);
+      if (entityPrevName !== userInRole) {
+        let oldFullName = entityPrevName.split(' ');
+        let fullName = watch('userInRole').split(' ');
+        req.kartoffelParams = {
+          id: entityId,
+          firstName: fullName[0],
+          lastName: fullName[1] ? fullName[1] : '',
+          oldFirstName: oldFullName[0],
+          oldLastName: oldFullName[1] ? oldFullName[1] : '',
+        };
+
+        req.adParams = {
+          firstName: fullName[0],
+          lastName: fullName[1] ? fullName[1] : '',
+          fullName: watch('userInRole'),
+        };
+
+        await appliesStore.editEntityApply(req);
+      } else {
+        await appliesStore.renameRoleApply(req);
+      }
+
       setIsActionDone(true);
     };
 
@@ -267,6 +335,14 @@ const FullRoleInformationForm = forwardRef(
       setValue('isJobTitleAlreadyTaken', false, { shouldValidate: true });
       setJobTitleSuggestions([]);
       clearErrors('roleName');
+    };
+
+    const openDisconnectRoleFromEntityModal = () => {
+      setShowDisconnectRoleModal(true);
+    };
+
+    const closeDisconnectRoleFromEntityModal = () => {
+      setShowDisconnectRoleModal(false);
     };
 
     useImperativeHandle(
@@ -306,8 +382,11 @@ const FullRoleInformationForm = forwardRef(
                 id="editSingleRoleForm-roleName"
                 {...register('roleName')}
                 onChange={onRoleNameChange}
-                disabled={onlyForView || !canEditRoleFields}
+                disabled={
+                  onlyForView || watch('isGoalUser') || !canEditRoleFields
+                }
               />
+
               <label>
                 {(errors.roleName || errors.isJobTitleAlreadyTaken) && (
                   <small style={{ color: 'red' }}>
@@ -403,9 +482,15 @@ const FullRoleInformationForm = forwardRef(
               {...register('clearance')}
               value={watch('clearance')}
               className={`dropDownInput ${
-                onlyForView || !canEditRoleFields ? `disabled` : ''
+                onlyForView ||
+                !canEditRoleFields ||
+                entity?.entityType === configStore.USER_ROLE_ENTITY_TYPE
+                  ? `disabled`
+                  : ''
               } `}
-              disabled={onlyForView || !canEditRoleFields}
+              disabled={
+                onlyForView || watch('isGoalUser') || !canEditRoleFields
+              }
               style={{
                 textAlignLast: !watch('clearance') && 'center',
               }}
@@ -474,18 +559,52 @@ const FullRoleInformationForm = forwardRef(
             />
           </div>
         </div>
-
         <div className="p-fluid-item p-fluid-item">
           <div className="p-field">
             <label> משתמש בתפקיד </label>
-            <InputText
-              id="fullRoleInfoForm-entity"
-              value={entity?.fullName || '- - -'}
-              disabled={true}
-              style={{
-                textAlign: !entity?.fullName && 'center',
-              }}
-            />
+            <div className="p-field">
+              <InputText
+                id="fullRoleInfoForm-entity"
+                {...register('userInRole')}
+                value={watch('userInRole')}
+                placeholder={watch('userInRole') || entity.fullName}
+                disabled={
+                  onlyForView ||
+                  !(
+                    isUserHoldType(userStore.user, USER_TYPE.ADMIN) &&
+                    watch('isGoalUser')
+                  )
+                }
+                style={{
+                  textAlign: !entity?.fullName && 'center',
+                }}
+              />
+              <label>
+                {errors.userInRole && (
+                  <small style={{ color: 'red' }}>
+                    {errors.userInRole?.message
+                      ? errors.userInRole?.message
+                      : 'יש למלא ערך'}
+                  </small>
+                )}
+              </label>
+ 
+              {!reqView &&
+                !watch('isGoalUser') &&
+                userStore.user.types.includes(USER_TYPE.ADMIN) &&
+                samAccountName !== '' && (
+                  <button
+                    id="disconectButton"
+                    s
+                    className="p-button p-component btn-gradient red"
+                    onClick={(e) => {
+                      openDisconnectRoleFromEntityModal();
+                    }}
+                  >
+                    ניתוק
+                  </button>
+                )}
+            </div>
           </div>
         </div>
 
@@ -535,6 +654,15 @@ const FullRoleInformationForm = forwardRef(
             </div>
           </div>
         )}
+        <DisconnectRoleFromEntityPopup
+          user={userStore.user}
+          role={role}
+          entity={entity}
+          samAccountName={samAccountName}
+          showModal={showDisconnectRoleModal}
+          actionPopup={actionPopup}
+          closeModal={closeDisconnectRoleFromEntityModal}
+        />
       </div>
     );
   }

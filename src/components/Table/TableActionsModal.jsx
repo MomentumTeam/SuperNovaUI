@@ -25,6 +25,7 @@ import PreviewRequestsDialog from "../Modals/Request/PreviewRequestsDialog1";
 import { TakeRequest } from "../Modals/Request/TakeRequest";
 import { ReturnRequest } from '../Modals/Request/ReturnRequest';
 import { useToast } from '../../context/use-toast';
+import { RoleDelete } from "../Modals/Role/RoleDelete";
 
 const TableActionsModal = forwardRef((_, ref) => {
   const { actionPopup, toastRef } = useToast();
@@ -90,8 +91,9 @@ const TableActionsModal = forwardRef((_, ref) => {
           return (
             <HierarchyDelete
               hierarchy={selectedItem[0]}
-              isOpen={isActionModalOpen}
-              closeModal={closeActionModal}
+              isDialogVisible={isActionModalOpen}
+              setDialogVisiblity={setIsActionModalOpen}
+              actionPopup={sendActionPopup}
             />
           );
 
@@ -116,6 +118,17 @@ const TableActionsModal = forwardRef((_, ref) => {
               actionPopup={sendActionPopup}
             />
           );
+        case usersTableActionsEnum.DELETE_ROLE:
+          return (
+            <RoleDelete
+              role={selectedItem[0]}
+              isDialogVisible={isActionModalOpen}
+              setDialogVisiblity={setIsActionModalOpen}
+              actionPopup={sendActionPopup}
+            />
+          );
+
+        // REQUESTS
         case myRequestsTableActionsEnum.VIEW_MY_REQUESTS:
           return (
             <PreviewRequestsDialog
@@ -153,8 +166,8 @@ const TableActionsModal = forwardRef((_, ref) => {
           break;
         default:
           toastRef.current.show({
-            severity: 'error',
-            summary: 'פעולה לא ממומשת',
+            severity: "error",
+            summary: "פעולה לא ממומשת",
             detail: `פעולה זו לא ממומשת במערכת עדיין`,
             life: 1000,
           });

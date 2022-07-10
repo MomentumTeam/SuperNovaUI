@@ -31,10 +31,10 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
   }, [isActionDone])
   return (
     <Dialog
-      className={classNames("dialogClass1")}
-      header={isEdit ? "עריכת תפקיד" : "פרטי תפקיד"}
+      className={classNames('dialogClass12')}
+      header={isEdit ? 'עריכת תפקיד' : 'פרטי תפקיד'}
       visible={isOpen}
-      style={{ borderRadius: "30px" }}
+      style={{ borderRadius: '30px' }}
       onHide={closeModal}
       dismissableMask={true}
       footer={
@@ -52,6 +52,7 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
         ref={ref}
         reqView={false}
         requestObject={role}
+        actionPopup={actionPopup}
         setIsActionDone={setIsActionDone}
         onlyForView={!isEdit}
       />

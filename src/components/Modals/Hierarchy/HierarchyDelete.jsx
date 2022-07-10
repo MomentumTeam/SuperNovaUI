@@ -1,40 +1,62 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Dialog } from "primereact/dialog";
-import { InputTextarea } from "primereact/inputtextarea";
 import { classNames } from "primereact/utils";
+
 import { HierarchyDeleteFooter } from './HierarchyDeleteFooter';
+import { getOuDisplayName, hierarchyConverse } from "../../../utils/hierarchy";
 
 import "../../../assets/css/local/components/modal-item.css";
-const HierarchyDelete = ({ hierarchy, isOpen, closeModal }) => {
-  const [disabled, setDisabled] = useState(true);
-  const [reason, setReason] = useState("");
+import { useStores } from "../../../context/use-stores";
+
+const HierarchyDelete = ({ hierarchy, isDialogVisible, setDialogVisiblity, actionPopup }) => {
+  const [actionIsDone, setActionIsDone] = useState(false);
+  const { appliesStore } = useStores();
 
   useEffect(() => {
-    (reason &&  reason.length > 0)? setDisabled(false): setDisabled(true);
-  }, [reason]);
+    if (actionIsDone) {
+      actionPopup();
+      setActionIsDone(false);
+      setDialogVisiblity(false);
+    }
+  }, [actionIsDone]);
+
+
+  const handleRequest = async () => {
+    try {        
+        const req = {
+          adParams: {
+            ouDisplayName: getOuDisplayName(hierarchy.hierarchy, hierarchy.name),
+          },
+          kartoffelParams: {
+            id: hierarchy.id,
+            name: hierarchyConverse(hierarchy)
+          },
+        };
+    
+
+        await appliesStore.deleteOGApply(req);
+        setActionIsDone(true)
+    } catch (e) {
+      actionPopup("מחיקת היררכיה", e);
+    }
+  };
 
   return (
     <div>
       <Dialog
-        className={classNames("dialogClass5")}
+        className={`${classNames("dialogClass5")} dialogdelete`}
         header="מחיקת היררכיה"
-        visible={isOpen}
-        footer={<HierarchyDeleteFooter closeModal={closeModal} item={hierarchy} disabled={disabled} />}
-        onHide={closeModal}
+        visible={isDialogVisible}
+        footer={<HierarchyDeleteFooter closeModal={() => setDialogVisiblity(false)} deleteHierarchy={handleRequest} />}
+        onHide={() => setDialogVisiblity(false)}
         dismissableMask={true}
       >
-        <div className="container">
+        <div className="container display-flex display-flex-center delete-container">
           <div>
             <p>האם את/ה בטוח/ה שברצונך למחוק היררכיה זו?</p>
-            <p style={{ fontWeight: "bold" }}> מחיקת ההיררכיה תוביל למחיקת כל התפקידים בהיררכיה!</p>
-          </div>
-          <div className="p-fluid container">
-            <div className="p-fluid-item">
-              <div className="p-field">
-                <label htmlFor="2011">הערה</label>
-                <InputTextarea id="2011" className="InputReason" type="text" value={reason} onChange={e=> setReason(e.target.value)}/>
-              </div>
-            </div>
+            <p>מחיקת היררכיה מתאפשרת רק אם ההיררכיה ריקה מתפקידים והיררכיות בתוכה ותחתיה.</p>
+
+            <p style={{ fontWeight: "bold" }}>מחיקת היררכיה תסיר את היררכיה זו מהעץ הארגוני!</p>
           </div>
         </div>
       </Dialog>

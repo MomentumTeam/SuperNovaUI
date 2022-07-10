@@ -8,12 +8,12 @@ import React, {
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { NAME_OG_EXP, USER_TYPE } from '../../../constants';
+import { NAME_OG_EXP } from '../../../constants';
 
 import '../../../assets/css/local/general/buttons.css';
 import '../../../assets/css/local/components/modal-item.css';
 import { GetDefaultApprovers } from '../../../utils/approver';
-import { isUserApproverType, isUserHoldType } from '../../../utils/user';
+import { isUserApproverType } from '../../../utils/user';
 import { useStores } from '../../../context/use-stores';
 import {
   getHierarchy,

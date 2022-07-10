@@ -356,6 +356,8 @@ export const isAutomaticallyApproved = (request, user) => {
     request?.submittedBy?.id === user.id &&
     (request?.type === REQ_TYPES.CREATE_OG ||
       request?.type === REQ_TYPES.CREATE_ENTITY ||
+      request?.type === REQ_TYPES.DELETE_OG ||
+      request?.type === REQ_TYPES.DELETE_ROLE ||
       (request?.type === REQ_TYPES.ADD_APPROVER &&
         (request?.additionalParams?.type === USER_TYPE.COMMANDER ||
           request?.additionalParams?.type === USER_TYPE.ADMIN ||

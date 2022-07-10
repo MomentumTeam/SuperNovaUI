@@ -18,6 +18,23 @@
   max-width: 500px;
 }
 
+.p-dialog.dialogdelete {
+  min-height: 290px !important;
+  max-width: 650px !important;
+}
+
+.p-dialog.dialogdeleteentity {
+  min-height: 360px !important;
+  min-width: 800px !important;
+}
+
+
+.delete-container{
+  margin-top: -15px;
+  text-align: center;
+}
+
+
 @media (max-width: 730px) {
   .p-dialog {
     width: 90%;
@@ -310,7 +327,7 @@
   background-color: rgb(4, 207, 156);
   color: #000000;
 }
-.p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-button.p-component {
+/* .p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-button.p-component {
   background-color: rgba(167, 171, 189, 0.5);
   border: 0;
   width: 47px;
@@ -321,7 +338,7 @@
   margin-bottom: 20px;
   margin-right: 15px;
   border-radius: 10px;
-}
+} */
 .p-dialog
   .p-dialog-content
   .p-fluid
@@ -718,6 +735,16 @@
 .p-dialog.noTitle .p-dialog-content {
   padding-top: 0;
 }
+
+.p-dialog.dialogClass12 .p-dialog-header .p-dialog-title::before {
+  background-image: url(../../../images/actions-icon12.svg);
+  background-size: 16px;
+}
+.p-dialog.dialogClass12 .p-dialog-header .p-dialog-title::after {
+  background: transparent linear-gradient(180deg, #90ccff 0%, #6486da 100%) 0%
+    0% no-repeat padding-box;
+}
+
 .p-dialog.dialogClass1 .p-dialog-header .p-dialog-title::before {
   background-image: url(../../../images/actions-icon1.svg);
   background-size: 16px;
@@ -764,6 +791,10 @@
   .p-fluid-item
   .p-button.p-component.OpeningHierarchy {
   left: 4px;
+}
+
+.p-dialog.dialogClass5 .dialog-delete {
+  max-height: max-content;
 }
 .p-dialog.dialogClass6 .p-dialog-header .p-dialog-title::before {
   background-image: url(../../../images/actions-icon6.svg);
@@ -2162,7 +2193,7 @@
 .p-dialog .p-dialog-content .p-fluid .p-fluid-item.p-fluid-item-flex .p-field {
   flex: 1;
 }
-
+/* 
 .p-dialog .p-dialog-content .p-fluid .p-fluid-item .p-button.p-component {
   background-color: rgba(167, 171, 189, 0.5);
   border: 0;
@@ -2174,7 +2205,7 @@
   margin-bottom: 20px;
   margin-right: 15px;
   border-radius: 10px;
-}
+} */
 
 .p-dialog
   .p-dialog-content
