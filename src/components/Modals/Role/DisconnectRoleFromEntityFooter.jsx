@@ -1,29 +1,10 @@
 import React from "react";
 import { Button } from "primereact/button";
-import { disconectRoleFromEntityRequest } from "../../../service/AppliesService";
 
 const DisconnectRoleFromEntityFooter = ({
-  user,
-  role,
-  samAccountName,
-  entity,
+  disconnectRole,
   closeModal,
 }) => {
-  const disconnectRole = async () => {
-    const req = {
-      submittedBy: { id: user.id, displayName: user.displayName },
-      kartoffelParams: {
-        id: entity.id,
-        uniqueId: role.roleId,
-      },
-      adParams: {
-        samAccountName,
-      },
-    };
-
-    const res = await disconectRoleFromEntityRequest(req);
-    closeModal();
-  };
 
   return (
     <div className="display-flex ">

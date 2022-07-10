@@ -13,7 +13,7 @@ export const TYPES = {
   CREATE_ENTITY: 'יצירת משתמש מיוחד',
   RENAME_OG: 'עריכת שם היררכיה',
   RENAME_ROLE: 'עריכת תפקיד',
-  EDIT_ENTITY: 'עריכת משתמש מיוחד',
+  EDIT_ENTITY: 'עריכת משתמש',
   DELETE_OG: "מחיקת היררכיה",
   DELETE_ROLE: "מחיקת תפקיד",
   // DELETE_ENTITY: "מחיקת משתמש",
