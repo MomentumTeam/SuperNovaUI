@@ -2,12 +2,14 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { useToast } from '../../context/use-toast';
 import React, { useState, useEffect } from 'react';
+import { useMatomo } from '@datapunt/matomo-tracker-react';
 import { exportToExcel } from '../../utils/general';
 import { renameObjKeys } from '../../utils/hierarchy';
 import { excelLabels } from '../../constants/applies';
 import { exportHierarchyData } from '../../service/KartoffelService';
 
 const ExportButton = ({ exportFunction, toolTip = '', hierarchy = '' }) => {
+  const { trackEvent } = useMatomo();
   const [isOpen, setIsOpen] = useState(false);
   const [excelLoading, setExcelLoading] = useState(false);
   const [directExcelLoading, setDirectExcelLoading] = useState(false);
@@ -20,13 +22,11 @@ const ExportButton = ({ exportFunction, toolTip = '', hierarchy = '' }) => {
   //   }
   // }, [excelLoading, directExcelLoading]);
 
-
   // const closeDialog = async (direct) => {
   //   updateLoading(direct, false);
   // };
 
-
- const openDialog = async () => {
+  const openDialog = async () => {
     setIsOpen(true);
   };
 
@@ -60,7 +60,6 @@ const ExportButton = ({ exportFunction, toolTip = '', hierarchy = '' }) => {
       });
     }
     updateLoading(direct, false);
-
   };
 
   return (

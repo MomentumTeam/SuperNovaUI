@@ -5,6 +5,7 @@ import React, {
   useMemo,
   createRef,
 } from 'react';
+import { useMatomo } from '@datapunt/matomo-tracker-react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 
@@ -19,6 +20,7 @@ import { isUserHoldType } from '../../utils/user';
 import { useStores } from '../../context/use-stores';
 
 const Action = () => {
+  const { trackPageView, trackEvent } = useMatomo();
   const { actionPopup } = useToast();
   const [actionList, setActionList] = useState(actions);
   const [isActionDone, setIsActionDone] = useState(false);
@@ -49,6 +51,29 @@ const Action = () => {
           : { ...action }
       )
     );
+  };
+
+  // Track click on button
+  const openPopUp = (actionName) => {
+    trackPageView({
+      documentTitle: actionName,
+    });
+  };
+
+  const clickSendAction = (name) => {
+    const result = actionList.find(({ id }) => id === name);
+    trackEvent({
+      category: 'פעולות',
+      action: `שליחת בקשה ל${result.actionName}`,
+    });
+  };
+
+  const clickCancelAction = (name) => {
+    const result = actionList.find(({ id }) => id === name);
+    trackEvent({
+      category: 'ביטול פעולות',
+      action: result.actionName,
+    });
   };
 
   const onHide = (id) => {
@@ -85,6 +110,7 @@ const Action = () => {
     async (id) => {
       setCurrentActionId(id);
       const ref = getRef(id);
+      clickSendAction(id);
       try {
         setSubmitted(true);
         await ref.current.handleSubmit();
@@ -135,14 +161,19 @@ const Action = () => {
         <div className="display-flex ">
           <Button
             label="ביטול"
-            onClick={() => onHide(name)}
+            onClick={() => {
+              onHide(name);
+              clickCancelAction(name);
+            }}
             className="btn-underline"
           />
 
           {name === 5 ? (
             <Button
               label=" שליחת בקשה"
-              onClick={() => handleRequest(name)}
+              onClick={() => {
+                handleRequest(name);
+              }}
               disabled={submitted}
               className="btn-gradient orange"
             />
@@ -190,7 +221,10 @@ const Action = () => {
               className={className}
               title={actionName}
               label={actionName}
-              onClick={() => onClick(id)}
+              onClick={() => {
+                onClick(id);
+                openPopUp(actionName);
+              }}
             />
             <Dialog
               className={dialogClass}
