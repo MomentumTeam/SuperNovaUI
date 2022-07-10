@@ -60,13 +60,13 @@ const Action = () => {
     });
   };
 
-  const clickSendAction = (name) => {
-    const result = actionList.find(({ id }) => id === name);
-    trackEvent({
-      category: 'פעולות',
-      action: `שליחת בקשה ל${result.actionName}`,
-    });
-  };
+  // const clickSendAction = (name) => {
+  //   const result = actionList.find(({ id }) => id === name);
+  //   trackEvent({
+  //     category: 'פעולות',
+  //     action: `שליחת בקשה ל${result.actionName}`,
+  //   });
+  // };
 
   const clickCancelAction = (name) => {
     const result = actionList.find(({ id }) => id === name);
@@ -110,11 +110,11 @@ const Action = () => {
     async (id) => {
       setCurrentActionId(id);
       const ref = getRef(id);
-      clickSendAction(id);
       try {
         setSubmitted(true);
         await ref.current.handleSubmit();
         setSubmitted(false);
+        // clickSendAction(id);
       } catch (e) {
         setSubmitted(false);
         const actionName = actionList.find(

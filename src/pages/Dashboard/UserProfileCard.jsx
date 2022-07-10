@@ -15,19 +15,18 @@ const UserProfileCard = ({
   openPremissionsModal,
   isUserPremissionsModalOpen,
 }) => {
-  const { trackEvent, trackPageView } = useMatomo();
+  const { trackPageView } = useMatomo();
   const myPermissions = () => {
     trackPageView({
       documentTitle: 'ההרשאות שלי',
     });
   };
 
-  const deletingPermission = () =>{
-    trackEvent({
-      category: 'ההרשאות שלי',
-      action: 'מחיקת הרשאה'
-    })
-  }
+  const fullInformation = () => {
+    trackPageView({
+      documentTitle: 'פרטים מלאים',
+    });
+  };
 
   return (
     <div className="personal-information-wrap">
@@ -114,7 +113,10 @@ const UserProfileCard = ({
                   className="btn-green-gradient btn-full-details"
                   type="button"
                   title="פרטים מלאים"
-                  onClick={openFullDetailsModal}
+                  onClick={() => {
+                    openFullDetailsModal();
+                    fullInformation();
+                  }}
                 >
                   פרטים מלאים
                 </button>
@@ -126,7 +128,10 @@ const UserProfileCard = ({
                     label="ההרשאות שלי"
                     id="showPremissionsButton"
                     className="p-button-rounded p-button-warning"
-                    onClick={openPremissionsModal}
+                    onClick={() => {
+                      openPremissionsModal();
+                      myPermissions();
+                    }}
                   />
                 </div>
               )}

@@ -31,6 +31,8 @@ import { GetDefaultApprovers } from '../../utils/approver';
 import '../../assets/css/local/components/approverForm.css';
 import { Tooltip } from 'primereact/tooltip';
 import { hierarchyConverse } from '../../utils/hierarchy';
+import { clickSendAction } from '../../utils/matomo';
+
 
 const validationSchema = Yup.object().shape({
   approverType: Yup.string().required('יש להכניס סוג מאשר'),
@@ -152,6 +154,7 @@ const ApproverForm = forwardRef(
       setValue('isUserApprover', result.length > 0);
     }, []);
 
+
     const onSubmit = async (data) => {
       const {
         approvers,
@@ -191,6 +194,7 @@ const ApproverForm = forwardRef(
       };
 
       await appliesStore.createNewApproverApply(req);
+      clickSendAction('בקשה להרשאות');
       setIsActionDone(true);
     };
 
@@ -333,9 +337,9 @@ const ApproverForm = forwardRef(
           }}
         >
           בקשה להרשאות במערכת LEGO.
-           <br />הרשאות מסוג ניהול עבור אישור בקשות במערכת
-          בהתאם לצורך. עבור הרשאת מקורות ומערכות מודיעיניות יש לפנות למערכת
-          במוס.
+          <br />
+          הרשאות מסוג ניהול עבור אישור בקשות במערכת בהתאם לצורך. עבור הרשאת
+          מקורות ומערכות מודיעיניות יש לפנות למערכת במוס.
         </span>{' '}
         <div
           className={
