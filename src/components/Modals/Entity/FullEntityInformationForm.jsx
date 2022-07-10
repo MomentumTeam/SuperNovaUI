@@ -63,8 +63,8 @@ const validationSchema = Yup.object().shape({
   mobilePhone: Yup.mixed().when('canEditEntityFields', {
     is: true,
     then: Yup.string('נא להזין מספר')
-    .required('נא להזין מספר')
-    .matches(PHONE_REG_EXP, 'מספר לא תקין'),
+      .required('נא להזין מספר')
+      .matches(PHONE_REG_EXP, 'מספר לא תקין'),
   }),
   canSeeUserFullClearance: Yup.boolean(),
   // fullClearance: Yup.string().when(['canSeeUserFullClearance', 'canEditEntityFields'], {
@@ -272,7 +272,7 @@ const FullEntityInformationForm = forwardRef(
     );
 
     const isDifferentFromPrev = (oldFieldValue, newFieldValue) => {
-      return oldFieldValue !== newFieldValue;
+      return oldFieldValue !== newFieldValue && oldFieldValue && newFieldValue;
     };
 
     const getFormFieldsByEntityType = (user) => {
@@ -352,6 +352,10 @@ const FullEntityInformationForm = forwardRef(
           fieldName: 'goalUserBrol',
           condition: isGoalUser,
         },
+        {
+          fieldName: 'fullClearance',
+          condition: !isEditEntity,
+        },
       ];
 
       // TODO: check with liron which fields are needed in display each of the entity types
@@ -378,7 +382,7 @@ const FullEntityInformationForm = forwardRef(
         'dischargeDay',
         'organization',
         'employeeNumber',
-        'brol',
+        'goalUserBrol',
       ];
 
       // filters form fields that appear only conditionally
