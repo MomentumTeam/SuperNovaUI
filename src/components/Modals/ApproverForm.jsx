@@ -333,9 +333,9 @@ const ApproverForm = forwardRef(
           }}
         >
           בקשה להרשאות במערכת LEGO.
-           <br />הרשאות מסוג ניהול עבור אישור בקשות במערכת
-          בהתאם לצורך. עבור הרשאת מקורות ומערכות מודיעיניות יש לפנות למערכת
-          במוס.
+          <br />
+          הרשאות מסוג ניהול עבור אישור בקשות במערכת בהתאם לצורך. עבור הרשאת
+          מקורות ומערכות מודיעיניות יש לפנות למערכת במוס.
         </span>{' '}
         <div
           className={
@@ -439,10 +439,12 @@ const ApproverForm = forwardRef(
                 setValue('user', e.value, { shouldValidate: true });
                 setValue(
                   'personalNumber',
-                  e.value.employeeId ||
-                    e.value.personalNumber ||
-                    e.value.identityCard ||
-                    e.value.goalUserID
+
+                  e.value.entityType === configStore.USER_ROLE_ENTITY_TYPE
+                    ? e.value.goalUserId
+                    : e.value.employeeId ||
+                        e.value.personalNumber ||
+                        e.value.identityCard
                 );
                 setValue('hierarchy', {
                   hierarchy: e.value.hierarchy,
