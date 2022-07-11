@@ -29,7 +29,6 @@ const ContactInfo = () => {
         </li>
         <li style={{ marginTop: '1em' }}>
           {' '}
-          rel="noopener noreferrer"
           {`לשאלות ובירורים נוספים ניתן לפנות לצוות התמיכה TechOps בטלפון ${configStore.TECH_OPS_PHONE_NUMBER} ובכתובת המייל "TechOps" או `}
           <a
             target="_blank"
