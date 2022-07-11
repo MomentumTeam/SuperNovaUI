@@ -14,15 +14,28 @@ const ContactInfo = () => {
   return (
     <div className="contact-info">
       <p>לשאלות ותמיכה בבקשות LEGO:</p>
-
       <ul>
         <li>
           {' '}
-          {` לכניסה לקבוצת התמיכה- ${configStore.HI_CHAT_SUPPORT_GROUP_NAME}`}{' '}
+          {'לפתיחת תקלה/בקשת עזרה יש להגיש פנייה במערכת טומי '}
           <a
             target="_blank"
             rel="noopener noreferrer"
-            href={supportGroupLink}
+            href={configStore.TOMY_LINK}
+            style={{ fontWeight: '700', textDecoration: 'underline' }}
+          >
+            לחץ כאן
+          </a>
+        </li>
+        <li style={{ marginTop: '1em' }}>
+          {' '}
+          rel="noopener noreferrer"
+          {`לשאלות ובירורים נוספים ניתן לפנות לצוות התמיכה TechOps בטלפון ${configStore.TECH_OPS_PHONE_NUMBER} ובכתובת המייל "TechOps" או `}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={`mailto:${configStore.TECH_OPS_MAIL}`}
+            title={configStore.TECH_OPS_MAIL}
             style={{ fontWeight: '700', textDecoration: 'underline' }}
           >
             לחץ כאן
@@ -33,6 +46,8 @@ const ContactInfo = () => {
           ליצירת קשר בנושא בקשות שממתינות לאישור יחב"ם ניתן לשלוח מייל לכתובת
           "דסק שובם" או{' '}
           <a
+            target="_blank"
+            rel="noopener noreferrer"
             href={`mailto:${configStore.SECURITY_MAIL}`}
             title={configStore.SECURITY_MAIL}
             style={{ fontWeight: '700', textDecoration: 'underline' }}
