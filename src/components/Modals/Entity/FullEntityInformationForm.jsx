@@ -550,7 +550,7 @@ const FullEntityInformationForm = forwardRef(
       },
       {
         fieldName: 'mobilePhone',
-        displayName: 'פלאפון נייד',
+        displayName: 'טלפון נייד',
         inputType: InputTypes.TEXT,
         type: 'num',
         keyFilter: 'num',
@@ -560,7 +560,7 @@ const FullEntityInformationForm = forwardRef(
       },
       {
         fieldName: 'oldMobilePhone',
-        displayName: 'פלאפון נייד קודם',
+        displayName: 'טלפון נייד קודם',
         inputType: InputTypes.TEXT,
         force: true,
         secured: () => reqView,
