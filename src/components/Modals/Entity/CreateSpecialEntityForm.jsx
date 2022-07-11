@@ -72,7 +72,7 @@ const validationSchema = Yup.object().shape({
     is: (userType, workerEntityType) => userType === workerEntityType,
     then: Yup.string().optional(),
     otherwise: Yup.string()
-      .required('יש למלא מספר פלאפון נייד')
+      .required('יש למלא מספר טלפון נייד')
       .matches(PHONE_REG_EXP, 'מספר לא תקין'),
   }),
   classification: Yup.string().required('יש לבחור סיווג'),
@@ -402,7 +402,7 @@ const CreateSpecialEntityForm = forwardRef(
       ...fields,
       {
         fieldName: 'mobilePhone',
-        displayName: 'פלאפון נייד',
+        displayName: 'טלפון נייד',
         inputType: InputTypes.TEXT,
         type: 'num',
         keyFilter: 'num',
