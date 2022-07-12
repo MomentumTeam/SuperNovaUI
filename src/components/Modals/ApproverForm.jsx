@@ -31,7 +31,6 @@ import { GetDefaultApprovers } from '../../utils/approver';
 import '../../assets/css/local/components/approverForm.css';
 import { Tooltip } from 'primereact/tooltip';
 import { hierarchyConverse } from '../../utils/hierarchy';
-import { clickSendAction } from '../../utils/matomo';
 
 
 const validationSchema = Yup.object().shape({
@@ -76,7 +75,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const ApproverForm = forwardRef(
-  ({ onlyForView, requestObject, setIsActionDone }, ref) => {
+  ({ onlyForView, requestObject, setIsActionDone, sendTrack }, ref) => {
     const { appliesStore, userStore, configStore } = useStores();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
@@ -154,7 +153,6 @@ const ApproverForm = forwardRef(
       setValue('isUserApprover', result.length > 0);
     }, []);
 
-
     const onSubmit = async (data) => {
       const {
         approvers,
@@ -194,7 +192,7 @@ const ApproverForm = forwardRef(
       };
 
       await appliesStore.createNewApproverApply(req);
-      clickSendAction('בקשה להרשאות');
+      sendTrack('יצירת', 'בקשה');
       setIsActionDone(true);
     };
 

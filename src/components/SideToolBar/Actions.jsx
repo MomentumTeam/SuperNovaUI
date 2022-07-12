@@ -5,7 +5,6 @@ import React, {
   useMemo,
   createRef,
 } from 'react';
-import { useMatomo } from '@datapunt/matomo-tracker-react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 
@@ -18,6 +17,7 @@ import { actions, headersInfo } from '../../constants/actions';
 import { USER_TYPE } from '../../constants';
 import { isUserHoldType } from '../../utils/user';
 import { useStores } from '../../context/use-stores';
+import { useMatomo } from '@datapunt/matomo-tracker-react';
 
 const Action = () => {
   const { trackPageView, trackEvent } = useMatomo();
@@ -197,10 +197,22 @@ const Action = () => {
     );
   };
 
+    const sendTrack = (type,action) => {
+      trackEvent({
+        category: type,
+        action: action,
+      });
+    };
   const renderModalForm = (name, id) => {
     const ref = getRef(id);
     const FormName = name;
-    return <FormName ref={ref} setIsActionDone={setIsActionDone} />;
+    return (
+      <FormName
+        ref={ref}
+        setIsActionDone={setIsActionDone}
+        sendTrack={sendTrack}
+      />
+    );
   };
 
   return (
