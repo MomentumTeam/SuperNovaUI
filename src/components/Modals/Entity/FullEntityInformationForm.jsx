@@ -122,7 +122,7 @@ const FullEntityInformationForm = forwardRef(
               requestObject.kartoffelParams.id
             );
 
-            entity.goalUserBrol = getUserRelevantIdentity(entity)?.role?.brol;
+            entity.goalUserBrol = getUserRelevantIdentity(entity)?.upn;
             // fills the gaps in request object
             Object.keys(requestObject.kartoffelParams).forEach((key) => {
               entity[key] = requestObject.kartoffelParams[key]

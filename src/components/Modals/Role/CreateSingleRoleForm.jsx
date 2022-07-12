@@ -18,7 +18,7 @@ import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isJobTitleAlreadyTakenRequest } from '../../../service/KartoffelService';
 import { isUserApproverType } from '../../../utils/user';
-import { ROLE_CLEARANCE, ROLE_EXP } from '../../../constants';
+import { ROLE_CLEARANCE, ROLE_EXP, REQ_STATUSES } from '../../../constants';
 import { GetDefaultApprovers } from '../../../utils/approver';
 import { getOuDisplayName, hierarchyConverse } from '../../../utils/hierarchy';
 import { isApproverValid } from '../../../service/ApproverService';
@@ -367,22 +367,25 @@ const RenameSingleOGForm = forwardRef(
           </div>
         </div>
 
-        {onlyForView && requestObject.kartoffelParams.roleId && (
-          <div className="p-fluid-item p-fluid-item">
-            <div className="p-field">
-              <label>מזהה תפקיד (T)</label>
-              <span className="p-input-icon-left">
-                <InputText
-                  {...register('roleId')}
-                  id="createSingleRoleForm-roleId"
-                  disabled={onlyForView}
-                />
-              </span>
+        {onlyForView &&
+          requestObject.status === REQ_STATUSES.DONE &&
+          requestObject.kartoffelParams.roleId && (
+            <div className="p-fluid-item p-fluid-item">
+              <div className="p-field">
+                <label>מזהה תפקיד (T)</label>
+                <span className="p-input-icon-left">
+                  <InputText
+                    {...register('roleId')}
+                    id="createSingleRoleForm-roleId"
+                    disabled={onlyForView}
+                  />
+                </span>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         {onlyForView &&
+          requestObject.status === REQ_STATUSES.DONE &&
           configStore.USER_ROLE_ENTITY_TYPE ===
             requestObject.kartoffelParams.roleEntityType &&
           requestObject.kartoffelParams.upn && (
