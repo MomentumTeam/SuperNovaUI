@@ -192,7 +192,7 @@ const ApproverForm = forwardRef(
       };
 
       await appliesStore.createNewApproverApply(req);
-      sendTrack('יצירת', 'בקשה');
+      sendTrack('יצירת', 'בקשת הרשאה');
       setIsActionDone(true);
     };
 

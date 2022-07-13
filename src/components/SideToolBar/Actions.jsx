@@ -198,6 +198,7 @@ const Action = () => {
   };
 
     const sendTrack = (type,action) => {
+      console.log('type,action', type,action)
       trackEvent({
         category: type,
         action: action,

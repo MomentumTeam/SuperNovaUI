@@ -93,7 +93,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const RenameSingleOGForm = forwardRef(
-  ({ setIsActionDone, onlyForView, requestObject }, ref) => {
+  ({ setIsActionDone, onlyForView, requestObject, sendTrack }, ref) => {
     const { appliesStore, userStore } = useStores();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
     const isUserApprover = isUserApproverType(userStore.user);
@@ -172,6 +172,7 @@ const RenameSingleOGForm = forwardRef(
       };
 
       await appliesStore.createRoleApply(req);
+      sendTrack('יצירת', 'בקשה');
       setIsActionDone(true);
     };
 

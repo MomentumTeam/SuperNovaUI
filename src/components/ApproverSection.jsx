@@ -3,7 +3,8 @@ import { Button } from 'primereact/button';
 import { InputTextarea } from 'primereact/inputtextarea';
 import '../assets/css/local/components/modal-item.min.css';
 import { useStores } from '../context/use-stores';
-import { toJS } from 'mobx';
+import { useMatomo } from '@datapunt/matomo-tracker-react';
+import { action, toJS } from 'mobx';
 import { DECISIONS, REQ_STATUSES } from '../constants';
 import {
   getApproverComments,
@@ -14,6 +15,8 @@ import {
 const ApproverSection = ({ request, setDialogVisiblity }) => {
   const { appliesStore, userStore } = useStores();
   const user = toJS(userStore.user);
+
+  const { trackEvent } = useMatomo();
 
   let requestId = request.id;
   const enabledChange = isApproverAndCanEdit(request, user);
@@ -27,6 +30,13 @@ const ApproverSection = ({ request, setDialogVisiblity }) => {
   const [approverComments, setApproverComments] = useState(
     getApproverComments(request, user)
   );
+
+  const clickTracking = (action) => {
+    trackEvent({
+      category: 'אישור/דחיית בקשה',
+      action: action,
+    });
+  };
 
   const onChangeComment = (e, index) => {
     approverComments[index].comment = e.target.value;
@@ -150,19 +160,22 @@ const ApproverSection = ({ request, setDialogVisiblity }) => {
               <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
                 <Button
                   label="אישור"
-                  onClick={() => changeDecisionRequest(DECISIONS.APPROVED)}
+                  onClick={() => {
+                    changeDecisionRequest(DECISIONS.APPROVED);
+                    clickTracking('אישור');
+                  }}
                   className="btn-gradient green"
                   style={{ marginRight: '20px' }}
                 />
                 <Button
                   label="דחייה"
-                  onClick={() => {
+                  onClick={() =>
                     setApproveMode({
                       ...approverMode,
                       denyMode: true,
                       commentMode: false,
-                    });
-                  }}
+                    })
+                  }
                   className="btn-gradient orange"
                 />
               </div>
@@ -172,7 +185,10 @@ const ApproverSection = ({ request, setDialogVisiblity }) => {
               <Button
                 label={approverMode.denyMode ? 'דחייה' : 'שמירה'}
                 className="btn-gradient orange"
-                onClick={submit}
+                onClick={() => {
+                  submit();
+                  clickTracking('דחייה');
+                }}
               />
             </div>
           ))}

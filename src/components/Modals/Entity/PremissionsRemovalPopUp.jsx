@@ -18,10 +18,10 @@ const PremissionsRemovalPopUp = ({
   setApproverTypes,
 }) => {
   const { trackEvent } = useMatomo();
-  const deletingPermission = () => {
+  const deletingPermission = (approverType) => {
     trackEvent({
-      category: 'ההרשאות שלי',
-      action: 'מחיקת הרשאה',
+      category: 'מחיקת',
+      action:`הרשאה ${approverType}`,
     });
   };
   const { userStore } = useStores();
@@ -87,7 +87,7 @@ const PremissionsRemovalPopUp = ({
         <Button
           onClick={() => {
             dismissApproverFromHierarchy();
-            deletingPermission();
+            deletingPermission(approverType);
           }}
         >
           כן, הסר לי את ההרשאה

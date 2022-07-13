@@ -1,36 +1,48 @@
-import "primeicons/primeicons.css";
-import "primereact/resources/primereact.css";
-import "../../assets/css/local/components/helpHamburgerMenu.css";
+import 'primeicons/primeicons.css';
+import 'primereact/resources/primereact.css';
+import '../../assets/css/local/components/helpHamburgerMenu.css';
 
-import { React, useState } from "react";
-import { SpeedDial } from "primereact/speeddial";
-import ContactInfo from "./ContactInfo";
-import FAQ from "./FAQ";
-import { Dialog } from "primereact/dialog";
+import { React, useState } from 'react';
+import { SpeedDial } from 'primereact/speeddial';
+import ContactInfo from './ContactInfo';
+import FAQ from './FAQ';
+import { Dialog } from 'primereact/dialog';
+import { useMatomo } from '@datapunt/matomo-tracker-react';
+import { action } from 'mobx';
 
 const HelpHamburgerMenu = () => {
   const [displayFAQ, setDisplayFAQ] = useState(false);
   const [displayContactInfo, setDisplayContactInfo] = useState(false);
+  const { trackEvent } = useMatomo();
+
+  const clickTracking = (action) => {
+    trackEvent({
+      category: 'עזרה',
+      action: action,
+    });
+  };
 
   const onFAQHide = () => {
     setDisplayFAQ(false);
+    clickTracking('שאלות ותשובות');
   };
 
   const onContactInfoHide = () => {
     setDisplayContactInfo(false);
+    clickTracking('צור קשר');
   };
 
   const hamburgerItems = [
     {
-      label: "ContactInfo",
-      icon: "pi pi-phone",
+      label: 'ContactInfo',
+      icon: 'pi pi-phone',
       command: () => {
         setDisplayContactInfo(true);
       },
     },
     {
-      label: "FAQ",
-      icon: "pi pi-question",
+      label: 'FAQ',
+      icon: 'pi pi-question',
       command: () => {
         setDisplayFAQ(true);
       },

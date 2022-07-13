@@ -160,7 +160,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const AssignRoleToEntityForm = forwardRef(
-  ({ showJob = true, setIsActionDone, onlyForView, requestObject }, ref) => {
+  ({ showJob = true, setIsActionDone, onlyForView, requestObject, sendTrack }, ref) => {
     const { appliesStore, userStore } = useStores();
     const [roles, setRoles] = useState([]);
     const [userSuggestions, setUserSuggestions] = useState([]);
@@ -302,6 +302,7 @@ const AssignRoleToEntityForm = forwardRef(
       }
 
       await appliesStore.assignRoleToEntityApply(req);
+      sendTrack('יצירת', 'בקשה');
       setIsActionDone(true);
     };
 

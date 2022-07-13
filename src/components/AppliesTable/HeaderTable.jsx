@@ -4,7 +4,8 @@ import { useStores } from '../../context/use-stores';
 import { isUserCanSeeAllApproveApplies } from '../../utils/user';
 import { SearchAppliesField } from './SearchAppliesField';
 import { FilterAppliesField } from './FilterAppliesField';
-import { AUTOCOMPLETE_STATUSES_APPROVER, TYPES } from "../../constants";
+import { AUTOCOMPLETE_STATUSES_APPROVER, TYPES } from '../../constants';
+import { useMatomo } from '@datapunt/matomo-tracker-react';
 
 const HeaderTable = ({
   user,
@@ -14,6 +15,13 @@ const HeaderTable = ({
   getData,
 }) => {
   const { appliesStore } = useStores();
+  const { trackPageView } = useMatomo();
+
+  const clickTracking = () => {
+    trackPageView({
+      documentTitle: 'בקשות לאישורי',
+    });
+  };
 
   const HeaderTemplate = ({ tab, name, badgeValue }) => {
     return (
@@ -21,7 +29,10 @@ const HeaderTable = ({
         className={`title-wrap tabletab ${
           selectedTab !== tab ? 'inactive' : ''
         }`}
-        onClick={() => setTab(tab)}
+        onClick={() => {
+          setTab(tab);
+          clickTracking();
+        }}
       >
         <h2>{name}</h2>
         <h3 className="request-count-badge">{badgeValue}</h3>
@@ -46,17 +57,22 @@ const HeaderTable = ({
         </div>
       ) : (
         <div>
-          <h2 style={{ display: "inline" }}>{TableNames.myreqs.tableName}</h2>
-          <h3 style={{ display: "inline", marginRight: "10px" }}>
-            <b style={{ color: "black" }}>{appliesStore.approveMyApplies.waitingForApproveCount}</b>/
-            {appliesStore.approveMyApplies.totalCount} סה"כ
+          <h2 style={{ display: 'inline' }}>{TableNames.myreqs.tableName}</h2>
+          <h3 style={{ display: 'inline', marginRight: '10px' }}>
+            <b style={{ color: 'black' }}>
+              {appliesStore.approveMyApplies.waitingForApproveCount}
+            </b>
+            /{appliesStore.approveMyApplies.totalCount} סה"כ
           </h3>
         </div>
       )}
 
       <div className="display-flex inner-flex">
-        <SearchAppliesField selectedTab={selectedTab} setSearchFields={setSearchFields} getData={getData} />
-
+        <SearchAppliesField
+          selectedTab={selectedTab}
+          setSearchFields={setSearchFields}
+          getData={getData}
+        />
 
         <FilterAppliesField
           selectedTab={selectedTab}
@@ -66,7 +82,7 @@ const HeaderTable = ({
           searchFieldDisplayName="סוג בקשה"
           searchOptions={TYPES}
         />
-  
+
         <FilterAppliesField
           selectedTab={selectedTab}
           setSearchFields={setSearchFields}

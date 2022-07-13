@@ -13,15 +13,13 @@ import {
   PHONE_REG_EXP,
   USER_SEX,
   IDENTITY_CARD_EXP,
-  USER_TYPE
+  USER_TYPE,
 } from '../../../constants';
 import {
   GetDefaultApprovers,
   checkValidExternalApprover,
 } from '../../../utils/approver';
-import {
-  isUserApproverType,
-} from '../../../utils/user';
+import { isUserApproverType } from '../../../utils/user';
 import { InputForm, InputTypes } from '../../Fields/InputForm';
 import datesUtil from '../../../utils/dates';
 import { kartoffelIdentityCardValidation } from '../../../utils/user';
@@ -162,7 +160,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const CreateSpecialEntityForm = forwardRef(
-  ({ setIsActionDone, onlyForView, requestObject }, ref) => {
+  ({ setIsActionDone, onlyForView, requestObject, sendTrack }, ref) => {
     const { appliesStore, userStore, configStore } = useStores();
     const isUserApprover = isUserApproverType(userStore.user);
     const isUserExternalApprover =
@@ -332,26 +330,27 @@ const CreateSpecialEntityForm = forwardRef(
         comments,
         adParams: {},
       };
-      
-      switch(methods.watch('userType')) {
+
+      switch (methods.watch('userType')) {
         case configStore.KARTOFFEL_CIVILIAN:
-          req.kartoffelParams.identityCard = identityCard
+          req.kartoffelParams.identityCard = identityCard;
           break;
         case configStore.KARTOFFEL_SOLDIER:
-          req.kartoffelParams.identityCard = identityCard
-          req.kartoffelParams.rank = rank
-          req.kartoffelParams.serviceType = serviceType
-          req.kartoffelParams.personalNumber = personalNumber
+          req.kartoffelParams.identityCard = identityCard;
+          req.kartoffelParams.rank = rank;
+          req.kartoffelParams.serviceType = serviceType;
+          req.kartoffelParams.personalNumber = personalNumber;
           break;
         case configStore.KARTOFFEL_EXTERNAL:
-          req.kartoffelParams.organization = organization.orgNumber
-          req.kartoffelParams.employeeNumber = employeeNumber
-          break
+          req.kartoffelParams.organization = organization.orgNumber;
+          req.kartoffelParams.employeeNumber = employeeNumber;
+          break;
         default:
           break;
       }
-      
+
       await appliesStore.createEntityApply(req);
+      // sendTrack('יצירת', 'בקשה');
       await setIsActionDone(true);
     };
 
@@ -458,7 +457,7 @@ const CreateSpecialEntityForm = forwardRef(
 
     return (
       <div>
-        <div className='userTypePick'>
+        <div className="userTypePick">
           {userTypes.map((userType) => {
             if (
               userType.key !== configStore.KARTOFFEL_EXTERNAL ||
@@ -466,10 +465,10 @@ const CreateSpecialEntityForm = forwardRef(
                 userStore.isUserExternal === true)
             ) {
               return (
-                <div key={userType.key} className='field-radiobutton'>
+                <div key={userType.key} className="field-radiobutton">
                   <RadioButton
                     inputId={userType.key}
-                    name='userType'
+                    name="userType"
                     value={userType}
                     onChange={(e) => {
                       setSelectedUserType(e.value);
@@ -487,7 +486,7 @@ const CreateSpecialEntityForm = forwardRef(
             return <></>;
           })}
         </div>
-        <div className='p-fluid' id='createSpecialEntityForm'>
+        <div className="p-fluid" id="createSpecialEntityForm">
           <InputForm
             fields={formFields}
             errors={errors}
