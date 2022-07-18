@@ -141,7 +141,7 @@ const RenameBulkOGForm = forwardRef(
       }
 
       await appliesStore.createRoleBulk(req);
-      sendTrack('יצירת', 'בקשה');
+      sendTrack('יצירת', 'תפקידים מרובים');
       setIsActionDone(true);
     };
 
@@ -220,8 +220,6 @@ const RenameBulkOGForm = forwardRef(
             tooltip='רס"ן ומעלה ביחידתך'
             multiple={true}
             errors={errors}
-            setValue={setValue}
-            name="approvers"
             defaultApprovers={defaultApprovers}
             disabled={onlyForView || watch('isUserApprover')}
           />

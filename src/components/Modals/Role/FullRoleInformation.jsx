@@ -1,34 +1,49 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Dialog } from "primereact/dialog";
-import { classNames } from "primereact/utils";
+import React, { useState, useEffect, useRef } from 'react';
+import { Dialog } from 'primereact/dialog';
+import { classNames } from 'primereact/utils';
+import { useMatomo } from '@datapunt/matomo-tracker-react';
 
-import "../../../assets/css/local/general/buttons.css";
-import "../../../assets/css/local/components/modal-item.css";
+import '../../../assets/css/local/general/buttons.css';
+import '../../../assets/css/local/components/modal-item.css';
 
-import { FullRoleInformationFooter } from "./FullRoleInformationFooter";
+import { FullRoleInformationFooter } from './FullRoleInformationFooter';
 import { FullRoleInformationForm } from './FullRoleInformationForm';
 
-const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) => {
+const FullRoleInformation = ({
+  role,
+  isOpen,
+  closeModal,
+  edit,
+  actionPopup,
+}) => {
   const [isEdit, setIsEdit] = useState(edit);
   const [isActionDone, setIsActionDone] = useState(false);
+  const { trackEvent } = useMatomo();
   const ref = useRef(null);
 
   const handleRequest = async () => {
-      try {
-        await ref.current.handleSubmit();
-      } catch (e) {
-        actionPopup("עריכת תפקיד", e.message || "Message Content");
-      }
+    try {
+      await ref.current.handleSubmit();
+    } catch (e) {
+      actionPopup('עריכת תפקיד', e.message || 'Message Content');
+    }
+  };
+
+  const sendTrack = (action) => {
+    trackEvent({
+      category: 'רשימת תפקידים',
+      action: action,
+    });
   };
 
   const resetForm = () => ref.current.resetForm();
 
   useEffect(() => {
-    if(isActionDone) {
-      actionPopup()
+    if (isActionDone) {
+      actionPopup();
       closeModal();
     }
-  }, [isActionDone])
+  }, [isActionDone]);
   return (
     <Dialog
       className={classNames('dialogClass12')}
@@ -55,6 +70,7 @@ const FullRoleInformation = ({ role, isOpen, closeModal, edit, actionPopup }) =>
         actionPopup={actionPopup}
         setIsActionDone={setIsActionDone}
         onlyForView={!isEdit}
+        sendTrack={sendTrack}
       />
     </Dialog>
   );

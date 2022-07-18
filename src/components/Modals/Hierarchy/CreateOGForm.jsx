@@ -156,7 +156,7 @@ const CreateOGForm = forwardRef(
       };
 
       await appliesStore.createOGApply(req);
-      sendTrack('יצירת', 'בקשה');
+      sendTrack('יצירת', 'היררכיה חדשה');
       setIsActionDone(true);
     };
 

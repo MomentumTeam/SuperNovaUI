@@ -16,6 +16,13 @@ const ExportButton = ({ exportFunction, toolTip = '', hierarchy = '' }) => {
 
   const { actionPopup } = useToast();
 
+  const sendTrack = (type, action) => {
+    trackEvent({
+      category: type,
+      action: action,
+    });
+  };
+
   // useEffect(() => {
   //   if (!excelLoading && !directExcelLoading) {
   //     setIsOpen(false);
@@ -59,6 +66,14 @@ const ExportButton = ({ exportFunction, toolTip = '', hierarchy = '' }) => {
         message: 'יש בעיה בייצוא הטבלה',
       });
     }
+
+    sendTrack(
+      'ייצוא',
+      direct
+        ? 'נתונים רק על התפקידים שנמצאים בהיררכיה זו'
+        : 'נתונים למייל על כל התפקידים שנמצאים בהיררכיה זו ובהיררכיות תחתיה'
+    );
+
     updateLoading(direct, false);
   };
 

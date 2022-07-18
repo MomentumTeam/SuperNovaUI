@@ -350,7 +350,7 @@ const CreateSpecialEntityForm = forwardRef(
       }
 
       await appliesStore.createEntityApply(req);
-      // sendTrack('יצירת', 'בקשה');
+      sendTrack('יצירת', 'משתמש מיוחד');
       await setIsActionDone(true);
     };
 

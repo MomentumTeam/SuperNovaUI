@@ -167,7 +167,7 @@ const RenameSingleOGForm = forwardRef(
       };
 
       await appliesStore.changeRoleHierarchy(req);
-      // sendTrack('יצירת', 'בקשה');
+      sendTrack('יצירת', 'מעבר היררכיה');
       setIsActionDone(true);
     };
 

@@ -172,7 +172,7 @@ const RenameSingleOGForm = forwardRef(
       };
 
       await appliesStore.createRoleApply(req);
-      sendTrack('יצירת', 'בקשה');
+      sendTrack('יצירת', 'תפקיד חדש');
       setIsActionDone(true);
     };
 

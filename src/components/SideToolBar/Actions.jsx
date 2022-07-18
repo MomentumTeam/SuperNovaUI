@@ -60,14 +60,6 @@ const Action = () => {
     });
   };
 
-  // const clickSendAction = (name) => {
-  //   const result = actionList.find(({ id }) => id === name);
-  //   trackEvent({
-  //     category: 'פעולות',
-  //     action: `שליחת בקשה ל${result.actionName}`,
-  //   });
-  // };
-
   const clickCancelAction = (name) => {
     const result = actionList.find(({ id }) => id === name);
     trackEvent({
@@ -197,13 +189,13 @@ const Action = () => {
     );
   };
 
-    const sendTrack = (type,action) => {
-      console.log('type,action', type,action)
-      trackEvent({
-        category: type,
-        action: action,
-      });
-    };
+  const sendTrack = (type, action) => {
+    trackEvent({
+      category: type,
+      action: action,
+    });
+  };
+  
   const renderModalForm = (name, id) => {
     const ref = getRef(id);
     const FormName = name;

@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useRef, useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { classNames } from 'primereact/utils';
-
+import { useMatomo } from '@datapunt/matomo-tracker-react';
 import blankProfilePic from '../../../assets/images/blankProfile.png';
 import { getPictureByEntityIdentifier } from '../../../service/UserService';
 import { FullEntityInformationFooter } from './FullEntityInformationFooter';
@@ -25,7 +25,7 @@ const FullEntityInformationModal = ({
   const [userPic, setUserPic] = useState(undefined);
   const [isActionDone, setIsActionDone] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  const { trackEvent } = useMatomo();
   const ref = useRef(null);
 
   const handleRequest = async () => {
@@ -34,6 +34,13 @@ const FullEntityInformationModal = ({
     } catch (e) {
       actionPopup('עריכת משתמש', e.message || 'Message Content');
     }
+  };
+
+  const sendTrack = (action) => {
+    trackEvent({
+      category: 'רשימת משתמשים',
+      action: action,
+    });
   };
 
   useEffect(() => {
@@ -111,6 +118,7 @@ const FullEntityInformationModal = ({
             setIsActionDone={setIsActionDone}
             onlyForView={!isEdit}
             setIsEdit={setIsEdit}
+            sendTrack={sendTrack}
           />
         </div>
       )}

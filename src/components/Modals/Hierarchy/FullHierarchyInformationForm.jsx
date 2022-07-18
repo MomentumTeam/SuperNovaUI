@@ -24,7 +24,14 @@ import { InputForm, InputTypes } from '../../Fields/InputForm';
 
 const FullHierarchyInformationForm = forwardRef(
   (
-    { setIsActionDone, onlyForView, requestObject, reqView = true, setIsEdit },
+    {
+      setIsActionDone,
+      onlyForView,
+      requestObject,
+      reqView = true,
+      setIsEdit,
+      sendTrack,
+    },
     ref
   ) => {
     const { userStore, appliesStore } = useStores();
@@ -80,15 +87,17 @@ const FullHierarchyInformationForm = forwardRef(
         groupId,
       });
       setDefaultApprovers(result || []);
-      methods.setValue("isUserApprover", result.length > 0);
-    }
+      methods.setValue('isUserApprover', result.length > 0);
+    };
 
     useEffect(async () => {
       let groupId;
 
       if (requestObject) {
         if (reqView) {
-          const { hierarchyReadOnly, hierarchyName } = getHierarchy(requestObject.adParams.ouDisplayName);
+          const { hierarchyReadOnly, hierarchyName } = getHierarchy(
+            requestObject.adParams.ouDisplayName
+          );
           setHierarchy({
             hierarchy: hierarchyReadOnly,
             name: hierarchyName,
@@ -142,6 +151,7 @@ const FullHierarchyInformationForm = forwardRef(
       };
 
       await appliesStore.renameOGApply(req);
+      sendTrack('עריכת היררכיה');
       setIsEdit(false);
       setIsActionDone(true);
     };
@@ -211,7 +221,7 @@ const FullHierarchyInformationForm = forwardRef(
     ];
 
     return (
-      <div className='p-fluid' id='fullHierarchyInfoForm'>
+      <div className="p-fluid" id="fullHierarchyInfoForm">
         <InputForm
           fields={formFields}
           item={hierarchy}

@@ -302,7 +302,7 @@ const AssignRoleToEntityForm = forwardRef(
       }
 
       await appliesStore.assignRoleToEntityApply(req);
-      sendTrack('יצירת', 'בקשה');
+      sendTrack('יצירת', showJob ? 'מעבר תפקיד' : 'חיבור משתמש חדש לתפקיד');
       setIsActionDone(true);
     };
 

@@ -63,8 +63,8 @@ const validationSchema = Yup.object().shape({
   mobilePhone: Yup.mixed().when('canEditEntityFields', {
     is: true,
     then: Yup.string('נא להזין מספר')
-    .required('נא להזין מספר')
-    .matches(PHONE_REG_EXP, 'מספר לא תקין'),
+      .required('נא להזין מספר')
+      .matches(PHONE_REG_EXP, 'מספר לא תקין'),
   }),
   canSeeUserFullClearance: Yup.boolean(),
   // fullClearance: Yup.string().when(['canSeeUserFullClearance', 'canEditEntityFields'], {
@@ -75,7 +75,14 @@ const validationSchema = Yup.object().shape({
 
 const FullEntityInformationForm = forwardRef(
   (
-    { setIsActionDone, onlyForView, requestObject, reqView = true, setIsEdit },
+    {
+      setIsActionDone,
+      onlyForView,
+      requestObject,
+      reqView = true,
+      setIsEdit,
+      sendTrack,
+    },
 
     ref
   ) => {
@@ -251,6 +258,7 @@ const FullEntityInformationForm = forwardRef(
               fullName: tempForm.fullName,
             },
           });
+          sendTrack('עריכת משתמש');
           setIsActionDone(true);
           setIsEdit(false);
         } else {

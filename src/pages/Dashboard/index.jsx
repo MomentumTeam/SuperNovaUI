@@ -37,13 +37,11 @@ const Dashboard = observer(() => {
     ? user.personalNumber
     : user?.identityCard;
   const { trackPageView, pushInstruction } = useMatomo();
-  useEffect(() => {
-    trackPageView();
-    pushInstruction('setUserId', userId);
-  }, []);
 
   useEffect(() => {
     if (userStore.user) {
+      trackPageView();
+      pushInstruction('setUserId', userId);
       if (
         !isUserCanSeeMyApproveApplies(userStore.user) &&
         !isUserCanSeeAllApproveApplies(userStore.user)
