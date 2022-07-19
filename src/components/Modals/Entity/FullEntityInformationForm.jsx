@@ -537,7 +537,7 @@ const FullEntityInformationForm = forwardRef(
         displayName: 'דרגה קודמת',
         inputType: InputTypes.TEXT,
         force: true,
-        secured: () => !reqView,
+        // secured: () => !reqView,
       },
       {
         fieldName: 'hierarchy',

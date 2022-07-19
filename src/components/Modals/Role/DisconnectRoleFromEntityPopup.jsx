@@ -28,7 +28,7 @@ const DisconnectRoleFromEntityPopup = ({
         submittedBy: { id: user.id, displayName: user.displayName },
         kartoffelParams: {
           id: entity.id,
-          uniqueId: role.roleId,
+          uniqueId: role.digitalIdentityUniqueId,
         },
         adParams: {
           samAccountName,
