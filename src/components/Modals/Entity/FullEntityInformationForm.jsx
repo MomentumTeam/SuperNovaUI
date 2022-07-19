@@ -122,7 +122,7 @@ const FullEntityInformationForm = forwardRef(
               requestObject.kartoffelParams.id
             );
 
-            entity.goalUserBrol = getUserRelevantIdentity(entity)?.role?.brol;
+            entity.goalUserBrol = getUserRelevantIdentity(entity)?.upn;
             // fills the gaps in request object
             Object.keys(requestObject.kartoffelParams).forEach((key) => {
               entity[key] = requestObject.kartoffelParams[key]
@@ -323,7 +323,14 @@ const FullEntityInformationForm = forwardRef(
           fieldName: 'oldMobilePhone',
           condition:
             isEditEntity &&
-            isDifferentFromPrev(user['mobilePhone'], user['oldMobilePhone']),
+            isDifferentFromPrev(
+              Array.isArray(user['mobilePhone'])
+                ? user['mobilePhone'][0]
+                : user['mobilePhone'],
+              Array.isArray(user['oldMobilePhone'])
+                ? user['oldMobilePhone'][0]
+                : user['oldMobilePhone']
+            ),
         },
         {
           fieldName: 'mobilePhone',
@@ -413,7 +420,14 @@ const FullEntityInformationForm = forwardRef(
                 ? [{ fieldName: 'lastName', displayName: 'שם משפחה חדש' }]
                 : []),
               ...(reqView &&
-              isDifferentFromPrev(user['mobilePhone'], user['oldMobilePhone'])
+              isDifferentFromPrev(
+                Array.isArray(user['mobilePhone'])
+                  ? user['mobilePhone'][0]
+                  : user['mobilePhone'],
+                Array.isArray(user['oldMobilePhone'])
+                  ? user['oldMobilePhone'][0]
+                  : user['oldMobilePhone']
+              )
                 ? [{ fieldName: 'mobilePhone', displayName: 'טלפון נייד חדש' }]
                 : []),
               ...(reqView && isDifferentFromPrev(user['rank'], user['oldRank'])
@@ -499,6 +513,7 @@ const FullEntityInformationForm = forwardRef(
         inputType: InputTypes.TEXT,
         type: 'num',
         keyFilter: 'num',
+        // isEdit: !onlyForView && methods.watch('canEditEntityFields'),
         canEdit: methods.watch('canEditEntityFields'),
       },
       {
@@ -522,7 +537,7 @@ const FullEntityInformationForm = forwardRef(
         displayName: 'דרגה קודמת',
         inputType: InputTypes.TEXT,
         force: true,
-        // secured: () =>/ !reqView,
+        secured: () => reqView,
       },
       {
         fieldName: 'hierarchy',
@@ -724,7 +739,6 @@ const FullEntityInformationForm = forwardRef(
     return (
       <div className="p-fluid" id="fullEntityInfoForm">
         {getForm(requestObject.type)}
-        {console.log(errors)}
         {errors && errors?.editEntity && (
           <small style={{ color: 'red' }}>
             {errors.editEntity?.message
