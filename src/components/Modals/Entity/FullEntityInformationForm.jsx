@@ -513,7 +513,7 @@ const FullEntityInformationForm = forwardRef(
         inputType: InputTypes.TEXT,
         type: 'num',
         keyFilter: 'num',
-        isEdit: !onlyForView && methods.watch('canEditEntityFields'),
+        // isEdit: !onlyForView && methods.watch('canEditEntityFields'),
         canEdit: methods.watch('canEditEntityFields'),
       },
       {
