@@ -1,13 +1,13 @@
 import { MatomoProvider, createInstance } from '@datapunt/matomo-tracker-react';
 import './index.css';
-
+import {matomoUrl, matomoSiteId} from './constants/matomo';
 import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 const instance = createInstance({
-  urlBase: 'http://localhost:8093/',
-  siteId: 1,
+  urlBase: matomoUrl,
+  siteId: matomoSiteId,
 });
 ReactDOM.render(
   <MatomoProvider value={instance}>
