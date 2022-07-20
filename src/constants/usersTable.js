@@ -24,21 +24,9 @@ export const TableTypes = {
       formatter: identityOrPersonalNumber,
     },
     {
-      field: 'clearance',
-      displayName: 'סיווג',
-      secured: [
-        USER_TYPE.SECURITY,
-        USER_TYPE.SECURITY_ADMIN,
-        USER_TYPE.SUPER_SECURITY,
-      ],
-    },
-    {
       field: 'fullClearance',
-      displayName: 'סיווג',
-      secured: [
-        USER_TYPE.SECURITY,
-        USER_TYPE.SUPER_SECURITY,
-      ],
+      displayName: 'סיווג מלא',
+      secured: [USER_TYPE.SECURITY, USER_TYPE.SUPER_SECURITY],
     },
     { field: 'jobTitle', displayName: 'תפקיד' },
     { field: 'displayName', displayName: 'יוזר', template: TextFieldTemplate },

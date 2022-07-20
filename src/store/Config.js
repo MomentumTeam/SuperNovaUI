@@ -27,6 +27,11 @@ class ConfigStore {
   FIRST_PAGE = 0;
   SECURITY_MAIL = 'T82130201@gmail.com';
   SUPER_SECURITY_MAIL = 'T02250B49@gmail.com';
+
+  TOMY_LINK = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+  TECH_OPS_PHONE_NUMBER = '0524586749';
+  TECH_OPS_MAIL = 'T82130222@gmail.com';
+
   SHOW_CONVERT_BUTTON = true;
   INSTRUCTION_VIDEOS =
     'https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley';
@@ -82,6 +87,9 @@ class ConfigStore {
       CREATE_SPECIAL_GROUP_REQS_APPROVERS: observable,
       CREATE_SECURITY_ADMIN_REQS_APPROVERS: observable,
       soldierRequestsApprovers: observable,
+      TOMY_LINK: observable,
+      TECH_OPS_PHONE_NUMBER: observable,
+      TECH_OPS_MAIL: observable,
       loadConfig: action,
       loadAdminApprovers: action,
     });
@@ -121,6 +129,10 @@ class ConfigStore {
       if (config?.SECURITY_MAIL) this.SECURITY_MAIL = config.SECURITY_MAIL;
       if (config?.SUPER_SECURITY_MAIL)
         this.SUPER_SECURITY_MAIL = config.SUPER_SECURITY_MAIL;
+      if (config?.TOMY_LINK) this.TOMY_LINK = config.TOMY_LINK;
+      if (config?.TECH_OPS_PHONE_NUMBER)
+        this.TECH_OPS_PHONE_NUMBER = config.TECH_OPS_PHONE_NUMBER;
+      if (config?.TECH_OPS_MAIL) this.TECH_OPS_MAIL = config.TECH_OPS_MAIL;
       if (config?.INSTRUCTION_VIDEOS)
         this.INSTRUCTION_VIDEOS = config.INSTRUCTION_VIDEOS;
       if (config?.CREATE_ADMIN_APPROVERS) {

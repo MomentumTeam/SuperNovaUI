@@ -129,7 +129,7 @@ const FullEntityInformationForm = forwardRef(
               requestObject.kartoffelParams.id
             );
 
-            entity.goalUserBrol = getUserRelevantIdentity(entity)?.role?.brol;
+            entity.goalUserBrol = getUserRelevantIdentity(entity)?.upn;
             // fills the gaps in request object
             Object.keys(requestObject.kartoffelParams).forEach((key) => {
               entity[key] = requestObject.kartoffelParams[key]
@@ -280,7 +280,7 @@ const FullEntityInformationForm = forwardRef(
     );
 
     const isDifferentFromPrev = (oldFieldValue, newFieldValue) => {
-      return oldFieldValue !== newFieldValue;
+      return oldFieldValue !== newFieldValue && oldFieldValue && newFieldValue;
     };
 
     const getFormFieldsByEntityType = (user) => {
@@ -331,7 +331,14 @@ const FullEntityInformationForm = forwardRef(
           fieldName: 'oldMobilePhone',
           condition:
             isEditEntity &&
-            isDifferentFromPrev(user['mobilePhone'], user['oldMobilePhone']),
+            isDifferentFromPrev(
+              Array.isArray(user['mobilePhone'])
+                ? user['mobilePhone'][0]
+                : user['mobilePhone'],
+              Array.isArray(user['oldMobilePhone'])
+                ? user['oldMobilePhone'][0]
+                : user['oldMobilePhone']
+            ),
         },
         {
           fieldName: 'mobilePhone',
@@ -360,6 +367,10 @@ const FullEntityInformationForm = forwardRef(
           fieldName: 'goalUserBrol',
           condition: isGoalUser,
         },
+        {
+          fieldName: 'fullClearance',
+          condition: !isEditEntity,
+        },
       ];
 
       // TODO: check with liron which fields are needed in display each of the entity types
@@ -386,7 +397,7 @@ const FullEntityInformationForm = forwardRef(
         'dischargeDay',
         'organization',
         'employeeNumber',
-        'brol',
+        'goalUserBrol',
       ];
 
       // filters form fields that appear only conditionally
@@ -417,7 +428,14 @@ const FullEntityInformationForm = forwardRef(
                 ? [{ fieldName: 'lastName', displayName: 'שם משפחה חדש' }]
                 : []),
               ...(reqView &&
-              isDifferentFromPrev(user['mobilePhone'], user['oldMobilePhone'])
+              isDifferentFromPrev(
+                Array.isArray(user['mobilePhone'])
+                  ? user['mobilePhone'][0]
+                  : user['mobilePhone'],
+                Array.isArray(user['oldMobilePhone'])
+                  ? user['oldMobilePhone'][0]
+                  : user['oldMobilePhone']
+              )
                 ? [{ fieldName: 'mobilePhone', displayName: 'טלפון נייד חדש' }]
                 : []),
               ...(reqView && isDifferentFromPrev(user['rank'], user['oldRank'])
@@ -503,6 +521,7 @@ const FullEntityInformationForm = forwardRef(
         inputType: InputTypes.TEXT,
         type: 'num',
         keyFilter: 'num',
+        // isEdit: !onlyForView && methods.watch('canEditEntityFields'),
         canEdit: methods.watch('canEditEntityFields'),
       },
       {
@@ -526,7 +545,7 @@ const FullEntityInformationForm = forwardRef(
         displayName: 'דרגה קודמת',
         inputType: InputTypes.TEXT,
         force: true,
-        // secured: () =>/ !reqView,
+        secured: () => reqView,
       },
       {
         fieldName: 'hierarchy',
@@ -554,7 +573,7 @@ const FullEntityInformationForm = forwardRef(
       },
       {
         fieldName: 'mobilePhone',
-        displayName: 'פלאפון נייד',
+        displayName: 'טלפון נייד',
         inputType: InputTypes.TEXT,
         type: 'num',
         keyFilter: 'num',
@@ -564,7 +583,7 @@ const FullEntityInformationForm = forwardRef(
       },
       {
         fieldName: 'oldMobilePhone',
-        displayName: 'פלאפון נייד קודם',
+        displayName: 'טלפון נייד קודם',
         inputType: InputTypes.TEXT,
         force: true,
         secured: () => reqView,
@@ -728,7 +747,6 @@ const FullEntityInformationForm = forwardRef(
     return (
       <div className="p-fluid" id="fullEntityInfoForm">
         {getForm(requestObject.type)}
-        {console.log(errors)}
         {errors && errors?.editEntity && (
           <small style={{ color: 'red' }}>
             {errors.editEntity?.message
