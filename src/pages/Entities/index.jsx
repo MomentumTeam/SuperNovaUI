@@ -14,9 +14,8 @@ const TableEntity = () => {
 
   useEffect(() => {
     if (userStore.user) {
-      trackPageView({ documentTitle: 'טבלאות' });
       pushInstruction('setUserId', userId);
-      console.log('here');
+      trackPageView({ documentTitle: 'טבלאות' });
     }
     userStore.fetchUserNotifications(userStore.user?.id);
   }, [userStore.user]);

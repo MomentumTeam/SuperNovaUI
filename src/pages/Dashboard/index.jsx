@@ -40,8 +40,10 @@ const Dashboard = observer(() => {
 
   useEffect(() => {
     if (userStore.user) {
-      trackPageView();
       pushInstruction('setUserId', userId);
+      trackPageView({
+        documentTitle: 'דף הבית',
+      });
       if (
         !isUserCanSeeMyApproveApplies(userStore.user) &&
         !isUserCanSeeAllApproveApplies(userStore.user)

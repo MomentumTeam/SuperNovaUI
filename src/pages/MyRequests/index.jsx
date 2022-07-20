@@ -14,9 +14,8 @@ const TableMyRequests = () => {
 
   useEffect(() => {
     if (userStore.user) {
-      trackPageView({ documentTitle: 'הבקשות שלי' });
       pushInstruction('setUserId', userId);
-      console.log('here', userId);
+      trackPageView({ documentTitle: 'הבקשות שלי' });
     }
     userStore.fetchUserNotifications();
   }, [userStore]);
