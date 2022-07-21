@@ -31,8 +31,8 @@ const FullRoleInformation = ({
 
   const sendTrack = (action) => {
     trackEvent({
-      category: 'רשימת תפקידים',
-      action: action,
+      category: 'עריכה',
+      action,
     });
   };
 

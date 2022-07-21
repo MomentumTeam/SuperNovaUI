@@ -14,7 +14,7 @@ const TableFooter = ({
   selectAllRowsCheckbox = null,
 }) => {
   const { actionPopup } = useToast();
-  const { trackEvent } = useMatomo();
+  const { trackEvent, trackPageView } = useMatomo();
   const [isExportLoading, setIsExportLoading] = useState(false);
 
   const onColumnToggle = (event) => {
@@ -26,6 +26,9 @@ const TableFooter = ({
   };
 
   const sendTrack = () => {
+    trackPageView({
+      documentTitle: 'דף הבית',
+    });
     trackEvent({
       category: 'ייצוא',
       action: 'בקשות',

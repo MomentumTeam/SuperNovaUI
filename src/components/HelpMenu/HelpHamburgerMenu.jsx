@@ -14,12 +14,15 @@ import { Button } from 'primereact/button';
 const HelpHamburgerMenu = () => {
   const [displayFAQ, setDisplayFAQ] = useState(false);
   const [displayContactInfo, setDisplayContactInfo] = useState(false);
-  const { trackEvent } = useMatomo();
+  const { trackEvent, trackPageView } = useMatomo();
 
   const clickTracking = (action) => {
+    trackPageView({
+      documentTitle: 'דף הבית',
+    });
     trackEvent({
       category: 'עזרה',
-      action: action,
+      action,
     });
   };
 

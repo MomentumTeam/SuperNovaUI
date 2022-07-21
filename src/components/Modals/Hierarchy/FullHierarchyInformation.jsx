@@ -34,8 +34,8 @@ const FullHierarchyInformation = ({
 
   const sendTrack = (action) => {
     trackEvent({
-      category: 'רשימת היררכיה',
-      action: action,
+      category: 'עריכה',
+      action,
     });
   };
 

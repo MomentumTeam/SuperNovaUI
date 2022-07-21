@@ -38,7 +38,7 @@ const FullEntityInformationModal = ({
 
   const sendTrack = (action) => {
     trackEvent({
-      category: 'רשימת משתמשים',
+      category: 'עריכה',
       action: action,
     });
   };
