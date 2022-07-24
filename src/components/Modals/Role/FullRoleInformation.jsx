@@ -29,7 +29,7 @@ const FullRoleInformation = ({
     }
   };
 
-  const sendTrack = (action) => {
+  const clickTracking = (action) => {
     trackEvent({
       category: 'עריכה',
       action,
@@ -70,7 +70,7 @@ const FullRoleInformation = ({
         actionPopup={actionPopup}
         setIsActionDone={setIsActionDone}
         onlyForView={!isEdit}
-        sendTrack={sendTrack}
+        clickTracking={clickTracking}
       />
     </Dialog>
   );

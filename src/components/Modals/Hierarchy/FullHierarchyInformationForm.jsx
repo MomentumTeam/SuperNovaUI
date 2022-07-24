@@ -30,7 +30,7 @@ const FullHierarchyInformationForm = forwardRef(
       requestObject,
       reqView = true,
       setIsEdit,
-      sendTrack,
+      clickTracking,
     },
     ref
   ) => {
@@ -151,7 +151,7 @@ const FullHierarchyInformationForm = forwardRef(
       };
 
       await appliesStore.renameOGApply(req);
-      sendTrack('עריכת היררכיה');
+      clickTracking('עריכת היררכיה');
       setIsEdit(false);
       setIsActionDone(true);
     };

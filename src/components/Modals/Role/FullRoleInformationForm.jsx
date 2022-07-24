@@ -129,7 +129,7 @@ const FullRoleInformationForm = forwardRef(
       requestObject,
       reqView = true,
       actionPopup,
-      sendTrack,
+      clickTracking,
     },
     ref
   ) => {
@@ -322,10 +322,10 @@ const FullRoleInformationForm = forwardRef(
         };
 
         await appliesStore.editEntityApply(req);
-        sendTrack('עריכת משתמש');
+        clickTracking('עריכת משתמש');
       } else {
         await appliesStore.renameRoleApply(req);
-        sendTrack('עריכת תפקיד');
+        clickTracking('עריכת תפקיד');
       }
 
       setIsActionDone(true);

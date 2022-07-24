@@ -75,7 +75,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const ApproverForm = forwardRef(
-  ({ onlyForView, requestObject, setIsActionDone, sendTrack }, ref) => {
+  ({ onlyForView, requestObject, setIsActionDone, clickTracking }, ref) => {
     const { appliesStore, userStore, configStore } = useStores();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
@@ -192,7 +192,7 @@ const ApproverForm = forwardRef(
       };
 
       await appliesStore.createNewApproverApply(req);
-      sendTrack('יצירת', 'בקשת הרשאה');
+      clickTracking('יצירת', 'בקשת הרשאה');
       setIsActionDone(true);
     };
 

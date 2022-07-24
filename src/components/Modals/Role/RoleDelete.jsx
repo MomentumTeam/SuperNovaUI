@@ -19,7 +19,7 @@ const RoleDelete = ({
   isDialogVisible,
   setDialogVisiblity,
   actionPopup,
-  sendTrack,
+  clickTracking,
 }) => {
   const { appliesStore } = useStores();
   const [entity, setEntity] = useState(null);
@@ -100,7 +100,7 @@ const RoleDelete = ({
       };
 
       await appliesStore.deleteRoleApply(req);
-      sendTrack('מחיקה', 'מחיקת תפקיד');
+      clickTracking('מחיקה', 'מחיקת תפקיד');
       setActionIsDone(true);
     } catch (e) {
       actionPopup('מחיקת תפקיד', e);

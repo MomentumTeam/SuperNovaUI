@@ -17,7 +17,7 @@ const ExportButton = ({ exportFunction, toolTip = '', hierarchy = '' }) => {
 
   const { actionPopup } = useToast();
 
-  const sendTrack = (type, action) => {
+  const clickTracking = (type, action) => {
     trackEvent({
       category: type,
       action: action,
@@ -80,7 +80,7 @@ const ExportButton = ({ exportFunction, toolTip = '', hierarchy = '' }) => {
       });
     }
 
-    sendTrack(
+    clickTracking(
       'ייצוא',
       direct
         ? 'נתונים רק על התפקידים שנמצאים בהיררכיה זו'

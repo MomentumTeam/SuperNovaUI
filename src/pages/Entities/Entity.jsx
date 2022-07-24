@@ -39,7 +39,7 @@ const Entities = observer(() => {
   const [tableData, setTableData] = useState([]);
   const [isSearch, setIsSearch] = useState(false);
 
-  const sendTrack = (documentTitle) => {
+  const clickTracking = (documentTitle) => {
     trackPageView({
       documentTitle,
     });
@@ -66,7 +66,7 @@ const Entities = observer(() => {
               append
             );
             data = entitiesStore.entities;
-            sendTrack('רשימת משתמשים');
+            clickTracking('רשימת משתמשים');
             break;
           case TableNames.roles.tab:
             await rolesStore.loadRolesUnderOG(
@@ -76,7 +76,7 @@ const Entities = observer(() => {
               append
             );
             data = rolesStore.roles;
-            sendTrack('רשימת תפקידים');
+            clickTracking('רשימת תפקידים');
             break;
           case TableNames.hierarchy.tab:
             await groupsStore.loadOGChildren(
@@ -86,7 +86,7 @@ const Entities = observer(() => {
               append
             );
             data = groupsStore.groups;
-            sendTrack('רשימת היררכיות');
+            clickTracking('רשימת היררכיות');
             break;
           default:
             break;

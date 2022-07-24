@@ -89,7 +89,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const CreateOGForm = forwardRef(
-  ({ setIsActionDone, onlyForView, requestObject, sendTrack }, ref) => {
+  ({ setIsActionDone, onlyForView, requestObject, clickTracking }, ref) => {
     const { appliesStore, userStore } = useStores();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
@@ -156,7 +156,7 @@ const CreateOGForm = forwardRef(
       };
 
       await appliesStore.createOGApply(req);
-      sendTrack('יצירת', 'היררכיה חדשה');
+      clickTracking('יצירת', 'היררכיה חדשה');
       setIsActionDone(true);
     };
 

@@ -36,7 +36,7 @@ const FullEntityInformationModal = ({
     }
   };
 
-  const sendTrack = (action) => {
+  const clickTracking = (action) => {
     trackEvent({
       category: 'עריכה',
       action: action,
@@ -118,7 +118,7 @@ const FullEntityInformationModal = ({
             setIsActionDone={setIsActionDone}
             onlyForView={!isEdit}
             setIsEdit={setIsEdit}
-            sendTrack={sendTrack}
+            clickTracking={clickTracking}
           />
         </div>
       )}

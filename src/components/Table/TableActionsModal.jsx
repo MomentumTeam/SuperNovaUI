@@ -39,7 +39,7 @@ const TableActionsModal = forwardRef((_, ref) => {
     setIsActionModalOpen,
   } = useContext(TableActionsContext);
 
-  const sendTrack = (category, action) => {
+  const clickTracking = (category, action) => {
     trackEvent({
       category,
       action,
@@ -134,7 +134,7 @@ const TableActionsModal = forwardRef((_, ref) => {
               isDialogVisible={isActionModalOpen}
               setDialogVisiblity={setIsActionModalOpen}
               actionPopup={sendActionPopup}
-              sendTrack={sendTrack}
+              clickTracking={clickTracking}
             />
           );
 

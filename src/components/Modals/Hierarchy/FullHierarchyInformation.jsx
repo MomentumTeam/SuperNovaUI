@@ -32,7 +32,7 @@ const FullHierarchyInformation = ({
     }
   };
 
-  const sendTrack = (action) => {
+  const clickTracking = (action) => {
     trackEvent({
       category: 'עריכה',
       action,
@@ -74,7 +74,7 @@ const FullHierarchyInformation = ({
           setIsActionDone={setIsActionDone}
           onlyForView={!isEdit}
           setIsEdit={setIsEdit}
-          sendTrack={sendTrack}
+          clickTracking={clickTracking}
         />
 
         <div className="p-fluid-item p-fluid-item-flex1">

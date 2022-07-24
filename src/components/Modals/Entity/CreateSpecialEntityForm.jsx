@@ -160,7 +160,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const CreateSpecialEntityForm = forwardRef(
-  ({ setIsActionDone, onlyForView, requestObject, sendTrack }, ref) => {
+  ({ setIsActionDone, onlyForView, requestObject, clickTracking }, ref) => {
     const { appliesStore, userStore, configStore } = useStores();
     const isUserApprover = isUserApproverType(userStore.user);
     const isUserExternalApprover =
@@ -350,7 +350,7 @@ const CreateSpecialEntityForm = forwardRef(
       }
 
       await appliesStore.createEntityApply(req);
-      sendTrack('יצירת', 'משתמש מיוחד');
+      clickTracking('יצירת', 'משתמש מיוחד');
       await setIsActionDone(true);
     };
 

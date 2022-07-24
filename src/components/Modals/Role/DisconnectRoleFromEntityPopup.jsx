@@ -15,7 +15,7 @@ const DisconnectRoleFromEntityPopup = ({
 }) => {
   const [actionIsDone, setActionIsDone] = useState(false);
   const { trackEvent } = useMatomo();
-  const sendTrack = () => {
+  const clickTracking = () => {
     trackEvent({
       category: 'ניתוק',
       action: 'ניתוק תפקיד',
@@ -42,7 +42,7 @@ const DisconnectRoleFromEntityPopup = ({
       };
 
       const res = await disconectRoleFromEntityRequest(req);
-      sendTrack();
+      clickTracking();
       setActionIsDone(true);
       closeModal();
     } catch (e) {

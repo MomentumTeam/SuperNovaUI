@@ -25,7 +25,7 @@ const TableFooter = ({
     setSelectedColumns(orderedSelectedColumns);
   };
 
-  const sendTrack = () => {
+  const clickTracking = () => {
     trackPageView({
       documentTitle: 'דף הבית',
     });
@@ -47,7 +47,7 @@ const TableFooter = ({
 
       setIsExportLoading(true);
       await exportFunction(selectedItem, isSelectedAll);
-      sendTrack();
+      clickTracking();
     } catch (error) {
       actionPopup('ייצוא טבלה', { message: 'יש בעיה בייצוא הטבלה' });
     }

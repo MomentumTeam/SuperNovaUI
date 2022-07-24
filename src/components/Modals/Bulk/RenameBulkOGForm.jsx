@@ -98,7 +98,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const RenameBulkOGForm = forwardRef(
-  ({ setIsActionDone, requestObject, onlyForView, sendTrack }, ref) => {
+  ({ setIsActionDone, requestObject, onlyForView, clickTracking }, ref) => {
     const { appliesStore, userStore } = useStores();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
@@ -164,7 +164,7 @@ const RenameBulkOGForm = forwardRef(
       }
 
       await appliesStore.changeRoleHierarchyBulk(req);
-      sendTrack('יצירת', 'היררכיות מרובות');
+      clickTracking('יצירת', 'היררכיות מרובות');
       setIsActionDone(true);
     };
 

@@ -52,7 +52,7 @@ const AddEntity = ({ tableType }) => {
     );
   };
 
-  const sendTrack = (type, action) => {
+  const clickTracking = (type, action) => {
     trackEvent({
       category: type,
       action: action,
@@ -65,7 +65,7 @@ const AddEntity = ({ tableType }) => {
       <FormName
         ref={modalRef}
         setIsActionDone={setIsActionDone}
-        sendTrack={sendTrack}
+        clickTracking={clickTracking}
       />
     );
   };

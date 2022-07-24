@@ -10,7 +10,7 @@ import CreateSpecialEntityForm from '../Entity/CreateSpecialEntityForm';
 import { Accordion, AccordionTab } from 'primereact/accordion';
 import renderHeader from '../accordionTabHeaders';
 
-const CreateEntityForm = forwardRef(({ setIsActionDone, sendTrack }, ref) => {
+const CreateEntityForm = forwardRef(({ setIsActionDone, clickTracking }, ref) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const formRefs = useMemo(() => ({ 0: createRef(), 1: createRef() }), []);
@@ -43,14 +43,14 @@ const CreateEntityForm = forwardRef(({ setIsActionDone, sendTrack }, ref) => {
           ref={formRefs[0]}
           showJob={false}
           setIsActionDone={setIsActionDone}
-          sendTrack={sendTrack}
+          clickTracking={clickTracking}
         />
       </AccordionTab>
       <AccordionTab header={renderHeader('יצירת משתמש מיוחד', true)}>
         <CreateSpecialEntityForm
           ref={formRefs[1]}
           setIsActionDone={setIsActionDone}
-          sendTrack={sendTrack}
+          clickTracking={clickTracking}
         />
       </AccordionTab>
     </Accordion>

@@ -81,7 +81,7 @@ const FullEntityInformationForm = forwardRef(
       requestObject,
       reqView = true,
       setIsEdit,
-      sendTrack,
+      clickTracking,
     },
 
     ref
@@ -258,7 +258,7 @@ const FullEntityInformationForm = forwardRef(
               fullName: tempForm.fullName,
             },
           });
-          sendTrack('עריכת משתמש');
+          clickTracking('עריכת משתמש');
           setIsActionDone(true);
           setIsEdit(false);
         } else {

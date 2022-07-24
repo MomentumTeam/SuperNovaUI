@@ -189,7 +189,7 @@ const Action = () => {
     );
   };
 
-  const sendTrack = (type, action) => {
+  const clickTracking = (type, action) => {
     trackEvent({
       category: type,
       action: action,
@@ -203,7 +203,7 @@ const Action = () => {
       <FormName
         ref={ref}
         setIsActionDone={setIsActionDone}
-        sendTrack={sendTrack}
+        clickTracking={clickTracking}
       />
     );
   };
