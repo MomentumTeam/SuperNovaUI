@@ -9,6 +9,7 @@ const instance = createInstance({
   urlBase: matomoUrl,
   siteId: matomoSiteId,
 });
+
 ReactDOM.render(
   <MatomoProvider value={instance}>
     <App />

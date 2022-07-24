@@ -52,10 +52,10 @@ const AddEntity = ({ tableType }) => {
     );
   };
 
-  const clickTracking = (type, action) => {
+  const clickTracking = (category, action) => {
     trackEvent({
-      category: type,
-      action: action,
+      category,
+      action,
     });
   };
 

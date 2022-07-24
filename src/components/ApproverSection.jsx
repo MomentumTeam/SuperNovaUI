@@ -34,7 +34,7 @@ const ApproverSection = ({ request, setDialogVisiblity }) => {
   const clickTracking = (action) => {
     trackEvent({
       category: 'אישור/דחיית בקשה',
-      action: action,
+      action,
     });
   };
 

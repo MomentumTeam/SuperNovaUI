@@ -17,10 +17,10 @@ const ExportButton = ({ exportFunction, toolTip = '', hierarchy = '' }) => {
 
   const { actionPopup } = useToast();
 
-  const clickTracking = (type, action) => {
+  const clickTracking = (category, action) => {
     trackEvent({
-      category: type,
-      action: action,
+      category,
+      action,
     });
   };
 

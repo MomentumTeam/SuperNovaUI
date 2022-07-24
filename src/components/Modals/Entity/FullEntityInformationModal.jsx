@@ -39,7 +39,7 @@ const FullEntityInformationModal = ({
   const clickTracking = (action) => {
     trackEvent({
       category: 'עריכה',
-      action: action,
+      action,
     });
   };
 

@@ -1,2 +1,2 @@
-export const matomoUrl = 'http://localhost:8093';
-export const matomoSiteId = 1;
+export const matomoUrl = 'https://matomo.yesodot.prod.services.idf/';
+export const matomoSiteId = 10;
