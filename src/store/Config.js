@@ -27,8 +27,8 @@ class ConfigStore {
   FIRST_PAGE = 0;
   SECURITY_MAIL = 'T82130201@gmail.com';
   SUPER_SECURITY_MAIL = 'T02250B49@gmail.com';
-  MATOMO_TRAKING = 'http://localhost:8093/';
-  SITE_ID_FOR_MATOMO = 1;
+  MATOMO_TRAKING = 'https://matomo.yesodot.prod.services.idf/';
+  SITE_ID_FOR_MATOMO = 10;
   TOMY_LINK = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
   TECH_OPS_PHONE_NUMBER = '0524586749';
   TECH_OPS_MAIL = 'T82130222@gmail.com';
