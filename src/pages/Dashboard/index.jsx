@@ -1,26 +1,31 @@
-import { observer } from "mobx-react";
-import { toJS } from "mobx";
-import { useState, useEffect } from "react";
-
-import "../../assets/css/local/pages/dashboard.min.css";
+import { observer } from 'mobx-react';
+import { toJS } from 'mobx';
+import { useState, useEffect } from 'react';
+import { useMatomo } from '@datapunt/matomo-tracker-react';
+import '../../assets/css/local/pages/dashboard.min.css';
 import { useStores } from '../../context/use-stores';
-import SearchBox from "../../components/Search/SearchBox";
-import HierarchyTree from "../../components/HierarchyTree";
-import SideToolbar from "../../components/SideToolBar/SideToolbar";
-import UserProfileCard from "./UserProfileCard";
-import FullEntityInformationModal from "../../components/Modals/Entity/FullEntityInformationModal";
-import FullEntityPremissionsModal from "../../components/Modals/Entity/FullEntityPremissionsModal";
+import SearchBox from '../../components/Search/SearchBox';
+import HierarchyTree from '../../components/HierarchyTree';
+import SideToolbar from '../../components/SideToolBar/SideToolbar';
+import UserProfileCard from './UserProfileCard';
+import FullEntityInformationModal from '../../components/Modals/Entity/FullEntityInformationModal';
+import FullEntityPremissionsModal from '../../components/Modals/Entity/FullEntityPremissionsModal';
 
-import DecorAnimation from "../../components/decor-animation";
-import { getUserTags, isUserCanSeeAllApproveApplies, isUserCanSeeMyApproveApplies } from "../../utils/user";
-import { AppliesTable } from "../../components/AppliesTable";
+import DecorAnimation from '../../components/decor-animation';
+import {
+  getUserTags,
+  isUserCanSeeAllApproveApplies,
+  isUserCanSeeMyApproveApplies,
+} from '../../utils/user';
+import { AppliesTable } from '../../components/AppliesTable';
 import { useToast } from '../../context/use-toast';
 
 const Dashboard = observer(() => {
-  const {actionPopup} = useToast();
+  const { actionPopup } = useToast();
   const { userStore, appliesStore, treeStore } = useStores();
   const [isFullUserInfoModalOpen, setIsFullUserInfoModalOpen] = useState(false);
-  const [isUserPremissionsModalOpen, setIsUserPremissionsModalOpen] = useState(false);
+  const [isUserPremissionsModalOpen, setIsUserPremissionsModalOpen] =
+    useState(false);
 
   const user = toJS(userStore.user);
   const myApplies = toJS(appliesStore.myApplies);
@@ -28,10 +33,21 @@ const Dashboard = observer(() => {
   const approveAllApplies = toJS(appliesStore.approveAllApplies);
 
   const userTags = getUserTags(user?.types);
+  const userId = user?.personalNumber
+    ? user.personalNumber
+    : user?.identityCard;
+  const { trackPageView, pushInstruction } = useMatomo();
 
   useEffect(() => {
     if (userStore.user) {
-      if (!isUserCanSeeMyApproveApplies(userStore.user) && !isUserCanSeeAllApproveApplies(userStore.user)) {
+      pushInstruction('setUserId', userId);
+      trackPageView({
+        documentTitle: 'דף הבית',
+      });
+      if (
+        !isUserCanSeeMyApproveApplies(userStore.user) &&
+        !isUserCanSeeAllApproveApplies(userStore.user)
+      ) {
         // appliesStore.loadApplies();
         treeStore.loadTreeByEntity(userStore.user);
       }
@@ -48,11 +64,9 @@ const Dashboard = observer(() => {
 
   const openPremissionsModal = () => {
     setIsUserPremissionsModalOpen(true);
-
   };
   const closePremissionsModal = () => {
     setIsUserPremissionsModalOpen(false);
-
   };
 
   return (
@@ -83,7 +97,7 @@ const Dashboard = observer(() => {
             closePremissionsModal={closePremissionsModal}
             userTags={userTags}
           />
-          
+
           <div className="content-unit-wrap">
             {isUserCanSeeMyApproveApplies(user) ? (
               <>

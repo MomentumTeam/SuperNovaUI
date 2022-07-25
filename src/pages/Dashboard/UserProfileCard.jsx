@@ -1,10 +1,11 @@
-import blankProfilePic from "../../assets/images/blankProfile.png";
-import { Tooltip } from "primereact/tooltip";
-import configStore from "../../store/Config";
-import { ProgressSpinner } from "primereact/progressspinner";
-import { Button } from "primereact/button";
+import blankProfilePic from '../../assets/images/blankProfile.png';
+import { Tooltip } from 'primereact/tooltip';
+import configStore from '../../store/Config';
+import { ProgressSpinner } from 'primereact/progressspinner';
+import { Button } from 'primereact/button';
+import { useMatomo } from '@datapunt/matomo-tracker-react';
 
-import "../../assets/css/local/pages/dashboard.css";
+import '../../assets/css/local/pages/dashboard.css';
 
 const UserProfileCard = ({
   isUserLoading,
@@ -14,6 +15,19 @@ const UserProfileCard = ({
   openPremissionsModal,
   isUserPremissionsModalOpen,
 }) => {
+  const { trackPageView } = useMatomo();
+  const myPermissions = () => {
+    trackPageView({
+      documentTitle: 'ההרשאות שלי',
+    });
+  };
+
+  const fullInformation = () => {
+    trackPageView({
+      documentTitle: 'פרטים מלאים',
+    });
+  };
+
   return (
     <div className="personal-information-wrap">
       <div className="display-flex personal-information-inner">
@@ -24,9 +38,10 @@ const UserProfileCard = ({
             <div className="personal-information-item">
               <div className="userpic-wrap">
                 <img
-                  style={{ borderRadius: "50%" }}
+                  style={{ borderRadius: '50%' }}
                   src={
-                    (user && user.picture) || user.picture !== configStore.USER_NO_PICTURE
+                    (user && user.picture) ||
+                    user.picture !== configStore.USER_NO_PICTURE
                       ? `data:image/jpeg;base64,${user.picture}`
                       : blankProfilePic
                   }
@@ -39,7 +54,7 @@ const UserProfileCard = ({
                 <dt>שם</dt>
                 <dd>
                   {user?.firstName}
-                  {user?.lastName ? " " + user.lastName : ""}
+                  {user?.lastName ? ' ' + user.lastName : ''}
                 </dd>
               </dl>
             </div>
@@ -64,9 +79,13 @@ const UserProfileCard = ({
               <dl>
                 <dt>מייל</dt>
                 <dd>
-                <a href={`mailto:${user?.mail}`} className="" title={user?.mail}>
-                {user?.mail}
-                </a>
+                  <a
+                    href={`mailto:${user?.mail}`}
+                    className=""
+                    title={user?.mail}
+                  >
+                    {user?.mail}
+                  </a>
                 </dd>
               </dl>
             </div>
@@ -78,19 +97,26 @@ const UserProfileCard = ({
             </div>
             <div className="personal-information-item">
               <dl>
-              <Tooltip target={`.hierarchy-name`} content={user?.hierarchy} position="top" />
+                <Tooltip
+                  target={`.hierarchy-name`}
+                  content={user?.hierarchy}
+                  position="top"
+                />
                 <dt>היררכיה</dt>
                 <dd className="hierarchy-name cut-text"> {user?.hierarchy}</dd>
               </dl>
             </div>
-            <div id={userTags.length > 0 ? "userProfileCardButtons" : ""}>
+            <div id={userTags.length > 0 ? 'userProfileCardButtons' : ''}>
               <div className="personal-information-item">
                 <button
                   id="fullInformationButton"
                   className="btn-green-gradient btn-full-details"
                   type="button"
                   title="פרטים מלאים"
-                  onClick={openFullDetailsModal}
+                  onClick={() => {
+                    openFullDetailsModal();
+                    fullInformation();
+                  }}
                 >
                   פרטים מלאים
                 </button>
@@ -102,7 +128,10 @@ const UserProfileCard = ({
                     label="ההרשאות שלי"
                     id="showPremissionsButton"
                     className="p-button-rounded p-button-warning"
-                    onClick={openPremissionsModal}
+                    onClick={() => {
+                      openPremissionsModal();
+                      myPermissions();
+                    }}
                   />
                 </div>
               )}

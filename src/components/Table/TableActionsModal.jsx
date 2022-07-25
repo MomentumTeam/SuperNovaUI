@@ -1,34 +1,36 @@
-import React, { useContext, forwardRef } from "react";
+import React, { useContext, forwardRef } from 'react';
 
-import { TableContext } from ".";
-import { TableActionsContext } from "./TableActionsMenu";
+import { TableContext } from '.';
+import { TableActionsContext } from './TableActionsMenu';
 
 // Table
-import { TableAppliesActionsEnum } from "../../constants";
+import { TableAppliesActionsEnum } from '../../constants';
 
 // Entity
-import { tableActionsEnum as usersTableActionsEnum } from "../../constants/usersTable";
-import { tableActionsEnum as myRequestsTableActionsEnum } from "../../constants/myRequestsTable";
+import { tableActionsEnum as usersTableActionsEnum } from '../../constants/usersTable';
+import { tableActionsEnum as myRequestsTableActionsEnum } from '../../constants/myRequestsTable';
 
-import FullEntityInformationModal from "../Modals/Entity/FullEntityInformationModal";
+import FullEntityInformationModal from '../Modals/Entity/FullEntityInformationModal';
 
 // Hierarchy
-import { FullHierarchyInformation } from "../Modals/Hierarchy/FullHierarchyInformation";
-import { HierarchyDelete } from "../Modals/Hierarchy/HierarchyDelete";
+import { FullHierarchyInformation } from '../Modals/Hierarchy/FullHierarchyInformation';
+import { HierarchyDelete } from '../Modals/Hierarchy/HierarchyDelete';
 
 // Role
-import { FullRoleInformation } from "../Modals/Role/FullRoleInformation";
+import { FullRoleInformation } from '../Modals/Role/FullRoleInformation';
 
 // Request
-import { PassRequestDialog } from "../Modals/Request/PassRequestDialog";
-import PreviewRequestsDialog from "../Modals/Request/PreviewRequestsDialog1";
-import { TakeRequest } from "../Modals/Request/TakeRequest";
+import { PassRequestDialog } from '../Modals/Request/PassRequestDialog';
+import PreviewRequestsDialog from '../Modals/Request/PreviewRequestsDialog1';
+import { TakeRequest } from '../Modals/Request/TakeRequest';
 import { ReturnRequest } from '../Modals/Request/ReturnRequest';
 import { useToast } from '../../context/use-toast';
-import { RoleDelete } from "../Modals/Role/RoleDelete";
+import { RoleDelete } from '../Modals/Role/RoleDelete';
+import { useMatomo } from '@datapunt/matomo-tracker-react';
 
 const TableActionsModal = forwardRef((_, ref) => {
   const { actionPopup, toastRef } = useToast();
+  const { trackEvent } = useMatomo();
   const { selectedItem } = useContext(TableContext);
   const {
     actionType,
@@ -37,9 +39,16 @@ const TableActionsModal = forwardRef((_, ref) => {
     setIsActionModalOpen,
   } = useContext(TableActionsContext);
 
+  const clickTracking = (category, action) => {
+    trackEvent({
+      category,
+      action,
+    });
+  };
+
   const sendActionPopup = (actionName = actionType, error = null) => {
     actionPopup(actionName, error);
-  }
+  };
 
   const renderActionModal = () => {
     if (selectedItem[0] && actionType && isActionModalOpen) {
@@ -125,6 +134,7 @@ const TableActionsModal = forwardRef((_, ref) => {
               isDialogVisible={isActionModalOpen}
               setDialogVisiblity={setIsActionModalOpen}
               actionPopup={sendActionPopup}
+              clickTracking={clickTracking}
             />
           );
 
@@ -166,8 +176,8 @@ const TableActionsModal = forwardRef((_, ref) => {
           break;
         default:
           toastRef.current.show({
-            severity: "error",
-            summary: "פעולה לא ממומשת",
+            severity: 'error',
+            summary: 'פעולה לא ממומשת',
             detail: `פעולה זו לא ממומשת במערכת עדיין`,
             life: 1000,
           });

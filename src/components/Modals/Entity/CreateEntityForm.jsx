@@ -4,13 +4,13 @@ import React, {
   useImperativeHandle,
   useMemo,
   createRef,
-} from "react";
-import AssignRoleToEntityForm from "../AssignRoleToEntityForm";
-import CreateSpecialEntityForm from "../Entity/CreateSpecialEntityForm";
-import { Accordion, AccordionTab } from "primereact/accordion";
-import renderHeader from "../accordionTabHeaders";
+} from 'react';
+import AssignRoleToEntityForm from '../AssignRoleToEntityForm';
+import CreateSpecialEntityForm from '../Entity/CreateSpecialEntityForm';
+import { Accordion, AccordionTab } from 'primereact/accordion';
+import renderHeader from '../accordionTabHeaders';
 
-const CreateEntityForm = forwardRef(({ setIsActionDone }, ref) => {
+const CreateEntityForm = forwardRef(({ setIsActionDone, clickTracking }, ref) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const formRefs = useMemo(() => ({ 0: createRef(), 1: createRef() }), []);
@@ -25,7 +25,7 @@ const CreateEntityForm = forwardRef(({ setIsActionDone }, ref) => {
 
   return (
     <Accordion
-      expandIcon='pi pi-chevron-left'
+      expandIcon="pi pi-chevron-left"
       style={{ marginBottom: '20px' }}
       activeIndex={activeIndex}
       onTabChange={({ index }) => {
@@ -43,12 +43,14 @@ const CreateEntityForm = forwardRef(({ setIsActionDone }, ref) => {
           ref={formRefs[0]}
           showJob={false}
           setIsActionDone={setIsActionDone}
+          clickTracking={clickTracking}
         />
       </AccordionTab>
       <AccordionTab header={renderHeader('יצירת משתמש מיוחד', true)}>
         <CreateSpecialEntityForm
           ref={formRefs[1]}
           setIsActionDone={setIsActionDone}
+          clickTracking={clickTracking}
         />
       </AccordionTab>
     </Accordion>

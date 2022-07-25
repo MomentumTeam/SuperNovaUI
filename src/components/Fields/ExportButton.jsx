@@ -2,6 +2,7 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { useToast } from '../../context/use-toast';
 import React, { useState, useEffect } from 'react';
+import { useMatomo } from '@datapunt/matomo-tracker-react';
 import { exportToExcel } from '../../utils/general';
 import { renameObjKeys } from '../../utils/hierarchy';
 import { excelLabels } from '../../constants/applies';
@@ -9,18 +10,25 @@ import { exportHierarchyData } from '../../service/KartoffelService';
 import { sendHierarchyDataMail } from '../../service/MailService';
 
 const ExportButton = ({ exportFunction, toolTip = '', hierarchy = '' }) => {
+  const { trackEvent } = useMatomo();
   const [isOpen, setIsOpen] = useState(false);
   const [excelLoading, setExcelLoading] = useState(false);
   const [directExcelLoading, setDirectExcelLoading] = useState(false);
 
   const { actionPopup } = useToast();
 
+  const clickTracking = (category, action) => {
+    trackEvent({
+      category,
+      action,
+    });
+  };
+
   // useEffect(() => {
   //   if (!excelLoading && !directExcelLoading) {
   //     setIsOpen(false);
   //   }
   // }, [excelLoading, directExcelLoading]);
-
 
   // const closeDialog = async (direct) => {
   //   updateLoading(direct, false);
@@ -71,8 +79,15 @@ const ExportButton = ({ exportFunction, toolTip = '', hierarchy = '' }) => {
         message: 'יש בעיה בייצוא הטבלה',
       });
     }
-    updateLoading(direct, false);
 
+    clickTracking(
+      'ייצוא',
+      direct
+        ? 'נתונים רק על התפקידים שנמצאים בהיררכיה זו'
+        : 'נתונים למייל על כל התפקידים שנמצאים בהיררכיה זו ובהיררכיות תחתיה'
+    );
+
+    updateLoading(direct, false);
   };
 
   return (

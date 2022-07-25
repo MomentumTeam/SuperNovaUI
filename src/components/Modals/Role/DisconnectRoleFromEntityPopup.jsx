@@ -3,7 +3,7 @@ import { classNames } from 'primereact/utils';
 import { Dialog } from 'primereact/dialog';
 import { DisconnectRoleFromEntityFooter } from './DisconnectRoleFromEntityFooter';
 import { disconectRoleFromEntityRequest } from '../../../service/AppliesService';
-
+import { useMatomo } from '@datapunt/matomo-tracker-react';
 const DisconnectRoleFromEntityPopup = ({
   user,
   role,
@@ -14,7 +14,13 @@ const DisconnectRoleFromEntityPopup = ({
   actionPopup,
 }) => {
   const [actionIsDone, setActionIsDone] = useState(false);
-
+  const { trackEvent } = useMatomo();
+  const clickTracking = () => {
+    trackEvent({
+      category: 'ניתוק',
+      action: 'ניתוק תפקיד',
+    });
+  };
   useEffect(() => {
     if (actionIsDone) {
       actionPopup();
@@ -36,6 +42,7 @@ const DisconnectRoleFromEntityPopup = ({
       };
 
       const res = await disconectRoleFromEntityRequest(req);
+      clickTracking();
       setActionIsDone(true);
       closeModal();
     } catch (e) {

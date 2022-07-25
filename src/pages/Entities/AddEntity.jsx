@@ -1,13 +1,16 @@
-import { useEffect, useRef, useState } from "react";
-import { Dialog } from "primereact/dialog";
-import { Button } from "primereact/button";
+import { useEffect, useRef, useState } from 'react';
+import { Dialog } from 'primereact/dialog';
+import { Button } from 'primereact/button';
 
-import InfoPopup from "../../components/InfoPopup";
-import { TableAdd } from "../../constants/usersTable";
-import { useToast } from "../../context/use-toast";
-import "../../assets/css/local/pages/dashboard.css";
+import InfoPopup from '../../components/InfoPopup';
+import { TableAdd } from '../../constants/usersTable';
+import { useToast } from '../../context/use-toast';
+import { useMatomo } from '@datapunt/matomo-tracker-react';
+
+import '../../assets/css/local/pages/dashboard.css';
 
 const AddEntity = ({ tableType }) => {
+  const { trackEvent } = useMatomo();
   const { actionPopup } = useToast();
   const modalRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -20,7 +23,7 @@ const AddEntity = ({ tableType }) => {
       <div className="display-flex dialog-header">
         <div className="dialog-header-title">{actionName}</div>
         <InfoPopup
-          name={actionName + " dialog"}
+          name={actionName + ' dialog'}
           infoText={infoText}
           visible={showInfo}
           withTitle={infoWithTitle}
@@ -34,33 +37,54 @@ const AddEntity = ({ tableType }) => {
       <div className="display-flex ">
         <div className="display-flex"></div>
         <div className="display-flex ">
-          <Button label="ביטול" onClick={() => setIsVisible(false)} className="btn-underline" />
-          <Button label="שליחת בקשה" onClick={() => handleRequest()} className="btn-gradient orange" />
+          <Button
+            label="ביטול"
+            onClick={() => setIsVisible(false)}
+            className="btn-underline"
+          />
+          <Button
+            label="שליחת בקשה"
+            onClick={() => handleRequest()}
+            className="btn-gradient orange"
+          />
         </div>
       </div>
     );
   };
 
+  const clickTracking = (category, action) => {
+    trackEvent({
+      category,
+      action,
+    });
+  };
+
   const renderModalForm = () => {
     const FormName = addFields.modalName;
-    return <FormName ref={modalRef} setIsActionDone={setIsActionDone} />;
+    return (
+      <FormName
+        ref={modalRef}
+        setIsActionDone={setIsActionDone}
+        clickTracking={clickTracking}
+      />
+    );
   };
 
   const handleRequest = async () => {
     try {
       await modalRef.current.handleSubmit();
     } catch (e) {
-      actionPopup(addFields?.actionName, e.message || "Message Content");
+      actionPopup(addFields?.actionName, e.message || 'Message Content');
     }
   };
 
-   useEffect(() => {
-     if (isActionDone) {
-       actionPopup(addFields?.actionName);
-       setIsVisible(false);
+  useEffect(() => {
+    if (isActionDone) {
+      actionPopup(addFields?.actionName);
+      setIsVisible(false);
       setIsActionDone(false);
-     }
-   }, [isActionDone]);
+    }
+  }, [isActionDone]);
 
   return (
     <>
@@ -77,7 +101,12 @@ const AddEntity = ({ tableType }) => {
       </button>
       <Dialog
         className={addFields.dialogClass}
-        header={renderHeader(addFields.actionName, true, addFields.infoText, addFields.infoWithTitle)}
+        header={renderHeader(
+          addFields.actionName,
+          true,
+          addFields.infoText,
+          addFields.infoWithTitle
+        )}
         visible={isVisible}
         onHide={() => setIsVisible(false)}
         footer={renderFooter()}

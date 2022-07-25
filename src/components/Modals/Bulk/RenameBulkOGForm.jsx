@@ -80,21 +80,25 @@ const validationSchema = Yup.object().shape({
     .test('required', 'יש להעלות קובץ!', (value) => {
       return value && value.length;
     })
-    .test('', 'יש להעלות קובץ תקין! ראה פורמט', async (value, { createError, path }) => {
-      const formData = new FormData();
-      formData.append('bulkFiles', value[0]);
-      const uploadFilesRes = await uploadBulkFile(formData, BulkTypes[1]);
-      if (!uploadFilesRes) {
-        //Table uploaded is illegl !
-        return false;
-      } else {
-        return uploadFilesRes?.uploadFiles[0];
+    .test(
+      '',
+      'יש להעלות קובץ תקין! ראה פורמט',
+      async (value, { createError, path }) => {
+        const formData = new FormData();
+        formData.append('bulkFiles', value[0]);
+        const uploadFilesRes = await uploadBulkFile(formData, BulkTypes[1]);
+        if (!uploadFilesRes) {
+          //Table uploaded is illegl !
+          return false;
+        } else {
+          return uploadFilesRes?.uploadFiles[0];
+        }
       }
-    }),
+    ),
 });
 
 const RenameBulkOGForm = forwardRef(
-  ({ setIsActionDone, requestObject, onlyForView }, ref) => {
+  ({ setIsActionDone, requestObject, onlyForView, clickTracking }, ref) => {
     const { appliesStore, userStore } = useStores();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
@@ -160,6 +164,7 @@ const RenameBulkOGForm = forwardRef(
       }
 
       await appliesStore.changeRoleHierarchyBulk(req);
+      clickTracking('יצירת', 'היררכיות מרובות');
       setIsActionDone(true);
     };
 
@@ -194,13 +199,13 @@ const RenameBulkOGForm = forwardRef(
     };
 
     return (
-      <div className='p-fluid' id='renameBulkOGForm'>
-        <div className='p-fluid-item'>
-          <div className='p-field'>
+      <div className="p-fluid" id="renameBulkOGForm">
+        <div className="p-fluid-item">
+          <div className="p-field">
             <Hierarchy
               setValue={setValue}
-              name='currentHierarchy'
-              labelText='היררכיה נוכחית'
+              name="currentHierarchy"
+              labelText="היררכיה נוכחית"
               errors={errors}
               ogValue={watch('currentHierarchy')}
               disabled={onlyForView}
@@ -213,12 +218,12 @@ const RenameBulkOGForm = forwardRef(
             />
           </div>
         </div>
-        <div className='p-fluid-item'>
-          <div className='p-field'>
+        <div className="p-fluid-item">
+          <div className="p-field">
             <Hierarchy
               setValue={setValue}
-              name='hierarchy'
-              labelText='היררכיה חדשה'
+              name="hierarchy"
+              labelText="היררכיה חדשה"
               errors={errors}
               ogValue={watch('hierarchy')}
               disabled={onlyForView}
@@ -245,10 +250,10 @@ const RenameBulkOGForm = forwardRef(
             ]}
           />
         )}
-        <div className='p-fluid-item-flex p-fluid-item'>
+        <div className="p-fluid-item-flex p-fluid-item">
           <Approver
             setValue={setValue}
-            name='approvers'
+            name="approvers"
             tooltip='סא"ל ומעלה ביחידתך'
             multiple={true}
             errors={errors}
@@ -257,15 +262,15 @@ const RenameBulkOGForm = forwardRef(
           />
         </div>
 
-        <div className='p-fluid-item p-fluid-item-flex1'>
-          <div className='p-field'>
+        <div className="p-fluid-item p-fluid-item-flex1">
+          <div className="p-field">
             <label>
               <span></span>הערות
             </label>
             <InputTextarea
               {...register('comments')}
-              id='renameBulkOGForm-comments'
-              type='text'
+              id="renameBulkOGForm-comments"
+              type="text"
               placeholder={!onlyForView && 'הכנס הערות לבקשה...'}
               readOnly={onlyForView}
               className={onlyForView ? 'disabled' : ''}

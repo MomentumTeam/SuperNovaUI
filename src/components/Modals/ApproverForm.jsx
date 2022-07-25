@@ -32,6 +32,7 @@ import '../../assets/css/local/components/approverForm.css';
 import { Tooltip } from 'primereact/tooltip';
 import { hierarchyConverse } from '../../utils/hierarchy';
 
+
 const validationSchema = Yup.object().shape({
   approverType: Yup.string().required('יש להכניס סוג מאשר'),
   user: Yup.object()
@@ -74,7 +75,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const ApproverForm = forwardRef(
-  ({ onlyForView, requestObject, setIsActionDone }, ref) => {
+  ({ onlyForView, requestObject, setIsActionDone, clickTracking }, ref) => {
     const { appliesStore, userStore, configStore } = useStores();
     const [defaultApprovers, setDefaultApprovers] = useState([]);
 
@@ -191,6 +192,7 @@ const ApproverForm = forwardRef(
       };
 
       await appliesStore.createNewApproverApply(req);
+      clickTracking('יצירת', 'בקשת הרשאה');
       setIsActionDone(true);
     };
 
