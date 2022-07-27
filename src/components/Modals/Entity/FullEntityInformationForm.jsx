@@ -47,8 +47,8 @@ const validationSchema = Yup.object().shape({
       .required('יש לבחור שם משפחה')
       .matches(NAME_REG_EXP, 'שם לא תקין'),
   }),
-  identityCard: Yup.string().when('canEditEntityFields', {
-    is: true,
+  identityCard: Yup.string().when(['canEditEntityFields', 'isGoalUser'], {
+    is: (canEditEntityFields, isGoalUser) => canEditEntityFields && !isGoalUser,
     then: Yup.string()
       .required('יש להזין ת"ז')
       .matches(IDENTITY_CARD_EXP, 'ת"ז לא תקין')
@@ -60,17 +60,14 @@ const validationSchema = Yup.object().shape({
         },
       }),
   }),
-  mobilePhone: Yup.mixed().when('canEditEntityFields', {
-    is: true,
+  mobilePhone: Yup.mixed().when(['canEditEntityFields', 'isGoalUser'], {
+    is: (isGoalUser, canEditEntityFields) => { return canEditEntityFields && !isGoalUser },
     then: Yup.string('נא להזין מספר')
       .required('נא להזין מספר')
       .matches(PHONE_REG_EXP, 'מספר לא תקין'),
+    otherwise: Yup.string('נא להזין מספר').optional().matches(PHONE_REG_EXP, 'מספר לא תקין')
   }),
   canSeeUserFullClearance: Yup.boolean(),
-  // fullClearance: Yup.string().when(['canSeeUserFullClearance', 'canEditEntityFields'], {
-  //   is: (canSeeUserFullClearance, canEditEntityFields) => canSeeUserFullClearance && canEditEntityFields,
-  //   then: Yup.string().required('יש להכניס סיווג'),
-  // }),
 });
 
 const FullEntityInformationForm = forwardRef(
@@ -89,9 +86,11 @@ const FullEntityInformationForm = forwardRef(
         canEditEntityFields: CanEditEntityFields(user),
         canSeeUserFullClearance: CanSeeUserFullClearance(),
       },
+      context: {
+        isGoalUser: user.entityType === configStore.USER_ROLE_ENTITY_TYPE,
+      }
     });
     const { errors } = methods.formState;
-
     useEffect(async () => {
       if (requestObject) {
         if (reqView) {
@@ -184,7 +183,6 @@ const FullEntityInformationForm = forwardRef(
 
       fieldsToCheck.forEach((field) => {
         if (isDifferentFromPrev(methods.watch(field), user[field])) {
-          console.log(methods.watch(field), user[field]);
           changedForm = true;
         }
       });
@@ -272,7 +270,7 @@ const FullEntityInformationForm = forwardRef(
     );
 
     const isDifferentFromPrev = (oldFieldValue, newFieldValue) => {
-      return oldFieldValue !== newFieldValue && oldFieldValue && newFieldValue;
+      return oldFieldValue !== newFieldValue;
     };
 
     const getFormFieldsByEntityType = (user) => {

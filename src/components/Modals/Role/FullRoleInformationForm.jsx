@@ -383,7 +383,7 @@ const FullRoleInformationForm = forwardRef(
                 {...register('roleName')}
                 onChange={onRoleNameChange}
                 disabled={
-                  onlyForView || watch('isGoalUser') || !canEditRoleFields
+                  onlyForView || !canEditRoleFields
                 }
               />
 
@@ -489,7 +489,7 @@ const FullRoleInformationForm = forwardRef(
                   : ''
               } `}
               disabled={
-                onlyForView || watch('isGoalUser') || !canEditRoleFields
+                onlyForView || !canEditRoleFields
               }
               style={{
                 textAlignLast: !watch('clearance') && 'center',
