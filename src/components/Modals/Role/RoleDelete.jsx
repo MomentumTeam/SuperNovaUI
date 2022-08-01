@@ -1,17 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { Dialog } from "primereact/dialog";
-import { classNames } from "primereact/utils";
+import React, { useEffect, useState } from 'react';
+import { Dialog } from 'primereact/dialog';
+import { classNames } from 'primereact/utils';
 
-import { RoleDeleteFooter } from "./RoleDeleteFooter";
+import { RoleDeleteFooter } from './RoleDeleteFooter';
 
-import "../../../assets/css/local/components/modal-item.css";
-import { getSamAccountNameFromUniqueId } from "../../../utils/fields";
-import { getEntityByRoleId, getLastTimeConnectionBySamAccountName } from "../../../service/KartoffelService";
-import { useStores } from "../../../context/use-stores";
-import { ProgressSpinner } from "primereact/progressspinner";
-import { isDateGreater } from "../../../utils/applies";
+import '../../../assets/css/local/components/modal-item.css';
+import { getSamAccountNameFromUniqueId } from '../../../utils/fields';
+import {
+  getEntityByRoleId,
+  getLastTimeConnectionBySamAccountName,
+} from '../../../service/KartoffelService';
+import { useStores } from '../../../context/use-stores';
+import { ProgressSpinner } from 'primereact/progressspinner';
+import { isDateGreater } from '../../../utils/applies';
 
-const RoleDelete = ({ role, isDialogVisible, setDialogVisiblity, actionPopup }) => {
+const RoleDelete = ({
+  role,
+  isDialogVisible,
+  setDialogVisiblity,
+  actionPopup,
+  clickTracking,
+}) => {
   const { appliesStore } = useStores();
   const [entity, setEntity] = useState(null);
   const [disabled, setIsDisabled] = useState(true);
@@ -44,8 +53,8 @@ const RoleDelete = ({ role, isDialogVisible, setDialogVisiblity, actionPopup }) 
 
   const ldapDateToJs = (ldapDate) => {
     return new Date(parseInt(ldapDate) / 1e4 - 1.16444736e13);
-  }
-  
+  };
+
   useEffect(() => {
     const getLastTimeConnection = async () => {
       try {
@@ -53,7 +62,7 @@ const RoleDelete = ({ role, isDialogVisible, setDialogVisiblity, actionPopup }) 
         const res = await getLastTimeConnectionBySamAccountName(samAccountName);
 
         const date =
-          res?.lastLogonTimestamp && res?.lastLogonTimestamp !== "unknown"
+          res?.lastLogonTimestamp && res?.lastLogonTimestamp !== 'unknown'
             ? ldapDateToJs(res.lastLogonTimestamp)
             : null;
         setLastTimeConnection(date);
@@ -66,7 +75,9 @@ const RoleDelete = ({ role, isDialogVisible, setDialogVisiblity, actionPopup }) 
   }, [entity]);
 
   useEffect(() => {
-    lastTimeConnection ? setIsDisabled(!isDateGreater(lastTimeConnection, 14)) : setIsDisabled(false);
+    lastTimeConnection
+      ? setIsDisabled(!isDateGreater(lastTimeConnection, 14))
+      : setIsDisabled(false);
   }, [lastTimeConnection]);
 
   const handleRequest = async () => {
@@ -78,7 +89,9 @@ const RoleDelete = ({ role, isDialogVisible, setDialogVisiblity, actionPopup }) 
           jobTitle: role.jobTitle,
           ...(entity?.firstName && { firstName: entity.firstName }),
           ...(entity?.lastName && { lastName: entity.lastName }),
-          ...(entity?.personalNumber && { personalNumber: entity.personalNumber }),
+          ...(entity?.personalNumber && {
+            personalNumber: entity.personalNumber,
+          }),
           ...(entity?.identityCard && { identityCard: entity.identityCard }),
         },
         adParams: {
@@ -87,16 +100,19 @@ const RoleDelete = ({ role, isDialogVisible, setDialogVisiblity, actionPopup }) 
       };
 
       await appliesStore.deleteRoleApply(req);
+      clickTracking('מחיקה', 'מחיקת תפקיד');
       setActionIsDone(true);
     } catch (e) {
-      actionPopup("מחיקת תפקיד", e);
+      actionPopup('מחיקת תפקיד', e);
     }
   };
 
   return (
     <div>
       <Dialog
-        className={`${classNames("dialogClass12")} dialogdelete ${entity && "dialogdeleteentity"}`}
+        className={`${classNames('dialogClass12')} dialogdelete ${
+          entity && 'dialogdeleteentity'
+        }`}
         header="מחיקת תפקיד"
         visible={isDialogVisible}
         footer={
@@ -117,27 +133,36 @@ const RoleDelete = ({ role, isDialogVisible, setDialogVisiblity, actionPopup }) 
               <p>האם את/ה בטוח/ה שברצונך למחוק תפקיד זה? </p>
               <p>
                 מחיקת תפקיד תגרום לאובדן הT הנבחר,
-                {!entity ? " ו" : " "}
+                {!entity ? ' ו' : ' '}
                 למחיקת כל המידע שנמצא תחת הT
-                {entity ? " ולניתוק המשתמש הנמצא עליו." : "."}
+                {entity ? ' ולניתוק המשתמש הנמצא עליו.' : '.'}
               </p>
 
-              <p style={{ fontWeight: "bold" }}>לאחר המחיקה, אין אופציה לשחזור המידע שהיה לT!</p>
+              <p style={{ fontWeight: 'bold' }}>
+                לאחר המחיקה, אין אופציה לשחזור המידע שהיה לT!
+              </p>
               <p>(הרשאות, תיקיות, קבצים שמורים, תיבת מייל וכו')</p>
 
               {entity && (
-                <p style={{ fontWeight: "bold" }}>
+                <p style={{ fontWeight: 'bold' }}>
                   <br />
-                  <p style={{ color: "red", textDecoration: "underline", marginBottom: "5px" }}>
+                  <p
+                    style={{
+                      color: 'red',
+                      textDecoration: 'underline',
+                      marginBottom: '5px',
+                    }}
+                  >
                     שימו לב- לתפקיד זה יש משתמש מקושר
                   </p>
                   {disabled ? (
                     <>
-                    המשתמש היה פעיל בשבועיים האחרונים ולכן לא ניתן למחוק אותו.
+                      המשתמש היה פעיל בשבועיים האחרונים ולכן לא ניתן למחוק אותו.
                     </>
                   ) : (
                     <>
-                      לא ניתן למחוק תפקידים של משתמשים שהתחברו בשבועיים האחרונים <br />
+                      לא ניתן למחוק תפקידים של משתמשים שהתחברו בשבועיים האחרונים{' '}
+                      <br />
                       (בקשות אלו יכשלו באופן אוטומטי)
                     </>
                   )}

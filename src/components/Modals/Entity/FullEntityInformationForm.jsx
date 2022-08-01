@@ -75,7 +75,14 @@ const validationSchema = Yup.object().shape({
 
 const FullEntityInformationForm = forwardRef(
   (
-    { setIsActionDone, onlyForView, requestObject, reqView = true, setIsEdit },
+    {
+      setIsActionDone,
+      onlyForView,
+      requestObject,
+      reqView = true,
+      setIsEdit,
+      clickTracking,
+    },
 
     ref
   ) => {
@@ -251,6 +258,7 @@ const FullEntityInformationForm = forwardRef(
               fullName: tempForm.fullName,
             },
           });
+          clickTracking('עריכת משתמש');
           setIsActionDone(true);
           setIsEdit(false);
         } else {
@@ -323,7 +331,14 @@ const FullEntityInformationForm = forwardRef(
           fieldName: 'oldMobilePhone',
           condition:
             isEditEntity &&
-            isDifferentFromPrev(user['mobilePhone'], user['oldMobilePhone']),
+            isDifferentFromPrev(
+              Array.isArray(user['mobilePhone'])
+                ? user['mobilePhone'][0]
+                : user['mobilePhone'],
+              Array.isArray(user['oldMobilePhone'])
+                ? user['oldMobilePhone'][0]
+                : user['oldMobilePhone']
+            ),
         },
         {
           fieldName: 'mobilePhone',
@@ -413,7 +428,14 @@ const FullEntityInformationForm = forwardRef(
                 ? [{ fieldName: 'lastName', displayName: 'שם משפחה חדש' }]
                 : []),
               ...(reqView &&
-              isDifferentFromPrev(user['mobilePhone'], user['oldMobilePhone'])
+              isDifferentFromPrev(
+                Array.isArray(user['mobilePhone'])
+                  ? user['mobilePhone'][0]
+                  : user['mobilePhone'],
+                Array.isArray(user['oldMobilePhone'])
+                  ? user['oldMobilePhone'][0]
+                  : user['oldMobilePhone']
+              )
                 ? [{ fieldName: 'mobilePhone', displayName: 'טלפון נייד חדש' }]
                 : []),
               ...(reqView && isDifferentFromPrev(user['rank'], user['oldRank'])
@@ -499,6 +521,7 @@ const FullEntityInformationForm = forwardRef(
         inputType: InputTypes.TEXT,
         type: 'num',
         keyFilter: 'num',
+        // isEdit: !onlyForView && methods.watch('canEditEntityFields'),
         canEdit: methods.watch('canEditEntityFields'),
       },
       {
@@ -522,7 +545,7 @@ const FullEntityInformationForm = forwardRef(
         displayName: 'דרגה קודמת',
         inputType: InputTypes.TEXT,
         force: true,
-        // secured: () =>/ !reqView,
+        secured: () => reqView,
       },
       {
         fieldName: 'hierarchy',
@@ -550,7 +573,7 @@ const FullEntityInformationForm = forwardRef(
       },
       {
         fieldName: 'mobilePhone',
-        displayName: 'פלאפון נייד',
+        displayName: 'טלפון נייד',
         inputType: InputTypes.TEXT,
         type: 'num',
         keyFilter: 'num',
@@ -560,7 +583,7 @@ const FullEntityInformationForm = forwardRef(
       },
       {
         fieldName: 'oldMobilePhone',
-        displayName: 'פלאפון נייד קודם',
+        displayName: 'טלפון נייד קודם',
         inputType: InputTypes.TEXT,
         force: true,
         secured: () => reqView,
@@ -724,7 +747,6 @@ const FullEntityInformationForm = forwardRef(
     return (
       <div className="p-fluid" id="fullEntityInfoForm">
         {getForm(requestObject.type)}
-        {console.log(errors)}
         {errors && errors?.editEntity && (
           <small style={{ color: 'red' }}>
             {errors.editEntity?.message

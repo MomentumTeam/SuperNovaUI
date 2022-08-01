@@ -27,6 +27,12 @@ class ConfigStore {
   FIRST_PAGE = 0;
   SECURITY_MAIL = 'T82130201@gmail.com';
   SUPER_SECURITY_MAIL = 'T02250B49@gmail.com';
+  MATOMO_TRAKING = 'https://matomo.yesodot.prod.services.idf/';
+  SITE_ID_FOR_MATOMO = 10;
+  TOMY_LINK = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+  TECH_OPS_PHONE_NUMBER = '0524586749';
+  TECH_OPS_MAIL = 'T82130222@gmail.com';
+
   SHOW_CONVERT_BUTTON = true;
   INSTRUCTION_VIDEOS =
     'https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley';
@@ -76,12 +82,17 @@ class ConfigStore {
       SUPER_SECURITY_MAIL: observable,
       SHOW_CONVERT_BUTTON: observable,
       INSTRUCTION_VIDEOS: observable,
+      MATOMO_TRAKING: observable,
+      SITE_ID_FOR_MATOMO: observable,
       HI_CHAT_SUPPORT_GROUP_NAME: observable,
       CREATE_ADMIN_REQS_APPROVERS: observable,
       CREATE_BULK_REQS_APPROVERS: observable,
       CREATE_SPECIAL_GROUP_REQS_APPROVERS: observable,
       CREATE_SECURITY_ADMIN_REQS_APPROVERS: observable,
       soldierRequestsApprovers: observable,
+      TOMY_LINK: observable,
+      TECH_OPS_PHONE_NUMBER: observable,
+      TECH_OPS_MAIL: observable,
       loadConfig: action,
       loadAdminApprovers: action,
     });
@@ -121,8 +132,15 @@ class ConfigStore {
       if (config?.SECURITY_MAIL) this.SECURITY_MAIL = config.SECURITY_MAIL;
       if (config?.SUPER_SECURITY_MAIL)
         this.SUPER_SECURITY_MAIL = config.SUPER_SECURITY_MAIL;
+      if (config?.TOMY_LINK) this.TOMY_LINK = config.TOMY_LINK;
+      if (config?.TECH_OPS_PHONE_NUMBER)
+        this.TECH_OPS_PHONE_NUMBER = config.TECH_OPS_PHONE_NUMBER;
+      if (config?.TECH_OPS_MAIL) this.TECH_OPS_MAIL = config.TECH_OPS_MAIL;
       if (config?.INSTRUCTION_VIDEOS)
         this.INSTRUCTION_VIDEOS = config.INSTRUCTION_VIDEOS;
+      if (config?.MATOMO_TRAKING) this.MATOMO_TRAKING = config.MATOMO_TRAKING;
+      if (config?.SITE_ID_FOR_MATOMO)
+        this.SITE_ID_FOR_MATOMO = config.SITE_ID_FOR_MATOMO;
       if (config?.CREATE_ADMIN_APPROVERS) {
         const approvers = await this.loadApprovers(
           config.CREATE_ADMIN_APPROVERS

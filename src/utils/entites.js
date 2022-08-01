@@ -1,9 +1,9 @@
 import configStore from '../store/Config';
-import { USER_TYPE } from "../constants";
-import { toJS } from "mobx";
-import { TableTypes } from "../constants/usersTable";
-import { useStores } from "../context/use-stores";
-import { isUserHoldType } from "./user";
+import { USER_TYPE } from '../constants';
+import { toJS } from 'mobx';
+import { TableTypes } from '../constants/usersTable';
+import { useStores } from '../context/use-stores';
+import { isUserHoldType } from './user';
 
 export const canEditEntity = (selectedEntity, user) => {
   return (
@@ -19,7 +19,11 @@ export const canEditEntity = (selectedEntity, user) => {
 export const CanEditEntityFields = (selectedEntity) => {
   const { userStore } = useStores();
   const user = toJS(userStore.user);
-  return selectedEntity.id === user.id;
+  return (
+    selectedEntity.id === user.id ||
+    (selectedEntity?.entityType === configStore.USER_ROLE_ENTITY_TYPE &&
+      isUserHoldType(user, USER_TYPE.ADMIN))
+  );
 };
 
 export const CanSeeUserClearance = () => {
@@ -27,7 +31,7 @@ export const CanSeeUserClearance = () => {
   const user = toJS(userStore.user);
 
   const field = TableTypes.entities.find(
-    (field) => field.field === "clearance"
+    (field) => field.field === 'clearance'
   );
   return field.secured.some((allowedType) => isUserHoldType(user, allowedType));
 };
@@ -37,8 +41,7 @@ export const CanSeeUserFullClearance = () => {
   const user = toJS(userStore.user);
 
   const field = TableTypes.entities.find(
-    (field) => field.field === "fullClearance"
+    (field) => field.field === 'fullClearance'
   );
   return field.secured.some((allowedType) => isUserHoldType(user, allowedType));
 };
-
