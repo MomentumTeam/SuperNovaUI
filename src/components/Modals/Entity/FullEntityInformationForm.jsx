@@ -72,7 +72,14 @@ const validationSchema = Yup.object().shape({
 
 const FullEntityInformationForm = forwardRef(
   (
-    { setIsActionDone, onlyForView, requestObject, reqView = true, setIsEdit },
+    {
+      setIsActionDone,
+      onlyForView,
+      requestObject,
+      reqView = true,
+      setIsEdit,
+      clickTracking,
+    },
 
     ref
   ) => {
@@ -249,6 +256,7 @@ const FullEntityInformationForm = forwardRef(
               fullName: tempForm.fullName,
             },
           });
+          clickTracking('עריכת משתמש');
           setIsActionDone(true);
           setIsEdit(false);
         } else {

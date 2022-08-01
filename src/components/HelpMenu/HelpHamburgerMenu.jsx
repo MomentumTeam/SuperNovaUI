@@ -7,18 +7,33 @@ import { SpeedDial } from 'primereact/speeddial';
 import ContactInfo from './ContactInfo';
 import FAQ from './FAQ';
 import { Dialog } from 'primereact/dialog';
+import { useMatomo } from '@datapunt/matomo-tracker-react';
+import { action } from 'mobx';
 import { Button } from 'primereact/button';
 
 const HelpHamburgerMenu = () => {
   const [displayFAQ, setDisplayFAQ] = useState(false);
   const [displayContactInfo, setDisplayContactInfo] = useState(false);
+  const { trackEvent, trackPageView } = useMatomo();
+
+  const clickTracking = (action) => {
+    trackPageView({
+      documentTitle: 'דף הבית',
+    });
+    trackEvent({
+      category: 'עזרה',
+      action,
+    });
+  };
 
   const onFAQHide = () => {
     setDisplayFAQ(false);
+    clickTracking('שאלות ותשובות');
   };
 
   const onContactInfoHide = () => {
     setDisplayContactInfo(false);
+    clickTracking('צור קשר');
   };
 
   // const hamburgerItems = [

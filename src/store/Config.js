@@ -27,7 +27,8 @@ class ConfigStore {
   FIRST_PAGE = 0;
   SECURITY_MAIL = 'T82130201@gmail.com';
   SUPER_SECURITY_MAIL = 'T02250B49@gmail.com';
-
+  MATOMO_TRAKING = 'https://matomo.yesodot.prod.services.idf/';
+  SITE_ID_FOR_MATOMO = 10;
   TOMY_LINK = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
   TECH_OPS_PHONE_NUMBER = '0524586749';
   TECH_OPS_MAIL = 'T82130222@gmail.com';
@@ -81,6 +82,8 @@ class ConfigStore {
       SUPER_SECURITY_MAIL: observable,
       SHOW_CONVERT_BUTTON: observable,
       INSTRUCTION_VIDEOS: observable,
+      MATOMO_TRAKING: observable,
+      SITE_ID_FOR_MATOMO: observable,
       HI_CHAT_SUPPORT_GROUP_NAME: observable,
       CREATE_ADMIN_REQS_APPROVERS: observable,
       CREATE_BULK_REQS_APPROVERS: observable,
@@ -135,6 +138,9 @@ class ConfigStore {
       if (config?.TECH_OPS_MAIL) this.TECH_OPS_MAIL = config.TECH_OPS_MAIL;
       if (config?.INSTRUCTION_VIDEOS)
         this.INSTRUCTION_VIDEOS = config.INSTRUCTION_VIDEOS;
+      if (config?.MATOMO_TRAKING) this.MATOMO_TRAKING = config.MATOMO_TRAKING;
+      if (config?.SITE_ID_FOR_MATOMO)
+        this.SITE_ID_FOR_MATOMO = config.SITE_ID_FOR_MATOMO;
       if (config?.CREATE_ADMIN_APPROVERS) {
         const approvers = await this.loadApprovers(
           config.CREATE_ADMIN_APPROVERS

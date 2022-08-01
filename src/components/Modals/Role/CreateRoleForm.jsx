@@ -13,7 +13,7 @@ import { USER_TYPE } from '../../../constants';
 import { isUserHoldType } from '../../../utils/user';
 import renderHeader from '../accordionTabHeaders';
 
-const CreateRoleForm = forwardRef(({ setIsActionDone }, ref) => {
+const CreateRoleForm = forwardRef(({ setIsActionDone, clickTracking }, ref) => {
   const { userStore } = useStores();
   const [activeIndex, setActiveIndex] = useState(0);
   const formRefs = useMemo(() => ({ 0: createRef(), 1: createRef() }), []);
@@ -47,6 +47,7 @@ const CreateRoleForm = forwardRef(({ setIsActionDone }, ref) => {
           ref={formRefs[0]}
           showJob={false}
           setIsActionDone={setIsActionDone}
+          clickTracking={clickTracking}
         />
       </AccordionTab>
       <AccordionTab header={renderHeader('תפקידים חדשים', true, true)}>
@@ -54,6 +55,7 @@ const CreateRoleForm = forwardRef(({ setIsActionDone }, ref) => {
           ref={formRefs[1]}
           showJob={false}
           setIsActionDone={setIsActionDone}
+          clickTracking={clickTracking}
         />
       </AccordionTab>
     </Accordion>
@@ -62,6 +64,7 @@ const CreateRoleForm = forwardRef(({ setIsActionDone }, ref) => {
       ref={formRefs[0]}
       showJob={false}
       setIsActionDone={setIsActionDone}
+      clickTracking={clickTracking}
     />
   );
 });

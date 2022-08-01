@@ -1,11 +1,11 @@
-import React from "react";
-import { classNames } from "primereact/utils";
-import { Button } from "primereact/button";
-import { Dialog } from "primereact/dialog";
-
-import { removeAsApproverFromHierarchy } from "../../../service/ApproverService";
-import { getUserTags } from "../../../utils/user";
-import { useStores } from "../../../context/use-stores";
+import React from 'react';
+import { classNames } from 'primereact/utils';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import { useMatomo } from '@datapunt/matomo-tracker-react';
+import { removeAsApproverFromHierarchy } from '../../../service/ApproverService';
+import { getUserTags } from '../../../utils/user';
+import { useStores } from '../../../context/use-stores';
 
 const PremissionsRemovalPopUp = ({
   showModal,
@@ -17,7 +17,14 @@ const PremissionsRemovalPopUp = ({
   setPremissions,
   setApproverTypes,
 }) => {
-  const {userStore} = useStores();
+  const { trackEvent } = useMatomo();
+  const deletingPermission = (approverType) => {
+    trackEvent({
+      category: 'מחיקת',
+      action:`הרשאה ${approverType}`,
+    });
+  };
+  const { userStore } = useStores();
   const { hierarchyToRemove, approverType } = currentHierarchyForRemoval;
   const dismissApproverFromHierarchy = async () => {
     try {
@@ -49,26 +56,39 @@ const PremissionsRemovalPopUp = ({
   return (
     <Dialog
       id="confirmDialog"
-      className={classNames("dialogClassConfirm")}
+      className={classNames('dialogClassConfirm')}
       visible={showModal}
       onHide={closeModal}
       showHeader={false}
     >
       <h3>האם אתה בטוח?</h3>
       {approverType && (
-        <p style={{ fontSize: "18px"  }}>
+        <p style={{ fontSize: '18px' }}>
           האם להוריד לך את ההרשאות של <b>{getUserTags([approverType])[0]}</b>
-          {hierarchyToRemove ? <>  עבור ההיררכיה:{" "}
-          <b style={{wordBreak: "break-all"}}>{hierarchyToRemove?.hierarchy + "/" + hierarchyToRemove?.name}</b>?</> : <>?</> }
+          {hierarchyToRemove ? (
+            <>
+              {' '}
+              עבור ההיררכיה:{' '}
+              <b style={{ wordBreak: 'break-all' }}>
+                {hierarchyToRemove?.hierarchy + '/' + hierarchyToRemove?.name}
+              </b>
+              ?
+            </>
+          ) : (
+            <>?</>
+          )}
         </p>
       )}
-      <p style={{ fontSize: "18px" }}>
+      <p style={{ fontSize: '18px' }}>
         הסרת הרשאות מסוג זה יורידו לך יכולות במערכת לגו
       </p>
 
       <div id="confirmDialogButtons">
         <Button
-          onClick={dismissApproverFromHierarchy}
+          onClick={() => {
+            dismissApproverFromHierarchy();
+            deletingPermission(approverType);
+          }}
         >
           כן, הסר לי את ההרשאה
         </Button>
@@ -77,7 +97,7 @@ const PremissionsRemovalPopUp = ({
           onClick={() => {
             closeModal();
           }}
-        >  
+        >
           לא, תשאיר לי את ההרשאה
         </Button>
       </div>

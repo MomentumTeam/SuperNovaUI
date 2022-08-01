@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { MultiSelect } from "primereact/multiselect";
+import React, { useEffect, useState } from 'react';
+import { MultiSelect } from 'primereact/multiselect';
 import { ExportButton } from '../Fields/ExportButton';
 import { useToast } from '../../context/use-toast';
+import { useMatomo } from '@datapunt/matomo-tracker-react';
 
 const TableFooter = ({
   setSelectedColumns,
@@ -13,12 +14,25 @@ const TableFooter = ({
   selectAllRowsCheckbox = null,
 }) => {
   const { actionPopup } = useToast();
+  const { trackEvent, trackPageView } = useMatomo();
   const [isExportLoading, setIsExportLoading] = useState(false);
 
   const onColumnToggle = (event) => {
     let selectedColumns = event.value;
-    let orderedSelectedColumns = rowData.filter((col) => selectedColumns.some((sCol) => sCol.field === col.field));
+    let orderedSelectedColumns = rowData.filter((col) =>
+      selectedColumns.some((sCol) => sCol.field === col.field)
+    );
     setSelectedColumns(orderedSelectedColumns);
+  };
+
+  const clickTracking = () => {
+    trackPageView({
+      documentTitle: 'דף הבית',
+    });
+    trackEvent({
+      category: 'ייצוא',
+      action: 'בקשות',
+    });
   };
 
   useEffect(() => {
@@ -28,16 +42,19 @@ const TableFooter = ({
 
   const exportFunc = async () => {
     try {
-      const isSelectedAll = selectAllRowsCheckbox && selectAllRowsCheckbox?.ariaChecked;
-      
+      const isSelectedAll =
+        selectAllRowsCheckbox && selectAllRowsCheckbox?.ariaChecked;
+
       setIsExportLoading(true);
       await exportFunction(selectedItem, isSelectedAll);
+      clickTracking();
     } catch (error) {
-      actionPopup("ייצוא טבלה", { message: "יש בעיה בייצוא הטבלה" });
+      actionPopup('ייצוא טבלה', { message: 'יש בעיה בייצוא הטבלה' });
     }
 
     setIsExportLoading(false);
   };
+
   return (
     <>
       <div style={{ display: 'flex' }}>

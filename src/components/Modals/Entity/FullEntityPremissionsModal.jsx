@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import { Dialog } from "primereact/dialog";
-import { classNames } from "primereact/utils";
-import { USER_TYPE, USER_TYPE_TAG } from "../../../constants";
-import { getUserTags, isUserHoldType } from "../../../utils/user";
-
+import { Dialog } from 'primereact/dialog';
+import { classNames } from 'primereact/utils';
+import { USER_TYPE, USER_TYPE_TAG } from '../../../constants';
+import { getUserTags, isUserHoldType } from '../../../utils/user';
 import {
-  getAllMyApproverTypes, removeAsApproverFromHierarchy,
-} from "../../../service/ApproverService";
-import PremissionsRemovalPopUp from "./PremissionsRemovalPopUp";
+  getAllMyApproverTypes,
+  removeAsApproverFromHierarchy,
+} from '../../../service/ApproverService';
+import PremissionsRemovalPopUp from './PremissionsRemovalPopUp';
 
 const FullEntityPremissionsModal = ({
   user,
@@ -52,7 +52,7 @@ const FullEntityPremissionsModal = ({
       });
     };
 
-    const getApproverTypesHandler = (approverData ,type) => {
+    const getApproverTypesHandler = (approverData, type) => {
       const approverTypeHandler = {
         [USER_TYPE.ADMIN]: () => {
           return approverData.adminGroupsInCharge.length > 0
@@ -82,17 +82,19 @@ const FullEntityPremissionsModal = ({
         default: () => {},
       };
 
-      return approverTypeHandler[type] || approverTypeHandler["default"];
+      return approverTypeHandler[type] || approverTypeHandler['default'];
     };
 
     if (Object.keys(premissions).length === 0) {
       myApproverTypes(user)
         .then((approverData) => {
-          approverData.types = approverData.types.filter((type) => user.types.includes((type)))
+          approverData.types = approverData.types.filter((type) =>
+            user.types.includes(type)
+          );
           setApproverTypes(approverData.types);
 
           Object.values(approverTypes).forEach((type) => {
-            getApproverTypesHandler(approverData ,type)();
+            getApproverTypesHandler(approverData, type)();
           });
         })
         .catch((err) => {
@@ -112,7 +114,7 @@ const FullEntityPremissionsModal = ({
     ) {
       return (
         <li>
-          <p style={{ fontSize: "18px", paddingBottom: "6px" }}>
+          <p style={{ fontSize: '18px', paddingBottom: '6px' }}>
             {USER_TYPE_TAG.APPROVER} ראשוני
           </p>
         </li>
@@ -120,14 +122,15 @@ const FullEntityPremissionsModal = ({
     }
   };
 
-  const getRemovalButton = (hierarchy="", type) => {
+  const getRemovalButton = (hierarchy = '', type) => {
     return (
       <button
         className="removalButton"
         onClick={() => {
           openModal(hierarchy, type);
         }}
-      ><i class="pi pi-trash" ></i>
+      >
+        <i class="pi pi-trash"></i>
       </button>
     );
   };
@@ -135,34 +138,38 @@ const FullEntityPremissionsModal = ({
     <div className="premissionsPopUpWrapper">
       {
         <Dialog
-          className={classNames("dialogClass6")}
-          header={"הרשאות משתמש"}
+          className={classNames('dialogClass6')}
+          header={'הרשאות משתמש'}
           visible={isUsePremissionModal}
           onHide={closePremissionsModal}
           dismissableMask={true}
           id="premissionsDialog"
         >
-          <div id="premissionsDisplayWrapper" >
-          <p id="premissionsTitle">ההרשאות שלך במערכת לגו: </p>
+          <div id="premissionsDisplayWrapper">
+            <p id="premissionsTitle">ההרשאות שלך במערכת לגו: </p>
             <ul className="premissionsList">
               {getImuteableApproverTypes()}
               {Object.keys(premissions).map((key) => (
                 <li className="premissionListItem">
                   <p className="removalFormat">
                     {getUserTags([key])}
-                    {premissions[key].length === 0 && (
-                      getRemovalButton("", key)
-                    )}
+                    {premissions[key].length === 0 && getRemovalButton('', key)}
                   </p>
                   <table id="premissionSubHierarchyList">
-                  <tr value={premissions} className="hierarchyList" style={{ paddingTop: "10px"}}>
-                    {premissions[key].map((hierarchy) => (
-                      <td className="removalFormat"  id="hierarchyTable">
-                        <p id="hierarchyInTable">{hierarchy.hierarchy + "/" + hierarchy.name }</p>
-                        {getRemovalButton(hierarchy, key)}
-                      </td>
-                    ))}
-                  </tr>
+                    <tr
+                      value={premissions}
+                      className="hierarchyList"
+                      style={{ paddingTop: '10px' }}
+                    >
+                      {premissions[key].map((hierarchy) => (
+                        <td className="removalFormat" id="hierarchyTable">
+                          <p id="hierarchyInTable">
+                            {hierarchy.hierarchy + '/' + hierarchy.name}
+                          </p>
+                          {getRemovalButton(hierarchy, key)}
+                        </td>
+                      ))}
+                    </tr>
                   </table>
                 </li>
               ))}
