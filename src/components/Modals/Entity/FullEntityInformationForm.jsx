@@ -454,11 +454,6 @@ const FullEntityInformationForm = forwardRef(
         secured: () => reqView,
       },
       {
-        fieldName: 'mail',
-        displayName: 'מזהה ייחודי',
-        inputType: InputTypes.TEXT,
-      },
-      {
         fieldName: 'firstName',
         displayName: 'שם פרטי',
         inputType: InputTypes.TEXT,
@@ -524,12 +519,6 @@ const FullEntityInformationForm = forwardRef(
         secured: () => reqView,
       },
       {
-        fieldName: 'hierarchy',
-        displayName: 'היררכיה',
-        inputType: InputTypes.TEXT,
-        withTooltip: true,
-      },
-      {
         fieldName: 'jobTitle',
         displayName: 'תפקיד',
         inputType: InputTypes.TEXT,
@@ -537,10 +526,10 @@ const FullEntityInformationForm = forwardRef(
         secured: () => !reqView,
       },
       {
-        fieldName: 'address',
-        displayName: 'כתובת',
+        fieldName: 'hierarchy',
+        displayName: 'היררכיה',
         inputType: InputTypes.TEXT,
-        secured: () => !reqView,
+        withTooltip: true,
       },
       {
         fieldName: 'mobilePhone',
@@ -552,6 +541,18 @@ const FullEntityInformationForm = forwardRef(
         force: true,
         isEdit: !onlyForView && methods.watch('canEditEntityFields'),
       },
+      {
+        fieldName: 'mail',
+        displayName: 'מזהה ייחודי',
+        inputType: InputTypes.TEXT,
+      },
+      {
+        fieldName: 'address',
+        displayName: 'כתובת',
+        inputType: InputTypes.TEXT,
+        secured: () => !reqView,
+      },
+
       {
         fieldName: 'oldMobilePhone',
         displayName: 'טלפון נייד קודם',
