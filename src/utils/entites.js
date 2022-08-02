@@ -10,7 +10,7 @@ export const canEditEntity = (selectedEntity, user) => {
     (selectedEntity &&
       (selectedEntity?.entityType === configStore.USER_CITIZEN_ENTITY_TYPE ||
         selectedEntity?.entityType === configStore.KARTOFFEL_SOLDIER) &&
-      selectedEntity?.id === user.id) ||
+      (selectedEntity?.id === user.id || isUserHoldType(user, USER_TYPE.ADMIN))) ||
     (selectedEntity?.entityType === configStore.USER_ROLE_ENTITY_TYPE &&
       isUserHoldType(user, USER_TYPE.ADMIN))
   );
@@ -19,10 +19,9 @@ export const canEditEntity = (selectedEntity, user) => {
 export const CanEditEntityFields = (selectedEntity) => {
   const { userStore } = useStores();
   const user = toJS(userStore.user);
+  console.log(user, user.types)
   return (
-    selectedEntity.id === user.id ||
-    (selectedEntity?.entityType === configStore.USER_ROLE_ENTITY_TYPE &&
-      isUserHoldType(user, USER_TYPE.ADMIN))
+    selectedEntity.id === user.id || isUserHoldType(user, USER_TYPE.ADMIN)
   );
 };
 
