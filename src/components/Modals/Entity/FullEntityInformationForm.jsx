@@ -27,6 +27,7 @@ import {
   CanEditEntityFields,
 } from '../../../utils/entites';
 import {
+  GOAL_USER_NAME_REG_EXP,
   IDENTITY_CARD_EXP,
   NAME_REG_EXP,
   PHONE_REG_EXP,
@@ -35,20 +36,24 @@ import {
 
 const validationSchema = Yup.object().shape({
   canEditEntityFields: Yup.boolean(),
-  firstName: Yup.string().when('canEditEntityFields', {
+  firstName: Yup.string().when(['canEditEntityFields'], {
     is: true,
     then: Yup.string()
       .required('יש לבחור שם פרטי')
       .matches(NAME_REG_EXP, 'שם לא תקין'),
   }),
-  lastName: Yup.string().when('canEditEntityFields', {
-    is: true,
+  lastName: Yup.string().when(['canEditEntityFields', '$isGoalUser'], {
+    is: (canEditEntityFields, isGoalUser) => { return canEditEntityFields && !isGoalUser },
     then: Yup.string()
       .required('יש לבחור שם משפחה')
       .matches(NAME_REG_EXP, 'שם לא תקין'),
+    otherwise:
+      Yup.string()
+        .required('יש לבחור שם משפחה')
+        .matches(GOAL_USER_NAME_REG_EXP, 'שם לא תקין. עבור תפקידן השם משפחה יכול להכיל גם רק מספרים.'),
   }),
-  identityCard: Yup.string().when(['canEditEntityFields', 'isGoalUser'], {
-    is: (canEditEntityFields, isGoalUser) => canEditEntityFields && !isGoalUser,
+  identityCard: Yup.string().when(['canEditEntityFields', '$isGoalUser'], {
+    is: (canEditEntityFields, isGoalUser) => { return canEditEntityFields && !isGoalUser },
     then: Yup.string()
       .required('יש להזין ת"ז')
       .matches(IDENTITY_CARD_EXP, 'ת"ז לא תקין')
@@ -60,12 +65,11 @@ const validationSchema = Yup.object().shape({
         },
       }),
   }),
-  mobilePhone: Yup.mixed().when(['canEditEntityFields', 'isGoalUser'], {
-    is: (isGoalUser, canEditEntityFields) => { return canEditEntityFields && !isGoalUser },
+  mobilePhone: Yup.mixed().when(['canEditEntityFields'], {
+    is: true,
     then: Yup.string('נא להזין מספר')
       .required('נא להזין מספר')
       .matches(PHONE_REG_EXP, 'מספר לא תקין'),
-    otherwise: Yup.string('נא להזין מספר').optional().matches(PHONE_REG_EXP, 'מספר לא תקין')
   }),
   canSeeUserFullClearance: Yup.boolean(),
 });
@@ -107,7 +111,7 @@ const FullEntityInformationForm = forwardRef(
             );
             entity.newEntityType =
               USER_ENTITY_TYPE[
-                `${requestObject.kartoffelParams.newEntityType}`
+              `${requestObject.kartoffelParams.newEntityType}`
               ];
 
             entity.upn = requestObject.kartoffelParams.upn;
@@ -170,7 +174,7 @@ const FullEntityInformationForm = forwardRef(
           }
           if (Array.isArray(requestObject.mobilePhone))
             requestObject.mobilePhone = requestObject.mobilePhone[0];
-          
+
           setUser(requestObject);
         }
       }
@@ -213,8 +217,8 @@ const FullEntityInformationForm = forwardRef(
           mobilePhone: !tempForm?.mobilePhone
             ? []
             : Array.isArray(tempForm.mobilePhone)
-            ? tempForm.mobilePhone
-            : [tempForm.mobilePhone],
+              ? tempForm.mobilePhone
+              : [tempForm.mobilePhone],
           ...(tempForm.serviceType && { serviceType: tempForm.serviceType }),
           ...(tempForm.address && { address: tempForm.address }),
           ...(tempForm.fullClearance && {
@@ -242,8 +246,8 @@ const FullEntityInformationForm = forwardRef(
           oldMobilePhone: !user?.mobilePhone
             ? []
             : Array.isArray(user.mobilePhone)
-            ? user.mobilePhone
-            : [user.mobilePhone],
+              ? user.mobilePhone
+              : [user.mobilePhone],
           ...(user.rank && { oldRank: user.rank }),
         };
 
@@ -397,29 +401,29 @@ const FullEntityInformationForm = forwardRef(
             // Some fields required different conditions or different display names in edit entity request type
             customFields = [
               ...(reqView &&
-              isDifferentFromPrev(user['firstName'], user['oldFirstName'])
+                isDifferentFromPrev(user['firstName'], user['oldFirstName'])
                 ? [{ fieldName: 'firstName', displayName: 'שם פרטי חדש' }]
                 : []),
               ...(reqView &&
-              isDifferentFromPrev(user['lastName'], user['oldLastName'])
+                isDifferentFromPrev(user['lastName'], user['oldLastName'])
                 ? [{ fieldName: 'lastName', displayName: 'שם משפחה חדש' }]
                 : []),
               ...(reqView &&
-              isDifferentFromPrev(
-                Array.isArray(user['mobilePhone'])
-                  ? user['mobilePhone'][0]
-                  : user['mobilePhone'],
-                Array.isArray(user['oldMobilePhone'])
-                  ? user['oldMobilePhone'][0]
-                  : user['oldMobilePhone']
-              )
+                isDifferentFromPrev(
+                  Array.isArray(user['mobilePhone'])
+                    ? user['mobilePhone'][0]
+                    : user['mobilePhone'],
+                  Array.isArray(user['oldMobilePhone'])
+                    ? user['oldMobilePhone'][0]
+                    : user['oldMobilePhone']
+                )
                 ? [{ fieldName: 'mobilePhone', displayName: 'טלפון נייד חדש' }]
                 : []),
               ...(reqView && isDifferentFromPrev(user['rank'], user['oldRank'])
                 ? [{ fieldName: 'rank', displayName: 'דרגה חדשה' }]
                 : []),
               ...(reqView &&
-              isDifferentFromPrev(user['identityCard'], user['oldIdentityCard'])
+                isDifferentFromPrev(user['identityCard'], user['oldIdentityCard'])
                 ? [{ fieldName: 'identityCard', displayName: 'ת"ז חדשה' }]
                 : []),
             ];
@@ -685,8 +689,6 @@ const FullEntityInformationForm = forwardRef(
     };
 
     const getForm = (type) => {
-            console.log(user)
-
       switch (type) {
         case REQ_TYPES.CONVERT_ENTITY_TYPE:
           return reqView && getInputFields(user, convertFormFields);
@@ -703,7 +705,6 @@ const FullEntityInformationForm = forwardRef(
                 >
                   <p>פרטי המשתמש שנותק מהתפקיד:</p>
                 </div>
-                {console.log(user)}
                 {getInputFields(user, viewUserFields)}
                 <div style={{ width: '100%', paddingBottom: '10px' }}>
                   <p>פרטי התפקיד שנותק:</p>
