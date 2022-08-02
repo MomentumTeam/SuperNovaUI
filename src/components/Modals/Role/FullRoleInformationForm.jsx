@@ -78,7 +78,7 @@ const validationSchema = Yup.object().shape({
                 context.parent.oldRole.directGroup
               );
               return !result.isJobTitleAlreadyTaken;
-            } catch (error) { }
+            } catch (error) {}
           } else {
             return true;
           }
@@ -210,7 +210,7 @@ const FullRoleInformationForm = forwardRef(
                 entityRes?.entityType === configStore.USER_ROLE_ENTITY_TYPE
               );
               setEntity(entityRes);
-            } catch (error) { }
+            } catch (error) {}
           }
         } else {
           setRole(requestObject);
@@ -227,7 +227,7 @@ const FullRoleInformationForm = forwardRef(
             setValue('entityId', entityRes.id);
             setValue('userInRole', entityRes.fullName);
             setValue('entityPrevName', entityRes.fullName);
-          } catch (error) { }
+          } catch (error) {}
 
           try {
             if (requestObject?.digitalIdentityUniqueId) {
@@ -236,7 +236,7 @@ const FullRoleInformationForm = forwardRef(
               );
               setDigitalIdentity(di);
             }
-          } catch (error) { }
+          } catch (error) {}
         }
       }
 
@@ -250,14 +250,8 @@ const FullRoleInformationForm = forwardRef(
         console.log(err);
         throw new Error(err.errors);
       }
-      const {
-        approvers,
-        comments,
-        roleName,
-        clearance,
-        oldRole,
-        entityId,
-      } = data;
+      const { approvers, comments, roleName, clearance, oldRole, entityId } =
+        data;
 
       const req = {
         commanders: approvers,
@@ -336,7 +330,7 @@ const FullRoleInformationForm = forwardRef(
             <label>
               <span className="required-field">*</span>
               {reqView &&
-                requestObject?.kartoffelParams?.oldJobTitle !==
+              requestObject?.kartoffelParams?.oldJobTitle !==
                 requestObject?.kartoffelParams?.jobTitle
                 ? 'שם תפקיד חדש'
                 : 'שם תפקיד'}
@@ -349,9 +343,7 @@ const FullRoleInformationForm = forwardRef(
                 id="editSingleRoleForm-roleName"
                 {...register('roleName')}
                 onChange={onRoleNameChange}
-                disabled={
-                  onlyForView || !canEditRoleFields
-                }
+                disabled={onlyForView || !canEditRoleFields}
               />
 
               <label>
@@ -360,8 +352,8 @@ const FullRoleInformationForm = forwardRef(
                     {errors?.roleName?.message
                       ? errors.roleName?.message
                       : errors.isJobTitleAlreadyTaken?.message
-                        ? errors.isJobTitleAlreadyTaken.message
-                        : 'יש למלא ערך'}
+                      ? errors.isJobTitleAlreadyTaken.message
+                      : 'יש למלא ערך'}
                   </small>
                 )}
               </label>
@@ -394,7 +386,7 @@ const FullRoleInformationForm = forwardRef(
 
         {reqView &&
           requestObject?.kartoffelParams?.oldJobTitle !==
-          requestObject?.kartoffelParams?.jobTitle && (
+            requestObject?.kartoffelParams?.jobTitle && (
             <div className="p-fluid-item p-fluid-item">
               <div className="p-field">
                 <label> שם תפקיד ישן </label>
@@ -436,8 +428,8 @@ const FullRoleInformationForm = forwardRef(
               {' '}
               <span className="required-field">*</span>
               {reqView &&
-                requestObject?.kartoffelParams?.clearance &&
-                requestObject?.kartoffelParams?.clearance !==
+              requestObject?.kartoffelParams?.clearance &&
+              requestObject?.kartoffelParams?.clearance !==
                 watch('oldClearance')
                 ? 'סיווג תפקיד חדש'
                 : 'סיווג התפקיד'}{' '}
@@ -448,12 +440,8 @@ const FullRoleInformationForm = forwardRef(
               placeholder={watch('clearance') || '- - -'}
               {...register('clearance')}
               value={watch('clearance')}
-              className={`dropDownInput ${onlyForView ||
-                !canEditRoleFields
-                } `}
-              disabled={
-                onlyForView || !canEditRoleFields
-              }
+              className={`dropDownInput ${onlyForView || !canEditRoleFields} `}
+              disabled={onlyForView || !canEditRoleFields}
               style={{
                 textAlignLast: !watch('clearance') && 'center',
               }}
@@ -474,7 +462,7 @@ const FullRoleInformationForm = forwardRef(
         {reqView &&
           requestObject?.kartoffelParams?.clearance &&
           requestObject?.kartoffelParams?.clearance !==
-          watch('oldClearance') && (
+            watch('oldClearance') && (
             <div className="p-fluid-item p-fluid-item">
               <div className="p-field">
                 <label> סיווג תפקיד ישן</label>
@@ -529,15 +517,12 @@ const FullRoleInformationForm = forwardRef(
               <InputText
                 id="fullRoleInfoForm-entity"
                 placeholder={entity.fullName}
-                disabled={
-                  onlyForView
-                }
+                disabled={true}
                 style={{
                   textAlign: !entity?.fullName && 'center',
                 }}
               />
-              <label>
-              </label>
+              <label></label>
 
               {!reqView &&
                 !watch('isGoalUser') &&
