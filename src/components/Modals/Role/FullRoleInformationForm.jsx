@@ -114,7 +114,7 @@ const validationSchema = Yup.object().shape({
       })
       .matches(
         FULL_NAME_REG_EXP,
-        'על השם להיות בעל שני מילים, יכול להכיל מספרים'
+        'על השם להיות בעל שתי מילים, יכול להכיל מספרים'
       ),
   }),
   comments: Yup.string().optional(),
@@ -223,7 +223,8 @@ const FullRoleInformationForm = forwardRef(
               );
               setValue(
                 'isGoalUser',
-                entityRes?.entityType === configStore.USER_ROLE_ENTITY_TYPE
+                // entityRes?.entityType === configStore.USER_ROLE_ENTITY_TYPE
+                true
               );
               setEntity(entityRes);
             } catch (error) {}
@@ -238,7 +239,9 @@ const FullRoleInformationForm = forwardRef(
             setEntity(entityRes);
             setValue(
               'isGoalUser',
-              entityRes?.entityType === configStore.USER_ROLE_ENTITY_TYPE
+              // entityRes?.entityType === configStore.USER_ROLE_ENTITY_TYPE
+
+              true
             );
             setValue('entityId', entityRes.id);
             setValue('userInRole', entityRes.fullName);
@@ -317,9 +320,10 @@ const FullRoleInformationForm = forwardRef(
 
         req.adParams = {
           firstName: fullName[0],
-          lastName: fullName[1] ? fullName[1] : '',
+          lastName: fullName.shift(),
           fullName: watch('userInRole'),
         };
+        console.log(req.adParams.lastName)
 
         await appliesStore.editEntityApply(req);
         clickTracking('עריכת משתמש');
@@ -390,7 +394,7 @@ const FullRoleInformationForm = forwardRef(
                 {...register('roleName')}
                 onChange={onRoleNameChange}
                 disabled={
-                  onlyForView || watch('isGoalUser') || !canEditRoleFields
+                  onlyForView || !canEditRoleFields
                 }
               />
 
@@ -490,13 +494,10 @@ const FullRoleInformationForm = forwardRef(
               value={watch('clearance')}
               className={`dropDownInput ${
                 onlyForView ||
-                !canEditRoleFields ||
-                entity?.entityType === configStore.USER_ROLE_ENTITY_TYPE
-                  ? `disabled`
-                  : ''
+                !canEditRoleFields 
               } `}
               disabled={
-                onlyForView || watch('isGoalUser') || !canEditRoleFields
+                onlyForView || !canEditRoleFields
               }
               style={{
                 textAlignLast: !watch('clearance') && 'center',

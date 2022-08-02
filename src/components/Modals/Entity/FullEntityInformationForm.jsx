@@ -118,10 +118,12 @@ const FullEntityInformationForm = forwardRef(
             const entity = await getEntityByMongoId(
               requestObject.kartoffelParams.id
             );
+            setUser(entity);
+
             const role = await getRoleByRoleId(
               requestObject.kartoffelParams.uniqueId
             );
-            setUser(entity);
+
             setRole(role);
           } else if (requestObject.type === REQ_TYPES.EDIT_ENTITY) {
             // TODO: ask limora - why is this nessacery?
@@ -169,6 +171,7 @@ const FullEntityInformationForm = forwardRef(
           }
           if (Array.isArray(requestObject.mobilePhone))
             requestObject.mobilePhone = requestObject.mobilePhone[0];
+          
           setUser(requestObject);
         }
       }
@@ -191,7 +194,6 @@ const FullEntityInformationForm = forwardRef(
 
       fieldsToCheck.forEach((field) => {
         if (isDifferentFromPrev(methods.watch(field), user[field])) {
-          console.log(methods.watch(field), user[field]);
           changedForm = true;
         }
       });
@@ -374,31 +376,7 @@ const FullEntityInformationForm = forwardRef(
       ];
 
       // TODO: check with liron which fields are needed in display each of the entity types
-      let fieldsToDisplay = [
-        'id',
-        'samAccountName',
-        'firstName',
-        'oldFirstName',
-        'lastName',
-        'oldLastName',
-        'personalNumber',
-        'identityCard',
-        'oldIdentityCard',
-        'hierarchy',
-        'mail',
-        'jobTitle',
-        'rank',
-        'oldRank',
-        'fullClearance',
-        'address',
-        'mobilePhone',
-        'oldMobilePhone',
-        'birthDate',
-        'dischargeDay',
-        'organization',
-        'employeeNumber',
-        'goalUserBrol',
-      ];
+      let fieldsToDisplay = formFields.map((field) => field.fieldName)
 
       // filters form fields that appear only conditionally
       fieldsToDisplay = fieldsToDisplay.filter((field) => {
@@ -476,11 +454,9 @@ const FullEntityInformationForm = forwardRef(
         secured: () => reqView,
       },
       {
-        fieldName: 'samAccountName',
-        displayName: 'מזהה משתמש',
+        fieldName: 'mail',
+        displayName: 'מזהה ייחודי',
         inputType: InputTypes.TEXT,
-        force: true,
-        secured: () => reqView,
       },
       {
         fieldName: 'firstName',
@@ -552,11 +528,6 @@ const FullEntityInformationForm = forwardRef(
         displayName: 'היררכיה',
         inputType: InputTypes.TEXT,
         withTooltip: true,
-      },
-      {
-        fieldName: 'mail',
-        displayName: 'מזהה ייחודי',
-        inputType: InputTypes.TEXT,
       },
       {
         fieldName: 'jobTitle',
@@ -715,6 +686,8 @@ const FullEntityInformationForm = forwardRef(
     };
 
     const getForm = (type) => {
+            console.log(user)
+
       switch (type) {
         case REQ_TYPES.CONVERT_ENTITY_TYPE:
           return reqView && getInputFields(user, convertFormFields);
@@ -731,6 +704,7 @@ const FullEntityInformationForm = forwardRef(
                 >
                   <p>פרטי המשתמש שנותק מהתפקיד:</p>
                 </div>
+                {console.log(user)}
                 {getInputFields(user, viewUserFields)}
                 <div style={{ width: '100%', paddingBottom: '10px' }}>
                   <p>פרטי התפקיד שנותק:</p>
