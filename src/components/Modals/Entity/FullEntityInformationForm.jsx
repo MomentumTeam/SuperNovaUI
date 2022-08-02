@@ -345,10 +345,7 @@ const FullEntityInformationForm = forwardRef(
                 : user['oldMobilePhone']
             ),
         },
-        {
-          fieldName: 'mobilePhone',
-          condition: !isGoalUser,
-        },
+
         {
           fieldName: 'rank',
           condition: isSoldier,
