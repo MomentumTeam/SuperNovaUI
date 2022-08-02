@@ -207,8 +207,7 @@ const FullRoleInformationForm = forwardRef(
               );
               setValue(
                 'isGoalUser',
-                // entityRes?.entityType === configStore.USER_ROLE_ENTITY_TYPE
-                true
+                entityRes?.entityType === configStore.USER_ROLE_ENTITY_TYPE
               );
               setEntity(entityRes);
             } catch (error) { }
@@ -223,9 +222,7 @@ const FullRoleInformationForm = forwardRef(
             setEntity(entityRes);
             setValue(
               'isGoalUser',
-              // entityRes?.entityType === configStore.USER_ROLE_ENTITY_TYPE
-
-              true
+              entityRes?.entityType === configStore.USER_ROLE_ENTITY_TYPE
             );
             setValue('entityId', entityRes.id);
             setValue('userInRole', entityRes.fullName);
@@ -288,7 +285,7 @@ const FullRoleInformationForm = forwardRef(
           jobTitle: roleName,
         };
       }
-    
+
       await appliesStore.renameRoleApply(req);
       clickTracking('עריכת תפקיד');
       setIsActionDone(true);
