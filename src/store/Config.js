@@ -108,8 +108,7 @@ class ConfigStore {
         this.USER_EXTERNAL_ENTITY_TYPE = config.USER_EXTERNAL_ENTITY_TYPE;
       if (config?.KARTOFFEL_CIVILIAN)
         this.KARTOFFEL_CIVILIAN = config.KARTOFFEL_CIVILIAN;
-      if (config?.KARTOFFEL_SOLDIER)
-        this.KARTOFFEL_SOLDIER = config.KARTOFFEL_SOLDIER;
+      if (config?.KARTOFFEL_SOLDIER) this.KARTOFFEL_SOLDIER = 'agumon';
       if (config?.KARTOFFEL_EXTERNAL)
         this.KARTOFFEL_EXTERNAL = config.KARTOFFEL_EXTERNAL;
       if (config?.KARTOFFEL_RANKS)
