@@ -47,8 +47,8 @@ const validationSchema = Yup.object().shape({
       .min(1, 'יש לבחור לפחות גורם מאשר אחד')
       .required('יש לבחור לפחות גורם מאשר אחד'),
   }),
-  roleName: Yup.string().when(['canEditRoleFields', 'isGoalUser'], {
-    is: (canEditRoleFields, isGoalUser) => canEditRoleFields && !isGoalUser,
+  roleName: Yup.string().when(['canEditRoleFields'], {
+    is: true,
     then: Yup.string()
       .required('יש לבחור שם תפקיד')
       .matches(ROLE_EXP, 'תפקיד לא תקין')
@@ -78,7 +78,7 @@ const validationSchema = Yup.object().shape({
                 context.parent.oldRole.directGroup
               );
               return !result.isJobTitleAlreadyTaken;
-            } catch (error) {}
+            } catch (error) { }
           } else {
             return true;
           }
@@ -86,8 +86,8 @@ const validationSchema = Yup.object().shape({
         },
       }),
   }),
-  clearance: Yup.string().when(['canEditRoleFields', 'isGoalUser'], {
-    is: (canEditRoleFields, isGoalUser) => canEditRoleFields && !isGoalUser,
+  clearance: Yup.string().when(['canEditRoleFields'], {
+    is: true,
     then: Yup.string()
       // .required('יש לבחור סיווג')      //commented-in case some roles don't have clearance
       .test({
@@ -100,22 +100,6 @@ const validationSchema = Yup.object().shape({
           );
         },
       }),
-  }),
-  userInRole: Yup.string().when(['canEditRoleFields', 'isGoalUser'], {
-    is: (canEditRoleFields, isGoalUser) => canEditRoleFields && isGoalUser,
-    then: Yup.string()
-      // .required('יש לבחור סיווג')      //commented-in case some roles don't have clearance
-      .test({
-        name: 'userInRole-is-the-same',
-        message: 'יש לשנות שם משתמש בתפקיד!',
-        test: async (userInRole, context) => {
-          return userInRole !== context.parent.entityPrevName;
-        },
-      })
-      .matches(
-        FULL_NAME_REG_EXP,
-        'על השם להיות בעל שני מילים, יכול להכיל מספרים'
-      ),
   }),
   comments: Yup.string().optional(),
   entityId: Yup.string().optional(),
@@ -226,7 +210,7 @@ const FullRoleInformationForm = forwardRef(
                 entityRes?.entityType === configStore.USER_ROLE_ENTITY_TYPE
               );
               setEntity(entityRes);
-            } catch (error) {}
+            } catch (error) { }
           }
         } else {
           setRole(requestObject);
@@ -243,7 +227,7 @@ const FullRoleInformationForm = forwardRef(
             setValue('entityId', entityRes.id);
             setValue('userInRole', entityRes.fullName);
             setValue('entityPrevName', entityRes.fullName);
-          } catch (error) {}
+          } catch (error) { }
 
           try {
             if (requestObject?.digitalIdentityUniqueId) {
@@ -252,7 +236,7 @@ const FullRoleInformationForm = forwardRef(
               );
               setDigitalIdentity(di);
             }
-          } catch (error) {}
+          } catch (error) { }
         }
       }
 
@@ -273,8 +257,6 @@ const FullRoleInformationForm = forwardRef(
         clearance,
         oldRole,
         entityId,
-        entityPrevName,
-        userInRole,
       } = data;
 
       const req = {
@@ -304,30 +286,8 @@ const FullRoleInformationForm = forwardRef(
         };
       }
 
-      if (entityPrevName !== userInRole) {
-        let oldFullName = entityPrevName.split(' ');
-        let fullName = watch('userInRole').split(' ');
-        req.kartoffelParams = {
-          id: entityId,
-          firstName: fullName[0],
-          lastName: fullName[1] ? fullName[1] : '',
-          oldFirstName: oldFullName[0],
-          oldLastName: oldFullName[1] ? oldFullName[1] : '',
-        };
-
-        req.adParams = {
-          firstName: fullName[0],
-          lastName: fullName[1] ? fullName[1] : '',
-          fullName: watch('userInRole'),
-        };
-
-        await appliesStore.editEntityApply(req);
-        clickTracking('עריכת משתמש');
-      } else {
-        await appliesStore.renameRoleApply(req);
-        clickTracking('עריכת תפקיד');
-      }
-
+      await appliesStore.renameRoleApply(req);
+      clickTracking('עריכת תפקיד');
       setIsActionDone(true);
     };
 
@@ -376,7 +336,7 @@ const FullRoleInformationForm = forwardRef(
             <label>
               <span className="required-field">*</span>
               {reqView &&
-              requestObject?.kartoffelParams?.oldJobTitle !==
+                requestObject?.kartoffelParams?.oldJobTitle !==
                 requestObject?.kartoffelParams?.jobTitle
                 ? 'שם תפקיד חדש'
                 : 'שם תפקיד'}
@@ -400,8 +360,8 @@ const FullRoleInformationForm = forwardRef(
                     {errors?.roleName?.message
                       ? errors.roleName?.message
                       : errors.isJobTitleAlreadyTaken?.message
-                      ? errors.isJobTitleAlreadyTaken.message
-                      : 'יש למלא ערך'}
+                        ? errors.isJobTitleAlreadyTaken.message
+                        : 'יש למלא ערך'}
                   </small>
                 )}
               </label>
@@ -434,7 +394,7 @@ const FullRoleInformationForm = forwardRef(
 
         {reqView &&
           requestObject?.kartoffelParams?.oldJobTitle !==
-            requestObject?.kartoffelParams?.jobTitle && (
+          requestObject?.kartoffelParams?.jobTitle && (
             <div className="p-fluid-item p-fluid-item">
               <div className="p-field">
                 <label> שם תפקיד ישן </label>
@@ -476,8 +436,8 @@ const FullRoleInformationForm = forwardRef(
               {' '}
               <span className="required-field">*</span>
               {reqView &&
-              requestObject?.kartoffelParams?.clearance &&
-              requestObject?.kartoffelParams?.clearance !==
+                requestObject?.kartoffelParams?.clearance &&
+                requestObject?.kartoffelParams?.clearance !==
                 watch('oldClearance')
                 ? 'סיווג תפקיד חדש'
                 : 'סיווג התפקיד'}{' '}
@@ -488,13 +448,9 @@ const FullRoleInformationForm = forwardRef(
               placeholder={watch('clearance') || '- - -'}
               {...register('clearance')}
               value={watch('clearance')}
-              className={`dropDownInput ${
-                onlyForView ||
-                !canEditRoleFields ||
-                entity?.entityType === configStore.USER_ROLE_ENTITY_TYPE
-                  ? `disabled`
-                  : ''
-              } `}
+              className={`dropDownInput ${onlyForView ||
+                !canEditRoleFields
+                } `}
               disabled={
                 onlyForView || !canEditRoleFields
               }
@@ -518,7 +474,7 @@ const FullRoleInformationForm = forwardRef(
         {reqView &&
           requestObject?.kartoffelParams?.clearance &&
           requestObject?.kartoffelParams?.clearance !==
-            watch('oldClearance') && (
+          watch('oldClearance') && (
             <div className="p-fluid-item p-fluid-item">
               <div className="p-field">
                 <label> סיווג תפקיד ישן</label>
@@ -572,28 +528,15 @@ const FullRoleInformationForm = forwardRef(
             <div className="p-field">
               <InputText
                 id="fullRoleInfoForm-entity"
-                {...register('userInRole')}
-                value={watch('userInRole')}
-                placeholder={watch('userInRole') || entity.fullName}
+                placeholder={entity.fullName}
                 disabled={
-                  onlyForView ||
-                  !(
-                    isUserHoldType(userStore.user, USER_TYPE.ADMIN) &&
-                    watch('isGoalUser')
-                  )
+                  onlyForView
                 }
                 style={{
                   textAlign: !entity?.fullName && 'center',
                 }}
               />
               <label>
-                {errors.userInRole && (
-                  <small style={{ color: 'red' }}>
-                    {errors.userInRole?.message
-                      ? errors.userInRole?.message
-                      : 'יש למלא ערך'}
-                  </small>
-                )}
               </label>
 
               {!reqView &&

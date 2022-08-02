@@ -27,6 +27,7 @@ import {
   CanEditEntityFields,
 } from '../../../utils/entites';
 import {
+  GOAL_USER_NAME_REG_EXP,
   IDENTITY_CARD_EXP,
   NAME_REG_EXP,
   PHONE_REG_EXP,
@@ -35,20 +36,24 @@ import {
 
 const validationSchema = Yup.object().shape({
   canEditEntityFields: Yup.boolean(),
-  firstName: Yup.string().when('canEditEntityFields', {
+  firstName: Yup.string().when(['canEditEntityFields'], {
     is: true,
     then: Yup.string()
       .required('יש לבחור שם פרטי')
       .matches(NAME_REG_EXP, 'שם לא תקין'),
   }),
-  lastName: Yup.string().when('canEditEntityFields', {
-    is: true,
+  lastName: Yup.string().when(['canEditEntityFields', '$isGoalUser'], {
+    is: (canEditEntityFields, isGoalUser) => { return canEditEntityFields && !isGoalUser },
     then: Yup.string()
       .required('יש לבחור שם משפחה')
       .matches(NAME_REG_EXP, 'שם לא תקין'),
+    otherwise:
+      Yup.string()
+        .required('יש לבחור שם משפחה')
+        .matches(GOAL_USER_NAME_REG_EXP, 'שם לא תקין. עבור תפקידן השם משפחה יכול להכיל גם רק מספרים.'),
   }),
-  identityCard: Yup.string().when(['canEditEntityFields', 'isGoalUser'], {
-    is: (canEditEntityFields, isGoalUser) => canEditEntityFields && !isGoalUser,
+  identityCard: Yup.string().when(['canEditEntityFields', '$isGoalUser'], {
+    is: (canEditEntityFields, isGoalUser) => { return canEditEntityFields && !isGoalUser },
     then: Yup.string()
       .required('יש להזין ת"ז')
       .matches(IDENTITY_CARD_EXP, 'ת"ז לא תקין')
@@ -60,12 +65,11 @@ const validationSchema = Yup.object().shape({
         },
       }),
   }),
-  mobilePhone: Yup.mixed().when(['canEditEntityFields', 'isGoalUser'], {
-    is: (isGoalUser, canEditEntityFields) => { return canEditEntityFields && !isGoalUser },
+  mobilePhone: Yup.mixed().when(['canEditEntityFields'], {
+    is: true,
     then: Yup.string('נא להזין מספר')
       .required('נא להזין מספר')
       .matches(PHONE_REG_EXP, 'מספר לא תקין'),
-    otherwise: Yup.string('נא להזין מספר').optional().matches(PHONE_REG_EXP, 'מספר לא תקין')
   }),
   canSeeUserFullClearance: Yup.boolean(),
 });
@@ -107,7 +111,7 @@ const FullEntityInformationForm = forwardRef(
             );
             entity.newEntityType =
               USER_ENTITY_TYPE[
-                `${requestObject.kartoffelParams.newEntityType}`
+              `${requestObject.kartoffelParams.newEntityType}`
               ];
 
             entity.upn = requestObject.kartoffelParams.upn;
@@ -117,10 +121,12 @@ const FullEntityInformationForm = forwardRef(
             const entity = await getEntityByMongoId(
               requestObject.kartoffelParams.id
             );
+            setUser(entity);
+
             const role = await getRoleByRoleId(
               requestObject.kartoffelParams.uniqueId
             );
-            setUser(entity);
+
             setRole(role);
           } else if (requestObject.type === REQ_TYPES.EDIT_ENTITY) {
             // TODO: ask limora - why is this nessacery?
@@ -168,6 +174,7 @@ const FullEntityInformationForm = forwardRef(
           }
           if (Array.isArray(requestObject.mobilePhone))
             requestObject.mobilePhone = requestObject.mobilePhone[0];
+
           setUser(requestObject);
         }
       }
@@ -210,8 +217,8 @@ const FullEntityInformationForm = forwardRef(
           mobilePhone: !tempForm?.mobilePhone
             ? []
             : Array.isArray(tempForm.mobilePhone)
-            ? tempForm.mobilePhone
-            : [tempForm.mobilePhone],
+              ? tempForm.mobilePhone
+              : [tempForm.mobilePhone],
           ...(tempForm.serviceType && { serviceType: tempForm.serviceType }),
           ...(tempForm.address && { address: tempForm.address }),
           ...(tempForm.fullClearance && {
@@ -239,8 +246,8 @@ const FullEntityInformationForm = forwardRef(
           oldMobilePhone: !user?.mobilePhone
             ? []
             : Array.isArray(user.mobilePhone)
-            ? user.mobilePhone
-            : [user.mobilePhone],
+              ? user.mobilePhone
+              : [user.mobilePhone],
           ...(user.rank && { oldRank: user.rank }),
         };
 
@@ -338,10 +345,7 @@ const FullEntityInformationForm = forwardRef(
                 : user['oldMobilePhone']
             ),
         },
-        {
-          fieldName: 'mobilePhone',
-          condition: !isGoalUser,
-        },
+
         {
           fieldName: 'rank',
           condition: isSoldier,
@@ -372,31 +376,7 @@ const FullEntityInformationForm = forwardRef(
       ];
 
       // TODO: check with liron which fields are needed in display each of the entity types
-      let fieldsToDisplay = [
-        'id',
-        'samAccountName',
-        'firstName',
-        'oldFirstName',
-        'lastName',
-        'oldLastName',
-        'personalNumber',
-        'identityCard',
-        'oldIdentityCard',
-        'hierarchy',
-        'mail',
-        'jobTitle',
-        'rank',
-        'oldRank',
-        'fullClearance',
-        'address',
-        'mobilePhone',
-        'oldMobilePhone',
-        'birthDate',
-        'dischargeDay',
-        'organization',
-        'employeeNumber',
-        'goalUserBrol',
-      ];
+      let fieldsToDisplay = formFields.map((field) => field.fieldName)
 
       // filters form fields that appear only conditionally
       fieldsToDisplay = fieldsToDisplay.filter((field) => {
@@ -418,29 +398,29 @@ const FullEntityInformationForm = forwardRef(
             // Some fields required different conditions or different display names in edit entity request type
             customFields = [
               ...(reqView &&
-              isDifferentFromPrev(user['firstName'], user['oldFirstName'])
+                isDifferentFromPrev(user['firstName'], user['oldFirstName'])
                 ? [{ fieldName: 'firstName', displayName: 'שם פרטי חדש' }]
                 : []),
               ...(reqView &&
-              isDifferentFromPrev(user['lastName'], user['oldLastName'])
+                isDifferentFromPrev(user['lastName'], user['oldLastName'])
                 ? [{ fieldName: 'lastName', displayName: 'שם משפחה חדש' }]
                 : []),
               ...(reqView &&
-              isDifferentFromPrev(
-                Array.isArray(user['mobilePhone'])
-                  ? user['mobilePhone'][0]
-                  : user['mobilePhone'],
-                Array.isArray(user['oldMobilePhone'])
-                  ? user['oldMobilePhone'][0]
-                  : user['oldMobilePhone']
-              )
+                isDifferentFromPrev(
+                  Array.isArray(user['mobilePhone'])
+                    ? user['mobilePhone'][0]
+                    : user['mobilePhone'],
+                  Array.isArray(user['oldMobilePhone'])
+                    ? user['oldMobilePhone'][0]
+                    : user['oldMobilePhone']
+                )
                 ? [{ fieldName: 'mobilePhone', displayName: 'טלפון נייד חדש' }]
                 : []),
               ...(reqView && isDifferentFromPrev(user['rank'], user['oldRank'])
                 ? [{ fieldName: 'rank', displayName: 'דרגה חדשה' }]
                 : []),
               ...(reqView &&
-              isDifferentFromPrev(user['identityCard'], user['oldIdentityCard'])
+                isDifferentFromPrev(user['identityCard'], user['oldIdentityCard'])
                 ? [{ fieldName: 'identityCard', displayName: 'ת"ז חדשה' }]
                 : []),
             ];
@@ -469,13 +449,6 @@ const FullEntityInformationForm = forwardRef(
       {
         fieldName: 'id',
         displayName: 'מזהה',
-        inputType: InputTypes.TEXT,
-        force: true,
-        secured: () => reqView,
-      },
-      {
-        fieldName: 'samAccountName',
-        displayName: 'מזהה משתמש',
         inputType: InputTypes.TEXT,
         force: true,
         secured: () => reqView,
@@ -546,17 +519,6 @@ const FullEntityInformationForm = forwardRef(
         secured: () => reqView,
       },
       {
-        fieldName: 'hierarchy',
-        displayName: 'היררכיה',
-        inputType: InputTypes.TEXT,
-        withTooltip: true,
-      },
-      {
-        fieldName: 'mail',
-        displayName: 'מזהה ייחודי',
-        inputType: InputTypes.TEXT,
-      },
-      {
         fieldName: 'jobTitle',
         displayName: 'תפקיד',
         inputType: InputTypes.TEXT,
@@ -564,10 +526,10 @@ const FullEntityInformationForm = forwardRef(
         secured: () => !reqView,
       },
       {
-        fieldName: 'address',
-        displayName: 'כתובת',
+        fieldName: 'hierarchy',
+        displayName: 'היררכיה',
         inputType: InputTypes.TEXT,
-        secured: () => !reqView,
+        withTooltip: true,
       },
       {
         fieldName: 'mobilePhone',
@@ -579,6 +541,18 @@ const FullEntityInformationForm = forwardRef(
         force: true,
         isEdit: !onlyForView && methods.watch('canEditEntityFields'),
       },
+      {
+        fieldName: 'mail',
+        displayName: 'מזהה ייחודי',
+        inputType: InputTypes.TEXT,
+      },
+      {
+        fieldName: 'address',
+        displayName: 'כתובת',
+        inputType: InputTypes.TEXT,
+        secured: () => !reqView,
+      },
+
       {
         fieldName: 'oldMobilePhone',
         displayName: 'טלפון נייד קודם',
