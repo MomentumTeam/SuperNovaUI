@@ -65,11 +65,22 @@ const validationSchema = Yup.object().shape({
         },
       }),
   }),
-  mobilePhone: Yup.mixed().when(['canEditEntityFields'], {
-    is: true,
+  mobilePhone: Yup.mixed().when(['canEditEntityFields', '$isGoalUser'], {
+    is: (canEditEntityFields, isGoalUser) => { return canEditEntityFields && !isGoalUser },
     then: Yup.string('נא להזין מספר')
       .required('נא להזין מספר')
       .matches(PHONE_REG_EXP, 'מספר לא תקין'),
+    otherwise: Yup.mixed().when('$isGoalUser', {
+      is: true,
+      then: Yup.string('נא להזין מספר').test({
+        name: 'is-valid-phone',
+        message: 'טלפון לא תקין',
+        test: (mobilePhone) => {
+          let regex = new RegExp(mobilePhone)
+          return !mobilePhone || regex.test(PHONE_REG_EXP)
+        }
+      })
+    })
   }),
   canSeeUserFullClearance: Yup.boolean(),
 });
@@ -285,7 +296,7 @@ const FullEntityInformationForm = forwardRef(
     );
 
     const isDifferentFromPrev = (oldFieldValue, newFieldValue) => {
-      return oldFieldValue !== newFieldValue;
+      return oldFieldValue !== newFieldValue && (newFieldValue || oldFieldValue);
     };
 
     const getFormFieldsByEntityType = (user) => {
