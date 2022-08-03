@@ -530,7 +530,7 @@ const FullRoleInformationForm = forwardRef(
                 id="fullRoleInfoForm-entity"
                 placeholder={entity.fullName}
                 disabled={
-                  onlyForView
+                  true
                 }
                 style={{
                   textAlign: !entity?.fullName && 'center',
