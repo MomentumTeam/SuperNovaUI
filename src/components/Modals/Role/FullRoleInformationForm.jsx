@@ -250,14 +250,8 @@ const FullRoleInformationForm = forwardRef(
         console.log(err);
         throw new Error(err.errors);
       }
-      const {
-        approvers,
-        comments,
-        roleName,
-        clearance,
-        oldRole,
-        entityId,
-      } = data;
+      const { approvers, comments, roleName, clearance, oldRole, entityId } =
+        data;
 
       const req = {
         commanders: approvers,
@@ -349,9 +343,7 @@ const FullRoleInformationForm = forwardRef(
                 id="editSingleRoleForm-roleName"
                 {...register('roleName')}
                 onChange={onRoleNameChange}
-                disabled={
-                  onlyForView || !canEditRoleFields
-                }
+                disabled={onlyForView || !canEditRoleFields}
               />
 
               <label>
@@ -448,12 +440,8 @@ const FullRoleInformationForm = forwardRef(
               placeholder={watch('clearance') || '- - -'}
               {...register('clearance')}
               value={watch('clearance')}
-              className={`dropDownInput ${onlyForView ||
-                !canEditRoleFields
-                } `}
-              disabled={
-                onlyForView || !canEditRoleFields
-              }
+              className={`dropDownInput ${onlyForView || !canEditRoleFields} `}
+              disabled={onlyForView || !canEditRoleFields}
               style={{
                 textAlignLast: !watch('clearance') && 'center',
               }}
@@ -529,15 +517,12 @@ const FullRoleInformationForm = forwardRef(
               <InputText
                 id="fullRoleInfoForm-entity"
                 placeholder={entity.fullName}
-                disabled={
-                  true
-                }
+                disabled={true}
                 style={{
                   textAlign: !entity?.fullName && 'center',
                 }}
               />
-              <label>
-              </label>
+              <label></label>
 
               {!reqView &&
                 !watch('isGoalUser') &&
